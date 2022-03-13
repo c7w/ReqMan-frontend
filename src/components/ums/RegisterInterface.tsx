@@ -6,11 +6,12 @@ export interface RegisterInterfaceProps {
     name: string,
     password: string,
     email: string,
-    invitation?: string
-  ) => Promise<object>;
+    invitation: string
+  ) => Promise<any>;
 }
 
 const RegisterInterface = (props: RegisterInterfaceProps) => {
-  return <></>;
+  // props.submit("1", "2", "3", "4").then(r => console.debug(r));
+  return <>这是注册界面</>;
 };
 export default RegisterInterface;

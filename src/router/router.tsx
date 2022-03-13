@@ -7,8 +7,8 @@ import Layout from "../layout/Layout";
 
 const SiteRouter = () => {
   return (
-    <BrowserRouter>
-      <Provider store={store}>
+    <Provider store={store}>
+      <BrowserRouter>
         <Routes>
           <Route path="/" element={<Layout />} />
           <Route
@@ -38,8 +38,8 @@ const SiteRouter = () => {
             }
           />
         </Routes>
-      </Provider>
-    </BrowserRouter>
+      </BrowserRouter>
+    </Provider>
   );
 };
 
