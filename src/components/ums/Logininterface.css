@@ -1,0 +1,61 @@
+.ul {
+  listStyle: none;
+  margin: 0;
+  padding: 0;
+  display: block;
+  paddingLeft: 50px;
+  paddingRight: 50px;
+}
+
+.liAll {
+  margin: 0 auto;
+  padding: 0;
+}
+
+.userTel {
+  margin: 0 auto;
+  padding: 0;
+  display: block;
+  height: 41px;
+  width: 286px;
+  borderBottom: 1px solid #989898;
+  lineHeight: 52px;
+  paddingTop: 11px;
+}
+
+.userImg {
+  diaplay: inline-block;
+  width: 30px;
+  marginRight: 6px;
+}
+
+.userSpan {
+  display: inline-block;
+  border: 1px solid #989898;
+  height: 20px;
+}
+
+.telInput {
+  margin: 0;
+  padding: 0;
+  display: inline-block;
+  height: 20px;
+  marginBottom: 12px;
+  marginLeft: 12px;
+  outLine: none;
+  border: 0;
+}
+
+.telPrompt {
+  color: red;
+  fontSize: 18px;
+}
+
+.login {
+  border: none;
+  width: 100%;
+  height: 42px;
+  backgroundColor: #F55D5D;
+  color: #fff;
+  fontSize: 18px;
+}
