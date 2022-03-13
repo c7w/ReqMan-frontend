@@ -27,7 +27,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint": "prettier -w -u ./src/*",
+    "lint": "eslint ./src/",
+    "fix": "prettier -w -u ./src/",
     "pre-commit": "lint-staged"
   },
   "lint-staged": {

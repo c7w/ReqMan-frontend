@@ -3,6 +3,7 @@ image: registry.secoder.net/tool/deployer
 stages:
   - pre
   - build
+  - test
   - deploy
 
 build_cache:
@@ -25,12 +26,23 @@ build:
     paths:
       - node_modules/
       - yarn.lock
-  script: 
+  script:
     - export BUILD_IMAGE_NAME=$CI_REGISTRY_IMAGE
     - export BUILD_IMAGE_TAG=$CI_COMMIT_REF_SLUG
     - export BUILD_IMAGE_USERNAME=$CI_REGISTRY_USER
     - export BUILD_IMAGE_PASSWORD=$CI_REGISTRY_PASSWORD
     - deployer build
+
+style-test:
+  stage: test
+  needs: [build_cache]
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - node_modules/
+      - yarn.lock
+  script:
+    - yarn lint
 
 deploy:
   stage: deploy
