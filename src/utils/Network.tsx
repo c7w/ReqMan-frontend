@@ -15,7 +15,7 @@ interface Settings {
 const request_json = async (config: APIConfig, settings: Settings = {}) => {
   let path = config.path;
   let initRequest: RequestInit;
-  if (config.method == "post") {
+  if (config.method === "post") {
     initRequest = {
       method: config.method,
       headers: {
@@ -25,7 +25,7 @@ const request_json = async (config: APIConfig, settings: Settings = {}) => {
       },
       body: JSON.stringify(settings.body),
     };
-  } else if (config.method == "get") {
+  } else if (config.method === "get") {
     initRequest = {
       method: config.method,
     };

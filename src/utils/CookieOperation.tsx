@@ -1,6 +1,6 @@
 const getCookie = (key: string, default_value: string): string => {
-  let rgx = new RegExp("(?:^|(?:; ))" + key + "=([^;]*)");
-  let result = document.cookie.match(rgx);
+  const rgx = new RegExp("(?:^|(?:; ))" + key + "=([^;]*)");
+  const result = document.cookie.match(rgx);
   if (result) {
     return result[1];
   } else {
