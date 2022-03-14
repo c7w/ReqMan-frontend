@@ -3,14 +3,14 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import store from "../store/store";
 import LoginInterface from "../components/ums/LoginInterface";
 import RegisterInterface from "../components/ums/RegisterInterface";
-import Layout from "../layout/Layout";
+import Home from "../layout/Home";
 
 const SiteRouter = () => {
   return (
     <Provider store={store}>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Layout />} />
+          <Route path="/" element={<Home />} />
           <Route
             path="login"
             element={

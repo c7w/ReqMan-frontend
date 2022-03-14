@@ -1,0 +1,32 @@
+@import "antd/dist/antd.css";
+
+.header {
+  padding: 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.header-left {
+
+}
+
+.header-item {
+  padding: 20px 50px;
+  background: #001529;
+  color: #fff;
+  cursor: pointer;
+}
+
+.header-item:hover {
+  box-shadow: 1px 1px 1px 1px #778899;
+}
+
+.header-right {
+  padding-right: 100px;
+  cursor: pointer;
+}
+
+.avatar-wrapper:hover {
+  box-shadow: 1px 1px 1px 1px #fff;
+}

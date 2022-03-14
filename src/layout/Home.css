@@ -1,0 +1,17 @@
+@import "antd/dist/antd.css";
+
+.home {
+  min-height: 100vh;
+}
+.layout {
+
+}
+
+.content {
+  margin: 0 16px;
+}
+
+.footer {
+  text-align: center;
+}
+
