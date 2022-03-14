@@ -1,16 +1,42 @@
-const API_CONFIG = {
-  LOGIN: {
-    path: "/ums/login",
-    method: "get",
-  },
-};
-
-enum API_LIST {
-  LOGIN = "LOGIN",
+interface APIConfig {
+  //API 配置
+  path: string;
+  method: string;
 }
 
-const request = async (api: API_LIST) => {
-  return await fetch("www.baidu.com"); // fetch certain path, convert to json, and return
+interface Settings {
+  //请求参数
+  headers?: object; //请求头
+  body?: object; //请求体
+  getParams?: string; //GET 请求的参数列表
+}
+
+//请求函数
+const request_json = async (config: APIConfig, settings: Settings = {}) => {
+  let path = config.path;
+  let initRequest: RequestInit;
+  if (config.method == "post") {
+    initRequest = {
+      method: config.method,
+      headers: {
+        ...settings.headers,
+        "Content-Type": "application/json",
+        credentials: "include",
+      },
+      body: JSON.stringify(settings.body),
+    };
+  } else if (config.method == "get") {
+    initRequest = {
+      method: config.method,
+    };
+    path += "?" + settings.getParams;
+  } else {
+    initRequest = {
+      method: config.method,
+    };
+  }
+  console.debug(initRequest);
+  return await fetch(path, initRequest).then((data) => data.json());
 };
 
-export { API_LIST, request };
+export default request_json;
