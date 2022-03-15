@@ -2,7 +2,7 @@ import { mount, ReactWrapper } from "enzyme";
 import Layout from "../src/layout/Home";
 import { Provider } from "react-redux";
 import store from "../src/store/store";
-import {act} from "@testing-library/react";
+import { act } from "@testing-library/react";
 
 describe("Layout", () => {
   beforeAll(() => {

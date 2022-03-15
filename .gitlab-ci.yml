@@ -2,8 +2,8 @@ image: registry.secoder.net/tool/deployer
 
 stages:
   - pre
-  - build
   - test
+  - build
   - deploy
 
 build_cache:
@@ -32,6 +32,9 @@ build:
     - export BUILD_IMAGE_USERNAME=$CI_REGISTRY_USER
     - export BUILD_IMAGE_PASSWORD=$CI_REGISTRY_PASSWORD
     - deployer build
+  only:
+    - master
+    - dev
 
 style-test:
   stage: test
