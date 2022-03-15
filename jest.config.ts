@@ -21,6 +21,7 @@ export default {
     "!**/node_modules/**",
     "!**/dist/**",
   ],
+  testResultsProcessor: "jest-sonar-reporter",
   // 测试报告输出地址
   coverageDirectory: "./coverage",
   // 在每个测试文件执行之前，运行一些代码以配置或设置测试框架。

@@ -94,7 +94,6 @@
     "babel-eslint": "^10.1.0",
     "babel-jest": "^27.5.1",
     "enzyme": "^3.11.0",
-    "enzyme-adapter-react-16": "^1.15.6",
     "eslint": "^8.9.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-prettier": "^8.5.0",
@@ -104,13 +103,11 @@
     "eslint-plugin-react": "^7.28.0",
     "eslint-plugin-react-hooks": "^4.3.0",
     "husky": "^7.0.4",
+    "jest-sonar-reporter": "^2.0.0",
     "jsdom-global": "^3.0.2",
     "lint-staged": "^12.3.4",
     "prettier": "^2.5.1",
     "redux-devtools": "^3.7.0",
     "ts-node": "^10.7.0"
-  },
-  "externals": {
-    "react": "React"
   }
 }
