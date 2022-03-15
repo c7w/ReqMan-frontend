@@ -5,7 +5,7 @@
   height: 100%;
   width: 100%;
   padding: 0 0;
-  background-image: url("./public/registerbg.jpeg");
+  background-image: url("../../../public/registerbg.jpeg");
 }
 
 .blur {
@@ -22,7 +22,7 @@
   width:512px;
   left: calc(50% - 600px);
   top: calc(50% - 276px);
-  background-image: url("./public/logo512.png");
+  background-image: url("../../../public/logo512.png");
 }
 
 .ul {
