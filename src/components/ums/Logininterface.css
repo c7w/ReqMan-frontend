@@ -1,0 +1,71 @@
+@import '~antd/dist/antd.css';
+
+.screen {
+  display: flex;
+  padding: 0 0;
+  margin: auto auto;
+  background: mistyrose;
+}
+
+.ul {
+  display: flex;
+  flex-direction: column;
+  margin: auto auto;
+  padding: 40px 20px;
+  text-align: center;
+  border-radius: 10px;
+  border: 0.5px solid #96beff;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.title {
+  display: flex;
+  margin: auto auto;
+  font-size: 30px;
+  font-family: 华文楷体;
+  color:#427bda;
+}
+
+.userInfo {
+  display:flex;
+  flex-direction: row;
+  padding-top: 20px;
+  text-align: center;
+}
+
+.userImg {
+  diaplay: flex;
+  padding-top: 10px;
+  margin-right: 10px;
+  margin-left: 10px;
+}
+
+.myInput {
+  display: inline-block;
+  margin: 0;
+  padding-left: 10px;
+  height: 40px;
+  width: 250px;
+  font-size: 15px;
+  text-align: left;
+  border-radius: 10px;
+}
+
+.myPrompt {
+  color: red;
+  font-size: 6px;
+  padding-top: 3px;
+  padding-bottom: 6px;
+}
+
+.loginButton {
+  text-align: center;
+  height: 32px;
+  margin-top: 20px;
+}
+
+.register {
+  padding-top: 10px;
+  font-size: 15px;
+  color: #427bda;
+}
