@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testExecutions version="1">
+  <file path="/mnt/d/Coding/undefined/frontend/__tests__/Layout.test.tsx">
+    <testCase name="Layout Layout Exists" duration="296"/>
+  </file>
+</testExecutions>

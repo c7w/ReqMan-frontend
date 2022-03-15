@@ -2,8 +2,8 @@ image: registry.secoder.net/tool/deployer
 
 stages:
   - pre
-  - build
   - test
+  - build
   - deploy
 
 build_cache:
@@ -32,6 +32,9 @@ build:
     - export BUILD_IMAGE_USERNAME=$CI_REGISTRY_USER
     - export BUILD_IMAGE_PASSWORD=$CI_REGISTRY_PASSWORD
     - deployer build
+  only:
+    - master
+    - dev
 
 style-test:
   stage: test
@@ -43,6 +46,22 @@ style-test:
       - yarn.lock
   script:
     - yarn lint
+
+unit-test:
+  stage: test
+  needs: [build_cache]
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - node_modules/
+      - yarn.lock
+  script:
+    - yarn test
+  after_script:
+    - SUFFIX=$RANDOM
+    - curl "http://10.0.0.11/sonar-scanner.tar.gz" -s -o "/tmp/sonar-$SUFFIX.tar.gz"
+    - tar -xf "/tmp/sonar-$SUFFIX.tar.gz" -C /opt
+    - /opt/sonar-scanner/bin/sonar-scanner
 
 deploy:
   stage: deploy

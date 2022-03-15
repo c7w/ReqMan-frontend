@@ -2,4 +2,11 @@
 // allows you to do things like:
 // expect(element).toHaveTextContent(/react/i)
 // learn more: https://github.com/testing-library/jest-dom
+
+import * as React from "react";
 import "@testing-library/jest-dom";
+import { configure } from "enzyme";
+import Adapter from "@wojtekmaj/enzyme-adapter-react-17";
+
+// 设置 react 和 enzyme 的适配器
+configure({ adapter: new Adapter() });

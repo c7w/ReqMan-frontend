@@ -8,7 +8,7 @@ import {
 } from "@ant-design/icons";
 import "./Sidebar.css";
 import { useSelector, useDispatch } from "react-redux";
-import { getIsCollapsed, updateIsCollapsed } from "./sidebarSlice";
+import { getIsCollapsed, updateIsCollapsed } from "./SidebarSlice";
 
 const { Sider } = Layout;
 const { SubMenu } = Menu;
