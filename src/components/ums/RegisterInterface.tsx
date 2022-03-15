@@ -196,186 +196,192 @@ class RegisterInterface extends React.Component<
   render() {
     return (
       <div className={"screen"}>
-        <ul className={"ul"}>
-          <div className={"title"}>Resgister</div>
-          <div className={"userInfo"}>
-            <Input
-              size={"large"}
-              prefix={<UserOutlined />}
-              type="text"
-              className={"myInput"}
-              placeholder="Username"
-              onBlur={(event) => this.userCheck(event)}
-            />
-            <div
-              hidden={this.state.usrError == "" || this.state.usrError == " "}
-            >
-              <Popover content={this.state.usrError} title="Error">
+        <div className={"blur"}>
+          <ul className={"ul"}>
+            <div className={"title"}>Resgister</div>
+            <div className={"userInfo"}>
+              <Input
+                size={"large"}
+                prefix={<UserOutlined />}
+                type="text"
+                className={"myInput"}
+                placeholder="Username"
+                onBlur={(event) => this.userCheck(event)}
+              />
+              <div
+                hidden={this.state.usrError == "" || this.state.usrError == " "}
+              >
+                <Popover content={this.state.usrError} title="Error">
+                  <FontAwesomeIcon
+                    icon={faCircleXmark}
+                    style={{ color: "darkred" }}
+                    className={"userImg"}
+                  />
+                </Popover>
+              </div>
+              <div hidden={this.state.usrError != ""}>
                 <FontAwesomeIcon
-                  icon={faCircleXmark}
-                  style={{ color: "darkred" }}
+                  icon={faCircleCheck}
+                  style={{ color: "green" }}
                   className={"userImg"}
                 />
-              </Popover>
+              </div>
             </div>
-            <div hidden={this.state.usrError != ""}>
-              <FontAwesomeIcon
-                icon={faCircleCheck}
-                style={{ color: "green" }}
-                className={"userImg"}
-              />
-            </div>
-          </div>
 
-          <div className={"userInfo"}>
-            <Input
-              size={"large"}
-              prefix={<MailOutlined />}
-              type="text"
-              className={"myInput"}
-              placeholder="E-mail"
-              onBlur={(event) => this.mailCheck(event)}
-            />
-            <div
-              hidden={this.state.mailError == "" || this.state.mailError == " "}
-            >
-              <Popover content={this.state.mailError} title="Error">
+            <div className={"userInfo"}>
+              <Input
+                size={"large"}
+                prefix={<MailOutlined />}
+                type="text"
+                className={"myInput"}
+                placeholder="E-mail"
+                onBlur={(event) => this.mailCheck(event)}
+              />
+              <div
+                hidden={
+                  this.state.mailError == "" || this.state.mailError == " "
+                }
+              >
+                <Popover content={this.state.mailError} title="Error">
+                  <FontAwesomeIcon
+                    icon={faCircleXmark}
+                    style={{ color: "darkred" }}
+                    className={"userImg"}
+                  />
+                </Popover>
+              </div>
+              <div hidden={this.state.mailError != ""}>
                 <FontAwesomeIcon
-                  icon={faCircleXmark}
-                  style={{ color: "darkred" }}
+                  icon={faCircleCheck}
+                  style={{ color: "green" }}
                   className={"userImg"}
                 />
-              </Popover>
+              </div>
             </div>
-            <div hidden={this.state.mailError != ""}>
-              <FontAwesomeIcon
-                icon={faCircleCheck}
-                style={{ color: "green" }}
-                className={"userImg"}
-              />
-            </div>
-          </div>
 
-          <div className={"userInfo"}>
-            <Input.Password
-              size={"large"}
-              prefix={<KeyOutlined />}
-              placeholder="Password"
-              className={"myInput"}
-              onBlur={(event) => this.passwordCheck(event)}
-              iconRender={(visible) =>
-                visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
-              }
-            />
-            <div
-              hidden={
-                this.state.passwordError == "" ||
-                this.state.passwordError == " "
-              }
-            >
-              <Popover content={this.state.passwordError} title="Error">
+            <div className={"userInfo"}>
+              <Input.Password
+                size={"large"}
+                prefix={<KeyOutlined />}
+                placeholder="Password"
+                className={"myInput"}
+                onBlur={(event) => this.passwordCheck(event)}
+                iconRender={(visible) =>
+                  visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+                }
+              />
+              <div
+                hidden={
+                  this.state.passwordError == "" ||
+                  this.state.passwordError == " "
+                }
+              >
+                <Popover content={this.state.passwordError} title="Error">
+                  <FontAwesomeIcon
+                    icon={faCircleXmark}
+                    style={{ color: "darkred" }}
+                    className={"userImg"}
+                  />
+                </Popover>
+              </div>
+              <div hidden={this.state.passwordError != ""}>
                 <FontAwesomeIcon
-                  icon={faCircleXmark}
-                  style={{ color: "darkred" }}
+                  icon={faCircleCheck}
+                  style={{ color: "green" }}
                   className={"userImg"}
                 />
-              </Popover>
+              </div>
             </div>
-            <div hidden={this.state.passwordError != ""}>
-              <FontAwesomeIcon
-                icon={faCircleCheck}
-                style={{ color: "green" }}
-                className={"userImg"}
-              />
-            </div>
-          </div>
 
-          <div className={"userInfo"}>
-            <Input.Password
-              size={"large"}
-              prefix={<KeyOutlined />}
-              placeholder="Confirm Password"
-              className={"myInput"}
-              onBlur={(event) => this.doubleCheck(event)}
-              iconRender={(visible) =>
-                visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
-              }
-            />
-            <div
-              hidden={
-                this.state.doubleCheckError == "" ||
-                this.state.doubleCheckError == " "
-              }
-            >
-              <Popover content={this.state.doubleCheckError} title="Error">
+            <div className={"userInfo"}>
+              <Input.Password
+                size={"large"}
+                prefix={<KeyOutlined />}
+                placeholder="Confirm Password"
+                className={"myInput"}
+                onBlur={(event) => this.doubleCheck(event)}
+                iconRender={(visible) =>
+                  visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+                }
+              />
+              <div
+                hidden={
+                  this.state.doubleCheckError == "" ||
+                  this.state.doubleCheckError == " "
+                }
+              >
+                <Popover content={this.state.doubleCheckError} title="Error">
+                  <FontAwesomeIcon
+                    icon={faCircleXmark}
+                    style={{ color: "darkred" }}
+                    className={"userImg"}
+                  />
+                </Popover>
+              </div>
+              <div hidden={this.state.doubleCheckError != ""}>
                 <FontAwesomeIcon
-                  icon={faCircleXmark}
-                  style={{ color: "darkred" }}
+                  icon={faCircleCheck}
+                  style={{ color: "green" }}
                   className={"userImg"}
                 />
-              </Popover>
+              </div>
             </div>
-            <div hidden={this.state.doubleCheckError != ""}>
-              <FontAwesomeIcon
-                icon={faCircleCheck}
-                style={{ color: "green" }}
-                className={"userImg"}
-              />
-            </div>
-          </div>
 
-          <div className={"userInfo"}>
-            <Input
-              size={"large"}
-              prefix={<GiftOutlined />}
-              type="text"
-              className={"myInput"}
-              placeholder="(Optional) Invitation Code"
-              onBlur={(event) => this.invitationCheck(event)}
-            />
-            <div
-              hidden={
-                this.state.invitationError == "" ||
-                this.state.invitationError == " "
-              }
-            >
-              <Popover content={this.state.invitationError} title="Error">
+            <div className={"userInfo"}>
+              <Input
+                size={"large"}
+                prefix={<GiftOutlined />}
+                type="text"
+                className={"myInput"}
+                placeholder="(Optional) Invitation Code"
+                onBlur={(event) => this.invitationCheck(event)}
+              />
+              <div
+                hidden={
+                  this.state.invitationError == "" ||
+                  this.state.invitationError == " "
+                }
+              >
+                <Popover content={this.state.invitationError} title="Error">
+                  <FontAwesomeIcon
+                    icon={faCircleXmark}
+                    style={{ color: "darkred" }}
+                    className={"userImg"}
+                  />
+                </Popover>
+              </div>
+              <div hidden={this.state.invitationError != ""}>
                 <FontAwesomeIcon
-                  icon={faCircleXmark}
-                  style={{ color: "darkred" }}
+                  icon={faCircleCheck}
+                  style={{ color: "green" }}
                   className={"userImg"}
                 />
-              </Popover>
+              </div>
             </div>
-            <div hidden={this.state.invitationError != ""}>
-              <FontAwesomeIcon
-                icon={faCircleCheck}
-                style={{ color: "green" }}
-                className={"userImg"}
-              />
-            </div>
-          </div>
 
-          <div className={"loginButton"}>
-            <Button
-              size={"large"}
-              type={"primary"}
-              shape={"round"}
-              disabled={
-                this.state.passwordError != "" ||
-                this.state.usrError != "" ||
-                (this.state.invitationError != "" &&
-                  this.state.invitationError != " ") ||
-                this.state.mailError != "" ||
-                !this.state.doubleCheck
-              }
-              onClick={() => this.handleCreate()}
-            >
-              Create!
-            </Button>
+            <div className={"loginButton"}>
+              <Button
+                size={"large"}
+                type={"primary"}
+                shape={"round"}
+                disabled={
+                  this.state.passwordError != "" ||
+                  this.state.usrError != "" ||
+                  (this.state.invitationError != "" &&
+                    this.state.invitationError != " ") ||
+                  this.state.mailError != "" ||
+                  !this.state.doubleCheck
+                }
+                onClick={() => this.handleCreate()}
+              >
+                Create!
+              </Button>
+            </div>
+          </ul>
+          <div className={"footnote"}>
+            ©2022 Undefined. All Rights Reserved.
           </div>
-        </ul>
-        <div className={"footnote"}>©2022 Undefined. All Rights Reserved.</div>
+        </div>
       </div>
     );
   }
