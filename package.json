@@ -13,7 +13,9 @@
     "@types/react-dom": "^17.0.9",
     "antd": "^4.19.1",
     "crypto-js": "^4.1.1",
+    "identity-obj-proxy": "^3.0.0",
     "jquery": "^3.6.0",
+    "jsdom": "^19.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-redux": "^7.2.6",
@@ -26,10 +28,10 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "jest --coverage",
     "eject": "react-scripts eject",
-    "lint": "eslint ./src/",
-    "fix": "prettier -w -u ./src/",
+    "lint": "eslint ./src/ ./__tests__/",
+    "fix": "prettier -w -u ./src/ ./__tests__/",
     "pre-commit": "lint-staged"
   },
   "lint-staged": {
@@ -38,6 +40,10 @@
       "eslint --fix"
     ],
     "src/**/*.jsx": [
+      "prettier -w -u",
+      "eslint --fix"
+    ],
+    "__test__/**/*.jsx": [
       "prettier -w -u",
       "eslint --fix"
     ],
@@ -76,10 +82,19 @@
     "@babel/core": "^7.17.5",
     "@babel/eslint-parser": "^7.17.0",
     "@babel/preset-env": "^7.16.11",
+    "@babel/preset-react": "^7.16.7",
+    "@babel/preset-typescript": "^7.16.7",
+    "@types/enzyme": "^3.10.11",
+    "@types/enzyme-adapter-react-16": "^1.0.6",
+    "@types/jsdom": "^16.2.14",
     "@types/react-redux": "^7.1.23",
     "@typescript-eslint/eslint-plugin": "^5.12.0",
     "@typescript-eslint/parser": "^5.12.0",
+    "@wojtekmaj/enzyme-adapter-react-17": "^0.6.6",
     "babel-eslint": "^10.1.0",
+    "babel-jest": "^27.5.1",
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-react-16": "^1.15.6",
     "eslint": "^8.9.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-prettier": "^8.5.0",
@@ -89,8 +104,13 @@
     "eslint-plugin-react": "^7.28.0",
     "eslint-plugin-react-hooks": "^4.3.0",
     "husky": "^7.0.4",
+    "jsdom-global": "^3.0.2",
     "lint-staged": "^12.3.4",
     "prettier": "^2.5.1",
-    "redux-devtools": "^3.7.0"
+    "redux-devtools": "^3.7.0",
+    "ts-node": "^10.7.0"
+  },
+  "externals": {
+    "react": "React"
   }
 }
