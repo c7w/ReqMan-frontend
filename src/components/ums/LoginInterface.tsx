@@ -1,6 +1,10 @@
 import { useState } from "react";
 import React from "react";
 import "./Logininterface.css";
+import "crypto-js";
+import { message, Input, Button } from "antd";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheck, faKey, faUser } from "@fortawesome/free-solid-svg-icons";
 
 export interface LoginInterfaceProps {
   // Async function, call at submission
@@ -9,123 +13,163 @@ export interface LoginInterfaceProps {
   submit: (identity: string, password: string) => Promise<any>;
 }
 
-export interface ContentProps {
-  readonly myprop: null;
-}
-
-export interface ContentState {
-  readonly telError: string;
+export interface LoginInterfaceState {
+  readonly usrError: string;
   readonly passwordError: string;
+  readonly userName: string;
+  readonly password: string;
 }
 
 //中间表单
-class Content extends React.Component<ContentProps, ContentState> {
-  constructor(props: ContentProps | Readonly<ContentProps>) {
+class LoginInterface extends React.Component<
+  LoginInterfaceProps,
+  LoginInterfaceState
+> {
+  constructor(props: LoginInterfaceProps | Readonly<LoginInterfaceProps>) {
     super(props);
     this.state = {
-      telError: "",
-      passwordError: "",
+      usrError: " ",
+      userName: "",
+      passwordError: " ",
+      password: "",
     };
   }
-  //手机号判断
-  telCheck(event: React.FocusEvent<HTMLInputElement, Element>) {
-    const tel = event.target.value;
-    console.log(tel);
-    const reg = /^1[34578]\d{9}$/;
-    if (reg.test(tel) == false) {
+  //用户名判断
+  userCheck(event: React.FocusEvent<HTMLInputElement, Element>) {
+    const usr = event.target.value;
+    const reg = /^([^u00-uff]|[a-zA-Z0-9_]){3,16}$/;
+    if (reg.test(usr) == false) {
       this.setState({
-        telError: "请输入正确的手机号",
+        usrError: "用户名为3-16位数字字母下划线及中文组成!",
       });
     } else {
       this.setState({
-        telError: "",
+        usrError: "",
+        userName: usr,
       });
     }
   }
   //密码判断
   passwordCheck(event: React.FocusEvent<HTMLInputElement, Element>) {
     const password = event.target.value;
-    const reg = /^\w{6,20}$/;
-    if (reg.test(password) == false) {
+    const reg1 = /^\w{6,20}$/;
+    const reg2 = /^[0-9]+$/;
+    const reg3 = /^[a-z]+$/;
+    const reg4 = /^[A-Z]+$/;
+    const reg5 = /^[0-9a-z]+$/;
+    const reg6 = /^[0-9A-Z]+$/;
+    const reg7 = /^[a-zA-Z]+$/;
+    if (reg1.test(password) == false) {
       this.setState({
-        passwordError: "密码为6-20位数字或字母或下划线!",
+        passwordError: "密码为6-20位数字或字母",
+      });
+    } else if (
+      reg2.test(password) ||
+      reg3.test(password) ||
+      reg4.test(password) ||
+      reg5.test(password) ||
+      reg6.test(password) ||
+      reg7.test(password)
+    ) {
+      this.setState({
+        passwordError: "密码强度不够，请包含数字和大小写字母",
       });
     } else {
       this.setState({
         passwordError: "",
+        password: password,
       });
+    }
+  }
+
+  successCallback() {
+    message.success("Login successfully");
+  }
+  failureCallback() {
+    message.error("Username and password do not match, please check again");
+  }
+
+  handleLogin() {
+    const CryptoJS = require("crypto-js");
+    const password = CryptoJS.MD5(this.state.password).toString();
+    const response = this.props.submit(this.state.userName, password);
+    // 未来接口调用，一下仅用来调试，与后端接口对接后修改
+    if (true) {
+      message.success("Login successfully");
+    } else {
+      message.error("Username and password do not match, please check again");
     }
   }
 
   render() {
     return (
-      <div>
+      <div className={"screen"}>
         <ul className={"ul"}>
-          <li className={"userTel"}>
-            <img src="./images/password.png" alt="" className={"userImg"} />
-            <span className={"userSpan"}></span>
-            <input
-              type="text"
-              className={"telInput"}
-              placeholder="请输入手机号"
-              onBlur={(event) => this.telCheck(event)}
+          <div className={"title"}>Login</div>
+          <div className={"userInfo"}>
+            <FontAwesomeIcon
+              icon={faUser}
+              style={{ color: "black" }}
+              className={"userImg"}
             />
-          </li>
-          <li className={"liAll"}>
-            <span className={"telPrompt"}>{this.state.telError}</span>
-          </li>
-          <li className={"userTel"}>
-            <img src="./images/password.png" alt="" className={"userImg"} />
-            <span className={"userSpan"}></span>
-            <input
+            <Input
+              type="text"
+              className={"myInput"}
+              placeholder="please enter username"
+              onBlur={(event) => this.userCheck(event)}
+            />
+            <div hidden={this.state.usrError != ""}>
+              <FontAwesomeIcon
+                icon={faCheck}
+                style={{ color: "green" }}
+                className={"userImg"}
+              />
+            </div>
+          </div>
+          <div className={"myPrompt"}>{this.state.usrError}</div>
+          <div className={"userInfo"}>
+            <FontAwesomeIcon
+              icon={faKey}
+              style={{ color: "black" }}
+              className={"userImg"}
+            />
+            <Input
               type="password"
-              className={"telInput"}
-              placeholder="请输入密码"
+              className={"myInput"}
+              placeholder="please enter password"
               onBlur={(event) => this.passwordCheck(event)}
             />
-          </li>
-          <li className={"liAll"}>
-            <span className={"telPrompt"}>{this.state.passwordError}</span>
-          </li>
-          <li className={"liAll"}>
-            <button className={"login"}>登录</button>
-          </li>
+            <div hidden={this.state.passwordError != ""}>
+              <FontAwesomeIcon
+                icon={faCheck}
+                style={{ color: "green" }}
+                className={"userImg"}
+              />
+            </div>
+          </div>
+          <div className={"myPrompt"}>{this.state.passwordError}</div>
+          <div className={"loginButton"}>
+            <Button
+              size={"middle"}
+              type={"primary"}
+              shape={"round"}
+              disabled={
+                this.state.passwordError != "" || this.state.usrError != ""
+              }
+              onClick={() => this.handleLogin()}
+            >
+              Login
+            </Button>
+          </div>
+          <div className={"register"}>
+            <Button size={"small"} type={"link"}>
+              Create New Account
+            </Button>
+          </div>
         </ul>
       </div>
     );
   }
 }
-//底部
-class Footer extends React.Component {
-  render() {
-    const register = {
-      display: "block",
-      fontSize: "13px",
-      color: "#8b8b8b",
-      width: "80px",
-      height: "25px",
-      margin: "0 auto",
-      border: "1px solid #8b8b8b",
-      textDecoration: "none",
-      marginTop: "50px",
-      textAlign: "center",
-      lineHeight: "25px",
-    };
-    return <div>快速注册</div>;
-  }
-}
-
-const LoginInterface = (props: LoginInterfaceProps) => {
-  // Create your own states here...
-  // props.submit("1", "2").then(r => console.debug(r));
-  const [name, setName] = useState<string>("");
-
-  return (
-    <div>
-      <Content myprop={null}></Content>
-      <Footer></Footer>
-    </div>
-  );
-};
 
 export default LoginInterface;
