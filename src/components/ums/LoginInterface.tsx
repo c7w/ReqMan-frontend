@@ -37,7 +37,7 @@ class LoginInterface extends React.Component<
   userCheck(event: React.FocusEvent<HTMLInputElement, Element>) {
     const usr = event.target.value;
     const reg = /^([^u00-uff]|[a-zA-Z0-9_]){3,16}$/;
-    if (reg.test(usr) == false) {
+    if (reg.test(usr) === false) {
       this.setState({
         usrError: "用户名为3-16位数字字母下划线及中文组成!",
       });
@@ -58,7 +58,7 @@ class LoginInterface extends React.Component<
     const reg5 = /^[0-9a-z]+$/;
     const reg6 = /^[0-9A-Z]+$/;
     const reg7 = /^[a-zA-Z]+$/;
-    if (reg1.test(password) == false) {
+    if (reg1.test(password) === false) {
       this.setState({
         passwordError: "密码为6-20位数字或字母",
       });
@@ -117,7 +117,7 @@ class LoginInterface extends React.Component<
               placeholder="please enter username"
               onBlur={(event) => this.userCheck(event)}
             />
-            <div hidden={this.state.usrError != ""}>
+            <div hidden={this.state.usrError !== ""}>
               <FontAwesomeIcon
                 icon={faCheck}
                 style={{ color: "green" }}
@@ -138,7 +138,7 @@ class LoginInterface extends React.Component<
               placeholder="please enter password"
               onBlur={(event) => this.passwordCheck(event)}
             />
-            <div hidden={this.state.passwordError != ""}>
+            <div hidden={this.state.passwordError !== ""}>
               <FontAwesomeIcon
                 icon={faCheck}
                 style={{ color: "green" }}
@@ -153,7 +153,7 @@ class LoginInterface extends React.Component<
               type={"primary"}
               shape={"round"}
               disabled={
-                this.state.passwordError != "" || this.state.usrError != ""
+                this.state.passwordError !== "" || this.state.usrError !== ""
               }
               onClick={() => this.handleLogin()}
             >

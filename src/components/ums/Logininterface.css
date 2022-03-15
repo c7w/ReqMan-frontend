@@ -1,4 +1,4 @@
-@import '~antd/dist/antd.css';
+@import "~antd/dist/antd.css";
 
 .screen {
   display: flex;
@@ -23,11 +23,11 @@
   margin: auto auto;
   font-size: 30px;
   font-family: 华文楷体;
-  color:#427bda;
+  color: #427bda;
 }
 
 .userInfo {
-  display:flex;
+  display: flex;
   flex-direction: row;
   padding-top: 20px;
   text-align: center;
