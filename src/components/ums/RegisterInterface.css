@@ -1,61 +1,69 @@
 @import "~antd/dist/antd.css";
 
 .screen {
-  display: flex;
+  position: absolute;
+  height: 100%;
+  width: 100%;
   padding: 0 0;
-  margin: auto auto;
-  background: mistyrose;
+  background-image: url("../../../public/registerbg.jpeg");
+}
+
+.blur {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.14);
 }
 
 .ul {
-  display: flex;
-  flex-direction: column;
-  margin: auto auto;
+  display: block;
+  position: absolute;
+  left: calc(50% - 190px);
+  top: calc(50% - 300px);
   padding: 30px 50px;
   text-align: center;
-  border-radius: 10px;
+  border-radius: 30px;
   border: 0.5px solid #96beff;
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.54);
 }
 
 .title {
   display: flex;
   margin: auto auto;
   font-size: 30px;
-  font-family: 华文楷体;
-  color: #427bda;
+  font-family: "Times New Roman";
+  color: #000000;
 }
 
 .userInfo {
   display: flex;
   flex-direction: row;
-  padding-top: 20px;
   text-align: center;
+  padding-top: 20px;
+  padding-bottom: 10px;
 }
 
 .userImg {
   diaplay: flex;
-  padding-top: 10px;
+  width: 14px;
+  padding-top: 18px;
   margin-right: 10px;
   margin-left: 10px;
 }
 
 .myInput {
-  display: inline-block;
   margin: 0;
-  padding-left: 10px;
-  height: 40px;
-  width: 250px;
-  font-size: 15px;
+  padding-left: 15px;
+  height: 50px;
+  width: 280px;
+  font-size: 20px;
   text-align: left;
-  border-radius: 10px;
+  border-radius: 5px;
 }
 
-.myPrompt {
-  color: red;
-  font-size: 6px;
-  padding-top: 3px;
-  padding-bottom: 6px;
+.ant-input {
+  margin-left: 15px;
+  font-size: 15px;
 }
 
 .loginButton {
@@ -64,8 +72,12 @@
   margin-top: 20px;
 }
 
-.register {
-  padding-top: 10px;
+.footnote {
+  position: absolute;
+  bottom: 0px;
+  left: calc(50% - 120px);
+  text-align: center;
+  font-family: "Microsoft YaHei UI";
   font-size: 15px;
-  color: #427bda;
+  color: #ffffff;
 }

@@ -1,15 +1,19 @@
 import React from "react";
 import "./RegisterInterface.css";
 import "crypto-js";
-import { message, Input, Button } from "antd";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { message, Input, Button, Popover } from "antd";
 import {
-  faCheck,
-  faGift,
-  faKey,
-  faMailBulk,
-  faUser,
-} from "@fortawesome/free-solid-svg-icons";
+  UserOutlined,
+  MailOutlined,
+  KeyOutlined,
+  GiftOutlined,
+  EyeInvisibleOutlined,
+  EyeTwoTone,
+} from "@ant-design/icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
+import { faCircleCheck } from "@fortawesome/free-regular-svg-icons";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 export interface RegisterInterfaceProps {
   // Async function, call at submission
@@ -63,7 +67,7 @@ class RegisterInterface extends React.Component<
     const usr = event.target.value;
     console.log(usr);
     const reg = /^([^u00-uff]|[a-zA-Z0-9_]){3,16}$/;
-    if (reg.test(usr) == false) {
+    if (reg.test(usr) === false) {
       this.setState({
         usrError: "用户名为3-16位数字字母下划线及中文组成!",
       });
@@ -77,8 +81,15 @@ class RegisterInterface extends React.Component<
   //邀请码检查
   invitationCheck(event: React.FocusEvent<HTMLInputElement, Element>) {
     const invitation = event.target.value;
+    if (invitation === "") {
+      this.setState({
+        invitationError: " ",
+        invitation: "",
+      });
+      return;
+    }
     const reg = /^[a-zA-Z0-9]+$/;
-    if (reg.test(invitation) == false) {
+    if (reg.test(invitation) === false) {
       this.setState({
         invitationError: "邀请码格式有误",
       });
@@ -93,7 +104,7 @@ class RegisterInterface extends React.Component<
   mailCheck(event: React.FocusEvent<HTMLInputElement, Element>) {
     const mail = event.target.value;
     const reg = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
-    if (reg.test(mail) == false) {
+    if (reg.test(mail) === false) {
       this.setState({
         mailError: "邮箱格式有误",
       });
@@ -119,7 +130,7 @@ class RegisterInterface extends React.Component<
     const reg5 = /^[0-9a-z]+$/;
     const reg6 = /^[0-9A-Z]+$/;
     const reg7 = /^[a-zA-Z]+$/;
-    if (reg1.test(password) == false) {
+    if (reg1.test(password) === false) {
       this.setState({
         passwordError: "密码为6-20位数字或字母",
       });
@@ -144,11 +155,13 @@ class RegisterInterface extends React.Component<
   //密码校验判断
   doubleCheck(event: React.FocusEvent<HTMLInputElement, Element>) {
     const password = event.target.value;
-    if (password != this.state.password) {
+    console.log(this.state.password);
+    console.log(password);
+    if (password !== this.state.password) {
       this.setState({
-        doubleCheckError: "与第一次密码输入不服，请检查",
+        doubleCheckError: "与第一次密码输入不符，请检查",
       });
-    } else if (password != "") {
+    } else if (password !== "") {
       this.setState({
         doubleCheckError: "",
         doubleCheck: true,
@@ -184,131 +197,194 @@ class RegisterInterface extends React.Component<
   render() {
     return (
       <div className={"screen"}>
-        <ul className={"ul"}>
-          <div className={"title"}>Create New Account</div>
-          <div className={"userInfo"}>
-            <FontAwesomeIcon
-              icon={faUser}
-              style={{ color: "black" }}
-              className={"userImg"}
-            />
-            <Input
-              type="text"
-              className={"myInput"}
-              placeholder="please enter username"
-              onBlur={(event) => this.userCheck(event)}
-            />
-            <div hidden={this.state.usrError != ""}>
-              <FontAwesomeIcon
-                icon={faCheck}
-                style={{ color: "green" }}
-                className={"userImg"}
+        <div className={"blur"}>
+          <ul className={"ul"}>
+            <div className={"title"}>注册</div>
+            <div className={"userInfo"}>
+              <Input
+                size={"large"}
+                prefix={<UserOutlined />}
+                type="text"
+                className={"myInput"}
+                placeholder="用户名"
+                onBlur={(event) => this.userCheck(event)}
               />
+              <div
+                hidden={
+                  this.state.usrError === "" || this.state.usrError === " "
+                }
+              >
+                <Popover content={this.state.usrError} title="Error">
+                  <FontAwesomeIcon
+                    icon={faCircleXmark as IconProp}
+                    style={{ color: "darkred" }}
+                    className={"userImg"}
+                  />
+                </Popover>
+              </div>
+              <div hidden={this.state.usrError !== ""}>
+                <FontAwesomeIcon
+                  icon={faCircleCheck as IconProp}
+                  style={{ color: "green" }}
+                  className={"userImg"}
+                />
+              </div>
             </div>
-          </div>
-          <div className={"myPrompt"}>{this.state.usrError}</div>
-          <div className={"userInfo"}>
-            <FontAwesomeIcon
-              icon={faGift}
-              style={{ color: "black" }}
-              className={"userImg"}
-            />
-            <Input
-              type="text"
-              className={"myInput"}
-              placeholder="please enter invitation code"
-              onBlur={(event) => this.invitationCheck(event)}
-            />
-            <div hidden={this.state.invitationError != ""}>
-              <FontAwesomeIcon
-                icon={faCheck}
-                style={{ color: "green" }}
-                className={"userImg"}
+
+            <div className={"userInfo"}>
+              <Input
+                size={"large"}
+                prefix={<MailOutlined />}
+                type="text"
+                className={"myInput"}
+                placeholder="邮箱地址"
+                onBlur={(event) => this.mailCheck(event)}
               />
+              <div
+                hidden={
+                  this.state.mailError === "" || this.state.mailError === " "
+                }
+              >
+                <Popover content={this.state.mailError} title="Error">
+                  <FontAwesomeIcon
+                    icon={faCircleXmark as IconProp}
+                    style={{ color: "darkred" }}
+                    className={"userImg"}
+                  />
+                </Popover>
+              </div>
+              <div hidden={this.state.mailError !== ""}>
+                <FontAwesomeIcon
+                  icon={faCircleCheck as IconProp}
+                  style={{ color: "green" }}
+                  className={"userImg"}
+                />
+              </div>
             </div>
-          </div>
-          <div className={"myPrompt"}>{this.state.invitationError}</div>
-          <div className={"userInfo"}>
-            <FontAwesomeIcon
-              icon={faMailBulk}
-              style={{ color: "black" }}
-              className={"userImg"}
-            />
-            <Input
-              type="text"
-              className={"myInput"}
-              placeholder="please enter Email"
-              onBlur={(event) => this.mailCheck(event)}
-            />
-            <div hidden={this.state.mailError != ""}>
-              <FontAwesomeIcon
-                icon={faCheck}
-                style={{ color: "green" }}
-                className={"userImg"}
+
+            <div className={"userInfo"}>
+              <Input.Password
+                size={"large"}
+                prefix={<KeyOutlined />}
+                placeholder="密码"
+                className={"myInput"}
+                onBlur={(event) => this.passwordCheck(event)}
+                iconRender={(visible) =>
+                  visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+                }
               />
+              <div
+                hidden={
+                  this.state.passwordError === "" ||
+                  this.state.passwordError === " "
+                }
+              >
+                <Popover content={this.state.passwordError} title="Error">
+                  <FontAwesomeIcon
+                    icon={faCircleXmark}
+                    style={{ color: "darkred" }}
+                    className={"userImg"}
+                  />
+                </Popover>
+              </div>
+              <div hidden={this.state.passwordError !== ""}>
+                <FontAwesomeIcon
+                  icon={faCircleCheck}
+                  style={{ color: "green" }}
+                  className={"userImg"}
+                />
+              </div>
             </div>
-          </div>
-          <div className={"myPrompt"}>{this.state.mailError}</div>
-          <div className={"userInfo"}>
-            <FontAwesomeIcon
-              icon={faKey}
-              style={{ color: "black" }}
-              className={"userImg"}
-            />
-            <Input
-              type={"password"}
-              placeholder="please enter password"
-              className={"myInput"}
-              onBlur={(event) => this.doubleCheck(event)}
-            />
-            <div hidden={this.state.passwordError != ""}>
-              <FontAwesomeIcon
-                icon={faCheck}
-                style={{ color: "green" }}
-                className={"userImg"}
+
+            <div className={"userInfo"}>
+              <Input.Password
+                size={"large"}
+                prefix={<KeyOutlined />}
+                placeholder="确认密码"
+                className={"myInput"}
+                onBlur={(event) => this.doubleCheck(event)}
+                iconRender={(visible) =>
+                  visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+                }
               />
+              <div
+                hidden={
+                  this.state.doubleCheckError === "" ||
+                  this.state.doubleCheckError === " "
+                }
+              >
+                <Popover content={this.state.doubleCheckError} title="Error">
+                  <FontAwesomeIcon
+                    icon={faCircleXmark}
+                    style={{ color: "darkred" }}
+                    className={"userImg"}
+                  />
+                </Popover>
+              </div>
+              <div hidden={this.state.doubleCheckError !== ""}>
+                <FontAwesomeIcon
+                  icon={faCircleCheck}
+                  style={{ color: "green" }}
+                  className={"userImg"}
+                />
+              </div>
             </div>
-          </div>
-          <div className={"myPrompt"}>{this.state.passwordError}</div>
-          <div className={"userInfo"}>
-            <FontAwesomeIcon
-              icon={faKey}
-              style={{ color: "black" }}
-              className={"userImg"}
-            />
-            <Input
-              type={"password"}
-              className={"myInput"}
-              placeholder="please enter password again"
-              onBlur={(event) => this.doubleCheck(event)}
-            />
-            <div hidden={!this.state.doubleCheck}>
-              <FontAwesomeIcon
-                icon={faCheck}
-                style={{ color: "green" }}
-                className={"userImg"}
+
+            <div className={"userInfo"}>
+              <Input
+                size={"large"}
+                prefix={<GiftOutlined />}
+                type="text"
+                className={"myInput"}
+                placeholder="项目邀请码（可选）"
+                onBlur={(event) => this.invitationCheck(event)}
               />
+              <div
+                hidden={
+                  this.state.invitationError === "" ||
+                  this.state.invitationError === " "
+                }
+              >
+                <Popover content={this.state.invitationError} title="Error">
+                  <FontAwesomeIcon
+                    icon={faCircleXmark}
+                    style={{ color: "darkred" }}
+                    className={"userImg"}
+                  />
+                </Popover>
+              </div>
+              <div hidden={this.state.invitationError !== ""}>
+                <FontAwesomeIcon
+                  icon={faCircleCheck}
+                  style={{ color: "green" }}
+                  className={"userImg"}
+                />
+              </div>
             </div>
+
+            <div className={"loginButton"}>
+              <Button
+                size={"large"}
+                type={"primary"}
+                shape={"round"}
+                disabled={
+                  this.state.passwordError !== "" ||
+                  this.state.usrError !== "" ||
+                  (this.state.invitationError !== "" &&
+                    this.state.invitationError !== " ") ||
+                  this.state.mailError !== "" ||
+                  !this.state.doubleCheck
+                }
+                onClick={() => this.handleCreate()}
+              >
+                创建用户
+              </Button>
+            </div>
+          </ul>
+          <div className={"footnote"}>
+            © 2022 Undefined. All Rights Reserved.
           </div>
-          <div className={"myPrompt"}>{this.state.doubleCheckError}</div>
-          <div className={"loginButton"}>
-            <Button
-              size={"middle"}
-              type={"primary"}
-              shape={"round"}
-              disabled={
-                this.state.passwordError != "" ||
-                this.state.usrError != "" ||
-                this.state.invitationError != "" ||
-                this.state.mailError != "" ||
-                !this.state.doubleCheck
-              }
-              onClick={() => this.handleCreate()}
-            >
-              Create!
-            </Button>
-          </div>
-        </ul>
+        </div>
       </div>
     );
   }

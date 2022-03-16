@@ -1,9 +1,18 @@
 import React from "react";
 import "./Logininterface.css";
 import "crypto-js";
-import { message, Input, Button } from "antd";
+import { message, Input, Button, Popover } from "antd";
+import {
+  UserOutlined,
+  KeyOutlined,
+  EyeInvisibleOutlined,
+  EyeTwoTone,
+} from "@ant-design/icons";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faKey, faUser } from "@fortawesome/free-solid-svg-icons";
+import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
+import { faCircleCheck } from "@fortawesome/free-regular-svg-icons";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 export interface LoginInterfaceProps {
   // Async function, call at submission
@@ -37,7 +46,7 @@ class LoginInterface extends React.Component<
   userCheck(event: React.FocusEvent<HTMLInputElement, Element>) {
     const usr = event.target.value;
     const reg = /^([^u00-uff]|[a-zA-Z0-9_]){3,16}$/;
-    if (reg.test(usr) === false) {
+    if (!reg.test(usr)) {
       this.setState({
         usrError: "用户名为3-16位数字字母下划线及中文组成!",
       });
@@ -52,26 +61,15 @@ class LoginInterface extends React.Component<
   passwordCheck(event: React.FocusEvent<HTMLInputElement, Element>) {
     const password = event.target.value;
     const reg1 = /^\w{6,20}$/;
-    const reg2 = /^[0-9]+$/;
-    const reg3 = /^[a-z]+$/;
-    const reg4 = /^[A-Z]+$/;
-    const reg5 = /^[0-9a-z]+$/;
-    const reg6 = /^[0-9A-Z]+$/;
-    const reg7 = /^[a-zA-Z]+$/;
+    if (password === "") {
+      this.setState({
+        passwordError: "密码字段不能为空",
+      });
+      return;
+    }
     if (reg1.test(password) === false) {
       this.setState({
-        passwordError: "密码为6-20位数字或字母",
-      });
-    } else if (
-      reg2.test(password) ||
-      reg3.test(password) ||
-      reg4.test(password) ||
-      reg5.test(password) ||
-      reg6.test(password) ||
-      reg7.test(password)
-    ) {
-      this.setState({
-        passwordError: "密码强度不够，请包含数字和大小写字母",
+        passwordError: "密码字段出现非法字符，请检查",
       });
     } else {
       this.setState({
@@ -103,69 +101,115 @@ class LoginInterface extends React.Component<
   render() {
     return (
       <div className={"screen"}>
-        <ul className={"ul"}>
-          <div className={"title"}>Login</div>
-          <div className={"userInfo"}>
-            <FontAwesomeIcon
-              icon={faUser}
-              style={{ color: "black" }}
-              className={"userImg"}
-            />
-            <Input
-              type="text"
-              className={"myInput"}
-              placeholder="please enter username"
-              onBlur={(event) => this.userCheck(event)}
-            />
-            <div hidden={this.state.usrError !== ""}>
-              <FontAwesomeIcon
-                icon={faCheck}
-                style={{ color: "green" }}
-                className={"userImg"}
+        <div className={"blur"}>
+          <div className={"login-logo"} />
+          <ul className={"ul"}>
+            <div className={"title"}>登录</div>
+            <div className={"userInfo"}>
+              <Input
+                size={"large"}
+                prefix={<UserOutlined />}
+                type="text"
+                className={"myInput"}
+                placeholder="用户名/邮箱"
+                onBlur={(event) => this.userCheck(event)}
               />
+              <div
+                hidden={
+                  this.state.usrError === "" || this.state.usrError === " "
+                }
+              >
+                <Popover content={this.state.usrError} title="Error">
+                  <FontAwesomeIcon
+                    icon={faCircleXmark as IconProp}
+                    style={{ color: "darkred" }}
+                    className={"userImg"}
+                  />
+                </Popover>
+              </div>
+              <div hidden={this.state.usrError !== ""}>
+                <FontAwesomeIcon
+                  icon={faCircleCheck as IconProp}
+                  style={{ color: "green" }}
+                  className={"userImg"}
+                />
+              </div>
             </div>
-          </div>
-          <div className={"myPrompt"}>{this.state.usrError}</div>
-          <div className={"userInfo"}>
-            <FontAwesomeIcon
-              icon={faKey}
-              style={{ color: "black" }}
-              className={"userImg"}
-            />
-            <Input
-              type="password"
-              className={"myInput"}
-              placeholder="please enter password"
-              onBlur={(event) => this.passwordCheck(event)}
-            />
-            <div hidden={this.state.passwordError !== ""}>
-              <FontAwesomeIcon
-                icon={faCheck}
-                style={{ color: "green" }}
-                className={"userImg"}
+
+            <div className={"userInfo"}>
+              <Input.Password
+                size={"large"}
+                prefix={<KeyOutlined />}
+                placeholder="密码"
+                className={"myInput"}
+                onBlur={(event) => this.passwordCheck(event)}
+                iconRender={(visible) =>
+                  visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+                }
               />
+              <div
+                hidden={
+                  this.state.passwordError === "" ||
+                  this.state.passwordError === " "
+                }
+              >
+                <Popover content={this.state.passwordError} title="Error">
+                  <FontAwesomeIcon
+                    icon={faCircleXmark as IconProp}
+                    style={{ color: "darkred" }}
+                    className={"userImg"}
+                  />
+                </Popover>
+              </div>
+              <div hidden={this.state.passwordError !== ""}>
+                <FontAwesomeIcon
+                  icon={faCircleCheck as IconProp}
+                  style={{ color: "green" }}
+                  className={"userImg"}
+                />
+              </div>
             </div>
+
+            <div className={"loginButton"}>
+              <Button
+                size={"large"}
+                type={"primary"}
+                shape={"round"}
+                disabled={
+                  this.state.passwordError !== "" || this.state.usrError !== ""
+                }
+                onClick={() => this.handleLogin()}
+              >
+                登录
+              </Button>
+            </div>
+            <div className={"register-forget"}>
+              <div className={"register"}>
+                <Button
+                  size={"small"}
+                  type={"link"}
+                  color={"black"}
+                  href={"www.baidu.com"}
+                >
+                  创建新账户
+                </Button>
+              </div>
+              <div className={"forget"}>
+                <Button
+                  size={"small"}
+                  type={"link"}
+                  color={"black"}
+                  href={"www.baidu.com"}
+                >
+                  忘记密码
+                </Button>
+              </div>
+            </div>
+          </ul>
+          <div className={"footnote"}>
+            ©2022 Undefined. All Rights Reserved.
           </div>
-          <div className={"myPrompt"}>{this.state.passwordError}</div>
-          <div className={"loginButton"}>
-            <Button
-              size={"middle"}
-              type={"primary"}
-              shape={"round"}
-              disabled={
-                this.state.passwordError !== "" || this.state.usrError !== ""
-              }
-              onClick={() => this.handleLogin()}
-            >
-              Login
-            </Button>
-          </div>
-          <div className={"register"}>
-            <Button size={"small"} type={"link"}>
-              Create New Account
-            </Button>
-          </div>
-        </ul>
+        </div>
       </div>
     );
   }
