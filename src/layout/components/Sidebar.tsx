@@ -6,10 +6,20 @@ import {
   TeamOutlined,
   UserOutlined,
   AppleOutlined,
+  GithubOutlined,
+  BarsOutlined,
+  BookOutlined,
+  CarryOutOutlined,
+  CoffeeOutlined,
+  CompressOutlined,
+  DingtalkOutlined,
+  FrownOutlined,
+  LoadingOutlined,
+  SendOutlined,
+  SmileOutlined,
 } from "@ant-design/icons";
 import "./Sidebar.css";
 import React from "react";
-import undefined_logo from "../../assets/undefined.svg";
 
 const { SubMenu } = Menu;
 const { Sider } = Layout;
@@ -35,6 +45,7 @@ class Sidebar extends React.Component<any, SidebarState> {
   render() {
     return (
       <Sider
+        className="sidebar"
         collapsible
         collapsed={this.state.isCollapsed}
         onCollapse={(collapsed) => this.onCollapse(collapsed)}
@@ -60,6 +71,39 @@ class Sidebar extends React.Component<any, SidebarState> {
           </Menu.Item>
           <Menu.Item key="10" icon={<AppleOutlined />}>
             glb nb!
+          </Menu.Item>
+          <Menu.Item key="11" icon={<GithubOutlined />}>
+            wxy xgg!
+          </Menu.Item>
+          <Menu.Item key="12" icon={<BarsOutlined />}>
+            qc xjj!
+          </Menu.Item>
+          <Menu.Item key="13" icon={<BookOutlined />}>
+            lambda xgg!
+          </Menu.Item>
+          <Menu.Item key="14" icon={<CarryOutOutlined />}>
+            play
+          </Menu.Item>
+          <Menu.Item key="15" icon={<CoffeeOutlined />}>
+            with
+          </Menu.Item>
+          <Menu.Item key="16" icon={<CompressOutlined />}>
+            me
+          </Menu.Item>
+          <Menu.Item key="17" icon={<DingtalkOutlined />}>
+            I
+          </Menu.Item>
+          <Menu.Item key="18" icon={<FrownOutlined />}>
+            am
+          </Menu.Item>
+          <Menu.Item key="19" icon={<LoadingOutlined />}>
+            hbx
+          </Menu.Item>
+          <Menu.Item key="20" icon={<SendOutlined />}>
+            wu
+          </Menu.Item>
+          <Menu.Item key="21" icon={<SmileOutlined />}>
+            hu
           </Menu.Item>
         </Menu>
       </Sider>

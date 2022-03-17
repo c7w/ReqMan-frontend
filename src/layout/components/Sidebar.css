@@ -1,7 +1,10 @@
 @import "antd/dist/antd.css";
 
-.undefined {
-  margin-bottom: 4px;
-  height: 60px;
-  text-align: center;
+.sidebar {
+
+}
+
+/* 页面左下角的侧边栏 trigger 样式  */
+.ant-layout-sider-trigger {
+  background: #001529;
 }
