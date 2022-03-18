@@ -1,11 +1,10 @@
 import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
-import { Layout, Breadcrumb, Typography } from "antd";
+import { Layout, Breadcrumb } from "antd";
 import "./Home.css";
 import React from "react";
 
 const { Content, Footer } = Layout;
-const { Text } = Typography;
 
 class Home extends React.Component {
   render() {
