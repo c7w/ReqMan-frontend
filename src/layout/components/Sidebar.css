@@ -1,13 +1,9 @@
 @import "antd/dist/antd.css";
 
 .sidebar {
-  background-color: greenyellow;
-  height: max-content;
-  width: 200px;
 }
 
-.logo {
-  height: 32px;
-  margin: 16px;
-  background: rgba(255, 255, 255, 0.3);
+/* 页面左下角的侧边栏 trigger 样式  */
+.ant-layout-sider-trigger {
+  background: #001529;
 }

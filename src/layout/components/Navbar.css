@@ -5,20 +5,33 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  background-image: linear-gradient(to right, #001529 100%, #000 0%);
 }
 
 .header-left {
+  padding: 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.undefined {
+  width: 200px;
+  height: 64px;
+  text-align: center;
 }
 
 .header-item {
-  padding: 20px 50px;
-  background: #001529;
+  padding-left: 40px;
+  padding-right: 40px;
+  font-size: 15px;
   color: #fff;
   cursor: pointer;
 }
 
 .header-item:hover {
-  box-shadow: 1px 1px 1px 1px #778899;
+  text-shadow: 0 0 10px #ffffff, 0 0 20px #ffffff, 0 0 40px #ffffff,
+    0 0 80px #ffffff, 0 0 120px #ffffff, 0 0 160px #ffffff;
 }
 
 .header-right {
