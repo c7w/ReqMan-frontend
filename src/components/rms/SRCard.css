@@ -1,1 +1,14 @@
+.card-small {
+  height: 84px;
+  left: 0;
+  margin: 5px 5px 5px 5px;
+  padding: 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  background: #fff;
+  box-shadow: 1px 1px 2px #aaaaaa;
+}
 
+.card-small:hover {
+  background: rgb(244, 245, 247);
+}
