@@ -3,7 +3,7 @@ import "./SRCard.css";
 
 class SRCard extends React.Component {
   render() {
-    return <div className="ant-card">I am SR card</div>;
+    return <div className="card">I am SR card</div>;
   }
 }
 

@@ -50,8 +50,8 @@ class Navbar extends React.Component {
               <img
                 src={undefined_logo}
                 alt="undefined"
-                width={110}
-                height={56}
+                width={95}
+                height={50}
               />
             </div>
             <div className="header-item">nav 1</div>

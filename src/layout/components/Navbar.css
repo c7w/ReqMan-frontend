@@ -17,7 +17,8 @@
 
 .undefined {
   width: 200px;
-  height: 64px;
+  height: 60px;
+  margin-bottom: 4px;
   text-align: center;
 }
 
