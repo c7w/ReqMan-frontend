@@ -1,0 +1,12 @@
+.list {
+  width: 260px;
+  min-height: 400px;
+  padding: 30px;
+  margin: 30px;
+  border-radius: 10px;
+  font: italic 1.5em Georgia, serif;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  background: rgb(244, 245, 247);
+}
