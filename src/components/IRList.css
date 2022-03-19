@@ -1,0 +1,15 @@
+@import "~antd/dist/antd.css";
+
+.IRTable {
+  padding: 100px;
+  width: 1350px;
+}
+
+.ant-table-row-expand-icon {
+  margin-left: 10px;
+}
+
+.ant-pro-table-list-toolbar-container{
+  text-align: right;
+  margin: 20px;
+}
