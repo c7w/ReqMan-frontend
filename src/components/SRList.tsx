@@ -1,49 +1,45 @@
 import React from "react";
 import type { ProColumns } from "@ant-design/pro-table";
 import { EditableProTable } from "@ant-design/pro-table";
-import "./IRList.css";
-import { SRList } from "./SRList";
-
-export interface IRListProps {
-  readonly unimportant: string;
-}
-
-export interface IRListState {
-  readonly unimportant: string;
-}
+import "./SRList.css";
 
 export type TableListItem = {
   key: number;
   name: string;
-  title: string;
   desc: string;
   creator: string;
+  status: string;
   createdAt: number;
 };
 
 const tableListDataSource: TableListItem[] = [];
 
 const creators = ["qc", "c7w", "hxj", "wxy", "lmd"];
+const all_status = ["start", "progress", "finished", "debug"];
 
-for (let i = 0; i < 30; i += 1) {
+for (let i = 0; i < 4; i += 1) {
   tableListDataSource.push({
     key: i,
-    name: "[IR.001.002]",
-    title: "不重要的名字",
-    desc: "我是关于这个任务很长很长很长很长很长很长长很长很长很长长很长很长很长长很长很长很长的描述",
+    name: "[SR.001.000]",
+    desc: "这是一个 SR 任务描述",
     creator: creators[Math.floor(Math.random() * creators.length)],
+    status: all_status[i],
     createdAt: Date.now() - Math.floor(Math.random() * 1000000000),
   });
 }
 
-const expandedRowRender = () => {
-  return <SRList unimportant={"unimportant"} />;
-};
+export interface SRListProps {
+  readonly unimportant: string;
+}
 
-class IRList extends React.Component<IRListProps, IRListState> {
+export interface SRListState {
+  readonly unimportant: string;
+}
+
+class SRList extends React.Component<SRListProps, SRListState> {
   columns: ProColumns<TableListItem>[] = [
     {
-      title: "IR标题",
+      title: "SR标题",
       width: 100,
       dataIndex: "name",
       align: "center",
@@ -55,8 +51,44 @@ class IRList extends React.Component<IRListProps, IRListState> {
           },
         ],
       },
-      // 后续对接展示 IR 卡片
+      // 后续对接展示 SR 卡片
       render: (_) => <a>{_}</a>,
+    },
+    {
+      title: "状态",
+      width: 90,
+      dataIndex: "status",
+      filters: true,
+      onFilter: true,
+      align: "center",
+      valueType: "select",
+      valueEnum: {
+        start: {
+          text: "未开始",
+          status: "Default",
+        },
+        progress: {
+          text: "进行中",
+          status: "Processing",
+        },
+        finished: {
+          text: "已完成",
+          status: "Success",
+        },
+        debug: {
+          text: "调试中",
+          status: "Warning",
+        },
+      },
+      formItemProps: {
+        rules: [
+          {
+            required: true,
+            message: "此项为必填项",
+          },
+        ],
+      },
+      // render: (_, record) => <Tag color={record.status.color}>{record.status.text}</Tag>,
     },
     {
       title: "任务描述",
@@ -72,7 +104,6 @@ class IRList extends React.Component<IRListProps, IRListState> {
         ],
       },
     },
-
     {
       title: "创建者",
       width: 100,
@@ -105,7 +136,7 @@ class IRList extends React.Component<IRListProps, IRListState> {
     },
     {
       title: "操作",
-      width: 100,
+      width: 120,
       valueType: "option",
       align: "center",
       render: (text, record, _, action) => [
@@ -124,11 +155,11 @@ class IRList extends React.Component<IRListProps, IRListState> {
 
   render() {
     return (
-      <div className={"IRTable"}>
+      <div className={"SRTable"}>
         <EditableProTable<TableListItem>
           columns={this.columns}
           request={(params, sorter, filter) => {
-            // 此处数据来源应与后端对接，须进一步对接
+            // 此处数据来源应与后端对接
             console.log(params, sorter, filter);
             return Promise.resolve({
               data: tableListDataSource,
@@ -136,11 +167,6 @@ class IRList extends React.Component<IRListProps, IRListState> {
             });
           }}
           rowKey="key"
-          expandable={{ expandedRowRender }}
-          pagination={{
-            pageSize: 10,
-            showSizeChanger: true,
-          }}
           editable={{
             type: "multiple",
           }}
@@ -149,12 +175,13 @@ class IRList extends React.Component<IRListProps, IRListState> {
               key: index,
               name: "",
               title: "",
+              status: "start",
               desc: "",
               creator: "",
               createdAt: Date.now(),
             }),
             position: "top",
-            creatorButtonText: "新增 IR 任务",
+            creatorButtonText: "新增 SR 任务",
           }}
           dateFormatter="string"
         />
@@ -163,4 +190,4 @@ class IRList extends React.Component<IRListProps, IRListState> {
   }
 }
 
-export { IRList };
+export { SRList };
