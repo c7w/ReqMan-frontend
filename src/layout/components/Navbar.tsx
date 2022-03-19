@@ -2,7 +2,7 @@ import { Layout, Menu, Dropdown, Avatar } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import React from "react";
 import "./Navbar.css";
-import undefined_logo from "../../assets/undefined.svg";
+import undefined_logo from "../../assets/undefined-2-blue-italic.png";
 
 const { Header } = Layout;
 
@@ -50,7 +50,7 @@ class Navbar extends React.Component {
               <img
                 src={undefined_logo}
                 alt="undefined"
-                width={110}
+                width={120}
                 height={56}
               />
             </div>
@@ -61,6 +61,7 @@ class Navbar extends React.Component {
           <div className="header-right">
             <Dropdown
               className="avatar-wrapper"
+              placement="bottomRight"
               overlay={menu}
               arrow={{ pointAtCenter: true }}
             >

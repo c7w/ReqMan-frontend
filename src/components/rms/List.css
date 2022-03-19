@@ -1,0 +1,27 @@
+.list {
+  width: 260px;
+  height: 400px;
+  margin: 30px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  font-family: monospace;
+  background: rgb(244, 245, 247);
+}
+
+.list-header {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 48px;
+  text-align: center;
+}
+
+.ant-divider-horizontal {
+  margin: 6px 0;
+}
+
+.list-content {
+  overflow-x: hidden;
+  overflow-y: auto;
+}

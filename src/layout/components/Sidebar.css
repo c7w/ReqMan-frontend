@@ -1,9 +1,23 @@
 @import "antd/dist/antd.css";
 
-.sidebar {
+.ant-menu-inline .ant-menu-selected::after, .ant-menu-inline .ant-menu-item-selected::after {
+  border-right: 3px solid #000;
+}
+
+.ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {
+  background-color: rgb(240, 240, 240);
+}
+
+.ant-menu-item-selected {
+  color: #000;
+}
+
+.ant-menu-item-active:hover {
+  color: #000;
+  background-color: rgb(245, 245, 245);
 }
 
 /* 页面左下角的侧边栏 trigger 样式  */
 .ant-layout-sider-trigger {
-  background: #001529;
+  background: rgb(36, 41, 47);
 }
