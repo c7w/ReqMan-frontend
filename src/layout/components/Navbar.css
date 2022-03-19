@@ -5,7 +5,7 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  background-image: linear-gradient(to right, #001529 100%, #000 0%);
+  background: rgb(36, 41, 47);
 }
 
 .header-left {
@@ -31,15 +31,18 @@
 }
 
 .header-item:hover {
-  text-shadow: 0 0 10px #ffffff, 0 0 20px #ffffff, 0 0 40px #ffffff,
-    0 0 80px #ffffff, 0 0 120px #ffffff, 0 0 160px #ffffff;
+  text-shadow: 0 0 10px #ffffff
 }
 
 .header-right {
-  padding-right: 100px;
+  padding-right: 20px;
   cursor: pointer;
 }
 
+.avatar-wrapper {
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
 .avatar-wrapper:hover {
-  box-shadow: 1px 1px 1px 1px #fff;
+  background-color: rgba(255, 255, 255, 0.3);
 }
