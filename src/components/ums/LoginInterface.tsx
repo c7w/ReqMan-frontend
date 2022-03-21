@@ -1,6 +1,6 @@
 import React from "react";
 import "./Logininterface.css";
-import "crypto-js";
+import CryptoJS from "crypto-js";
 import { message, Input, Button, Popover } from "antd";
 import {
   UserOutlined,
@@ -87,7 +87,6 @@ class LoginInterface extends React.Component<
   }
 
   handleLogin() {
-    const CryptoJS = require("crypto-js");
     const password = CryptoJS.MD5(this.state.password).toString();
     const response = this.props.submit(this.state.userName, password);
     // 未来接口调用，一下仅用来调试，与后端接口对接后修改
