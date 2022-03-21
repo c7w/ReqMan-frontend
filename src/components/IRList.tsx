@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import type { ProColumns } from "@ant-design/pro-table";
 import { EditableProTable } from "@ant-design/pro-table";
 import { Progress } from "antd";
@@ -14,36 +14,34 @@ export type TableListItem = {
   createdAt: number;
 };
 
-interface IRListState {
-  tableListDataSource: TableListItem[];
+interface IRListProps {
+  readonly unimportant: string;
 }
 
 const expandedRowRender = () => {
   return <SRList />;
 };
 
-class IRList extends React.Component<any, IRListState> {
-  constructor(props: IRListState | Readonly<IRListState>) {
-    super(props);
-    const creators = ["qc", "c7w", "hxj", "wxy", "lmd"];
-    const dataIRList = [];
-    for (let i = 0; i < 30; i += 1) {
-      dataIRList.push({
-        key: i,
-        // progress 数据须与后端刷新数据进行对接
-        progress: 50,
-        name: "[IR.001.002]",
-        desc: "我是关于这个任务很长很长很长很长很长很长长很长很长很长长很长很长很长长很长很长很长的描述",
-        creator: creators[Math.floor(Math.random() * creators.length)],
-        createdAt: Date.now() - Math.floor(Math.random() * 1000000000),
-      });
-    }
-    this.state = {
-      tableListDataSource: dataIRList,
-    };
+const IRList = (props: IRListProps) => {
+  const tableInit: TableListItem[] = [];
+  const [tableListDataSource, settableListDataSource] =
+    useState<TableListItem[]>(tableInit);
+  const creators = ["qc", "c7w", "hxj", "wxy", "lmd"];
+  const dataIRList = [];
+  for (let i = 0; i < 30; i += 1) {
+    dataIRList.push({
+      key: i,
+      // progress 数据须与后端刷新数据进行对接
+      progress: 50,
+      name: "[IR.001.002]",
+      desc: "我是关于这个任务很长很长很长很长很长很长长很长很长很长长很长很长很长长很长很长很长的描述",
+      creator: creators[Math.floor(Math.random() * creators.length)],
+      createdAt: Date.now() - Math.floor(Math.random() * 1000000000),
+    });
   }
+  settableListDataSource(dataIRList);
 
-  columns: ProColumns<TableListItem>[] = [
+  const columns: ProColumns<TableListItem>[] = [
     {
       title: "IR标题",
       width: 100,
@@ -130,45 +128,43 @@ class IRList extends React.Component<any, IRListState> {
     },
   ];
 
-  render() {
-    return (
-      <div className={"IRTable"}>
-        <EditableProTable<TableListItem>
-          columns={this.columns}
-          request={(params, sorter, filter) => {
-            // 此处数据来源应与后端对接，须进一步对接
-            console.log(params, sorter, filter);
-            return Promise.resolve({
-              data: this.state.tableListDataSource,
-              success: true,
-            });
-          }}
-          rowKey="key"
-          expandable={{ expandedRowRender }}
-          pagination={{
-            pageSize: 10,
-            showSizeChanger: true,
-          }}
-          editable={{
-            type: "multiple",
-          }}
-          recordCreatorProps={{
-            record: (index: number) => ({
-              key: index,
-              name: "",
-              desc: "",
-              progress: 0,
-              creator: "",
-              createdAt: Date.now(),
-            }),
-            position: "top",
-            creatorButtonText: "新增 IR 任务",
-          }}
-          dateFormatter="string"
-        />
-      </div>
-    );
-  }
-}
+  return (
+    <div className={"IRTable"}>
+      <EditableProTable<TableListItem>
+        columns={columns}
+        request={(params, sorter, filter) => {
+          // 此处数据来源应与后端对接，须进一步对接
+          console.log(params, sorter, filter);
+          return Promise.resolve({
+            data: tableListDataSource,
+            success: true,
+          });
+        }}
+        rowKey="key"
+        expandable={{ expandedRowRender }}
+        pagination={{
+          pageSize: 10,
+          showSizeChanger: true,
+        }}
+        editable={{
+          type: "multiple",
+        }}
+        recordCreatorProps={{
+          record: (index: number) => ({
+            key: index,
+            name: "",
+            desc: "",
+            progress: 0,
+            creator: "",
+            createdAt: Date.now(),
+          }),
+          position: "top",
+          creatorButtonText: "新增 IR 任务",
+        }}
+        dateFormatter="string"
+      />
+    </div>
+  );
+};
 
-export { IRList };
+export default IRList;
