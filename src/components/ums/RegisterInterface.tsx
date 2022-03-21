@@ -14,6 +14,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import { faCircleCheck } from "@fortawesome/free-regular-svg-icons";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { NaiveResponse } from "../../utils/Network";
 
 export interface RegisterInterfaceProps {
   // Async function, call at submission
@@ -24,20 +25,7 @@ export interface RegisterInterfaceProps {
     password: string,
     email: string,
     invitation: string
-  ) => Promise<any>;
-}
-
-export interface RegisterInterfaceStates {
-  readonly usrError: string;
-  readonly userName: string;
-  readonly invitationError: string;
-  readonly invitation: string;
-  readonly mailError: string;
-  readonly mail: string;
-  readonly passwordError: string;
-  readonly password: string;
-  readonly doubleCheckError: string;
-  readonly doubleCheck: boolean;
+  ) => Promise<NaiveResponse>;
 }
 
 //中间表单
@@ -88,10 +76,10 @@ const RegisterInterface = (props: RegisterInterfaceProps) => {
     const reg = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
     if (!reg.test(mail)) {
       setMailError("邮箱格式有误");
-    } else if (false) {
+    } /*else if (false) {
       // 检查邮箱是否已被注册
       setMailError("该邮箱已被注册");
-    } else {
+    } */ else {
       setMailError("");
       setMail(mail);
     }
@@ -137,24 +125,13 @@ const RegisterInterface = (props: RegisterInterfaceProps) => {
     }
   };
 
-  const successCallback = () => {
-    message.success("Create new account successfully");
-  };
-  const failureCallback = () => {
-    message.error("Fail to create new account");
-  };
-
   const handleCreate = () => {
     const CryptoJS = require("crypto-js");
     const _password = CryptoJS.MD5(password).toString();
     console.log(_password);
-    const response = props.submit(userName, _password, mail, invitation);
+    // const response = props.submit(userName, _password, mail, invitation);
     // 未来接口调用，以下仅用来调试，与后端接口对接后修改
-    if (true) {
-      message.success("Login successfully");
-    } else {
-      message.error("Username and password do not match, please check again");
-    }
+    message.success("Login successfully");
   };
   return (
     <div className={"screen"}>

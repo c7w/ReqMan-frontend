@@ -13,12 +13,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import { faCircleCheck } from "@fortawesome/free-regular-svg-icons";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { NaiveResponse } from "../../utils/Network";
 
 export interface LoginInterfaceProps {
   // Async function, call at submission
   // If accepted, jump to "/"
   // If Rejected, show wrong message
-  submit: (identity: string, password: string) => Promise<any>;
+  submit: (identity: string, password: string) => Promise<NaiveResponse>;
 }
 
 export interface LoginInterfaceState {
@@ -87,15 +88,11 @@ class LoginInterface extends React.Component<
   }
 
   handleLogin() {
-    const CryptoJS = require("crypto-js");
-    const password = CryptoJS.MD5(this.state.password).toString();
-    const response = this.props.submit(this.state.userName, password);
+    // const CryptoJS = require("crypto-js");
+    // const password = CryptoJS.MD5(this.state.password).toString();
+    // const response = this.props.submit(this.state.userName, password);
     // 未来接口调用，一下仅用来调试，与后端接口对接后修改
-    if (true) {
-      message.success("Login successfully");
-    } else {
-      message.error("Username and password do not match, please check again");
-    }
+    message.success("Login successfully");
   }
 
   render() {
