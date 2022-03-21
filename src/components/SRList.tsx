@@ -12,31 +12,31 @@ export type TableListItem = {
   createdAt: number;
 };
 
-const tableListDataSource: TableListItem[] = [];
-
-const creators = ["qc", "c7w", "hxj", "wxy", "lmd"];
-const all_status = ["start", "progress", "finished", "debug"];
-
-for (let i = 0; i < 4; i += 1) {
-  tableListDataSource.push({
-    key: i,
-    name: "[SR.001.000]",
-    desc: "这是一个 SR 任务描述",
-    creator: creators[Math.floor(Math.random() * creators.length)],
-    status: all_status[i],
-    createdAt: Date.now() - Math.floor(Math.random() * 1000000000),
-  });
-}
-
-export interface SRListProps {
-  readonly unimportant: string;
-}
-
 export interface SRListState {
-  readonly unimportant: string;
+  tableListDataSource: TableListItem[];
 }
 
-class SRList extends React.Component<SRListProps, SRListState> {
+class SRList extends React.Component<any, SRListState> {
+  constructor(props: SRListState | Readonly<SRListState>) {
+    super(props);
+    const creators = ["qc", "c7w", "hxj", "wxy", "lmd"];
+    const my_status = ["start", "progress", "finished", "debug"];
+    const dataSRList = [];
+    for (let i = 0; i < 4; i += 1) {
+      dataSRList.push({
+        key: i,
+        name: "[SR.001.000]",
+        desc: "这是一个 SR 任务描述",
+        creator: creators[Math.floor(Math.random() * creators.length)],
+        status: my_status[i],
+        createdAt: Date.now() - Math.floor(Math.random() * 1000000000),
+      });
+    }
+    this.state = {
+      tableListDataSource: dataSRList,
+    };
+  }
+
   columns: ProColumns<TableListItem>[] = [
     {
       title: "SR标题",
@@ -51,7 +51,6 @@ class SRList extends React.Component<SRListProps, SRListState> {
           },
         ],
       },
-      // 后续对接展示 SR 卡片
       render: (_) => <a>{_}</a>,
     },
     {
@@ -162,7 +161,7 @@ class SRList extends React.Component<SRListProps, SRListState> {
             // 此处数据来源应与后端对接
             console.log(params, sorter, filter);
             return Promise.resolve({
-              data: tableListDataSource,
+              data: this.state.tableListDataSource,
               success: true,
             });
           }}
