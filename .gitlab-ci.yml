@@ -67,6 +67,7 @@ build:
       - node_modules/
       - yarn.lock
   script:
+    - cp ./env.frontend-master ./env
     - export BUILD_IMAGE_NAME=$CI_REGISTRY_IMAGE
     - export BUILD_IMAGE_TAG=$CI_COMMIT_REF_SLUG
     - export BUILD_IMAGE_USERNAME=$CI_REGISTRY_USER
@@ -74,6 +75,23 @@ build:
     - deployer build
   only:
     - master
+
+build-dev:
+  stage: build
+  needs: [build_cache]
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - node_modules/
+      - yarn.lock
+  script:
+    - cp ./env.frontend-dev ./env
+    - export BUILD_IMAGE_NAME=$CI_REGISTRY_IMAGE
+    - export BUILD_IMAGE_TAG=$CI_COMMIT_REF_SLUG
+    - export BUILD_IMAGE_USERNAME=$CI_REGISTRY_USER
+    - export BUILD_IMAGE_PASSWORD=$CI_REGISTRY_PASSWORD
+    - deployer build
+  only:
     - dev
 
 deploy:
