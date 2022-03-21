@@ -6,27 +6,16 @@ import RegisterInterface from "../components/ums/RegisterInterface";
 import Home from "../layout/Home";
 import { IRList } from "../components/IRList";
 import { SRList } from "../components/SRList";
+import Root from "../layout/Root";
 
 const SiteRouter = () => {
   return (
     <Provider store={store}>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Root />}></Route>
+          <Route path="layout" element={<Home />} />
           <Route path="login" element={<Login />} />
-          <Route
-            path="register"
-            element={
-              <RegisterInterface
-                submit={(name, password, email, invitation) =>
-                  new Promise(() => {
-                    console.debug(name);
-                    return {};
-                  })
-                }
-              />
-            }
-          />
           <Route
             path="IR_List"
             element={<IRList unimportant={"asduiosaudhsauiod"} />}

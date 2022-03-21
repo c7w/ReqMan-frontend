@@ -1,0 +1,65 @@
+.root-screen {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  padding: 0 0;
+  background-image: url("../../public/registerbg.jpeg");
+}
+
+
+.root-proj-name {
+  position: fixed;
+  top: 10%;
+  text-align: center;
+  width: 100vw;
+  color: yellow;
+  font-family: Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+  font-size: 12vh;
+  user-select: none;
+
+}
+
+.root-proj-slogan {
+  position: fixed;
+  top: 30%;
+  text-align: center;
+  width: 100vw;
+  color: yellow;
+  font-family: Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+  font-size: 4vh;
+  user-select: none;
+  font-style: italic;
+}
+
+.root-footer {
+  position: fixed;
+  bottom: 2%;
+  text-align: center;
+  width: 100vw;
+  color: yellow;
+  font-family: Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+  font-size: 16px;
+  user-select: none;
+}
+
+.root-loading {
+  position: fixed;
+  bottom: 30%;
+  color: yellow;
+  font-size: 24px;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+}
+
+.root-spinner {
+  animation-name: my-rotate;
+  animation-iteration-count: infinite;
+  animation-duration: 2s;
+
+}
+
+@keyframes my-rotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
