@@ -14,6 +14,10 @@ interface Settings {
   getParams?: string; //GET 请求的参数列表
 }
 
+interface NaiveResponse {
+  code: number;
+}
+
 //请求函数
 const request_json = async (config: APIConfig, settings: Settings = {}) => {
   let path = SITE_CONFIG.BACKEND + config.path;
@@ -47,3 +51,4 @@ const request_json = async (config: APIConfig, settings: Settings = {}) => {
 };
 
 export default request_json;
+export type { NaiveResponse };
