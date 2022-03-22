@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import type { ProColumns } from "@ant-design/pro-table";
 import { EditableProTable } from "@ant-design/pro-table";
 import "./SRList.css";
@@ -20,20 +20,22 @@ const SRList = (props: SRListProps) => {
   const tableInit: TableListItem[] = [];
   const [tableListDataSource, settableListDataSource] =
     useState<TableListItem[]>(tableInit);
-  const creators = ["qc", "c7w", "hxj", "wxy", "lmd"];
-  const my_status = ["start", "progress", "finished", "debug"];
-  const dataSRList = [];
-  for (let i = 0; i < 4; i += 1) {
-    dataSRList.push({
-      key: i,
-      name: "[SR.001.000]",
-      desc: "这是一个 SR 任务描述",
-      creator: creators[Math.floor(Math.random() * creators.length)],
-      status: my_status[i],
-      createdAt: Date.now() - Math.floor(Math.random() * 1000000000),
-    });
-  }
-  settableListDataSource(dataSRList);
+  useEffect(() => {
+    const creators = ["qc", "c7w", "hxj", "wxy", "lmd"];
+    const my_status = ["start", "progress", "finished", "debug"];
+    const dataSRList = [];
+    for (let i = 0; i < 4; i += 1) {
+      dataSRList.push({
+        key: i,
+        name: "[SR.001.000]",
+        desc: "这是一个 SR 任务描述",
+        creator: creators[Math.floor(Math.random() * creators.length)],
+        status: my_status[i],
+        createdAt: Date.now() - Math.floor(Math.random() * 1000000000),
+      });
+    }
+    settableListDataSource(dataSRList);
+  });
 
   const columns: ProColumns<TableListItem>[] = [
     {

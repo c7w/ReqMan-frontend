@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import type { ProColumns } from "@ant-design/pro-table";
 import { EditableProTable } from "@ant-design/pro-table";
 import { Progress } from "antd";
@@ -26,20 +26,22 @@ const IRList = (props: IRListProps) => {
   const tableInit: TableListItem[] = [];
   const [tableListDataSource, settableListDataSource] =
     useState<TableListItem[]>(tableInit);
-  const creators = ["qc", "c7w", "hxj", "wxy", "lmd"];
-  const dataIRList = [];
-  for (let i = 0; i < 30; i += 1) {
-    dataIRList.push({
-      key: i,
-      // progress 数据须与后端刷新数据进行对接
-      progress: 50,
-      name: "[IR.001.002]",
-      desc: "我是关于这个任务很长很长很长很长很长很长长很长很长很长长很长很长很长长很长很长很长的描述",
-      creator: creators[Math.floor(Math.random() * creators.length)],
-      createdAt: Date.now() - Math.floor(Math.random() * 1000000000),
-    });
-  }
-  settableListDataSource(dataIRList);
+  useEffect(() => {
+    const creators = ["qc", "c7w", "hxj", "wxy", "lmd"];
+    const dataIRList = [];
+    for (let i = 0; i < 30; i += 1) {
+      dataIRList.push({
+        key: i,
+        // progress 数据须与后端刷新数据进行对接
+        progress: 50,
+        name: "[IR.001.002]",
+        desc: "我是关于这个任务很长很长很长很长很长很长长很长很长很长长很长很长很长长很长很长很长的描述",
+        creator: creators[Math.floor(Math.random() * creators.length)],
+        createdAt: Date.now() - Math.floor(Math.random() * 1000000000),
+      });
+    }
+    settableListDataSource(dataIRList);
+  });
 
   const columns: ProColumns<TableListItem>[] = [
     {
@@ -123,6 +125,14 @@ const IRList = (props: IRListProps) => {
           }}
         >
           编辑
+        </a>,
+        <a
+          key="editable"
+          onClick={() => {
+            action?.startEditable?.(record.key);
+          }}
+        >
+          关联SR
         </a>,
       ],
     },
