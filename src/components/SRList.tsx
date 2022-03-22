@@ -163,14 +163,7 @@ const SRList = (props: SRListProps) => {
       <div className={"SRTable"}>
         <EditableProTable<TableListItem>
           columns={columns}
-          request={(params, sorter, filter) => {
-            // 此处数据来源应与后端对接
-            console.log(params, sorter, filter);
-            return Promise.resolve({
-              data: tableListDataSource,
-              success: true,
-            });
-          }}
+          dataSource={tableListDataSource}
           rowKey="key"
           editable={{
             type: "multiple",
