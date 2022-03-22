@@ -1,18 +1,16 @@
 import React, { useEffect } from "react";
 import "./Root.css";
-import Home from "./Home";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSpinner } from "@fortawesome/free-solid-svg-icons";
-import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import logo from "../assets/undefined.png";
+import { Loading3QuartersOutlined } from "@ant-design/icons";
 import request_json from "../utils/Network";
 import API from "../utils/APIList";
-import iziToast from "izitoast";
+
 import {
   generateRandomString,
   getCookie,
   setCookie,
 } from "../utils/CookieOperation";
-import CryptoJS from "crypto-js";
+import { immediateToast, useToast } from "izitoast-react";
 
 const Root = () => {
   // Set cookies if not exist
@@ -25,27 +23,50 @@ const Root = () => {
   useEffect(() => {
     request_json(API.GET_USER)
       .then((data) => {
-        console.debug(data);
+        if (data.code === 0) {
+          const username = undefined;
+          immediateToast("success", {
+            title: "连接成功",
+            message: `欢迎回来，${username}！`,
+            position: "topRight",
+            timeout: 4000,
+          });
+          setTimeout(() => {
+            window.location.href = "/dashboard";
+          }, 4000);
+        } else {
+          immediateToast("success", {
+            title: "连接成功",
+            message: "欢迎来到 ReqMan，请登录！",
+            position: "topRight",
+            timeout: 4000,
+          });
+          setTimeout(() => {
+            window.location.href = "/login";
+          }, 4000);
+        }
       })
       .catch(() => {
-        iziToast.error({ title: "连接错误", message: "网络开小差啦..." });
+        immediateToast("error", {
+          title: "连接错误",
+          message: "网络开小差啦...",
+        });
       });
   }, []);
+  // useEffect Hook: Would be executed when the variables in the dependence list are initialized or changed value.
+  // If you define an empty list as variable dependence, this function would just execute for once, just like didMount().
 
   return (
     <div className={"root-screen"}>
-      <div className={"root-proj-name"}>ReqMan</div>
+      <div className={"root-proj-name"}>
+        <img src={logo} width={200} height={200} />
+      </div>
       <div className={"root-proj-slogan"}>
         Your Requirement Management Servant
       </div>
       <div className={"root-loading"}>
-        <FontAwesomeIcon
-          icon={faSpinner as IconProp}
-          style={{
-            color: "lightyellow",
-            fontSize: "64px",
-            textAlign: "center",
-          }}
+        <Loading3QuartersOutlined
+          style={{ fontSize: "72px", color: "lightyellow" }}
           className={"root-spinner"}
         />
       </div>

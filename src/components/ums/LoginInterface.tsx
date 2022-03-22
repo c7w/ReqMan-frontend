@@ -14,6 +14,7 @@ import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import { faCircleCheck } from "@fortawesome/free-regular-svg-icons";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { NaiveResponse } from "../../utils/Network";
+import { NavLink } from "react-router-dom";
 
 export interface LoginInterfaceProps {
   // Async function, call at submission
@@ -137,14 +138,7 @@ const LoginInterface = (props: LoginInterfaceProps) => {
           </div>
           <div className={"register-forget"}>
             <div className={"register"}>
-              <Button
-                size={"small"}
-                type={"link"}
-                color={"black"}
-                href={"www.baidu.com"}
-              >
-                创建新账户
-              </Button>
+              <NavLink to={"/register"}> 创建新账户 </NavLink>
             </div>
             <div className={"forget"}>
               <Button
@@ -158,7 +152,9 @@ const LoginInterface = (props: LoginInterfaceProps) => {
             </div>
           </div>
         </ul>
-        <div className={"footnote"}>©2022 Undefined. All Rights Reserved.</div>
+        <div className={"root-footer"}>
+          © 2022 undefined. All rights reversed.
+        </div>
       </div>
     </div>
   );

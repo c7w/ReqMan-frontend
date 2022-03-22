@@ -3,7 +3,8 @@
   height: 100%;
   width: 100%;
   padding: 0 0;
-  background-image: url("../../public/registerbg.jpeg");
+  /*background-image: url("../../public/registerbg.jpeg");*/
+  background-color: rgb(55, 71, 79);
 }
 
 
@@ -12,7 +13,7 @@
   top: 10%;
   text-align: center;
   width: 100vw;
-  color: yellow;
+  color: white;
   font-family: Consolas, 'Liberation Mono', Menlo, Courier, monospace;
   font-size: 12vh;
   user-select: none;
@@ -21,14 +22,14 @@
 
 .root-proj-slogan {
   position: fixed;
-  top: 30%;
+  top: 45%;
   text-align: center;
   width: 100vw;
-  color: yellow;
+  color: white;
   font-family: Consolas, 'Liberation Mono', Menlo, Courier, monospace;
   font-size: 4vh;
   user-select: none;
-  font-style: italic;
+  /*font-style: italic;*/
 }
 
 .root-footer {
@@ -36,15 +37,16 @@
   bottom: 2%;
   text-align: center;
   width: 100vw;
-  color: yellow;
+  color: white;
   font-family: Consolas, 'Liberation Mono', Menlo, Courier, monospace;
   font-size: 16px;
   user-select: none;
+  font-style: italic;
 }
 
 .root-loading {
   position: fixed;
-  bottom: 30%;
+  bottom: 20%;
   color: yellow;
   font-size: 24px;
   width: 100vw;
@@ -60,6 +62,6 @@
 }
 
 @keyframes my-rotate {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% { transform: rotate(45deg); }
+  100% { transform: rotate(405deg); }
 }

@@ -21,6 +21,7 @@
     "crypto-js": "^4.1.1",
     "identity-obj-proxy": "^3.0.0",
     "izitoast": "^1.4.0",
+    "izitoast-react": "^1.0.17",
     "jquery": "^3.6.0",
     "jsdom": "^19.0.0",
     "react": "^17.0.2",
