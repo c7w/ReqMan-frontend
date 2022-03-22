@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import type { ProColumns } from "@ant-design/pro-table";
-import { EditableProTable } from "@ant-design/pro-table";
+import ProTable, { EditableProTable } from "@ant-design/pro-table";
+import { Space, Table } from "antd";
 import "./SRList.css";
 
 export type TableListItem = {
@@ -13,7 +14,7 @@ export type TableListItem = {
 };
 
 interface SRListProps {
-  readonly unimportant: string;
+  readonly showChoose: boolean;
 }
 
 const SRList = (props: SRListProps) => {
@@ -35,7 +36,7 @@ const SRList = (props: SRListProps) => {
       });
     }
     settableListDataSource(dataSRList);
-  });
+  }, []);
 
   const columns: ProColumns<TableListItem>[] = [
     {
@@ -152,39 +153,80 @@ const SRList = (props: SRListProps) => {
     },
   ];
 
-  return (
-    <div className={"SRTable"}>
-      <EditableProTable<TableListItem>
-        columns={columns}
-        request={(params, sorter, filter) => {
-          // 此处数据来源应与后端对接
-          console.log(params, sorter, filter);
-          return Promise.resolve({
-            data: tableListDataSource,
-            success: true,
-          });
-        }}
-        rowKey="key"
-        editable={{
-          type: "multiple",
-        }}
-        recordCreatorProps={{
-          record: (index: number) => ({
-            key: index,
-            name: "",
-            title: "",
-            status: "start",
-            desc: "",
-            creator: "",
-            createdAt: Date.now(),
-          }),
-          position: "top",
-          creatorButtonText: "新增 SR 任务",
-        }}
-        dateFormatter="string"
-      />
-    </div>
-  );
+  const chooseColumn: ProColumns<TableListItem>[] = [];
+  for (let i = 0; i < 5; i += 1) {
+    chooseColumn.push(columns[i]);
+  }
+
+  if (!props.showChoose) {
+    return (
+      <div className={"SRTable"}>
+        <EditableProTable<TableListItem>
+          columns={columns}
+          request={(params, sorter, filter) => {
+            // 此处数据来源应与后端对接
+            console.log(params, sorter, filter);
+            return Promise.resolve({
+              data: tableListDataSource,
+              success: true,
+            });
+          }}
+          rowKey="key"
+          editable={{
+            type: "multiple",
+          }}
+          recordCreatorProps={{
+            record: (index: number) => ({
+              key: index,
+              name: "",
+              title: "",
+              status: "start",
+              desc: "",
+              creator: "",
+              createdAt: Date.now(),
+            }),
+            position: "top",
+            creatorButtonText: "新增 SR 任务",
+          }}
+          dateFormatter="string"
+        />
+      </div>
+    );
+  } else {
+    return (
+      <div className={"SRTable"}>
+        <ProTable<TableListItem>
+          columns={chooseColumn}
+          rowSelection={{
+            selections: [Table.SELECTION_ALL, Table.SELECTION_INVERT],
+            defaultSelectedRowKeys: [],
+          }}
+          tableAlertRender={({
+            selectedRowKeys,
+            selectedRows,
+            onCleanSelected,
+          }) => (
+            <Space size={24}>
+              <span>
+                已选 {selectedRowKeys.length} 项
+                <a style={{ marginLeft: 8 }} onClick={onCleanSelected}>
+                  取消选择
+                </a>
+              </span>
+              <span>{`关联 SR 任务: ${selectedRows.reduce(
+                (pre, item) => pre + " " + item.name,
+                ""
+              )} `}</span>
+            </Space>
+          )}
+          dataSource={tableListDataSource}
+          rowKey="key"
+          search={false}
+          dateFormatter="string"
+        />
+      </div>
+    );
+  }
 };
 
 export default SRList;

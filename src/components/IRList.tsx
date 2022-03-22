@@ -19,7 +19,7 @@ interface IRListProps {
 }
 
 const expandedRowRender = () => {
-  return <SRList unimportant={"unimportant"} />;
+  return <SRList showChoose={false} />;
 };
 
 const IRList = (props: IRListProps) => {
@@ -41,7 +41,7 @@ const IRList = (props: IRListProps) => {
       });
     }
     settableListDataSource(dataIRList);
-  });
+  }, []);
 
   const columns: ProColumns<TableListItem>[] = [
     {
