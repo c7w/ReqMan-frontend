@@ -21,10 +21,18 @@ interface NaiveResponse {
 //请求函数
 const request_json = async (config: APIConfig, settings: Settings = {}) => {
   let path = SITE_CONFIG.BACKEND + config.path;
+
   settings.body = {
     ...settings.body,
     sessionId: getCookie("sessionId", Math.random().toString()),
   };
+
+  settings.getParams = settings.getParams || "";
+  settings.getParams += `&sessionId=${getCookie(
+    "sessionId",
+    Math.random().toString()
+  )}`;
+
   let initRequest: RequestInit;
   if (config.method === "post") {
     initRequest = {
@@ -47,7 +55,12 @@ const request_json = async (config: APIConfig, settings: Settings = {}) => {
     };
   }
   console.debug(initRequest);
-  return await fetch(path, initRequest).then((data) => data.json());
+  return await fetch(path, initRequest)
+    .then((data) => data.json())
+    .then((json) => {
+      console.debug(json);
+      return json;
+    });
 };
 
 export default request_json;

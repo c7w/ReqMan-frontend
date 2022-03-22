@@ -4,10 +4,15 @@ import { Layout, Breadcrumb } from "antd";
 import "./Home.css";
 import React from "react";
 import Calendar from "../components/rms/Calendar";
+import { useSelector } from "react-redux";
+import { getUserStore } from "../store/slices/UserSlice";
+import { store } from "../store/ConfigureStore";
 
 const { Content, Footer } = Layout;
 
 const Home = () => {
+  const userInfo = useSelector(getUserStore);
+  console.debug(store.getState());
   return (
     <div>
       <Layout className="home">

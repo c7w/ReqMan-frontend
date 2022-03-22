@@ -1,32 +1,25 @@
-import { Provider } from "react-redux";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import store from "../store/store";
+import { Provider, connect } from "react-redux";
+import { Route, Routes } from "react-router-dom";
+import { HistoryRouter as Router } from "redux-first-history/rr6";
+import { store, history } from "../store/ConfigureStore";
 import Login from "./route/Login";
-import RegisterInterface from "../components/ums/RegisterInterface";
 import Home from "../layout/Home";
 import { IRList } from "../components/IRList";
 import { SRList } from "../components/SRList";
+import Root from "./route/Root";
+import "izitoast-react/dist/iziToast.css";
+import Register from "./route/Register";
+import Dashboard from "./route/Dashboard";
 
 const SiteRouter = () => {
   return (
     <Provider store={store}>
-      <BrowserRouter>
+      <Router history={history}>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Root />}></Route>
+          <Route path="dashboard" element={<Dashboard />} />
           <Route path="login" element={<Login />} />
-          <Route
-            path="register"
-            element={
-              <RegisterInterface
-                submit={(name, password, email, invitation) =>
-                  new Promise(() => {
-                    console.debug(name);
-                    return {};
-                  })
-                }
-              />
-            }
-          />
+          <Route path="register" element={<Register />} />
           <Route
             path="IR_List"
             element={<IRList unimportant={"asduiosaudhsauiod"} />}
@@ -36,7 +29,7 @@ const SiteRouter = () => {
             element={<SRList unimportant={"asduiosaudhsauiod"} />}
           />
         </Routes>
-      </BrowserRouter>
+      </Router>
     </Provider>
   );
 };

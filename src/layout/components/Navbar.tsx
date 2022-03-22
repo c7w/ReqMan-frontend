@@ -3,10 +3,13 @@ import { UserOutlined } from "@ant-design/icons";
 import React from "react";
 import "./Navbar.css";
 import undefined_logo from "../../assets/undefined-2-blue-italic.png";
+import { logOut } from "../../store/functions/UMS";
+import { useDispatch } from "react-redux";
 
 const { Header } = Layout;
 
 const Navbar = () => {
+  const dispatcher = useDispatch();
   const menu = (
     <Menu>
       <Menu>
@@ -37,7 +40,9 @@ const Navbar = () => {
             3rd menu item
           </a>
         </Menu.Item>
-        <Menu.Item danger>a danger item</Menu.Item>
+        <Menu.Item danger onClick={() => logOut(dispatcher)}>
+          注销
+        </Menu.Item>
       </Menu>
     </Menu>
   );

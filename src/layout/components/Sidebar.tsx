@@ -22,7 +22,10 @@ import "./Sidebar.css";
 
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getIsCollapsed, updateIsCollapsed } from "./SidebarSlice";
+import {
+  getIsCollapsed,
+  updateIsCollapsed,
+} from "../../store/slices/SidebarSlice";
 
 const { SubMenu } = Menu;
 const { Sider } = Layout;
