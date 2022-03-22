@@ -3,7 +3,7 @@ import type { ProColumns } from "@ant-design/pro-table";
 import { EditableProTable } from "@ant-design/pro-table";
 import { Progress } from "antd";
 import "./IRList.css";
-import { SRList } from "./SRList";
+import SRList from "./SRList";
 
 export type TableListItem = {
   key: number;
@@ -19,7 +19,7 @@ interface IRListProps {
 }
 
 const expandedRowRender = () => {
-  return <SRList />;
+  return <SRList unimportant={"unimportant"} />;
 };
 
 const IRList = (props: IRListProps) => {

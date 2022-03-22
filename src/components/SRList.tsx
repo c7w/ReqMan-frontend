@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import type { ProColumns } from "@ant-design/pro-table";
 import { EditableProTable } from "@ant-design/pro-table";
 import "./SRList.css";
@@ -12,32 +12,30 @@ export type TableListItem = {
   createdAt: number;
 };
 
-export interface SRListState {
-  tableListDataSource: TableListItem[];
+interface SRListProps {
+  readonly unimportant: string;
 }
 
-class SRList extends React.Component<any, SRListState> {
-  constructor(props: SRListState | Readonly<SRListState>) {
-    super(props);
-    const creators = ["qc", "c7w", "hxj", "wxy", "lmd"];
-    const my_status = ["start", "progress", "finished", "debug"];
-    const dataSRList = [];
-    for (let i = 0; i < 4; i += 1) {
-      dataSRList.push({
-        key: i,
-        name: "[SR.001.000]",
-        desc: "这是一个 SR 任务描述",
-        creator: creators[Math.floor(Math.random() * creators.length)],
-        status: my_status[i],
-        createdAt: Date.now() - Math.floor(Math.random() * 1000000000),
-      });
-    }
-    this.state = {
-      tableListDataSource: dataSRList,
-    };
+const SRList = (props: SRListProps) => {
+  const tableInit: TableListItem[] = [];
+  const [tableListDataSource, settableListDataSource] =
+    useState<TableListItem[]>(tableInit);
+  const creators = ["qc", "c7w", "hxj", "wxy", "lmd"];
+  const my_status = ["start", "progress", "finished", "debug"];
+  const dataSRList = [];
+  for (let i = 0; i < 4; i += 1) {
+    dataSRList.push({
+      key: i,
+      name: "[SR.001.000]",
+      desc: "这是一个 SR 任务描述",
+      creator: creators[Math.floor(Math.random() * creators.length)],
+      status: my_status[i],
+      createdAt: Date.now() - Math.floor(Math.random() * 1000000000),
+    });
   }
+  settableListDataSource(dataSRList);
 
-  columns: ProColumns<TableListItem>[] = [
+  const columns: ProColumns<TableListItem>[] = [
     {
       title: "SR标题",
       width: 100,
@@ -152,41 +150,39 @@ class SRList extends React.Component<any, SRListState> {
     },
   ];
 
-  render() {
-    return (
-      <div className={"SRTable"}>
-        <EditableProTable<TableListItem>
-          columns={this.columns}
-          request={(params, sorter, filter) => {
-            // 此处数据来源应与后端对接
-            console.log(params, sorter, filter);
-            return Promise.resolve({
-              data: this.state.tableListDataSource,
-              success: true,
-            });
-          }}
-          rowKey="key"
-          editable={{
-            type: "multiple",
-          }}
-          recordCreatorProps={{
-            record: (index: number) => ({
-              key: index,
-              name: "",
-              title: "",
-              status: "start",
-              desc: "",
-              creator: "",
-              createdAt: Date.now(),
-            }),
-            position: "top",
-            creatorButtonText: "新增 SR 任务",
-          }}
-          dateFormatter="string"
-        />
-      </div>
-    );
-  }
-}
+  return (
+    <div className={"SRTable"}>
+      <EditableProTable<TableListItem>
+        columns={columns}
+        request={(params, sorter, filter) => {
+          // 此处数据来源应与后端对接
+          console.log(params, sorter, filter);
+          return Promise.resolve({
+            data: tableListDataSource,
+            success: true,
+          });
+        }}
+        rowKey="key"
+        editable={{
+          type: "multiple",
+        }}
+        recordCreatorProps={{
+          record: (index: number) => ({
+            key: index,
+            name: "",
+            title: "",
+            status: "start",
+            desc: "",
+            creator: "",
+            createdAt: Date.now(),
+          }),
+          position: "top",
+          creatorButtonText: "新增 SR 任务",
+        }}
+        dateFormatter="string"
+      />
+    </div>
+  );
+};
 
-export { SRList };
+export default SRList;
