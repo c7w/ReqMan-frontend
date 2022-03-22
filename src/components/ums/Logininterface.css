@@ -10,10 +10,11 @@
 
 .login-board {
   position: fixed;
-  right: 10%;
-  top: 18%;
-  bottom: 30%;
-  left: 70%;
+
+  top: 18vh;
+  right: 10vw;
+  bottom: 16vh;
+  left: 65vw;
   background-color: rgba(255, 255, 255, 0.7);
 
   border-radius: 0.5rem;
@@ -39,7 +40,7 @@
 
 .my-input {
   margin: 0.5rem auto 1rem;
-  padding: 0.5rem;
+  padding: 2px;
   width: 100%;
   font-size: 16px;
   text-align: left;

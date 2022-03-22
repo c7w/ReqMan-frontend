@@ -1,18 +1,23 @@
 import React, { useEffect } from "react";
 import "./Root.css";
-import logo from "../assets/undefined.png";
+import logo from "../../assets/undefined.png";
 import { Loading3QuartersOutlined } from "@ant-design/icons";
-import request_json from "../utils/Network";
-import API from "../utils/APIList";
+import request_json from "../../utils/Network";
+import API from "../../utils/APIList";
 
 import {
   generateRandomString,
   getCookie,
   setCookie,
-} from "../utils/CookieOperation";
+} from "../../utils/CookieOperation";
 import { immediateToast, useToast } from "izitoast-react";
+import { useDispatch } from "react-redux";
+import { updateUserStore } from "../../store/slices/UserSlice";
+import { push } from "redux-first-history";
 
 const Root = () => {
+  const dispatcher = useDispatch();
+
   // Set cookies if not exist
   const cookie = getCookie("sessionId", "");
   if (cookie === "") {
@@ -24,7 +29,9 @@ const Root = () => {
     request_json(API.GET_USER)
       .then((data) => {
         if (data.code === 0) {
-          const username = undefined;
+          dispatcher(updateUserStore(JSON.stringify(data))); // Maybe use UMS better
+          const username = data.data.user.name;
+          console.debug(data);
           immediateToast("success", {
             title: "连接成功",
             message: `欢迎回来，${username}！`,
@@ -32,7 +39,7 @@ const Root = () => {
             timeout: 4000,
           });
           setTimeout(() => {
-            window.location.href = "/dashboard";
+            dispatcher(push("/dashboard")); // Use this way to redirect
           }, 4000);
         } else {
           immediateToast("success", {
@@ -42,7 +49,7 @@ const Root = () => {
             timeout: 4000,
           });
           setTimeout(() => {
-            window.location.href = "/login";
+            dispatcher(push("/login"));
           }, 4000);
         }
       })
@@ -50,6 +57,7 @@ const Root = () => {
         immediateToast("error", {
           title: "连接错误",
           message: "网络开小差啦...",
+          position: "topRight",
         });
       });
   }, []);

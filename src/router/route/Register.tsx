@@ -1,11 +1,13 @@
 import request_json, { NaiveResponse } from "../../utils/Network";
 import API from "../../utils/APIList";
 import { immediateToast } from "izitoast-react";
-import { updateUserInfo } from "../../store/functions/UpdateUserInfo";
+import { updateUserInfo } from "../../store/functions/UMS";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import RegisterInterface from "../../components/ums/RegisterInterface";
 import { getUserStore } from "../../store/slices/UserSlice";
+import { useEffect } from "react";
+import { push } from "redux-first-history";
 
 const Register = () => {
   // Hooks
@@ -14,14 +16,17 @@ const Register = () => {
 
   // Judge if logged in
   const userInfo = useSelector(getUserStore);
-  if (userInfo !== "") {
-    immediateToast("success", {
-      title: "您已经登录...",
-      timeout: 1500,
-      position: "topRight",
-    });
-    setTimeout(() => navigate("/dashboard"), 1500);
-  }
+  useEffect(() => {
+    console.debug(123);
+    if (userInfo !== "") {
+      immediateToast("info", {
+        title: "您已经登录...",
+        timeout: 1500,
+        position: "topRight",
+      });
+      setTimeout(() => navigate("/"), 1500);
+    }
+  }, []);
 
   const submit_register = async (
     name: string,
@@ -40,7 +45,6 @@ const Register = () => {
     const data = await request_json(API.REGISTER, {
       body: { name, password, email, invitation },
     });
-    console.debug(data);
 
     if (data.code === 0) {
       immediateToast("success", {
@@ -49,7 +53,7 @@ const Register = () => {
         position: "topRight",
       });
       updateUserInfo(dispatcher);
-      setTimeout(() => navigate("/dashboard"), 3000);
+      setTimeout(() => dispatcher(push("/dashboard")), 3000);
     } else if (data.code === 1) {
       immediateToast("error", {
         title: "注册失败...",

@@ -55,7 +55,12 @@ const request_json = async (config: APIConfig, settings: Settings = {}) => {
     };
   }
   console.debug(initRequest);
-  return await fetch(path, initRequest).then((data) => data.json());
+  return await fetch(path, initRequest)
+    .then((data) => data.json())
+    .then((json) => {
+      console.debug(json);
+      return json;
+    });
 };
 
 export default request_json;

@@ -14,11 +14,11 @@
 
 .register-board {
 
-  width: 450px;
+  width: 25vw;
 
   position: relative;
-  top: 10%;
-  bottom: 12%;
+  top: 2%;
+  bottom: 20%;
 
   margin: 0 auto;
 
@@ -26,7 +26,7 @@
   background-color: rgba(255, 255, 255, 0.7);
 
   border-radius: 0.5rem;
-  padding: 2rem;
+  padding: 1.2rem;
 
   display: flex;
   flex-direction: column;
@@ -34,7 +34,7 @@
 }
 
 .register-title {
-  margin: 8px auto;
+  margin: 8px auto 0;
   font-size: 30px;
   font-family: "Times New Roman";
   color: #000000;
@@ -49,4 +49,28 @@
 .ant-tooltip-inner {
   width: 300px;
   text-align: center;
+}
+
+.register-forget {
+  display: flex;
+  flex-direction: row;
+  margin: 1rem auto 0;
+  justify-content: flex-start;
+}
+
+.register {
+  padding-right: 10px;
+  color: #000000;
+}
+
+.forget {
+  text-align: center;
+  padding-left: 10px;
+  color: #000000;
+}
+
+.register-button {
+  text-align: center;
+  height: 40px;
+  margin-top: 1rem;
 }

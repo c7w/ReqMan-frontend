@@ -2,32 +2,35 @@ import LoginInterface from "../../components/ums/LoginInterface";
 import request_json, { NaiveResponse } from "../../utils/Network";
 import API from "../../utils/APIList";
 import { immediateToast } from "izitoast-react";
-import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { updateUserInfo } from "../../store/functions/UpdateUserInfo";
+import { updateUserInfo } from "../../store/functions/UMS";
 import { getUserStore } from "../../store/slices/UserSlice";
+import { useEffect } from "react";
+import { push } from "redux-first-history";
 
 const Login = () => {
-  const navigate = useNavigate();
   const dispatcher = useDispatch();
 
   // Judge if logged in
   const userInfo = useSelector(getUserStore);
-  if (userInfo !== "") {
-    immediateToast("success", {
-      title: "您已经登录...",
-      timeout: 1500,
-      position: "topRight",
-    });
-    setTimeout(() => navigate("/dashboard"), 1500);
-  }
+  useEffect(() => {
+    console.debug(userInfo);
+    if (userInfo.length > 10) {
+      immediateToast("success", {
+        title: "您已经登录...",
+        timeout: 1500,
+        position: "topRight",
+      });
+      setTimeout(() => dispatcher(push("/")), 1500);
+    }
+  }, []);
 
   const submit_login = async (
     identity: string,
     password: string
   ): Promise<void> => {
     // Toast
-    immediateToast("success", {
+    immediateToast("info", {
       title: "正在登录...",
       timeout: 1500,
       position: "topRight",
@@ -37,7 +40,6 @@ const Login = () => {
     const data = await request_json(API.LOGIN, {
       body: { identity, password },
     });
-    console.debug(data);
 
     if (data.code === 0) {
       immediateToast("success", {
@@ -46,7 +48,7 @@ const Login = () => {
         position: "topRight",
       });
       updateUserInfo(dispatcher);
-      setTimeout(() => navigate("/dashboard"), 3000);
+      setTimeout(() => dispatcher(push("/dashboard")), 3000);
     } else if (data.code === 1) {
       immediateToast("success", {
         title: "您已登录！",
@@ -54,7 +56,7 @@ const Login = () => {
         position: "topRight",
       });
       updateUserInfo(dispatcher);
-      setTimeout(() => navigate("/dashboard"), 3000);
+      setTimeout(() => dispatcher(push("/dashboard")), 3000);
     } else if (data.code === 2) {
       immediateToast("error", {
         title: "未确认的身份信息...",

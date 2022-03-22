@@ -16,6 +16,9 @@ import { faCircleCheck } from "@fortawesome/free-regular-svg-icons";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { NaiveResponse } from "../../utils/Network";
 import { NavLink } from "react-router-dom";
+import CryptoJS from "crypto-js";
+import { push } from "redux-first-history";
+import { useDispatch } from "react-redux";
 
 export interface RegisterInterfaceProps {
   // Async function, call at submission
@@ -42,10 +45,11 @@ const RegisterInterface = (props: RegisterInterfaceProps) => {
   const [doubleCheckError, setDoubleCheckError] = useState("");
   const [doubleCheck, setDoubleCheck] = useState(false);
 
+  const dispatcher = useDispatch();
+
   // 用户名判断
   const userCheck = (event: { target: { value: string } }) => {
     const usr = event.target.value;
-    console.log(usr);
     const reg = /^([a-zA-Z0-9_]){3,16}$/;
     if (!reg.test(usr)) {
       setUserError("用户名应为 3-16 位数字/字母/下划线！");
@@ -126,12 +130,8 @@ const RegisterInterface = (props: RegisterInterfaceProps) => {
   };
 
   const handleCreate = () => {
-    const CryptoJS = require("crypto-js");
-    const _password = CryptoJS.MD5(password).toString();
-    console.log(_password);
-    // const response = props.submit(userName, _password, mail, invitation);
-    // 未来接口调用，以下仅用来调试，与后端接口对接后修改
-    message.success("Login successfully");
+    const pwd = CryptoJS.MD5(password).toString();
+    const response = props.submit(userName, pwd, mail, invitation);
   };
 
   const getInputClassName = (msg: string) => {
@@ -262,10 +262,16 @@ const RegisterInterface = (props: RegisterInterfaceProps) => {
             doubleCheckError !== " "
           }
           onClick={() => handleCreate()}
-          className={"login-button"}
+          className={"register-button"}
         >
           注册
         </Button>
+
+        <div className={"register-forget"}>
+          <div className={"register"}>
+            <a onClick={() => dispatcher(push("/login"))}> 现在去登录 </a>
+          </div>
+        </div>
       </div>
 
       <div className={"root-footer"}>

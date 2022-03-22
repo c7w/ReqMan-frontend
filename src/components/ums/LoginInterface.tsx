@@ -7,6 +7,8 @@ import { UserOutlined, KeyOutlined } from "@ant-design/icons";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { NaiveResponse } from "../../utils/Network";
 import { NavLink } from "react-router-dom";
+import { push } from "redux-first-history";
+import { useDispatch } from "react-redux";
 
 export interface LoginInterfaceProps {
   // Async function, call at submission
@@ -22,6 +24,8 @@ const LoginInterface = (props: LoginInterfaceProps) => {
   const [userName, setUserName] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [password, setPassword] = useState("");
+
+  const dispatcher = useDispatch();
 
   // 用户名判断
   const userCheck = (event: { target: { value: string } }) => {
@@ -115,10 +119,10 @@ const LoginInterface = (props: LoginInterfaceProps) => {
 
         <div className={"register-forget"}>
           <div className={"register"}>
-            <NavLink to={"/register"}> 创建新账户 </NavLink>
+            <a onClick={() => dispatcher(push("/register"))}> 创建新账户 </a>
           </div>
           <div className={"forget"}>
-            <NavLink to={"/forget"}> 忘记密码 </NavLink>
+            <a onClick={() => dispatcher(push("/resetpass"))}> 忘记密码 </a>
           </div>
         </div>
       </div>
