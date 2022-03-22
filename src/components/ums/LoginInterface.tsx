@@ -24,7 +24,7 @@ const LoginInterface = (props: LoginInterfaceProps) => {
   const [password, setPassword] = useState("");
 
   // 用户名判断
-  const userCheck = (event: { target: { value: any } }) => {
+  const userCheck = (event: { target: { value: string } }) => {
     const usr = event.target.value;
     const reg = /^([^u00-uff]|[a-zA-Z0-9_]){3,16}$/;
     if (!reg.test(usr)) {
@@ -36,7 +36,7 @@ const LoginInterface = (props: LoginInterfaceProps) => {
   };
 
   // 密码判断
-  const passwordCheck = (event: { target: { value: any } }) => {
+  const passwordCheck = (event: { target: { value: string } }) => {
     const password = event.target.value;
     const reg1 = /^\w{6,20}$/;
     if (password === "") {

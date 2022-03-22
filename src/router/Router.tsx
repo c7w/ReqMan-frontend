@@ -7,6 +7,7 @@ import { IRList } from "../components/IRList";
 import { SRList } from "../components/SRList";
 import Root from "../layout/Root";
 import "izitoast-react/dist/iziToast.css";
+import Register from "./route/Register";
 
 const SiteRouter = () => {
   return (
@@ -16,6 +17,7 @@ const SiteRouter = () => {
           <Route path="/" element={<Root />}></Route>
           <Route path="layout" element={<Home />} />
           <Route path="login" element={<Login />} />
+          <Route path="register" element={<Register />} />
           <Route
             path="IR_List"
             element={<IRList unimportant={"asduiosaudhsauiod"} />}

@@ -83,13 +83,3 @@
   padding-left: 10px;
   color: #000000;
 }
-
-.footnote {
-  position: absolute;
-  bottom: 0px;
-  left: calc(50% - 120px);
-  text-align: center;
-  font-family: "Microsoft YaHei UI";
-  font-size: 15px;
-  color: #ffffff;
-}

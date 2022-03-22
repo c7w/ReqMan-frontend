@@ -3,9 +3,24 @@ import request_json, { NaiveResponse } from "../../utils/Network";
 import API from "../../utils/APIList";
 import { immediateToast } from "izitoast-react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { updateUserInfo } from "../../store/functions/UpdateUserInfo";
+import { getUserStore } from "../../store/slices/UserSlice";
 
 const Login = () => {
   const navigate = useNavigate();
+  const dispatcher = useDispatch();
+
+  // Judge if logged in
+  const userInfo = useSelector(getUserStore);
+  if (userInfo !== "") {
+    immediateToast("success", {
+      title: "您已经登录...",
+      timeout: 1500,
+      position: "topRight",
+    });
+    setTimeout(() => navigate("/dashboard"), 1500);
+  }
 
   const submit_login = async (
     identity: string,
@@ -30,14 +45,16 @@ const Login = () => {
         timeout: 3000,
         position: "topRight",
       });
-      navigate("/register");
+      updateUserInfo(dispatcher);
+      setTimeout(() => navigate("/dashboard"), 3000);
     } else if (data.code === 1) {
       immediateToast("success", {
         title: "您已登录！",
         timeout: 3000,
         position: "topRight",
       });
-      navigate("/register");
+      updateUserInfo(dispatcher);
+      setTimeout(() => navigate("/dashboard"), 3000);
     } else if (data.code === 2) {
       immediateToast("error", {
         title: "未确认的身份信息...",

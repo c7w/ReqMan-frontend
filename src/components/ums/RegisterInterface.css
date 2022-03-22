@@ -6,78 +6,47 @@
   width: 100%;
   padding: 0 0;
   background-image: url("../../../public/registerbg.jpeg");
-}
 
-.blur {
-  position: absolute;
-  height: 100%;
-  width: 100%;
-  background: rgba(255, 255, 255, 0.14);
-}
-
-.ul {
-  display: block;
-  position: absolute;
-  left: calc(50% - 190px);
-  top: calc(50% - 300px);
-  padding: 30px 50px;
-  text-align: center;
-  border-radius: 30px;
-  border: 0.5px solid #96beff;
-  background: rgba(255, 255, 255, 0.54);
-}
-
-.title {
   display: flex;
-  margin: auto auto;
+  justify-content: center;
+  align-items: center;
+}
+
+.register-board {
+
+  width: 450px;
+
+  position: relative;
+  top: 10%;
+  bottom: 12%;
+
+  margin: 0 auto;
+
+
+  background-color: rgba(255, 255, 255, 0.7);
+
+  border-radius: 0.5rem;
+  padding: 2rem;
+
+  display: flex;
+  flex-direction: column;
+
+}
+
+.register-title {
+  margin: 8px auto;
   font-size: 30px;
   font-family: "Times New Roman";
   color: #000000;
+  user-select: none;
 }
 
-.userInfo {
-  display: flex;
-  flex-direction: row;
+.register-prompt {
+  margin: 0 0 0;
+  user-select: none;
+}
+
+.ant-tooltip-inner {
+  width: 300px;
   text-align: center;
-  padding-top: 20px;
-  padding-bottom: 10px;
-}
-
-.userImg {
-  diaplay: flex;
-  width: 14px;
-  padding-top: 18px;
-  margin-right: 10px;
-  margin-left: 10px;
-}
-
-.myInput {
-  margin: 0;
-  padding-left: 15px;
-  height: 50px;
-  width: 280px;
-  font-size: 20px;
-  text-align: left;
-  border-radius: 5px;
-}
-
-.ant-input {
-  margin-left: 15px;
-  font-size: 15px;
-}
-
-.loginButton {
-  text-align: center;
-  height: 32px;
-  margin-top: 20px;
-}
-
-.footnote {
-  position: absolute;
-  bottom: 0px;
-  left: calc(50% - 120px);
-  text-align: center;
-  font-family: "Microsoft YaHei UI";
-  font-size: 15px;
-  color: #ffffff;
 }
