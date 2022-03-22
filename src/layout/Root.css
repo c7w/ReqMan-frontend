@@ -38,8 +38,8 @@
   text-align: center;
   width: 100vw;
   color: white;
-  font-family: Consolas, 'Liberation Mono', Menlo, Courier, monospace;
-  font-size: 16px;
+  font-family: Consolas;
+  font-size: 20px;
   user-select: none;
   font-style: italic;
 }

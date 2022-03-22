@@ -7,7 +7,7 @@ const Register = () => {
   const submit_login = async (
     identity: string,
     password: string
-  ): Promise<NaiveResponse> => {
+  ): Promise<void> => {
     const data = await request_json(API.LOGIN, {
       body: { identity, password },
     });

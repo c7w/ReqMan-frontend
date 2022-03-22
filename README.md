@@ -2,7 +2,13 @@
 
 ## For Users
 
-// TODO: 这里讲解配置文件格式
+你需要在拉取仓库后在本地创建 `.env.local` 文件，并指定你的测试后端路径：
+
+```
+REACT_APP_BACKEND_URL=https://backend-dev-undefined.app.secoder.net
+```
+
+当然为防止测试环境发生数据大型丢失，你可以在本地拉取后端仓库后以 `sqlite3` 模式运行，并在这里填写你的本地后端回调地址。 
 
 ## For Developers
 
