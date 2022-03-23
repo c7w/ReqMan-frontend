@@ -30,13 +30,14 @@ export const rmsSlice = createSlice({
 
 export const { addSR, deleteSR } = rmsSlice.actions;
 
-export const getSRList = (state: any) => {
+export const getSRList = (state: { rms: { SRList: Array<SRCard> } }) => {
   return state.rms.SRList;
 };
 
-export const getSR = (id: number) => (state: any) => {
-  return state.rms.SRList[id];
-};
+export const getSR =
+  (id: number) => (state: { rms: { SRList: Array<SRCard> } }) => {
+    return state.rms.SRList[id];
+  };
 
 // export const getIRList = (state: any) => {
 //   return state.IRList;

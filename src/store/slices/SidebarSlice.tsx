@@ -13,7 +13,9 @@ export const sidebarSlice = createSlice({
 });
 
 export const { updateIsCollapsed } = sidebarSlice.actions;
-export const getIsCollapsed = (state: any) => {
+export const getIsCollapsed = (state: {
+  sidebar: { isCollapsed: boolean };
+}) => {
   return state.sidebar.isCollapsed;
 };
 

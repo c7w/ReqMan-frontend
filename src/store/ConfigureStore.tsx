@@ -4,6 +4,7 @@ import { createReduxHistoryContext } from "redux-first-history";
 import { createBrowserHistory } from "history";
 import sidebarReducer from "./slices/SidebarSlice";
 import UserSliceReducer from "./slices/UserSlice";
+import rmsReducer from "./slices/rmsSlice";
 
 interface SRCard {
   readonly id: number; // id
@@ -24,6 +25,7 @@ export const store = configureStore({
   reducer: combineReducers({
     router: routerReducer,
     sidebar: sidebarReducer,
+    rms: rmsReducer,
     user_store: UserSliceReducer,
     // rest of your reducers
   }),

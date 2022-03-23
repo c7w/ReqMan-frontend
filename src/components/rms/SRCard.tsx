@@ -17,15 +17,30 @@ interface SRCardProps {
 
 const SRCard = (props: SRCardProps) => {
   return (
-    <div className="card-small">
-      <div className="card-small-up">{props.title}</div>
-      <div className="card-small-description">
-        <Typography>
-          <Text>{props.description}</Text>
-        </Typography>
+    <>
+      <div
+        className="SRCard-small"
+        onClick={() => {
+          document.getElementsByTagName("input")[0].checked = true;
+        }}
+      >
+        <div className="card-small-up">{props.title}</div>
+        <div className="card-small-description">
+          <Typography>
+            <Text>{props.description}</Text>
+          </Typography>
+        </div>
+        <div className="card-small-down"></div>
       </div>
-      <div className="card-small-down"></div>
-    </div>
+      <input id="button" type="checkbox" />
+      <div className="modal">
+        <div className="modal-header">
+          <div className="modal-header-left">{props.title}</div>
+          <div className="modal-header-right">right</div>
+        </div>
+        <div className="modal-content">content</div>
+      </div>
+    </>
   );
 };
 
