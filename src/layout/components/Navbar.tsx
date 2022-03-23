@@ -2,9 +2,10 @@ import { Layout, Menu, Dropdown, Avatar } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import React from "react";
 import "./Navbar.css";
-import logo from "../../assets/Reqman-1.svg";
+import logo from "../../assets/ReqMan.png";
 import { logOut } from "../../store/functions/UMS";
 import { useDispatch } from "react-redux";
+import { push } from "redux-first-history";
 
 const { Header } = Layout;
 
@@ -14,34 +15,13 @@ const Navbar = () => {
     <Menu>
       <Menu>
         <Menu.Item>
-          <a
-            target="_blank"
-            rel="noopener noreferrer"
-            href="https://www.antgroup.com"
-          >
-            1st menu item
-          </a>
-        </Menu.Item>
+          <a onClick={() => dispatcher(push("/settings"))}>个人设置</a>
+        </Menu.Item>{" "}
         <Menu.Item>
-          <a
-            target="_blank"
-            rel="noopener noreferrer"
-            href="https://www.aliyun.com"
-          >
-            2nd menu item
-          </a>
-        </Menu.Item>
-        <Menu.Item>
-          <a
-            target="_blank"
-            rel="noopener noreferrer"
-            href="https://www.luohanacademy.com"
-          >
-            3rd menu item
-          </a>
+          <a onClick={() => dispatcher(push("/settings"))}>查看消息</a>
         </Menu.Item>
         <Menu.Item danger onClick={() => logOut(dispatcher)}>
-          注销
+          退出登录
         </Menu.Item>
       </Menu>
     </Menu>
@@ -51,11 +31,12 @@ const Navbar = () => {
       <Header className="header">
         <div className="header-left">
           <div className="undefined">
-            <img src={logo} alt="undefined" width={120} height={56} />
+            <img src={logo} alt="undefined" width={133} height={36} />
           </div>
-          <div className="header-item">nav 1</div>
-          <div className="header-item">nav 2</div>
-          <div className="header-item">nav 3</div>
+          <div className="header-item">我的日程</div>
+          <div className="header-item">我的项目</div>
+          <div className="header-item">数据统计</div>
+          <div className="header-item">关于</div>
         </div>
         <div className="header-right">
           <Dropdown

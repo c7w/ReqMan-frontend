@@ -14,7 +14,6 @@ const Login = () => {
   // Judge if logged in
   const userInfo = useSelector(getUserStore);
   useEffect(() => {
-    console.debug(userInfo);
     if (userInfo.length > 10) {
       immediateToast("success", {
         title: "您已经登录...",
@@ -44,29 +43,35 @@ const Login = () => {
     if (data.code === 0) {
       immediateToast("success", {
         title: "登录成功！",
-        timeout: 3000,
+        timeout: 2000,
         position: "topRight",
       });
       updateUserInfo(dispatcher);
-      setTimeout(() => dispatcher(push("/dashboard")), 3000);
+      setTimeout(() => dispatcher(push("/dashboard")), 2000);
     } else if (data.code === 1) {
       immediateToast("success", {
         title: "您已登录！",
-        timeout: 3000,
+        timeout: 2000,
         position: "topRight",
       });
       updateUserInfo(dispatcher);
-      setTimeout(() => dispatcher(push("/dashboard")), 3000);
+      setTimeout(() => dispatcher(push("/dashboard")), 2000);
     } else if (data.code === 2) {
       immediateToast("error", {
         title: "未确认的身份信息...",
-        timeout: 5000,
+        timeout: 3000,
         position: "topRight",
       });
-    } else {
+    } else if (data.code === 3) {
       immediateToast("error", {
         title: "您的密码错误！",
-        timeout: 5000,
+        timeout: 3000,
+        position: "topRight",
+      });
+    } else if (data.code === -3) {
+      immediateToast("error", {
+        title: "您的请求过于频繁！",
+        timeout: 3000,
         position: "topRight",
       });
     }

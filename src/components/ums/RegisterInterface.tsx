@@ -146,130 +146,137 @@ const RegisterInterface = (props: RegisterInterfaceProps) => {
 
   return (
     <div className={"root-screen"}>
-      <div className={"register-board"}>
-        <p className={"register-title"}>注册</p>
-        <p className={"register-prompt"}>
-          <span style={{ color: "red" }}>* </span>
-          <span style={{ color: "black" }}>用户名：</span>
-        </p>
-        <Tooltip
-          title={userError}
-          visible={userError !== "" && userError !== " "}
-          placement={"right"}
-        >
-          <div className={getInputClassName(userError)}>
-            <Input
-              size={"large"}
-              prefix={<UserOutlined />}
-              type="text"
-              placeholder=""
-              onChange={userCheck}
-              bordered={false}
-            />
-          </div>
-        </Tooltip>
-        <p className={"register-prompt"}>
-          <span style={{ color: "red" }}>* </span>
-          <span style={{ color: "black" }}>邮箱：</span>
-        </p>
-        <Tooltip
-          title={mailError}
-          visible={mailError !== "" && mailError !== " "}
-          placement={"right"}
-        >
-          <div className={getInputClassName(mailError)}>
-            <Input
-              size={"large"}
-              prefix={<MailOutlined />}
-              type="text"
-              placeholder=""
-              onChange={mailCheck}
-              bordered={false}
-            />
-          </div>
-        </Tooltip>
-        <p className={"register-prompt"}>
-          <span style={{ color: "red" }}>* </span>
-          <span style={{ color: "black" }}>密码：</span>
-        </p>
-        <Tooltip
-          title={passwordError}
-          visible={passwordError !== "" && passwordError !== " "}
-          placement={"right"}
-        >
-          <div className={getInputClassName(passwordError)}>
-            <Input.Password
-              size={"large"}
-              prefix={<KeyOutlined />}
-              type="text"
-              placeholder=""
-              onChange={passwordCheck}
-              bordered={false}
-            />
-          </div>
-        </Tooltip>
+      <div className={"register-board-container"}>
+        <div className={"register-board"}>
+          <p className={"register-title"}>注册</p>
+          <p className={"register-prompt"}>
+            <span style={{ color: "red" }}>* </span>
+            <span style={{ color: "black" }}>用户名：</span>
+          </p>
+          <Tooltip
+            title={userError}
+            visible={userError !== "" && userError !== " "}
+            placement={"right"}
+            className={"register-tooltip"}
+          >
+            <div className={getInputClassName(userError)}>
+              <Input
+                size={"large"}
+                prefix={<UserOutlined />}
+                type="text"
+                placeholder=""
+                onChange={userCheck}
+                bordered={false}
+              />
+            </div>
+          </Tooltip>
+          <p className={"register-prompt"}>
+            <span style={{ color: "red" }}>* </span>
+            <span style={{ color: "black" }}>邮箱：</span>
+          </p>
+          <Tooltip
+            title={mailError}
+            visible={mailError !== "" && mailError !== " "}
+            placement={"right"}
+            className={"register-tooltip"}
+          >
+            <div className={getInputClassName(mailError)}>
+              <Input
+                size={"large"}
+                prefix={<MailOutlined />}
+                type="text"
+                placeholder=""
+                onChange={mailCheck}
+                bordered={false}
+              />
+            </div>
+          </Tooltip>
+          <p className={"register-prompt"}>
+            <span style={{ color: "red" }}>* </span>
+            <span style={{ color: "black" }}>密码：</span>
+          </p>
+          <Tooltip
+            title={passwordError}
+            visible={passwordError !== "" && passwordError !== " "}
+            placement={"right"}
+            className={"register-tooltip"}
+          >
+            <div className={getInputClassName(passwordError)}>
+              <Input.Password
+                size={"large"}
+                prefix={<KeyOutlined />}
+                type="text"
+                placeholder=""
+                onChange={passwordCheck}
+                bordered={false}
+              />
+            </div>
+          </Tooltip>
 
-        <p className={"register-prompt"}>
-          <span style={{ color: "red" }}>* </span>
-          <span style={{ color: "black" }}>确认密码：</span>
-        </p>
-        <Tooltip
-          title={doubleCheckError}
-          visible={doubleCheckError !== "" && doubleCheckError !== " "}
-          placement={"right"}
-        >
-          <div className={getInputClassName(doubleCheckError)}>
-            <Input.Password
-              size={"large"}
-              prefix={<KeyOutlined />}
-              type="text"
-              placeholder=""
-              onChange={check}
-              bordered={false}
-            />
-          </div>
-        </Tooltip>
+          <p className={"register-prompt"}>
+            <span style={{ color: "red" }}>* </span>
+            <span style={{ color: "black" }}>确认密码：</span>
+          </p>
+          <Tooltip
+            title={doubleCheckError}
+            visible={doubleCheckError !== "" && doubleCheckError !== " "}
+            placement={"right"}
+            className={"register-tooltip"}
+          >
+            <div className={getInputClassName(doubleCheckError)}>
+              <Input.Password
+                size={"large"}
+                prefix={<KeyOutlined />}
+                type="text"
+                placeholder=""
+                onChange={check}
+                bordered={false}
+              />
+            </div>
+          </Tooltip>
 
-        <p className={"register-prompt"}>
-          <span style={{ color: "black" }}>&nbsp;&nbsp;项目邀请码：</span>
-        </p>
-        <Tooltip
-          title={invitationError}
-          visible={invitationError !== "" && invitationError !== " "}
-          placement={"right"}
-        >
-          <div className={getInputClassName(invitationError)}>
-            <Input
-              size={"large"}
-              prefix={<KeyOutlined />}
-              type="text"
-              placeholder=""
-              onChange={invitationCheck}
-              bordered={false}
-            />
-          </div>
-        </Tooltip>
+          <p className={"register-prompt"}>
+            <span style={{ color: "black" }}>&nbsp;&nbsp;项目邀请码：</span>
+          </p>
+          <Tooltip
+            title={invitationError}
+            visible={invitationError !== "" && invitationError !== " "}
+            placement={"right"}
+            className={"register-tooltip"}
+          >
+            <div className={getInputClassName(invitationError)}>
+              <Input
+                size={"large"}
+                prefix={<KeyOutlined />}
+                type="text"
+                placeholder=""
+                onChange={invitationCheck}
+                bordered={false}
+              />
+            </div>
+          </Tooltip>
 
-        <Button
-          size={"large"}
-          type={"primary"}
-          shape={"round"}
-          disabled={
-            passwordError !== " " ||
-            userError !== " " ||
-            (invitationError !== "" && invitationError !== " ") ||
-            mailError !== " " ||
-            doubleCheckError !== " "
-          }
-          onClick={() => handleCreate()}
-          className={"register-button"}
-        >
-          注册
-        </Button>
+          <Button
+            size={"large"}
+            type={"primary"}
+            shape={"round"}
+            disabled={
+              passwordError !== " " ||
+              userError !== " " ||
+              (invitationError !== "" && invitationError !== " ") ||
+              mailError !== " " ||
+              doubleCheckError !== " "
+            }
+            onClick={() => handleCreate()}
+            className={"register-button"}
+          >
+            注册
+          </Button>
 
-        <div className={"register-forget"}>
-          <div className={"register"}>
-            <a onClick={() => dispatcher(push("/login"))}> 现在去登录 </a>
+          <div className={"register-forget"}>
+            <div className={"register"}>
+              <a onClick={() => dispatcher(push("/login"))}> 现在去登录 </a>
+            </div>
           </div>
         </div>
       </div>
