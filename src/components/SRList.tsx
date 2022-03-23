@@ -15,24 +15,32 @@ export type TableListItem = {
 
 interface SRListProps {
   readonly showChoose: boolean;
+  readonly myIRKey: number;
+  readonly curSRKey: Array<number>;
 }
 
 const SRList = (props: SRListProps) => {
+  console.debug(props.myIRKey);
+  console.log(props.curSRKey);
   const dataSRList = [];
   const creators = ["qc", "c7w", "hxj", "wxy", "lmd"];
   const my_status = ["start", "progress", "finished", "debug"];
-  for (let i = 0; i < 4; i += 1) {
+  for (let i = 0; i < 10; i += 1) {
     dataSRList.push({
       key: i,
       name: "[SR.001.000]",
       desc: "这是一个 SR 任务描述",
       creator: creators[Math.floor(Math.random() * creators.length)],
-      status: my_status[i],
+      status: my_status[i % 4],
       createdAt: Date.now() - Math.floor(Math.random() * 1000000000),
     });
   }
+  const curSRList = [];
+  for (let i = 0; i < props.curSRKey.length; i += 1) {
+    curSRList.push(dataSRList[props.curSRKey[i]]);
+  }
   const [tableListDataSource, settableListDataSource] =
-    useState<TableListItem[]>(dataSRList);
+    useState<TableListItem[]>(curSRList);
 
   const columns: ProColumns<TableListItem>[] = [
     {
@@ -151,8 +159,11 @@ const SRList = (props: SRListProps) => {
 
   const chooseColumn: ProColumns<TableListItem>[] = [];
   for (let i = 0; i < 5; i += 1) {
+    columns[i].filters = false;
     chooseColumn.push(columns[i]);
   }
+
+  console.debug(tableListDataSource);
 
   if (!props.showChoose) {
     return (
@@ -166,6 +177,9 @@ const SRList = (props: SRListProps) => {
               data: tableListDataSource,
               success: true,
             });
+          }}
+          pagination={{
+            pageSize: 5,
           }}
           rowKey="key"
           editable={{
@@ -203,22 +217,28 @@ const SRList = (props: SRListProps) => {
             onCleanSelected,
           }) => (
             <Space size={24}>
-              <span>
-                已选 {selectedRowKeys.length} 项
-                <a style={{ marginLeft: 8 }} onClick={onCleanSelected}>
-                  取消选择
-                </a>
-              </span>
+              <span>已选 {selectedRowKeys.length} 项</span>
               <span>{`关联 SR 任务: ${selectedRows.reduce(
                 (pre, item) => pre + " " + item.name,
                 ""
               )} `}</span>
             </Space>
           )}
-          dataSource={tableListDataSource}
+          request={(params, sorter, filter) => {
+            // 表单搜索项会从 params 传入，传递给后端接口。
+            console.log(params, sorter, filter);
+            return Promise.resolve({
+              data: tableListDataSource,
+              success: true,
+            });
+          }}
+          pagination={{
+            pageSize: 5,
+          }}
           rowKey="key"
           search={false}
           dateFormatter="string"
+          toolBarRender={false}
         />
       </div>
     );

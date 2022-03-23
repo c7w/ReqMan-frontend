@@ -43,7 +43,7 @@ const SiteRouter = () => {
             path="IRlist"
             element={<IRList unimportant={"unimportant"} />}
           />
-          <Route path="SRlist" element={<SRList showChoose={true} />} />
+          {/*<Route path="SRlist" element={<SRList showChoose={true} />} />*/}
         </Routes>
       </BrowserRouter>
     </Provider>
