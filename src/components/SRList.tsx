@@ -198,7 +198,7 @@ const SRList = (props: SRListProps) => {
       <div className={"SRTable"}>
         <EditableProTable<TableListItem>
           columns={columns}
-          request={(params, sorter, filter) => {
+          request={() => {
             return Promise.resolve({
               data: tableListDataSource,
               success: true,
@@ -251,7 +251,7 @@ const SRList = (props: SRListProps) => {
               )} `}</span>
             </Space>
           )}
-          request={(params, sorter, filter) => {
+          request={() => {
             return Promise.resolve({
               data: tableListDataSource,
               success: true,

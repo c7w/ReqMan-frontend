@@ -163,7 +163,7 @@ const IRList = () => {
       <EditableProTable<TableListItem>
         columns={columns}
         // dataSource={temp}
-        request={(params, sorter, filter) => {
+        request={() => {
           return Promise.resolve({
             data: tableListDataSource,
             success: true,
