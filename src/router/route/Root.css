@@ -1,0 +1,67 @@
+.root-screen {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  padding: 0 0;
+  /*background-image: url("../../public/registerbg.jpeg");*/
+  background-image: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+  background-image: linear-gradient(120deg, #e6e9f0 0%, #eef1f5 100%);
+}
+
+
+.root-proj-name {
+  position: fixed;
+  top: 5vh;
+  text-align: center;
+  width: 100vw;
+  color: #000;
+  font-family: Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+  font-size: 12vh;
+  user-select: none;
+
+}
+
+.root-proj-slogan {
+  position: fixed;
+  top: 45%;
+  text-align: center;
+  width: 100vw;
+  color: #000;
+  font-family: "Segoe UI";
+  font-size: 4vh;
+  user-select: none;
+  font-style: italic;
+}
+
+.root-footer {
+  position: fixed;
+  bottom: 2%;
+  text-align: center;
+  width: 100vw;
+  color: #000;
+  font-family: "Consolas";
+  font-size: 20px;
+  user-select: none;
+  font-style: italic;
+}
+
+.root-loading {
+  position: fixed;
+  bottom: 20%;
+  color: yellow;
+  font-size: 24px;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+}
+
+.root-spinner {
+  animation-name: my-rotate;
+  animation-iteration-count: infinite;
+  animation-duration: 2s;
+}
+
+@keyframes my-rotate {
+  0% { transform: rotate(45deg); }
+  100% { transform: rotate(405deg); }
+}

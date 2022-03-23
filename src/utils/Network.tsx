@@ -1,3 +1,6 @@
+import SITE_CONFIG from "../settings.js";
+import { getCookie } from "./CookieOperation";
+
 interface APIConfig {
   //API 配置
   path: string;
@@ -17,7 +20,19 @@ interface NaiveResponse {
 
 //请求函数
 const request_json = async (config: APIConfig, settings: Settings = {}) => {
-  let path = config.path;
+  let path = SITE_CONFIG.BACKEND + config.path;
+
+  settings.body = {
+    ...settings.body,
+    sessionId: getCookie("sessionId", Math.random().toString()),
+  };
+
+  settings.getParams = settings.getParams || "";
+  settings.getParams += `&sessionId=${getCookie(
+    "sessionId",
+    Math.random().toString()
+  )}`;
+
   let initRequest: RequestInit;
   if (config.method === "post") {
     initRequest = {
@@ -25,7 +40,7 @@ const request_json = async (config: APIConfig, settings: Settings = {}) => {
       headers: {
         ...settings.headers,
         "Content-Type": "application/json",
-        credentials: "include",
+        // credentials: "include",
       },
       body: JSON.stringify(settings.body),
     };
@@ -40,7 +55,12 @@ const request_json = async (config: APIConfig, settings: Settings = {}) => {
     };
   }
   console.debug(initRequest);
-  return await fetch(path, initRequest).then((data) => data.json());
+  return await fetch(path, initRequest)
+    .then((data) => data.json())
+    .then((json) => {
+      console.debug(json);
+      return json;
+    });
 };
 
 export default request_json;

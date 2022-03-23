@@ -2,32 +2,33 @@ import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
 import { Layout, Breadcrumb } from "antd";
 import "./Home.css";
-import React from "react";
+import React, { ReactElement } from "react";
 import Calendar from "../components/rms/Calendar";
+import { useSelector } from "react-redux";
+import { getUserStore } from "../store/slices/UserSlice";
+import { store } from "../store/ConfigureStore";
 
 const { Content, Footer } = Layout;
 
-const Home = () => {
+interface LayoutProps {
+  sidebar: boolean;
+  children: ReactElement;
+}
+
+const Home = (props: LayoutProps) => {
+  const userInfo = useSelector(getUserStore);
+  console.debug(store.getState());
   return (
     <div>
       <Layout className="home">
         <Navbar />
         <Layout className="layout">
-          <Sidebar />
+          {props.sidebar ? <Sidebar /> : <></>}
           <div className="layout-right">
-            <Content className="content">
-              <Breadcrumb style={{ margin: "16px 0" }}>
-                <Breadcrumb.Item>undefined</Breadcrumb.Item>
-                <Breadcrumb.Item>frontend</Breadcrumb.Item>
-                <Breadcrumb.Item>Issues</Breadcrumb.Item>
-                <Breadcrumb.Item>#16</Breadcrumb.Item>
-              </Breadcrumb>
-              <div style={{ padding: 24, minHeight: 200 }}>HI MAN!</div>
-              <Calendar />
-            </Content>
-            <Footer className="footer">
-              Developed and Maintained by undefined
-            </Footer>
+            <Content className="content">{props.children}</Content>
+            <div className={"layout-footer"}>
+              © 2022 undefined. All rights reserved.
+            </div>
           </div>
         </Layout>
       </Layout>

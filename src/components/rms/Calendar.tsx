@@ -5,9 +5,9 @@ import List from "./List";
 const Calendar = () => {
   return (
     <div className="calendar">
-      <List name={"to do list"} />
-      <List name={"wip list"} />
-      <List name={"done list"} />
+      <List name={"待办事项"} />
+      <List name={"进行中"} />
+      <List name={"已完成"} />
     </div>
   );
 };

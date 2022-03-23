@@ -13,4 +13,16 @@ const setCookie = (key: string, value: string) => {
   document.cookie = key + "=" + value;
 };
 
-export { getCookie, setCookie };
+const generateRandomString = (num: number) => {
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let result1 = " ";
+  const charactersLength = characters.length;
+  for (let i = 0; i < num; i++) {
+    result1 += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+
+  return result1;
+};
+
+export { getCookie, setCookie, generateRandomString };

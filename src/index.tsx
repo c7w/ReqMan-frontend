@@ -2,8 +2,10 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
-import Router from "./router/router";
+import Router from "./router/Router";
+import iziToast from "izitoast";
 
+// Entrance
 ReactDOM.render(
   <React.StrictMode>
     <Router />

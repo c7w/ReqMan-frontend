@@ -1,18 +1,18 @@
 const API = {
   GET_USER: {
-    path: "/ums/user",
+    path: "/ums/user/",
     method: "get",
   },
   LOGIN: {
-    path: " /ums/login",
+    path: "/ums/login/",
     method: "post",
   },
   LOGOUT: {
-    path: " /ums/logout",
+    path: "/ums/logout/",
     method: "post",
   },
   REGISTER: {
-    path: "/ums/register",
+    path: "/ums/register/",
     method: "post",
   },
   CHECK_USERNAME_AVAILABLE: {

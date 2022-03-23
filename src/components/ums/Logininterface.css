@@ -1,92 +1,89 @@
-@import "~antd/dist/antd.css";
-
-.screen {
-  position: absolute;
-  height: 100%;
-  width: 100%;
-  padding: 0 0;
-  background-image: url("../../../public/registerbg.jpeg");
-}
-
-.blur {
-  position: absolute;
-  height: 100%;
-  width: 100%;
-  background: rgba(255, 255, 255, 0.14);
-}
-
 .login-logo {
   display: block;
   position: absolute;
   height: 512px;
   width: 512px;
   left: calc(50% - 600px);
-  top: calc(50% - 276px);
+  top: 15%;
   background-image: url("../../../public/logo512.png");
 }
 
-.ul {
-  display: block;
+.login-logo-container {
   position: absolute;
-  left: calc(50% + 100px);
-  top: calc(50% - 200px);
-  padding: 30px 50px;
-  text-align: center;
-  border-radius: 30px;
-  border: 0.5px solid #96beff;
-  background: rgba(255, 255, 255, 0.76);
+  height: 100vh;
+  right: 45vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  user-select: none;
 }
 
-.title {
+.login-board-container {
+  position: absolute;
+  height: 100vh;
+  left: 65vw;
   display: flex;
-  margin: auto auto;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-board {
+  position: relative;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 0.5rem;
+  width: 20rem;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.login-title {
+  margin: 8px auto;
   font-size: 30px;
   font-family: "Times New Roman";
   color: #000000;
+  user-select: none;
 }
 
-.userInfo {
-  display: flex;
-  flex-direction: row;
-  text-align: center;
-  padding-top: 20px;
-  padding-bottom: 10px;
+.login-prompt {
+  margin: 1rem 0 0;
+  user-select: none;
 }
 
-.userImg {
-  diaplay: flex;
-  width: 14px;
-  padding-top: 18px;
-  margin-right: 10px;
-  margin-left: 10px;
-}
-
-.myInput {
-  margin: 0;
-  padding-left: 15px;
-  height: 50px;
-  width: 280px;
-  font-size: 20px;
+.my-input {
+  margin: 0.5rem auto 1rem;
+  padding: 2px;
+  width: 100%;
+  font-size: 1rem;
   text-align: left;
-  border-radius: 5px;
+  border-radius: 10px;
+  border: 1px solid #000c17;
+  background-color: white;
+  transition: all 1s;
 }
 
-.ant-input {
-  margin-left: 15px;
-  font-size: 15px;
+.input-correct {
+  border-color: rgb(102, 200, 51);
+  box-shadow: 0 0 0 5px rgb(102 200 51 / 20%);
 }
 
-.loginButton {
+.input-wrong {
+  border-color: rgb(240 0 0);
+  box-shadow: 0 0 0 5px rgb(240 0 0 / 20%);
+}
+
+.login-button {
   text-align: center;
   height: 40px;
-  margin-top: 20px;
+  margin-top: 1.5rem;
 }
 
 .register-forget {
   display: flex;
   flex-direction: row;
-  text-align: center;
-  padding-top: 20px;
+  margin: 1rem auto;
 }
 
 .register {
@@ -101,12 +98,6 @@
   color: #000000;
 }
 
-.footnote {
-  position: absolute;
-  bottom: 0px;
-  left: calc(50% - 120px);
-  text-align: center;
-  font-family: "Microsoft YaHei UI";
-  font-size: 15px;
-  color: #ffffff;
+.ant-input {
+  user-select: unset;
 }
