@@ -19,27 +19,25 @@ interface IRListProps {
 }
 
 const IRList = (props: IRListProps) => {
-  const tableInit: TableListItem[] = [];
+  const dataIRList: TableListItem[] = [];
+  const creators = ["qc", "c7w", "hxj", "wxy", "lmd"];
+  for (let i = 0; i < 30; i += 1) {
+    dataIRList.push({
+      key: i,
+      // progress 数据须与后端刷新数据进行对接
+      progress: 50,
+      name: "[IR.001.002]",
+      desc: "我是关于这个任务很长很长很长很长很长很长长很长很长很长长很长很长很长长很长很长很长的描述",
+      creator: creators[Math.floor(Math.random() * creators.length)],
+      createdAt: Date.now() - Math.floor(Math.random() * 1000000000),
+    });
+  }
   const [tableListDataSource, settableListDataSource] =
-    useState<TableListItem[]>(tableInit);
+    useState<TableListItem[]>(dataIRList);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  useEffect(() => {
-    const creators = ["qc", "c7w", "hxj", "wxy", "lmd"];
-    const dataIRList = [];
 
-    for (let i = 0; i < 30; i += 1) {
-      dataIRList.push({
-        key: i,
-        // progress 数据须与后端刷新数据进行对接
-        progress: 50,
-        name: "[IR.001.002]",
-        desc: "我是关于这个任务很长很长很长很长很长很长长很长很长很长长很长很长很长长很长很长很长的描述",
-        creator: creators[Math.floor(Math.random() * creators.length)],
-        createdAt: Date.now() - Math.floor(Math.random() * 1000000000),
-      });
-    }
-    settableListDataSource(dataIRList);
-  }, []);
+  // settableListDataSource(dataIRList);
+  console.debug(tableListDataSource);
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -154,10 +152,18 @@ const IRList = (props: IRListProps) => {
   ];
 
   return (
-    <div className={"IRTable"}>
+    <div className={`IRTable`}>
       <EditableProTable<TableListItem>
         columns={columns}
-        dataSource={tableListDataSource}
+        // dataSource={temp}
+        request={(params, sorter, filter) => {
+          // 表单搜索项会从 params 传入，传递给后端接口。
+          console.log(params, sorter, filter);
+          return Promise.resolve({
+            data: tableListDataSource,
+            success: true,
+          });
+        }}
         rowKey="key"
         expandable={{ expandedRowRender }}
         pagination={{

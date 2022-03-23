@@ -18,25 +18,21 @@ interface SRListProps {
 }
 
 const SRList = (props: SRListProps) => {
-  const tableInit: TableListItem[] = [];
+  const dataSRList = [];
+  const creators = ["qc", "c7w", "hxj", "wxy", "lmd"];
+  const my_status = ["start", "progress", "finished", "debug"];
+  for (let i = 0; i < 4; i += 1) {
+    dataSRList.push({
+      key: i,
+      name: "[SR.001.000]",
+      desc: "这是一个 SR 任务描述",
+      creator: creators[Math.floor(Math.random() * creators.length)],
+      status: my_status[i],
+      createdAt: Date.now() - Math.floor(Math.random() * 1000000000),
+    });
+  }
   const [tableListDataSource, settableListDataSource] =
-    useState<TableListItem[]>(tableInit);
-  useEffect(() => {
-    const creators = ["qc", "c7w", "hxj", "wxy", "lmd"];
-    const my_status = ["start", "progress", "finished", "debug"];
-    const dataSRList = [];
-    for (let i = 0; i < 4; i += 1) {
-      dataSRList.push({
-        key: i,
-        name: "[SR.001.000]",
-        desc: "这是一个 SR 任务描述",
-        creator: creators[Math.floor(Math.random() * creators.length)],
-        status: my_status[i],
-        createdAt: Date.now() - Math.floor(Math.random() * 1000000000),
-      });
-    }
-    settableListDataSource(dataSRList);
-  }, []);
+    useState<TableListItem[]>(dataSRList);
 
   const columns: ProColumns<TableListItem>[] = [
     {
@@ -163,7 +159,14 @@ const SRList = (props: SRListProps) => {
       <div className={"SRTable"}>
         <EditableProTable<TableListItem>
           columns={columns}
-          dataSource={tableListDataSource}
+          request={(params, sorter, filter) => {
+            // 表单搜索项会从 params 传入，传递给后端接口。
+            console.log(params, sorter, filter);
+            return Promise.resolve({
+              data: tableListDataSource,
+              success: true,
+            });
+          }}
           rowKey="key"
           editable={{
             type: "multiple",
