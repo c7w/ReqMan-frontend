@@ -36,21 +36,21 @@ const Root = () => {
             title: "连接成功",
             message: `欢迎回来，${username}！`,
             position: "topRight",
-            timeout: 4000,
+            timeout: 2000,
           });
           setTimeout(() => {
             dispatcher(push("/dashboard")); // Use this way to redirect
-          }, 4000);
+          }, 2000);
         } else {
           immediateToast("success", {
             title: "连接成功",
             message: "欢迎来到 ReqMan，请登录！",
             position: "topRight",
-            timeout: 4000,
+            timeout: 2000,
           });
           setTimeout(() => {
             dispatcher(push("/login"));
-          }, 4000);
+          }, 2000);
         }
       })
       .catch(() => {
@@ -70,7 +70,8 @@ const Root = () => {
         <img src={logo} width={800} height={400} />
       </div>
       <div className={"root-proj-slogan"}>
-        An [adj] and [adj] Requirement Management Servant
+        Your <span style={{ fontWeight: "bold" }}>Req</span>uirement{" "}
+        <span style={{ fontWeight: "bold" }}>Man</span>agement Servant
       </div>
       <div className={"root-loading"}>
         <Loading3QuartersOutlined
@@ -79,7 +80,7 @@ const Root = () => {
         />
       </div>
       <div className={"root-footer"}>
-        © 2022 undefined. All rights reversed.
+        © 2022 undefined. All rights reserved.
       </div>
     </div>
   );

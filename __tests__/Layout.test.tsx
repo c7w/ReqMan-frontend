@@ -31,7 +31,9 @@ describe("Layout", () => {
   test("Layout exists", async () => {
     const wrapper = mount(
       <Provider store={store}>
-        <Layout />
+        <Layout sidebar={true}>
+          <div>123</div>
+        </Layout>
       </Provider>
     );
 

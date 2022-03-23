@@ -17,8 +17,7 @@ const Register = () => {
   // Judge if logged in
   const userInfo = useSelector(getUserStore);
   useEffect(() => {
-    console.debug(123);
-    if (userInfo !== "") {
+    if (userInfo.length > 10) {
       immediateToast("info", {
         title: "您已经登录...",
         timeout: 1500,
@@ -49,21 +48,21 @@ const Register = () => {
     if (data.code === 0) {
       immediateToast("success", {
         title: "注册成功！",
-        timeout: 3000,
+        timeout: 2000,
         position: "topRight",
       });
       updateUserInfo(dispatcher);
-      setTimeout(() => dispatcher(push("/dashboard")), 3000);
+      setTimeout(() => dispatcher(push("/dashboard")), 2000);
     } else if (data.code === 1) {
       immediateToast("error", {
         title: "注册失败...",
-        timeout: 5000,
+        timeout: 2000,
         position: "topRight",
       });
     } else if (data.code === 2) {
       immediateToast("error", {
         title: "项目邀请码无效...",
-        timeout: 5000,
+        timeout: 3000,
         position: "topRight",
       });
     }
