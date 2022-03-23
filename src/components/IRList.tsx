@@ -98,7 +98,7 @@ const IRList = () => {
       title: "进度",
       width: 80,
       dataIndex: "creator",
-      align: "right",
+      align: "center",
       editable: false,
       render: (_, record) => <Progress percent={record.progress} />,
     },
