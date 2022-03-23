@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import "./Root.css";
-import logo from "../../assets/undefined.png";
+import logo from "../../assets/Reqman-1.svg";
 import { Loading3QuartersOutlined } from "@ant-design/icons";
 import request_json from "../../utils/Network";
 import API from "../../utils/APIList";
@@ -67,14 +67,14 @@ const Root = () => {
   return (
     <div className={"root-screen"}>
       <div className={"root-proj-name"}>
-        <img src={logo} width={200} height={200} />
+        <img src={logo} width={800} height={400} />
       </div>
       <div className={"root-proj-slogan"}>
-        Your Requirement Management Servant
+        An [adj] and [adj] Requirement Management Servant
       </div>
       <div className={"root-loading"}>
         <Loading3QuartersOutlined
-          style={{ fontSize: "72px", color: "lightyellow" }}
+          style={{ fontSize: "72px", color: "black" }}
           className={"root-spinner"}
         />
       </div>

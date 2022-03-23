@@ -2,7 +2,7 @@ import { Layout, Menu, Dropdown, Avatar } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import React from "react";
 import "./Navbar.css";
-import undefined_logo from "../../assets/undefined-2-blue-italic.png";
+import logo from "../../assets/Reqman-1.svg";
 import { logOut } from "../../store/functions/UMS";
 import { useDispatch } from "react-redux";
 
@@ -51,7 +51,7 @@ const Navbar = () => {
       <Header className="header">
         <div className="header-left">
           <div className="undefined">
-            <img src={undefined_logo} alt="undefined" width={120} height={56} />
+            <img src={logo} alt="undefined" width={120} height={56} />
           </div>
           <div className="header-item">nav 1</div>
           <div className="header-item">nav 2</div>
