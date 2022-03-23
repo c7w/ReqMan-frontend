@@ -9,7 +9,7 @@ module.exports = {
     "react-app",
     "plugin:prettier/recommended",
   ],
-  parser: "@babel/eslint-parser",
+  parser: "@typescript-eslint/parser",
   parserOptions: {
     ecmaFeatures: {
       jsx: true,
@@ -20,6 +20,7 @@ module.exports = {
   },
   plugins: ["react", "@typescript-eslint"],
   rules: {
+    "@typescript-eslint/no-var-requires": 0,
     "react/jsx-filename-extension": [
       2,
       { extensions: [".js", ".jsx", ".ts", ".tsx"] },

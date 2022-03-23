@@ -1,0 +1,78 @@
+@import "~antd/dist/antd.css";
+
+.screen {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  padding: 0 0;
+  background-image: url("../../../public/registerbg.jpeg");
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.register-board-container {
+  position: absolute;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.register-board {
+  width: 25rem;
+  position: relative;
+  margin: 0 auto;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+
+  display: flex;
+  flex-direction: column;
+
+}
+
+.register-title {
+  margin: 8px auto 0;
+  font-size: 30px;
+  font-family: "Times New Roman";
+  color: #000000;
+  user-select: none;
+}
+
+.register-prompt {
+  margin: 0 0 0;
+  user-select: none;
+}
+
+.register-tooltip {
+  width: 300px;
+  text-align: center;
+}
+
+.register-forget {
+  display: flex;
+  flex-direction: row;
+  margin: 1rem auto 0;
+  justify-content: flex-start;
+}
+
+.register {
+  padding-right: 10px;
+  color: #000000;
+}
+
+.forget {
+  text-align: center;
+  padding-left: 10px;
+  color: #000000;
+}
+
+.register-button {
+  text-align: center;
+  height: 40px;
+  margin-top: 1rem;
+}

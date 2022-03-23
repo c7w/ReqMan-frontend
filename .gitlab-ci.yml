@@ -2,6 +2,8 @@ image: registry.secoder.net/tool/deployer
 
 stages:
   - pre
+  - test
+  - sonarqube
   - build
   - deploy
 
@@ -17,6 +19,45 @@ build_cache:
     - yarn config set registry https://mirrors.cloud.tencent.com/npm/
     - yarn install
 
+style-test:
+  stage: test
+  needs: [build_cache]
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - node_modules/
+      - yarn.lock
+  script:
+    - yarn lint
+
+unit-test:
+  stage: test
+  needs: [build_cache]
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - node_modules/
+      - yarn.lock
+      - coverage/
+      - test-report.xml
+  script:
+    - yarn test
+
+sonar:
+  stage: sonarqube
+  image: node:12.18.3
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - node_modules/
+      - yarn.lock
+      - coverage/
+  script:
+    - SUFFIX=$RANDOM
+    - curl "http://10.0.0.11/sonar-scanner.tar.gz" -s -o "/tmp/sonar-$SUFFIX.tar.gz"
+    - tar -xf "/tmp/sonar-$SUFFIX.tar.gz" -C /opt
+    - /opt/sonar-scanner/bin/sonar-scanner
+
 build:
   stage: build
   needs: [build_cache]
@@ -25,12 +66,33 @@ build:
     paths:
       - node_modules/
       - yarn.lock
-  script: 
+  script:
+    - cp ./.env.frontend-master ./.env
     - export BUILD_IMAGE_NAME=$CI_REGISTRY_IMAGE
     - export BUILD_IMAGE_TAG=$CI_COMMIT_REF_SLUG
     - export BUILD_IMAGE_USERNAME=$CI_REGISTRY_USER
     - export BUILD_IMAGE_PASSWORD=$CI_REGISTRY_PASSWORD
     - deployer build
+  only:
+    - master
+
+build-dev:
+  stage: build
+  needs: [build_cache]
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - node_modules/
+      - yarn.lock
+  script:
+    - cp ./.env.frontend-dev ./.env
+    - export BUILD_IMAGE_NAME=$CI_REGISTRY_IMAGE
+    - export BUILD_IMAGE_TAG=$CI_COMMIT_REF_SLUG
+    - export BUILD_IMAGE_USERNAME=$CI_REGISTRY_USER
+    - export BUILD_IMAGE_PASSWORD=$CI_REGISTRY_PASSWORD
+    - deployer build
+  only:
+    - dev
 
 deploy:
   stage: deploy

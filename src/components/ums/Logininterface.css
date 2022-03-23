@@ -1,0 +1,103 @@
+.login-logo {
+  display: block;
+  position: absolute;
+  height: 512px;
+  width: 512px;
+  left: calc(50% - 600px);
+  top: 15%;
+  background-image: url("../../../public/logo512.png");
+}
+
+.login-logo-container {
+  position: absolute;
+  height: 100vh;
+  right: 45vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  user-select: none;
+}
+
+.login-board-container {
+  position: absolute;
+  height: 100vh;
+  left: 65vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-board {
+  position: relative;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 0.5rem;
+  width: 20rem;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.login-title {
+  margin: 8px auto;
+  font-size: 30px;
+  font-family: "Times New Roman";
+  color: #000000;
+  user-select: none;
+}
+
+.login-prompt {
+  margin: 1rem 0 0;
+  user-select: none;
+}
+
+.my-input {
+  margin: 0.5rem auto 1rem;
+  padding: 2px;
+  width: 100%;
+  font-size: 1rem;
+  text-align: left;
+  border-radius: 10px;
+  border: 1px solid #000c17;
+  background-color: white;
+  transition: all 1s;
+}
+
+.input-correct {
+  border-color: rgb(102, 200, 51);
+  box-shadow: 0 0 0 5px rgb(102 200 51 / 20%);
+}
+
+.input-wrong {
+  border-color: rgb(240 0 0);
+  box-shadow: 0 0 0 5px rgb(240 0 0 / 20%);
+}
+
+.login-button {
+  text-align: center;
+  height: 40px;
+  margin-top: 1.5rem;
+}
+
+.register-forget {
+  display: flex;
+  flex-direction: row;
+  margin: 1rem auto;
+}
+
+.register {
+  text-align: center;
+  padding-right: 10px;
+  color: #000000;
+}
+
+.forget {
+  text-align: center;
+  padding-left: 10px;
+  color: #000000;
+}
+
+.ant-input {
+  user-select: unset;
+}
