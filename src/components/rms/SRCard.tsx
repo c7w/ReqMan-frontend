@@ -1,30 +1,37 @@
-import React from "react";
+import React, { useState } from "react";
 import "./SRCard.css";
 import { Avatar, Typography, Menu, Dropdown } from "antd";
 import { UserOutlined, DownOutlined } from "@ant-design/icons";
+import { useDispatch, useSelector } from "react-redux";
+import { getSR, updateSR } from "../../store/slices/rmsSlice";
 const { Text } = Typography;
 
 interface SRCardProps {
   readonly id: number; // id
-  readonly project: string; // the project belongs to
-  readonly title: string; // title
-  readonly description: string; // description
-  readonly priority: number; // the priority which indicates the importance of the SR
-  readonly currState: string; // "TODO", "WIP", "Reviewing", "Done"
-  readonly createdBy: string; // somebody
-  readonly createdAt: number; // sometime
-  readonly disabled: boolean;
+  // readonly project: string; // the project belongs to
+  // readonly title: string; // title
+  // readonly description: string; // description
+  // readonly priority: number; // the priority which indicates the importance of the SR
+  // readonly currState: string; // "TODO", "WIP", "Reviewing", "Done"
+  // readonly createdBy: string; // somebody
+  // readonly createdAt: number; // sometime
+  // readonly disabled: boolean;
 }
 
 const SRCard = (props: SRCardProps) => {
-  const onClick = (key: number) => {
-    alert(`Click on item ${key}`);
+  const SRCardState = useSelector(getSR(props.id));
+  const dispatch = useDispatch();
+
+  const onClick = (e: any) => {
+    alert("click " + e.key);
+    dispatch(updateSR(e.key));
   };
   const menu = (
-    <Menu onClick={() => onClick}>
-      <Menu.Item key="1">1st menu item</Menu.Item>
-      <Menu.Item key="2">2nd menu item</Menu.Item>
-      <Menu.Item key="3">3rd menu item</Menu.Item>
+    <Menu onClick={onClick}>
+      <Menu.Item key="TODO">TODO</Menu.Item>
+      <Menu.Item key="WIP">WIP</Menu.Item>
+      <Menu.Item key="Reviewing">Reviewing</Menu.Item>
+      <Menu.Item key="Done">Done</Menu.Item>
     </Menu>
   );
   return (
@@ -36,12 +43,12 @@ const SRCard = (props: SRCardProps) => {
         }}
       >
         <div className="card-small-header">
-          <div className="card-small-header-left">{props.title}</div>
+          <div className="card-small-header-left">{SRCardState.title}</div>
           <div className="card-small-header-right">right</div>
         </div>
         <div className="card-small-description">
           <Typography>
-            <Text ellipsis={true}>{props.description}</Text>
+            <Text ellipsis={true}>{SRCardState.description}</Text>
           </Typography>
         </div>
         <div className="card-small-down">
@@ -65,21 +72,18 @@ const SRCard = (props: SRCardProps) => {
       <input id="button" type="checkbox" />
       <div className="modal">
         <div className="modal-header">
-          <div className="modal-header-left">{props.title}</div>
+          <div className="modal-header-left">{SRCardState.title}</div>
           <div className="modal-header-right">
             <Dropdown overlay={menu}>
-              <a
-                className="ant-dropdown-link"
-                onClick={(e) => e.preventDefault()}
-              >
-                right <DownOutlined />
+              <a className="ant-dropdown-link">
+                {SRCardState.currState} <DownOutlined />
               </a>
             </Dropdown>
           </div>
         </div>
         <div className="modal-content">
           <Typography>
-            <Text>{props.description}</Text>
+            <Text>{SRCardState.description}</Text>
           </Typography>
         </div>
       </div>
