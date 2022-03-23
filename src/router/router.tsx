@@ -5,7 +5,6 @@ import LoginInterface from "../components/ums/LoginInterface";
 import RegisterInterface from "../components/ums/RegisterInterface";
 import Home from "../layout/Home";
 import IRList from "../components/IRList";
-import SRList from "../components/SRList";
 
 const SiteRouter = () => {
   return (
@@ -39,10 +38,7 @@ const SiteRouter = () => {
               />
             }
           />
-          <Route
-            path="IRlist"
-            element={<IRList unimportant={"unimportant"} />}
-          />
+          <Route path="IRlist" element={<IRList />} />
           {/*<Route path="SRlist" element={<SRList showChoose={true} />} />*/}
         </Routes>
       </BrowserRouter>

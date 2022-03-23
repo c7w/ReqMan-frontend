@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import type { ProColumns } from "@ant-design/pro-table";
 import { EditableProTable } from "@ant-design/pro-table";
 import { Modal, Progress } from "antd";
@@ -15,11 +15,11 @@ export type TableListItem = {
   curSRKey: number[]; //关联SR
 };
 
-interface IRListProps {
-  readonly unimportant: string;
-}
+// interface IRListProps {
+//   readonly unimportant: string;
+// }
 
-const IRList = (props: IRListProps) => {
+const IRList = () => {
   const dataIRList: TableListItem[] = [];
   const creators = ["qc", "c7w", "hxj", "wxy", "lmd"];
   for (let i = 0; i < 30; i += 1) {
@@ -164,8 +164,6 @@ const IRList = (props: IRListProps) => {
         columns={columns}
         // dataSource={temp}
         request={(params, sorter, filter) => {
-          // 表单搜索项会从 params 传入，传递给后端接口。
-          console.log(params, sorter, filter);
           return Promise.resolve({
             data: tableListDataSource,
             success: true,

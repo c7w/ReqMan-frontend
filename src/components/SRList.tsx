@@ -182,9 +182,15 @@ const SRList = (props: SRListProps) => {
         selectedSR.push(props.curSRKey[i]);
       }
     },
-    // getCheckboxProps: (record: ProColumns<TableListItem>) => ({
-    //   disabled: record.key === 1, // Column configuration not to be checked
-    // }),
+    getCheckboxProps: (record: ProColumns<TableListItem>) => {
+      console.log("=================");
+      for (let i = 0; i < props.curSRKey.length; i++) {
+        if (props.curSRKey[i] === record.key) {
+          return { disabled: true };
+        }
+      }
+      return { disabled: false };
+    },
   };
 
   if (!props.showChoose) {
@@ -193,7 +199,6 @@ const SRList = (props: SRListProps) => {
         <EditableProTable<TableListItem>
           columns={columns}
           request={(params, sorter, filter) => {
-            // 表单搜索项会从 params 传入，传递给后端接口。
             return Promise.resolve({
               data: tableListDataSource,
               success: true,
@@ -230,7 +235,7 @@ const SRList = (props: SRListProps) => {
           columns={chooseColumn}
           rowSelection={{
             selections: [Table.SELECTION_ALL, Table.SELECTION_INVERT],
-            defaultSelectedRowKeys: [1],
+            defaultSelectedRowKeys: [],
             ...rowSelection,
           }}
           tableAlertRender={({
@@ -247,8 +252,6 @@ const SRList = (props: SRListProps) => {
             </Space>
           )}
           request={(params, sorter, filter) => {
-            // 表单搜索项会从 params 传入，传递给后端接口。
-            console.log(params, sorter, filter);
             return Promise.resolve({
               data: tableListDataSource,
               success: true,
