@@ -18,6 +18,8 @@
   width: 30px;
 }
 
-.SRChooseModal {
-  width: 80%;
+.ant-modal-content {
+  width: 100%;
 }
+
+

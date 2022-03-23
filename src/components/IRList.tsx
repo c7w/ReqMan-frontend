@@ -12,7 +12,7 @@ export type TableListItem = {
   progress: number;
   creator: string;
   createdAt: number;
-  curSRKey: Array<number>; //关联SR
+  curSRKey: number[]; //关联SR
 };
 
 interface IRListProps {
@@ -31,16 +31,16 @@ const IRList = (props: IRListProps) => {
       desc: "我是关于这个任务很长很长很长很长很长很长长很长很长很长长很长很长很长长很长很长很长的描述",
       creator: creators[Math.floor(Math.random() * creators.length)],
       createdAt: Date.now() - Math.floor(Math.random() * 1000000000),
-      curSRKey: [1, 2, 3],
+      curSRKey: [i],
     });
   }
   const [tableListDataSource, settableListDataSource] =
     useState<TableListItem[]>(dataIRList);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [modalIRKey, setModalIRKey] = useState<number>(0);
-  const [modalSRKey, setModalSRKey] = useState<Array<number>>([]);
+  const [modalSRKey, setModalSRKey] = useState<number[]>([]);
 
-  const showModal = (myIRKey: number, curSRKey: Array<number>) => {
+  const showModal = (myIRKey: number, curSRKey: number[]) => {
     setModalIRKey(myIRKey);
     setModalSRKey(curSRKey);
     setIsModalVisible(true);
@@ -197,12 +197,11 @@ const IRList = (props: IRListProps) => {
       />
       <Modal
         title="SR 任务关联列表"
-        className={"SRChooseModal"}
         centered={true}
         visible={isModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}
-        width={1000}
+        width={"70%"}
       >
         <SRList showChoose={true} myIRKey={modalIRKey} curSRKey={modalSRKey} />
       </Modal>

@@ -16,13 +16,12 @@ export type TableListItem = {
 interface SRListProps {
   readonly showChoose: boolean;
   readonly myIRKey: number;
-  readonly curSRKey: Array<number>;
+  readonly curSRKey: number[];
 }
 
 const SRList = (props: SRListProps) => {
-  console.debug(props.myIRKey);
-  console.log(props.curSRKey);
-  const dataSRList = [];
+  // 总任务列表
+  const dataSRList: TableListItem[] = [];
   const creators = ["qc", "c7w", "hxj", "wxy", "lmd"];
   const my_status = ["start", "progress", "finished", "debug"];
   for (let i = 0; i < 10; i += 1) {
@@ -35,12 +34,19 @@ const SRList = (props: SRListProps) => {
       createdAt: Date.now() - Math.floor(Math.random() * 1000000000),
     });
   }
-  const curSRList = [];
-  for (let i = 0; i < props.curSRKey.length; i += 1) {
-    curSRList.push(dataSRList[props.curSRKey[i]]);
-  }
   const [tableListDataSource, settableListDataSource] =
-    useState<TableListItem[]>(curSRList);
+    useState<TableListItem[]>(dataSRList);
+
+  useEffect(() => {
+    const curSRList = [];
+    for (let i = 0; i < props.curSRKey.length; i += 1) {
+      curSRList.push(dataSRList[props.curSRKey[i]]);
+    }
+    // 如果是下拉表，则显示当前的关联任务
+    if (!props.showChoose) {
+      settableListDataSource(curSRList);
+    }
+  }, [1]);
 
   const columns: ProColumns<TableListItem>[] = [
     {
@@ -163,7 +169,23 @@ const SRList = (props: SRListProps) => {
     chooseColumn.push(columns[i]);
   }
 
-  console.debug(tableListDataSource);
+  const rowSelection = {
+    onChange: (
+      selectedRowKeys: React.Key[],
+      selectedRows: ProColumns<TableListItem>[]
+    ) => {
+      const selectedSR = [];
+      for (let i = 0; i < selectedRowKeys.length; i++) {
+        selectedSR.push(selectedRows[i].key);
+      }
+      for (let i = 0; i < props.curSRKey.length; i++) {
+        selectedSR.push(props.curSRKey[i]);
+      }
+    },
+    // getCheckboxProps: (record: ProColumns<TableListItem>) => ({
+    //   disabled: record.key === 1, // Column configuration not to be checked
+    // }),
+  };
 
   if (!props.showChoose) {
     return (
@@ -172,7 +194,6 @@ const SRList = (props: SRListProps) => {
           columns={columns}
           request={(params, sorter, filter) => {
             // 表单搜索项会从 params 传入，传递给后端接口。
-            console.log(params, sorter, filter);
             return Promise.resolve({
               data: tableListDataSource,
               success: true,
@@ -209,7 +230,8 @@ const SRList = (props: SRListProps) => {
           columns={chooseColumn}
           rowSelection={{
             selections: [Table.SELECTION_ALL, Table.SELECTION_INVERT],
-            defaultSelectedRowKeys: [],
+            defaultSelectedRowKeys: [1],
+            ...rowSelection,
           }}
           tableAlertRender={({
             selectedRowKeys,
