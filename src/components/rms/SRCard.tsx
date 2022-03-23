@@ -1,6 +1,7 @@
 import React from "react";
 import "./SRCard.css";
-import { Typography } from "antd";
+import { Avatar, Typography, Menu, Dropdown } from "antd";
+import { UserOutlined, DownOutlined } from "@ant-design/icons";
 const { Text } = Typography;
 
 interface SRCardProps {
@@ -16,29 +17,71 @@ interface SRCardProps {
 }
 
 const SRCard = (props: SRCardProps) => {
+  const onClick = (key: number) => {
+    alert(`Click on item ${key}`);
+  };
+  const menu = (
+    <Menu onClick={() => onClick}>
+      <Menu.Item key="1">1st menu item</Menu.Item>
+      <Menu.Item key="2">2nd menu item</Menu.Item>
+      <Menu.Item key="3">3rd menu item</Menu.Item>
+    </Menu>
+  );
   return (
     <>
       <div
-        className="SRCard-small"
+        className="card-small"
         onClick={() => {
           document.getElementsByTagName("input")[0].checked = true;
         }}
       >
-        <div className="card-small-up">{props.title}</div>
+        <div className="card-small-header">
+          <div className="card-small-header-left">{props.title}</div>
+          <div className="card-small-header-right">right</div>
+        </div>
         <div className="card-small-description">
           <Typography>
-            <Text>{props.description}</Text>
+            <Text ellipsis={true}>{props.description}</Text>
           </Typography>
         </div>
-        <div className="card-small-down"></div>
+        <div className="card-small-down">
+          <Avatar
+            className="card-small-avatar"
+            size="small"
+            icon={<UserOutlined />}
+          />
+          <Avatar
+            className="card-small-avatar"
+            size="small"
+            icon={<UserOutlined />}
+          />
+          <Avatar
+            className="card-small-avatar"
+            size="small"
+            icon={<UserOutlined />}
+          />
+        </div>
       </div>
       <input id="button" type="checkbox" />
       <div className="modal">
         <div className="modal-header">
           <div className="modal-header-left">{props.title}</div>
-          <div className="modal-header-right">right</div>
+          <div className="modal-header-right">
+            <Dropdown overlay={menu}>
+              <a
+                className="ant-dropdown-link"
+                onClick={(e) => e.preventDefault()}
+              >
+                right <DownOutlined />
+              </a>
+            </Dropdown>
+          </div>
         </div>
-        <div className="modal-content">content</div>
+        <div className="modal-content">
+          <Typography>
+            <Text>{props.description}</Text>
+          </Typography>
+        </div>
       </div>
     </>
   );
@@ -49,7 +92,8 @@ SRCard.defaultProps = {
   id: 0, // id
   project: "test", // the project belongs to
   title: "SR.002.103", // title
-  description: "hbx is working hard !", // description
+  description:
+    " hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard !", // description
   priority: 0, // the priority which indicates the importance of the SR
   currState: "TODO", // "TODO", "WIP", "Reviewing", "Done"
   createdBy: "hbx", // somebody
