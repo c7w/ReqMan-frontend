@@ -19,6 +19,7 @@ import ProjectIR from "./route/Project/ProjectIR";
 import About from "./route/About";
 import ProjectAnalyse from "./route/Project/ProjectAnalyse";
 import ProjectSetting from "./route/Project/ProjectSetting";
+import Loading from "../layout/components/Loading";
 
 const SiteRouter = () => {
   return (
@@ -37,6 +38,8 @@ const SiteRouter = () => {
           <Route path="project/:id/service" element={<ProjectService />} />
           <Route path="project/:id/analyse" element={<ProjectAnalyse />} />
           <Route path="project/:id/setting" element={<ProjectSetting />} />
+
+          {/* Dev Paths */}
           <Route
             path="IR_List"
             element={<IRList unimportant={"asduiosaudhsauiod"} />}
@@ -44,6 +47,14 @@ const SiteRouter = () => {
           <Route
             path="SR_List"
             element={<SRList unimportant={"asduiosaudhsauiod"} />}
+          />
+          <Route
+            path={"dev/loading"}
+            element={
+              <Home sidebar={true}>
+                <Loading />
+              </Home>
+            }
           />
           <Route path={"*"} element={<Fallback />} />
         </Routes>
