@@ -32,10 +32,14 @@ export const rmsSlice = createSlice({
     deleteSR: (state, action) => {
       state.SRList.filter((item) => item.id !== action.payload);
     },
+    // 初始化 SRList
+    initSRList: (state, action) => {
+      console.log(action.payload);
+    },
   },
 });
 
-export const { addSR, updateSR, deleteSR } = rmsSlice.actions;
+export const { addSR, updateSR, deleteSR, initSRList } = rmsSlice.actions;
 
 export const getSRList = (state: { rms: { SRList: Array<SRCard> } }) => {
   return state.rms.SRList;
