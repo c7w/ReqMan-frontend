@@ -5,7 +5,7 @@ const ProjectList = () => {
   // If not re-query the user state from the backend
   // Render the project list
   return (
-    <Home sidebar={false}>
+    <Home sidebar={true}>
       <div></div>
     </Home>
   );

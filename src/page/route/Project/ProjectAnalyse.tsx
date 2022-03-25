@@ -1,14 +1,14 @@
 import Home from "../../../layout/Home";
 
-const ProjectService = () => {
+const ProjectAnalyse = () => {
   // Judge if project list in user state
   // If not re-query the user state from the backend
   // Render the project list
   return (
-    <Home sidebar={false}>
+    <Home sidebar={true}>
       <div></div>
     </Home>
   );
 };
 
-export default ProjectService;
+export default ProjectAnalyse;
