@@ -17,7 +17,7 @@ interface LayoutProps {
 
 const Home = (props: LayoutProps) => {
   const userInfo = useSelector(getUserStore);
-  console.debug(store.getState());
+  // console.debug(store.getState());
   return (
     <div>
       <Layout className="home">

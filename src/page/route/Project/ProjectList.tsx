@@ -1,6 +1,6 @@
 import Home from "../../../layout/Home";
 
-const ProjectList = () => {
+const Project = () => {
   // Judge if project list in user state
   // If not re-query the user state from the backend
   // Render the project list
@@ -11,4 +11,4 @@ const ProjectList = () => {
   );
 };
 
-export default ProjectList;
+export default Project;
