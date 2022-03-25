@@ -23,6 +23,14 @@ const API = {
     path: "/ums/check_email_available",
     method: "get",
   },
+  GET_RMS: {
+    path: "/rms/project/",
+    method: "get",
+  },
+  POST_RMS: {
+    path: "/rms/project/",
+    method: "post",
+  },
 };
 
 export default API;
