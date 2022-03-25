@@ -29,3 +29,17 @@ REACT_APP_BACKEND_URL=https://backend-dev-undefined.app.secoder.net
 
 关于 Slice 在不同 Route 之间同步，参见：
 + https://github.com/supasate/connected-react-router
+
+### 前端项目路径规范
+
++ `assets` 存储静态资源
++ `Layout` 中放置基本的外观组件
++ `Components` 中放置功能组件的外表
++ `store` 中存储全局变量
+  + `functions` 中存储与后端通信用函数
+  + `slices` 中存储变量状态的 Slice
++ `page` 中存储功能部件
+  + `Router.tsx` 全局路由
+  + `route` 中存储不同的功能部件
+
+`./page/route` 中的功能部件通过调用 `./store/` 中的 reducers / getter 读取/写入变量状态（与后端通信），然后将数据作为 props 给 `./components` 和 `./layout` 并将该组件 return，使其能够成功渲染。

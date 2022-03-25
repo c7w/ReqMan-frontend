@@ -1,11 +1,11 @@
-import request_json, { NaiveResponse } from "../../utils/Network";
-import API from "../../utils/APIList";
+import request_json, { NaiveResponse } from "../../../utils/Network";
+import API from "../../../utils/APIList";
 import { immediateToast } from "izitoast-react";
-import { updateUserInfo } from "../../store/functions/UMS";
+import { updateUserInfo } from "../../../store/functions/UMS";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import RegisterInterface from "../../components/ums/RegisterInterface";
-import { getUserStore } from "../../store/slices/UserSlice";
+import RegisterInterface from "../../../components/ums/RegisterInterface";
+import { getUserStore } from "../../../store/slices/UserSlice";
 import { useEffect } from "react";
 import { push } from "redux-first-history";
 

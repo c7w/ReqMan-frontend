@@ -1,10 +1,10 @@
-import LoginInterface from "../../components/ums/LoginInterface";
-import request_json, { NaiveResponse } from "../../utils/Network";
-import API from "../../utils/APIList";
+import LoginInterface from "../../../components/ums/LoginInterface";
+import request_json, { NaiveResponse } from "../../../utils/Network";
+import API from "../../../utils/APIList";
 import { immediateToast } from "izitoast-react";
 import { useDispatch, useSelector } from "react-redux";
-import { updateUserInfo } from "../../store/functions/UMS";
-import { getUserStore } from "../../store/slices/UserSlice";
+import { updateUserInfo } from "../../../store/functions/UMS";
+import { getUserStore } from "../../../store/slices/UserSlice";
 import { useEffect } from "react";
 import { push } from "redux-first-history";
 

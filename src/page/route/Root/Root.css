@@ -34,16 +34,16 @@
 }
 
 .root-footer {
-  position: fixed;
-  bottom: 2%;
-  text-align: center;
-  width: 100vw;
-  color: #000;
-  font-family: "Consolas";
-  font-size: 20px;
-  user-select: none;
-  font-style: italic;
-}
+   position: fixed;
+   bottom: 2%;
+   text-align: center;
+   width: 100vw;
+   color: #000;
+   font-family: "Consolas";
+   font-size: 20px;
+   user-select: none;
+   font-style: italic;
+ }
 
 .root-loading {
   position: fixed;
