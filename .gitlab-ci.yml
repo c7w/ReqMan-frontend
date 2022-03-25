@@ -8,7 +8,7 @@ stages:
   - deploy
 
 build_cache:
-  image: node:16
+  image: node:14
   stage: pre
   cache:
     key: ${CI_COMMIT_REF_SLUG}
