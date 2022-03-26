@@ -14,6 +14,7 @@ const ToastMessage = (
     message,
     timeout,
     position: "topRight",
+    displayMode: 1,
   });
 };
 

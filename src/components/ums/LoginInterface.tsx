@@ -43,7 +43,7 @@ const LoginInterface = (props: LoginInterfaceProps) => {
   // 密码判断
   const passwordCheck = (event: { target: { value: string } }) => {
     const password = event.target.value;
-    const reg1 = /^\w{6,20}$/;
+    const reg1 = /^.{6,20}$/;
     if (password === "") {
       setPasswordError("密码字段不能为空");
       return;
@@ -90,6 +90,7 @@ const LoginInterface = (props: LoginInterfaceProps) => {
               prefix={<UserOutlined />}
               type="text"
               placeholder=""
+              autoComplete={"off"}
               onChange={userCheck}
               bordered={false}
             />
@@ -104,9 +105,17 @@ const LoginInterface = (props: LoginInterfaceProps) => {
               size={"large"}
               prefix={<KeyOutlined />}
               type="text"
+              autoComplete={"off"}
               placeholder=""
               onChange={passwordCheck}
               bordered={false}
+              onKeyPress={(event) => {
+                if (event.charCode == 13) {
+                  if (!(passwordError !== " " || userError !== " ")) {
+                    handleLogin();
+                  }
+                }
+              }}
             />
           </div>
 
