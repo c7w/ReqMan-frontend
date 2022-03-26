@@ -1,8 +1,14 @@
 import "./Fallback.css";
 import logo from "../../assets/ReqMan.png";
 import React from "react";
+import { useDispatch } from "react-redux";
+import { Redirect } from "../../utils/Navigation";
 
 const Fallback = () => {
+  const dispatcher = useDispatch();
+  const handleOnClick = () => {
+    Redirect(dispatcher, "/login", 0);
+  };
   return (
     <>
       <div className="about">
@@ -35,8 +41,8 @@ const Fallback = () => {
             className="website_name"
             src={logo}
             alt="undefined"
-            width={133}
-            height={36}
+            width={200}
+            height={55}
           />
           <div className="menu_links">
             <a href="" className="link">
@@ -95,8 +101,10 @@ const Fallback = () => {
           <div className="text">
             <article>
               <p>Uh oh! Looks like you got lost.</p>
-              <p>Go back to the login page</p>
-              <button>Go</button>
+              <p style={{ fontWeight: "bolder" }}>
+                Go back to the homepage below
+              </p>
+              <button onClick={() => handleOnClick()}>Click me ！</button>
             </article>
           </div>
         </div>

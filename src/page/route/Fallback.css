@@ -203,15 +203,11 @@ nav .menu .website_name {
   font-weight: 600;
   font-size: 20px;
   letter-spacing: 1px;
-  background: white;
   padding: 4px 8px;
   border-radius: 2px;
-  opacity: 0.5;
+  opacity: 0.7;
   transition: all 0.4s ease;
   cursor: pointer;
-}
-.website_name {
-  background: #695681;
 }
 nav .menu .website_name:hover {
   opacity: 1;
