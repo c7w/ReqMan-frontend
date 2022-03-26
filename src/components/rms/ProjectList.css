@@ -1,0 +1,28 @@
+@import "~antd/dist/antd.css";
+
+.prjlist {
+  width: 70%;
+  padding: 100px;
+}
+
+.ant-pro-list-row-title {
+  width: 300px;
+}
+
+.ant-pro-table-list-toolbar-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.ant-pro-table-list-toolbar-title {
+  font-size: 30px;
+}
+
+.ant-pro-table-list-toolbar-left{
+  width: 90%;
+  text-align: left;
+}
+
+.ant-list-item-meta-avatar {
+  padding-top: 20%;
+}
