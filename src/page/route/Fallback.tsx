@@ -1,4 +1,6 @@
 import "./Fallback.css";
+import logo from "../../assets/ReqMan.png";
+import React from "react";
 
 const Fallback = () => {
   return (
@@ -29,7 +31,13 @@ const Fallback = () => {
       </div>
       <nav>
         <div className="menu">
-          <p className="website_name">LOGO</p>
+          <img
+            className="website_name"
+            src={logo}
+            alt="undefined"
+            width={133}
+            height={36}
+          />
           <div className="menu_links">
             <a href="" className="link">
               about
@@ -87,8 +95,8 @@ const Fallback = () => {
           <div className="text">
             <article>
               <p>Uh oh! Looks like you got lost.</p>
-              <p>Go back to the homepage if you dare!</p>
-              <button>i dare!</button>
+              <p>Go back to the login page</p>
+              <button>Go</button>
             </article>
           </div>
         </div>
