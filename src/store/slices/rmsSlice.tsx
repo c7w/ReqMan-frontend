@@ -10,61 +10,62 @@ export const rmsSlice = createSlice({
   reducers: {
     // 增删性能待调整，是否允许换位显示？
     // 增加 IR 需求 ( payload 为 IR 详细信息)
-    addIR: (state, action) => {
+    addIRStore: (state, action) => {
       state.IRList.push(action.payload);
     },
-    updateIR: (state, action) => {
+    updateIRStore: (state, action) => {
       console.log(
         " ======================= updating ============================" +
           action.payload
       );
     },
     // 删除 IR 需求
-    deleteIR: (state, action) => {
+    deleteIRStore: (state, action) => {
       state.IRList.filter((item) => item.id !== action.payload);
     },
     // 增加 SR 需求 ( payload 为 SR 详细信息 )
-    addSR: (state, action) => {
+    addSRStore: (state, action) => {
       state.SRList.push(action.payload);
     },
     // 修改 SR 需求 ( payload 为 SR 信息)
-    updateSR: (state, action) => {
+    updateSRStore: (state, action) => {
       console.log(
         " ======================= updating ============================" +
           action.payload
       );
     },
     // 删除 SR 需求 ( payload 为待删除 SR 的 id )
-    deleteSR: (state, action) => {
+    deleteSRStore: (state, action) => {
       state.SRList.filter((item) => item.id !== action.payload);
     },
     // 初始化 IRList
-    initIRList: (state, action) => {
+    initIRListStore: (state, action) => {
+      console.log(" ================== init IR ing ===================");
       console.log(action.payload);
     },
     // 初始化 SRList
-    initSRList: (state, action) => {
+    initSRListStore: (state, action) => {
       console.log(action.payload);
     },
   },
 });
 
 export const {
-  addIR,
-  updateIR,
-  deleteIR,
-  addSR,
-  updateSR,
-  deleteSR,
-  initIRList,
-  initSRList,
+  addIRStore,
+  updateIRStore,
+  deleteIRStore,
+  addSRStore,
+  updateSRStore,
+  deleteSRStore,
+  initIRListStore,
+  initSRListStore,
 } = rmsSlice.actions;
 
-export const getIRList = (state: { rms: { IRList: Array<IRCard> } }) => {
+export const getIRListStore = (state: { rms: { IRList: Array<IRCard> } }) => {
   return state.rms.IRList;
 };
 
-export const getSRList = (state: { rms: { SRList: Array<SRCard> } }) => {
+export const getSRListStore = (state: { rms: { SRList: Array<SRCard> } }) => {
   return state.rms.SRList;
 };
 

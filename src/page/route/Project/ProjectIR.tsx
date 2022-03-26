@@ -4,12 +4,15 @@ import { getUserStore } from "../../../store/slices/UserSlice";
 import { updateUserInfo } from "../../../store/functions/UMS";
 import { Redirect, ToastMessage } from "../../../utils/Navigation";
 import { IRList } from "../../../components/rms/IRList";
+import { updateIRListInfo } from "../../../store/functions/RMS";
+import { getIRListStore } from "../../../store/slices/rmsSlice";
 
 const ProjectIR = () => {
   // Judge if project list in user state
   // If not re-query the user state from the backend
   // Render the project list
   const userInfo = useSelector(getUserStore);
+  const IRListInfo = useSelector(getIRListStore);
   const dispatch = useDispatch();
   if (userInfo === "") {
     updateUserInfo(dispatch);
@@ -18,7 +21,8 @@ const ProjectIR = () => {
     ToastMessage("error", "未登录", "跳转回登录界面");
     Redirect(dispatch, "/login");
   } else {
-    const data = JSON.parse(userInfo);
+    updateIRListInfo(dispatch);
+    const user_data = JSON.parse(userInfo);
     return (
       <Home sidebar={true}>
         <div>
