@@ -21,7 +21,8 @@ const Dashboard = () => {
         title: "连接丢失...",
         position: "topRight",
       });
-      dispatcher(push("/"));
+      // test
+      dispatcher(push("/dashboard"));
     });
   } else {
     // Right?

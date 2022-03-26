@@ -1,18 +1,18 @@
 import React, { useEffect } from "react";
 import "./Root.css";
-import logo from "../../assets/Reqman-1.svg";
+import logo from "../../../assets/Reqman-1.svg";
 import { Loading3QuartersOutlined } from "@ant-design/icons";
-import request_json from "../../utils/Network";
-import API from "../../utils/APIList";
+import request_json from "../../../utils/Network";
+import API from "../../../utils/APIList";
 
 import {
   generateRandomString,
   getCookie,
   setCookie,
-} from "../../utils/CookieOperation";
+} from "../../../utils/CookieOperation";
 import { immediateToast, useToast } from "izitoast-react";
 import { useDispatch } from "react-redux";
-import { updateUserStore } from "../../store/slices/UserSlice";
+import { updateUserStore } from "../../../store/slices/UserSlice";
 import { push } from "redux-first-history";
 
 const Root = () => {

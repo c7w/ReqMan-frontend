@@ -11,7 +11,7 @@ interface Settings {
   //请求参数
   headers?: object; //请求头
   body?: object; //请求体
-  getParams?: string; //GET 请求的参数列表
+  getParams?: object; //GET 请求的参数列表
 }
 
 interface NaiveResponse {
@@ -27,11 +27,16 @@ const request_json = async (config: APIConfig, settings: Settings = {}) => {
     sessionId: getCookie("sessionId", Math.random().toString()),
   };
 
-  settings.getParams = settings.getParams || "";
-  settings.getParams += `&sessionId=${getCookie(
-    "sessionId",
-    Math.random().toString()
-  )}`;
+  const getParams_ = {
+    ...settings.getParams,
+    sessionId: getCookie("sessionId", ""),
+  };
+
+  const getParams =
+    "?" +
+    Object.entries(getParams_)
+      .map((key) => key[0] + "=" + key[1])
+      .join("&");
 
   let initRequest: RequestInit;
   if (config.method === "post") {
@@ -48,17 +53,18 @@ const request_json = async (config: APIConfig, settings: Settings = {}) => {
     initRequest = {
       method: config.method,
     };
-    path += "?" + settings.getParams;
+    path += getParams;
   } else {
     initRequest = {
       method: config.method,
     };
   }
-  console.debug(initRequest);
+  console.log("initRequest: " + JSON.stringify(initRequest));
+  console.log("path: " + path);
   return await fetch(path, initRequest)
     .then((data) => data.json())
     .then((json) => {
-      console.debug(json);
+      console.log(json);
       return json;
     });
 };

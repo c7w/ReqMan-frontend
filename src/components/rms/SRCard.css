@@ -1,5 +1,5 @@
 .card-small {
-  height: 84px;
+  height: 100px;
   left: 0;
   margin: 5px 5px 5px 5px;
   padding: 12px;
@@ -7,8 +7,125 @@
   cursor: pointer;
   background: #fff;
   box-shadow: 1px 1px 2px #aaaaaa;
+
+  transition: color 0.5s ease 0.5s;
+}
+
+.modal {
+  background: dodgerblue;
+  height: 1px;
+  overflow: hidden;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 32;
+  border-radius: 10px;
+  transform: translate(-50%, -50%);
+  transition: width 0.5s ease 0.5s, height 0.5s;
+  width: 0;
 }
 
 .card-small:hover {
   background: rgb(244, 245, 247);
+}
+
+.card-small-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.card-small-header-left {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.card-small-header-right {
+}
+
+.card-small-description {
+  overflow-wrap: normal;
+}
+
+.card-small-down {
+  padding: 5px;
+}
+
+.card-small-avatar {
+  margin-right: 5px;
+}
+
+.modal-header {
+  background: dodgerblue;
+  padding: 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.modal-header-left {
+  background: #f1f1f1;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.modal-header-right {
+  background: #f2f2f2;
+  padding-right: 100px;
+}
+
+.modal-content {
+  padding: 20px;
+  background: #f3f3f3;
+  height: 100%;
+}
+
+.card-input {
+  cursor: pointer;
+  height: 0;
+  opacity: 0;
+  width: 0;
+}
+
+.card-input:focus {
+  outline: none;
+}
+
+.card-input:checked {
+  height: 40px;
+  opacity: 1;
+  position: fixed;
+  right: 12vw;
+  top: 12.5vh;
+  z-index: 33;
+  -webkit-appearance: none;
+  width: 40px;
+}
+.card-input:checked::after,
+.card-input:checked:before {
+  border-top: 2px solid #000;
+  content: "";
+  display: block;
+  position: absolute;
+  top: 60%;
+  transform: rotate(45deg);
+  width: 50%;
+}
+.card-input:checked::after {
+  transform: rotate(-45deg);
+}
+
+.card-input:checked + label {
+  color: #fff;
+  transition: color 0.5s ease;
+}
+
+.card-input:checked ~ .modal {
+  height: 75vh;
+  width: 75vw;
+  transition: width 0.5s ease, height 0.5s ease 0.5s;
+}
+.card-input:checked ~ .modal .content {
+  color: #fff;
+  transition: color 0.5s ease 0.5s;
 }
