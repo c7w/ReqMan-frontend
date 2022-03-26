@@ -14,6 +14,7 @@ const ProjectIR = () => {
   if (userInfo === "") {
     updateUserInfo(dispatch);
   } else if (JSON.parse(userInfo).code !== 0) {
+    console.log("here");
     ToastMessage("error", "未登录", "跳转回登录界面");
     Redirect(dispatch, "/login");
   } else {

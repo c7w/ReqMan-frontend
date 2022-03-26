@@ -1,22 +1,28 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { SRCard } from "../ConfigureStore";
+import { IRCard, SRCard } from "../ConfigureStore";
 
 export const rmsSlice = createSlice({
   name: "rms",
   initialState: {
-    // IRList: Array<IRCard>(), // add IRCard Components
+    IRList: Array<IRCard>(), // add IRCard Components
     SRList: Array<SRCard>(),
   },
   reducers: {
     // 增删性能待调整，是否允许换位显示？
     // 增加 IR 需求 ( payload 为 IR 详细信息)
-    // addIR: (state, action) => {
-    //   state.IRList.push(action.payload);
-    // },
+    addIR: (state, action) => {
+      state.IRList.push(action.payload);
+    },
+    updateIR: (state, action) => {
+      console.log(
+        " ======================= updating ============================" +
+          action.payload
+      );
+    },
     // 删除 IR 需求
-    // deleteIR: (state, action) => {
-    //   state.IRList.filter(item => item.props.)
-    // },
+    deleteIR: (state, action) => {
+      state.IRList.filter((item) => item.id !== action.payload);
+    },
     // 增加 SR 需求 ( payload 为 SR 详细信息 )
     addSR: (state, action) => {
       state.SRList.push(action.payload);
@@ -32,6 +38,10 @@ export const rmsSlice = createSlice({
     deleteSR: (state, action) => {
       state.SRList.filter((item) => item.id !== action.payload);
     },
+    // 初始化 IRList
+    initIRList: (state, action) => {
+      console.log(action.payload);
+    },
     // 初始化 SRList
     initSRList: (state, action) => {
       console.log(action.payload);
@@ -39,12 +49,26 @@ export const rmsSlice = createSlice({
   },
 });
 
-export const { addSR, updateSR, deleteSR, initSRList } = rmsSlice.actions;
+export const {
+  addIR,
+  updateIR,
+  deleteIR,
+  addSR,
+  updateSR,
+  deleteSR,
+  initIRList,
+  initSRList,
+} = rmsSlice.actions;
+
+export const getIRList = (state: { rms: { IRList: Array<IRCard> } }) => {
+  return state.rms.IRList;
+};
 
 export const getSRList = (state: { rms: { SRList: Array<SRCard> } }) => {
   return state.rms.SRList;
 };
 
+// test SR
 export const getSR =
   (id: number) => (state: { rms: { SRList: Array<SRCard> } }) => {
     // test
@@ -62,9 +86,5 @@ export const getSR =
     };
     // return state.rms.SRList[id];
   };
-
-// export const getIRList = (state: any) => {
-//   return state.IRList;
-// };
 
 export default rmsSlice.reducer;
