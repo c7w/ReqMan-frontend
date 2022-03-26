@@ -7,22 +7,23 @@ import { updateUserInfo } from "../../../store/functions/UMS";
 import { getUserStore } from "../../../store/slices/UserSlice";
 import { useEffect } from "react";
 import { push } from "redux-first-history";
+import { Redirect, ToastMessage } from "../../../utils/Navigation";
 
 const Login = () => {
   const dispatcher = useDispatch();
+  const userStore = useSelector(getUserStore);
 
   // Judge if logged in
-  const userInfo = useSelector(getUserStore);
-  useEffect(() => {
-    if (userInfo.length > 10) {
-      immediateToast("success", {
-        title: "您已经登录...",
-        timeout: 1500,
-        position: "topRight",
-      });
-      setTimeout(() => dispatcher(push("/")), 1500);
+  if (userStore === "") {
+    updateUserInfo(dispatcher);
+  } else {
+    const userInfo = JSON.parse(userStore);
+    if (userInfo.code === 0) {
+      // Redirect to dashboard
+      ToastMessage("success", "已登录", "您已经成功登录...");
+      Redirect(dispatcher, "/dashboard", 0);
     }
-  }, []);
+  }
 
   const submit_login = async (
     identity: string,
@@ -31,7 +32,7 @@ const Login = () => {
     // Toast
     immediateToast("info", {
       title: "正在登录...",
-      timeout: 1500,
+      timeout: 500,
       position: "topRight",
     });
 
@@ -40,40 +41,13 @@ const Login = () => {
       body: { identity, password },
     });
 
-    if (data.code === 0) {
-      immediateToast("success", {
-        title: "登录成功！",
-        timeout: 2000,
-        position: "topRight",
-      });
-      updateUserInfo(dispatcher);
-      setTimeout(() => dispatcher(push("/dashboard")), 2000);
-    } else if (data.code === 1) {
-      immediateToast("success", {
-        title: "您已登录！",
-        timeout: 2000,
-        position: "topRight",
-      });
-      updateUserInfo(dispatcher);
-      setTimeout(() => dispatcher(push("/dashboard")), 2000);
-    } else if (data.code === 2) {
-      immediateToast("error", {
-        title: "未确认的身份信息...",
-        timeout: 3000,
-        position: "topRight",
-      });
-    } else if (data.code === 3) {
-      immediateToast("error", {
-        title: "您的密码错误！",
-        timeout: 3000,
-        position: "topRight",
-      });
+    if (data.code === 0 || data.code === 1) {
+      ToastMessage("success", "登录成功", "登录成功...");
+      Redirect(dispatcher, "/dashboard", 0);
+    } else if (data.code === 2 || data.code === 3) {
+      ToastMessage("error", "登录失败", "无效的用户名或密码");
     } else if (data.code === -3) {
-      immediateToast("error", {
-        title: "您的请求过于频繁！",
-        timeout: 3000,
-        position: "topRight",
-      });
+      ToastMessage("error", "登录失败", "您的请求过于频繁");
     }
 
     return data;

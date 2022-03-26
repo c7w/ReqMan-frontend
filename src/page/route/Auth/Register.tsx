@@ -8,24 +8,24 @@ import RegisterInterface from "../../../components/ums/RegisterInterface";
 import { getUserStore } from "../../../store/slices/UserSlice";
 import { useEffect } from "react";
 import { push } from "redux-first-history";
+import { Redirect, ToastMessage } from "../../../utils/Navigation";
 
 const Register = () => {
   // Hooks
-  const navigate = useNavigate();
   const dispatcher = useDispatch();
+  const userStore = useSelector(getUserStore);
 
   // Judge if logged in
-  const userInfo = useSelector(getUserStore);
-  useEffect(() => {
-    if (userInfo.length > 10) {
-      immediateToast("info", {
-        title: "您已经登录...",
-        timeout: 1500,
-        position: "topRight",
-      });
-      setTimeout(() => navigate("/"), 1500);
+  if (userStore === "") {
+    updateUserInfo(dispatcher);
+  } else {
+    const userInfo = JSON.parse(userStore);
+    if (userInfo.code === 0) {
+      // Redirect to dashboard
+      ToastMessage("success", "已登录", "您已经成功登录...");
+      Redirect(dispatcher, "/dashboard", 0);
     }
-  }, []);
+  }
 
   const submit_register = async (
     name: string,
