@@ -51,13 +51,14 @@ const RegisterInterface = (props: RegisterInterfaceProps) => {
   // 用户名判断
   const userCheck = (event: { target: { value: string } }) => {
     const usr = event.target.value;
+    setUserName(usr);
     const reg = /^([a-zA-Z0-9_]){3,16}$/;
     if (!reg.test(usr)) {
       setUserError("用户名应为 3-16 位数字/字母/下划线！");
     } else {
       setUserError("");
       request_json(API.CHECK_USERNAME_AVAILABLE, {
-        body: { name: userName },
+        body: { name: usr },
       })
         .then((data) => {
           if (data.code === 0) {
@@ -69,8 +70,6 @@ const RegisterInterface = (props: RegisterInterfaceProps) => {
         .catch(() => {
           setUserError("无法获取用户名可用状态");
         });
-
-      setUserName(usr);
     }
   };
 

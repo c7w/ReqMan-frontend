@@ -42,8 +42,9 @@ const Login = () => {
     });
 
     if (data.code === 0 || data.code === 1) {
-      ToastMessage("success", "登录成功", "登录成功...");
-      Redirect(dispatcher, "/dashboard", 0);
+      updateUserInfo(dispatcher).then(() =>
+        Redirect(dispatcher, "/dashboard", 0)
+      );
     } else if (data.code === 2 || data.code === 3) {
       ToastMessage("error", "登录失败", "无效的用户名或密码");
     } else if (data.code === -3) {
