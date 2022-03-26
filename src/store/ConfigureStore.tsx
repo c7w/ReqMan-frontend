@@ -5,6 +5,7 @@ import { createBrowserHistory } from "history";
 import sidebarReducer from "./slices/SidebarSlice";
 import UserSliceReducer from "./slices/UserSlice";
 import rmsReducer from "./slices/rmsSlice";
+import ProjectSliceReducer from "./slices/ProjectSlice";
 
 interface SRCard {
   readonly id: number; // id
@@ -39,6 +40,7 @@ export const store = configureStore({
     sidebar: sidebarReducer,
     rms: rmsReducer,
     user_store: UserSliceReducer,
+    project_store: ProjectSliceReducer,
     // rest of your reducers
   }),
   middleware: [routerMiddleware],

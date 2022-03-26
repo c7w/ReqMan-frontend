@@ -24,9 +24,8 @@ const ProjectList = () => {
     // Render Page
     const data = JSON.parse(userInfo);
     return (
-      <Home sidebar={true}>
+      <Home sidebar={false}>
         <div>
-          <ProjectList />
           <p>{userInfo}</p>
         </div>
       </Home>
@@ -35,7 +34,7 @@ const ProjectList = () => {
 
   // Loading Page
   return (
-    <Home sidebar={true}>
+    <Home sidebar={false}>
       <div>Loading...</div>
     </Home>
   );

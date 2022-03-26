@@ -1,89 +1,189 @@
 import { Layout, Menu } from "antd";
 import {
-  FileOutlined,
+  HomeOutlined,
+  SettingOutlined,
+  AppstoreOutlined,
+  AppstoreAddOutlined,
+  CalendarOutlined,
+  OrderedListOutlined,
+  BugOutlined,
+  PullRequestOutlined,
   UserOutlined,
-  AppleOutlined,
-  GithubOutlined,
-  BarsOutlined,
-  BookOutlined,
-  CarryOutOutlined,
-  CoffeeOutlined,
-  CompressOutlined,
-  DingtalkOutlined,
-  FrownOutlined,
-  LoadingOutlined,
-  SendOutlined,
-  SmileOutlined,
+  ClockCircleOutlined,
+  RiseOutlined,
+  UnorderedListOutlined,
 } from "@ant-design/icons";
 import "./Sidebar.css";
 
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector, useStore } from "react-redux";
 import {
   getIsCollapsed,
   updateIsCollapsed,
 } from "../../store/slices/SidebarSlice";
+import { getUserStore } from "../../store/slices/UserSlice";
+import { useParams } from "react-router-dom";
+import { getProjectStore } from "../../store/slices/ProjectSlice";
+import { Redirect } from "../../utils/Navigation";
 
-const { SubMenu } = Menu;
 const { Sider } = Layout;
 
 const Sidebar = () => {
-  const isCollapsed = useSelector(getIsCollapsed);
   const dispatch = useDispatch();
 
+  // Collapse state between pages
+  const isCollapsed = useSelector(getIsCollapsed);
   const onCollapse = (collapsed: boolean) => {
     dispatch(updateIsCollapsed(collapsed));
   };
+
+  const userStore = useSelector(getUserStore);
+  const projectStore = useSelector(getProjectStore);
+  const store = useStore();
+
+  const path = store
+    .getState()
+    .router.location.pathname.split("/")
+    .filter((item: string) => item);
+  if (path.length !== 3) {
+    path.push("/");
+  }
+
+  const item_list = [{ url: "/" }];
+
+  const params = useParams<"id">();
+  const project_id = Number(params.id) || 0;
+
+  let role = "developer";
+
+  if (projectStore !== "") {
+    const projectInfo = JSON.parse(projectStore);
+    // TODO: Read from project info, what is my role ???
+    // Show cards according to the role of people!
+    role = "supermaster";
+  }
+
   return (
     <Sider
       className="sidebar"
+      theme={"light"}
       collapsible
       collapsed={isCollapsed}
       onCollapse={(collapsed) => onCollapse(collapsed)}
     >
-      <Menu defaultSelectedKeys={["1"]} mode="inline">
-        <SubMenu key="sub1" icon={<UserOutlined />} title="User">
-          <Menu.Item key="3">Tom</Menu.Item>
-          <Menu.Item key="4">Bill</Menu.Item>
-        </SubMenu>
-        <Menu.Item key="9" icon={<FileOutlined />}>
-          Files
+      <Menu defaultSelectedKeys={[path[2]]} mode="inline" id={"sidebar-column"}>
+        <Menu.Item
+          key="/"
+          className={"sidebar-item"}
+          onClick={() => Redirect(dispatch, `/project/${project_id}/`, 0)}
+          icon={<HomeOutlined />}
+        >
+          项目概览
         </Menu.Item>
-        <Menu.Item key="10" icon={<AppleOutlined />}>
-          glb nb!
+        <Menu.Item
+          key="requirements"
+          className={"sidebar-item"}
+          onClick={() =>
+            Redirect(dispatch, `/project/${project_id}/requirements`, 0)
+          }
+          icon={<CalendarOutlined />}
+        >
+          需求查看
         </Menu.Item>
-        <Menu.Item key="11" icon={<GithubOutlined />}>
-          wxy xgg!
+        <Menu.Item
+          key="services"
+          className={"sidebar-item"}
+          onClick={() =>
+            Redirect(dispatch, `/project/${project_id}/services`, 0)
+          }
+          icon={<AppstoreOutlined />}
+        >
+          服务查看
         </Menu.Item>
-        <Menu.Item key="12" icon={<BarsOutlined />}>
-          qc xjj!
+        <Menu.Item
+          key="issues"
+          className={"sidebar-item"}
+          onClick={() => Redirect(dispatch, `/project/${project_id}/issues`, 0)}
+          icon={<BugOutlined />}
+        >
+          缺陷查看
         </Menu.Item>
-        <Menu.Item key="13" icon={<BookOutlined />}>
-          lambda xgg!
+        <Menu.Item
+          key="commits"
+          className={"sidebar-item"}
+          onClick={() =>
+            Redirect(dispatch, `/project/${project_id}/commits`, 0)
+          }
+          icon={<RiseOutlined />}
+        >
+          贡献查看
         </Menu.Item>
-        <Menu.Item key="14" icon={<CarryOutOutlined />}>
-          play
+        <Menu.Item
+          key="merges"
+          className={"sidebar-item"}
+          onClick={() => Redirect(dispatch, `/project/${project_id}/merges`, 0)}
+          icon={<PullRequestOutlined />}
+        >
+          合并情况查看
         </Menu.Item>
-        <Menu.Item key="15" icon={<CoffeeOutlined />}>
-          with
+
+        <Menu.Item
+          key="analyse"
+          className={"sidebar-item"}
+          onClick={() =>
+            Redirect(dispatch, `/project/${project_id}/analyse`, 0)
+          }
+          icon={<ClockCircleOutlined />}
+        >
+          周期进度
         </Menu.Item>
-        <Menu.Item key="16" icon={<CompressOutlined />}>
-          me
+        <Menu.Item
+          key="member"
+          className={"sidebar-item"}
+          onClick={() => Redirect(dispatch, `/project/${project_id}/member`, 0)}
+          icon={<UserOutlined />}
+        >
+          成员
         </Menu.Item>
-        <Menu.Item key="17" icon={<DingtalkOutlined />}>
-          I
+        <Menu.Item
+          key="IRManager"
+          className={"sidebar-item"}
+          onClick={() =>
+            Redirect(dispatch, `/project/${project_id}/IRManager`, 0)
+          }
+          icon={<OrderedListOutlined />}
+        >
+          原始需求管理
         </Menu.Item>
-        <Menu.Item key="18" icon={<FrownOutlined />}>
-          am
+        <Menu.Item
+          key="SRManager"
+          className={"sidebar-item"}
+          onClick={() =>
+            Redirect(dispatch, `/project/${project_id}/SRManager`, 0)
+          }
+          icon={<UnorderedListOutlined />}
+        >
+          功能需求管理
         </Menu.Item>
-        <Menu.Item key="19" icon={<LoadingOutlined />}>
-          hbx
+        <Menu.Item
+          key="ServiceManager"
+          className={"sidebar-item"}
+          onClick={() =>
+            Redirect(dispatch, `/project/${project_id}/ServiceManager`, 0)
+          }
+          icon={<AppstoreAddOutlined />}
+        >
+          项目服务管理
         </Menu.Item>
-        <Menu.Item key="20" icon={<SendOutlined />}>
-          wu
-        </Menu.Item>
-        <Menu.Item key="21" icon={<SmileOutlined />}>
-          hu
+        <Menu.Item
+          key="settings"
+          className={"sidebar-item"}
+          onClick={() =>
+            Redirect(dispatch, `/project/${project_id}/settings`, 0)
+          }
+          icon={<SettingOutlined />}
+        >
+          项目设置
         </Menu.Item>
       </Menu>
     </Sider>
