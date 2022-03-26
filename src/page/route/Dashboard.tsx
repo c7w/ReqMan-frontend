@@ -7,16 +7,9 @@ import { push } from "redux-first-history";
 import { Breadcrumb } from "antd";
 import Calendar from "../../components/rms/Calendar";
 import React from "react";
-import request_json from "../../utils/Network";
-import API from "../../utils/APIList";
 
 const Dashboard = () => {
   // Detect if logged in
-
-  request_json(API.GET_RMS, { getParams: { project: 1, type: "ir" } }).then(
-    (d) => console.debug(d)
-  );
-
   const dispatcher = useDispatch();
   const userInfo = useSelector(getUserStore);
   if (userInfo.length < 10) {

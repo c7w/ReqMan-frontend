@@ -41,7 +41,6 @@
 }
 
 .card-small-header-right {
-
 }
 
 .card-small-description {
@@ -102,7 +101,8 @@
   -webkit-appearance: none;
   width: 40px;
 }
-.card-input:checked::after, .card-input:checked:before {
+.card-input:checked::after,
+.card-input:checked:before {
   border-top: 2px solid #000;
   content: "";
   display: block;
@@ -116,7 +116,7 @@
 }
 
 .card-input:checked + label {
-  color: #FFF;
+  color: #fff;
   transition: color 0.5s ease;
 }
 
@@ -126,6 +126,6 @@
   transition: width 0.5s ease, height 0.5s ease 0.5s;
 }
 .card-input:checked ~ .modal .content {
-  color: #FFF;
+  color: #fff;
   transition: color 0.5s ease 0.5s;
 }

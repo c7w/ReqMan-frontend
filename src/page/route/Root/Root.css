@@ -8,17 +8,15 @@
   background-image: linear-gradient(120deg, #e6e9f0 0%, #eef1f5 100%);
 }
 
-
 .root-proj-name {
   position: fixed;
   top: 5vh;
   text-align: center;
   width: 100vw;
   color: #000;
-  font-family: Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+  font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
   font-size: 12vh;
   user-select: none;
-
 }
 
 .root-proj-slogan {
@@ -34,16 +32,16 @@
 }
 
 .root-footer {
-   position: fixed;
-   bottom: 2%;
-   text-align: center;
-   width: 100vw;
-   color: #000;
-   font-family: "Consolas";
-   font-size: 20px;
-   user-select: none;
-   font-style: italic;
- }
+  position: fixed;
+  bottom: 2%;
+  text-align: center;
+  width: 100vw;
+  color: #000;
+  font-family: "Consolas";
+  font-size: 20px;
+  user-select: none;
+  font-style: italic;
+}
 
 .root-loading {
   position: fixed;
@@ -62,6 +60,10 @@
 }
 
 @keyframes my-rotate {
-  0% { transform: rotate(45deg); }
-  100% { transform: rotate(405deg); }
+  0% {
+    transform: rotate(45deg);
+  }
+  100% {
+    transform: rotate(405deg);
+  }
 }

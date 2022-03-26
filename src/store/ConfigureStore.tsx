@@ -12,7 +12,19 @@ interface SRCard {
   readonly title: string; // title
   readonly description: string; // description
   readonly priority: number; // the priority which indicates the importance of the SR
+  readonly rank: number;
   readonly currState: string; // "TODO", "WIP", "Reviewing", "Done"
+  readonly createdBy: string; // somebody
+  readonly createdAt: number; // sometime
+  readonly disabled: boolean;
+}
+
+interface IRCard {
+  readonly id: number; // id
+  readonly project: string; // the project belongs to
+  readonly title: string; // title
+  readonly description: string; // description
+  readonly rank: number;
   readonly createdBy: string; // somebody
   readonly createdAt: number; // sometime
   readonly disabled: boolean;
@@ -33,4 +45,4 @@ export const store = configureStore({
 });
 
 export const history = createReduxHistory(store);
-export type { SRCard };
+export type { IRCard, SRCard };

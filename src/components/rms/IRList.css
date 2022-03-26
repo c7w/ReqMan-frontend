@@ -1,8 +1,7 @@
 @import "~antd/dist/antd.css";
 
 .IRTable {
-  padding: 50px;
-  width: 500px;
+  padding-right: 15rem;
 }
 
 .ant-table-row-expand-icon {
