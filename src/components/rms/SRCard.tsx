@@ -69,7 +69,7 @@ const SRCard = (props: SRCardProps) => {
           />
         </div>
       </div>
-      <input id="button" type="checkbox" />
+      <input className="card-input" id="button" type="checkbox" />
       <div className="modal">
         <div className="modal-header">
           <div className="modal-header-left">{SRCardState.title}</div>
