@@ -14,7 +14,6 @@ const logOut = async (dispatcher: any): Promise<void> => {
   request_json(API.LOGOUT)
     .then((logout_data) => {
       if (logout_data.code === 0) {
-        dispatcher(updateUserStore(JSON.stringify("")));
         immediateToast("success", {
           title: "成功退出登录",
           position: "topRight",
@@ -22,7 +21,7 @@ const logOut = async (dispatcher: any): Promise<void> => {
       } else {
         immediateToast("error", { title: "未登录...", position: "topRight" });
       }
-      dispatcher(push("/"));
+      window.location.href = "/login"; // Force reset states
     })
     .catch(() => {
       immediateToast("error", { title: "连接丢失...", position: "topRight" });

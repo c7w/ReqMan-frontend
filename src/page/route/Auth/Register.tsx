@@ -22,7 +22,7 @@ const Register = () => {
     const userInfo = JSON.parse(userStore);
     if (userInfo.code === 0) {
       // Redirect to dashboard
-      ToastMessage("success", "已登录", "您已经成功登录...");
+      ToastMessage("success", "登录成功", "已为您自动登录...");
       Redirect(dispatcher, "/dashboard", 0);
     }
   }
@@ -34,9 +34,9 @@ const Register = () => {
     invitation: string
   ): Promise<void> => {
     // Toast
-    immediateToast("success", {
+    immediateToast("info", {
       title: "正在注册...",
-      timeout: 1500,
+      timeout: 500,
       position: "topRight",
     });
 
@@ -52,16 +52,17 @@ const Register = () => {
         position: "topRight",
       });
       updateUserInfo(dispatcher);
-      setTimeout(() => dispatcher(push("/dashboard")), 2000);
     } else if (data.code === 1) {
       immediateToast("error", {
-        title: "注册失败...",
+        title: "注册失败",
+        message: "请确保用户名与邮箱是否有效或有滥用行为",
         timeout: 2000,
         position: "topRight",
       });
     } else if (data.code === 2) {
       immediateToast("error", {
-        title: "项目邀请码无效...",
+        title: "注册失败",
+        message: "项目邀请码无效...",
         timeout: 3000,
         position: "topRight",
       });
