@@ -27,6 +27,10 @@ const API = {
     path: "/ums/create_project/",
     method: "post",
   },
+  POST_PROJECT: {
+    path: "/ums/project/",
+    method: "post",
+  },
   GET_RMS: {
     path: "/rms/project/",
     method: "get",

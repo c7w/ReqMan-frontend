@@ -21,6 +21,9 @@ import ProjectAnalyse from "./route/Project/ProjectAnalyse";
 import ProjectSetting from "./route/Project/ProjectSetting";
 import Loading from "../layout/components/Loading";
 import PersonalSetting from "./route/Auth/Setting";
+import ProjectServiceReadonly from "./route/Project/ProjectServiceReadonly";
+import ProjectRequirementsReadonly from "./route/Project/ProjectRequirementsReadonly";
+import ProjectMember from "./route/Project/ProjectMember";
 
 const SiteRouter = () => {
   return (
@@ -33,13 +36,26 @@ const SiteRouter = () => {
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
           <Route path="settings" element={<PersonalSetting />} />
-          <Route path="projects" element={<ProjectList />} />
-          <Route path="project/:id" element={<Project />} />
-          <Route path="project/:id/IR" element={<ProjectIR />} />
-          <Route path="project/:id/SR" element={<ProjectSR />} />
-          <Route path="project/:id/service" element={<ProjectService />} />
+          <Route path="project/:id/IRManager" element={<ProjectIR />} />
+          <Route path="project/:id/SRManager" element={<ProjectSR />} />
+
+          <Route
+            path="project/:id/ServiceManager"
+            element={<ProjectService />}
+          />
+          <Route
+            path="project/:id/services"
+            element={<ProjectServiceReadonly />}
+          />
+          <Route
+            path="project/:id/requirements"
+            element={<ProjectRequirementsReadonly />}
+          />
+          <Route path="project/:id/member" element={<ProjectMember />} />
           <Route path="project/:id/analyse" element={<ProjectAnalyse />} />
-          <Route path="project/:id/setting" element={<ProjectSetting />} />
+          <Route path="project/:id/settings" element={<ProjectSetting />} />
+          <Route path="project/:id" element={<Project />} />
+          <Route path="projects" element={<ProjectList />} />
 
           {/* Dev Paths */}
           <Route
