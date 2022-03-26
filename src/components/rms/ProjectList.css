@@ -1,0 +1,9 @@
+@import "~antd/dist/antd.css";
+
+.prjlist {
+  width: 70%;
+}
+
+.ant-pro-list-row-title {
+  width: 300px
+}
