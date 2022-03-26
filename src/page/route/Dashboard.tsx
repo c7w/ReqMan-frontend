@@ -29,7 +29,7 @@ const Dashboard = () => {
   }
 
   return (
-    <Home sidebar={true}>
+    <Home sidebar={false}>
       <div>
         <Breadcrumb style={{ margin: "1rem 0" }}>
           <Breadcrumb.Item>Home</Breadcrumb.Item>

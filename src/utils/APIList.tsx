@@ -16,12 +16,16 @@ const API = {
     method: "post",
   },
   CHECK_USERNAME_AVAILABLE: {
-    path: "/ums/check_username_available",
+    path: "/ums/check_username_available/",
     method: "get",
   },
   CHECK_EMAIL_AVAILABLE: {
-    path: "/ums/check_email_available",
+    path: "/ums/check_email_available/",
     method: "get",
+  },
+  CREATE_PROJECT: {
+    path: "/ums/create_project/",
+    method: "post",
   },
   GET_RMS: {
     path: "/rms/project/",

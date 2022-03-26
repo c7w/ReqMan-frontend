@@ -17,7 +17,7 @@ const ToastMessage = (
   });
 };
 
-const Redirect = (dispatcher: any, url: string, timeout = 2000) => {
+const Redirect = (dispatcher: any, url: string, timeout = 2000): void => {
   setTimeout(() => dispatcher(push(url)), timeout);
 };
 

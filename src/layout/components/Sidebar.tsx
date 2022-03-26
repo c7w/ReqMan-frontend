@@ -26,17 +26,33 @@ import {
   getIsCollapsed,
   updateIsCollapsed,
 } from "../../store/slices/SidebarSlice";
+import { getUserStore } from "../../store/slices/UserSlice";
+import { useParams } from "react-router-dom";
 
 const { SubMenu } = Menu;
 const { Sider } = Layout;
 
 const Sidebar = () => {
   const isCollapsed = useSelector(getIsCollapsed);
-  const dispatch = useDispatch();
-
   const onCollapse = (collapsed: boolean) => {
     dispatch(updateIsCollapsed(collapsed));
   };
+
+  const dispatch = useDispatch();
+  const userStore = useSelector(getUserStore);
+
+  const project_id = useParams<"id">();
+
+  if (userStore === "") {
+    return <></>;
+  } else if (JSON.parse(userStore).code !== 0) {
+    return <></>;
+  } else {
+    // Render!
+    console.debug(project_id);
+    return <div>123</div>;
+  }
+
   return (
     <Sider
       className="sidebar"

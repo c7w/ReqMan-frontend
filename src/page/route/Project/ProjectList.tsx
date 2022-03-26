@@ -26,7 +26,6 @@ const ProjectList = () => {
     return (
       <Home sidebar={true}>
         <div>
-          <ProjectList />
           <p>{userInfo}</p>
         </div>
       </Home>

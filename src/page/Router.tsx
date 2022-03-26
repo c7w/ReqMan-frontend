@@ -20,6 +20,7 @@ import About from "./route/About";
 import ProjectAnalyse from "./route/Project/ProjectAnalyse";
 import ProjectSetting from "./route/Project/ProjectSetting";
 import Loading from "../layout/components/Loading";
+import PersonalSetting from "./route/Auth/Setting";
 
 const SiteRouter = () => {
   return (
@@ -31,6 +32,7 @@ const SiteRouter = () => {
           <Route path="about" element={<About />} />
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
+          <Route path="settings" element={<PersonalSetting />} />
           <Route path="projects" element={<ProjectList />} />
           <Route path="project/:id" element={<Project />} />
           <Route path="project/:id/IR" element={<ProjectIR />} />
