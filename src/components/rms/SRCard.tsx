@@ -3,7 +3,7 @@ import "./SRCard.css";
 import { Avatar, Typography, Menu, Dropdown } from "antd";
 import { UserOutlined, DownOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
-import { getSR, updateSR } from "../../store/slices/rmsSlice";
+import { getSR, updateSRStore } from "../../store/slices/rmsSlice";
 const { Text } = Typography;
 
 interface SRCardProps {
@@ -24,7 +24,7 @@ const SRCard = (props: SRCardProps) => {
 
   const onClick = (e: any) => {
     alert("click " + e.key);
-    dispatch(updateSR(e.key));
+    dispatch(updateSRStore(e.key));
   };
   const menu = (
     <Menu onClick={onClick}>
@@ -69,7 +69,7 @@ const SRCard = (props: SRCardProps) => {
           />
         </div>
       </div>
-      <input id="button" type="checkbox" />
+      <input className="card-input" id="button" type="checkbox" />
       <div className="modal">
         <div className="modal-header">
           <div className="modal-header-left">{SRCardState.title}</div>

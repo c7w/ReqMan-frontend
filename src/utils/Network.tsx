@@ -59,11 +59,12 @@ const request_json = async (config: APIConfig, settings: Settings = {}) => {
       method: config.method,
     };
   }
-  console.debug(initRequest);
+  console.log("initRequest: " + JSON.stringify(initRequest));
+  console.log("path: " + path);
   return await fetch(path, initRequest)
     .then((data) => data.json())
     .then((json) => {
-      console.debug(json);
+      console.log(json);
       return json;
     });
 };
