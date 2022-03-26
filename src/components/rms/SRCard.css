@@ -81,18 +81,18 @@
   height: 100%;
 }
 
-input {
+.card-input {
   cursor: pointer;
   height: 0;
   opacity: 0;
   width: 0;
 }
 
-input:focus {
+.card-input:focus {
   outline: none;
 }
 
-input:checked {
+.card-input:checked {
   height: 40px;
   opacity: 1;
   position: fixed;
@@ -102,7 +102,7 @@ input:checked {
   -webkit-appearance: none;
   width: 40px;
 }
-input:checked::after, input:checked:before {
+.card-input:checked::after, .card-input:checked:before {
   border-top: 2px solid #000;
   content: "";
   display: block;
@@ -111,21 +111,21 @@ input:checked::after, input:checked:before {
   transform: rotate(45deg);
   width: 50%;
 }
-input:checked::after {
+.card-input:checked::after {
   transform: rotate(-45deg);
 }
 
-input:checked + label {
+.card-input:checked + label {
   color: #FFF;
   transition: color 0.5s ease;
 }
 
-input:checked ~ .modal {
+.card-input:checked ~ .modal {
   height: 75vh;
   width: 75vw;
   transition: width 0.5s ease, height 0.5s ease 0.5s;
 }
-input:checked ~ .modal .content {
+.card-input:checked ~ .modal .content {
   color: #FFF;
   transition: color 0.5s ease 0.5s;
 }

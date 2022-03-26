@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import type { ProColumns } from "@ant-design/pro-table";
-import { EditableProTable } from "@ant-design/pro-table";
+import ProTable, { EditableProTable } from "@ant-design/pro-table";
+import { Space, Table } from "antd";
 import "./SRList.css";
 
 export type TableListItem = {
@@ -12,32 +13,42 @@ export type TableListItem = {
   createdAt: number;
 };
 
-const tableListDataSource: TableListItem[] = [];
-
-const creators = ["qc", "c7w", "hxj", "wxy", "lmd"];
-const all_status = ["start", "progress", "finished", "debug"];
-
-for (let i = 0; i < 4; i += 1) {
-  tableListDataSource.push({
-    key: i,
-    name: "[SR.001.000]",
-    desc: "这是一个 SR 任务描述",
-    creator: creators[Math.floor(Math.random() * creators.length)],
-    status: all_status[i],
-    createdAt: Date.now() - Math.floor(Math.random() * 1000000000),
-  });
+interface SRListProps {
+  readonly showChoose: boolean;
+  readonly myIRKey: number;
+  readonly curSRKey: number[];
 }
 
-export interface SRListProps {
-  readonly unimportant: string;
-}
+const SRList = (props: SRListProps) => {
+  // 总任务列表
+  const dataSRList: TableListItem[] = [];
+  const creators = ["qc", "c7w", "hxj", "wxy", "lmd"];
+  const my_status = ["start", "progress", "finished", "debug"];
+  for (let i = 0; i < 10; i += 1) {
+    dataSRList.push({
+      key: i,
+      name: "[SR.001.000]",
+      desc: "这是一个 SR 任务描述",
+      creator: creators[Math.floor(Math.random() * creators.length)],
+      status: my_status[i % 4],
+      createdAt: Date.now() - Math.floor(Math.random() * 1000000000),
+    });
+  }
+  const [tableListDataSource, settableListDataSource] =
+    useState<TableListItem[]>(dataSRList);
 
-export interface SRListState {
-  readonly unimportant: string;
-}
+  useEffect(() => {
+    const curSRList = [];
+    for (let i = 0; i < props.curSRKey.length; i += 1) {
+      curSRList.push(dataSRList[props.curSRKey[i]]);
+    }
+    // 如果是下拉表，则显示当前的关联任务
+    if (!props.showChoose) {
+      settableListDataSource(curSRList);
+    }
+  }, [1]);
 
-class SRList extends React.Component<SRListProps, SRListState> {
-  columns: ProColumns<TableListItem>[] = [
+  const columns: ProColumns<TableListItem>[] = [
     {
       title: "SR标题",
       width: 100,
@@ -51,7 +62,6 @@ class SRList extends React.Component<SRListProps, SRListState> {
           },
         ],
       },
-      // 后续对接展示 SR 卡片
       render: (_) => <a>{_}</a>,
     },
     {
@@ -153,18 +163,49 @@ class SRList extends React.Component<SRListProps, SRListState> {
     },
   ];
 
-  render() {
+  const chooseColumn: ProColumns<TableListItem>[] = [];
+  for (let i = 0; i < 5; i += 1) {
+    columns[i].filters = false;
+    chooseColumn.push(columns[i]);
+  }
+
+  const rowSelection = {
+    onChange: (
+      selectedRowKeys: React.Key[],
+      selectedRows: ProColumns<TableListItem>[]
+    ) => {
+      const selectedSR = [];
+      for (let i = 0; i < selectedRowKeys.length; i++) {
+        selectedSR.push(selectedRows[i].key);
+      }
+      for (let i = 0; i < props.curSRKey.length; i++) {
+        selectedSR.push(props.curSRKey[i]);
+      }
+    },
+    getCheckboxProps: (record: ProColumns<TableListItem>) => {
+      console.log("=================");
+      for (let i = 0; i < props.curSRKey.length; i++) {
+        if (props.curSRKey[i] === record.key) {
+          return { disabled: true };
+        }
+      }
+      return { disabled: false };
+    },
+  };
+
+  if (!props.showChoose) {
     return (
       <div className={"SRTable"}>
         <EditableProTable<TableListItem>
-          columns={this.columns}
-          request={(params, sorter, filter) => {
-            // 此处数据来源应与后端对接
-            console.log(params, sorter, filter);
+          columns={columns}
+          request={() => {
             return Promise.resolve({
               data: tableListDataSource,
               success: true,
             });
+          }}
+          pagination={{
+            pageSize: 5,
           }}
           rowKey="key"
           editable={{
@@ -187,7 +228,46 @@ class SRList extends React.Component<SRListProps, SRListState> {
         />
       </div>
     );
+  } else {
+    return (
+      <div className={"SRTable"}>
+        <ProTable<TableListItem>
+          columns={chooseColumn}
+          rowSelection={{
+            selections: [Table.SELECTION_ALL, Table.SELECTION_INVERT],
+            defaultSelectedRowKeys: [],
+            ...rowSelection,
+          }}
+          tableAlertRender={({
+            selectedRowKeys,
+            selectedRows,
+            onCleanSelected,
+          }) => (
+            <Space size={24}>
+              <span>已选 {selectedRowKeys.length} 项</span>
+              <span>{`关联 SR 任务: ${selectedRows.reduce(
+                (pre, item) => pre + " " + item.name,
+                ""
+              )} `}</span>
+            </Space>
+          )}
+          request={() => {
+            return Promise.resolve({
+              data: tableListDataSource,
+              success: true,
+            });
+          }}
+          pagination={{
+            pageSize: 5,
+          }}
+          rowKey="key"
+          search={false}
+          dateFormatter="string"
+          toolBarRender={false}
+        />
+      </div>
+    );
   }
-}
+};
 
-export { SRList };
+export default SRList;

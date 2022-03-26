@@ -1,9 +1,6 @@
 import { Layout, Menu } from "antd";
 import {
-  DesktopOutlined,
-  PieChartOutlined,
   FileOutlined,
-  TeamOutlined,
   UserOutlined,
   AppleOutlined,
   GithubOutlined,
