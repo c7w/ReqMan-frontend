@@ -1,4 +1,4 @@
-import "./Fallback.scss";
+import "./Fallback.css";
 
 const Fallback = () => {
   return (
