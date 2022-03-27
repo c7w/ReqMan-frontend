@@ -4,14 +4,32 @@ import React from "react";
 import "./Navbar.css";
 import logo from "../../assets/ReqMan.png";
 import { logOut } from "../../store/functions/UMS";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { push } from "redux-first-history";
 import { Redirect } from "../../utils/Navigation";
+import { getUserStore } from "../../store/slices/UserSlice";
+import CryptoJS from "crypto-js";
 
 const { Header } = Layout;
 
 const Navbar = () => {
+  const userStore = useSelector(getUserStore);
   const dispatcher = useDispatch();
+
+  const getUserAvatar = (userStore: string): string => {
+    if (userStore === "" || JSON.parse(userStore).code !== 0) {
+      return "";
+    }
+    const userInfo = JSON.parse(userStore);
+    if (userInfo.data.user.avatar === "") {
+      return `https://www.gravatar.com/avatar/${CryptoJS.MD5(
+        userInfo.data.user.email
+      )}`;
+    } else {
+      return userInfo.data.user.avatar;
+    }
+  };
+
   const menu = (
     <Menu>
       <Menu>
@@ -51,6 +69,19 @@ const Navbar = () => {
           </div>
         </div>
         <div className="header-right">
+          <span
+            style={{
+              color: "white",
+              marginRight: "1.5rem",
+              fontSize: "1.2rem",
+              userSelect: "none",
+              cursor: "default",
+            }}
+          >
+            {userStore === "" || JSON.parse(userStore).code !== 0
+              ? ""
+              : JSON.parse(userStore).data.user.name}
+          </span>
           <Dropdown
             className="avatar-wrapper"
             placement="bottomRight"
@@ -61,7 +92,9 @@ const Navbar = () => {
             <Avatar
               className="ant-dropdown-link"
               size="large"
+              style={{ cursor: "pointer" }}
               icon={<UserOutlined />}
+              src={getUserAvatar(userStore)}
             />
           </Dropdown>
         </div>
