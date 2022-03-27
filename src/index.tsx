@@ -6,12 +6,7 @@ import Router from "./page/Router";
 import iziToast from "izitoast";
 
 // Entrance
-ReactDOM.render(
-  <React.StrictMode>
-    <Router />
-  </React.StrictMode>,
-  document.getElementById("root")
-);
+ReactDOM.render(<Router />, document.getElementById("root"));
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
