@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Input, Modal, Space, Tag, Button, DatePicker } from "antd";
-import "./ProjectList.css";
+import "./UIProjectList.css";
 import ProList from "@ant-design/pro-list";
 import ReactMarkdown from "react-markdown";
 const { TextArea } = Input;
@@ -21,7 +21,7 @@ export type TableListItem = {
 //   readonly curProjectKey: number[];
 // }
 
-const ProjectList = () => {
+const UIProjectList = () => {
   // 总任务列表
   const dataProjectList: TableListItem[] = [];
   for (let i = 0; i < 10; i += 1) {
@@ -190,4 +190,4 @@ const ProjectList = () => {
   );
 };
 
-export default ProjectList;
+export default UIProjectList;

@@ -3,7 +3,7 @@ import "./SRCard.css";
 import { Avatar, Typography, Menu, Dropdown } from "antd";
 import { UserOutlined, DownOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
-import { getSR, updateSRStore } from "../../store/slices/rmsSlice";
+import { getSR, updateSRStore } from "../../store/slices/IRSRSlice";
 const { Text } = Typography;
 
 interface SRCardProps {
@@ -52,21 +52,32 @@ const SRCard = (props: SRCardProps) => {
           </Typography>
         </div>
         <div className="card-small-down">
-          <Avatar
-            className="card-small-avatar"
-            size="small"
-            icon={<UserOutlined />}
-          />
-          <Avatar
-            className="card-small-avatar"
-            size="small"
-            icon={<UserOutlined />}
-          />
-          <Avatar
-            className="card-small-avatar"
-            size="small"
-            icon={<UserOutlined />}
-          />
+          <Avatar.Group>
+            <Avatar
+              className="card-small-avatar"
+              size="small"
+              src="https://joeschmoe.io/api/v1/random"
+            />
+            <Avatar
+              className="card-small-avatar"
+              size="small"
+              style={{ backgroundColor: "#f56a00" }}
+            >
+              K
+            </Avatar>
+            <Avatar
+              className="card-small-avatar"
+              size="small"
+              style={{ backgroundColor: "#87d068" }}
+              icon={<UserOutlined />}
+            />
+            <Avatar
+              className="card-small-avatar"
+              size="small"
+              style={{ backgroundColor: "#1890ff" }}
+              icon={<UserOutlined />}
+            />
+          </Avatar.Group>
         </div>
       </div>
       <input className="card-input" id="button" type="checkbox" />

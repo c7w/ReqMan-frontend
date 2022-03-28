@@ -10,7 +10,7 @@ import {
   getCookie,
   setCookie,
 } from "../../../utils/CookieOperation";
-import { immediateToast, useToast } from "izitoast-react";
+import { immediateToast } from "izitoast-react";
 import { useDispatch } from "react-redux";
 import { updateUserStore } from "../../../store/slices/UserSlice";
 import { push } from "redux-first-history";
@@ -67,7 +67,7 @@ const Root = () => {
   return (
     <div className={"root-screen"}>
       <div className={"root-proj-name"}>
-        <img src={logo} width={800} height={400} />
+        <img src={logo} width={800} height={400} alt="logo" />
       </div>
       <div className={"root-proj-slogan"}>
         Your <span style={{ fontWeight: "bold" }}>Req</span>uirement{" "}

@@ -1,6 +1,6 @@
 import request_json from "../../utils/Network";
 import API from "../../utils/APIList";
-import { initIRListStore } from "../slices/rmsSlice";
+import { initIRListStore } from "../slices/IRSRSlice";
 
 const updateIRListInfo = async (dispatcher: any): Promise<void> => {
   const myParams = {
