@@ -33,6 +33,16 @@ interface IRCard {
   readonly curSRKey: number[];
 }
 
+interface ProjectInfo {
+  id: number;
+  title: string;
+  description: string;
+  invitation: string;
+  createdAt: number;
+  //test
+  image: string;
+}
+
 const { createReduxHistory, routerMiddleware, routerReducer } =
   createReduxHistoryContext({ history: createBrowserHistory() });
 
@@ -49,4 +59,4 @@ export const store = configureStore({
 });
 
 export const history = createReduxHistory(store);
-export type { IRCard, SRCard };
+export type { IRCard, SRCard, ProjectInfo };

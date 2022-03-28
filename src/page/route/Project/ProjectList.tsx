@@ -21,12 +21,12 @@ const ProjectList = () => {
     Redirect(dispatcher, "/login");
   } else {
     // Render Page
-
-    const data = JSON.parse(userInfo);
+    const user_data = JSON.parse(userInfo);
+    console.log(user_data.data.projects);
     return (
       <Home sidebar={false}>
         <div>
-          <UIProjectList />
+          <UIProjectList userInfo={userInfo} />
         </div>
       </Home>
     );

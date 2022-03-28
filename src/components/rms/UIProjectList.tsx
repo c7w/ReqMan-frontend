@@ -3,53 +3,37 @@ import { Input, Modal, Space, Tag, Button, DatePicker } from "antd";
 import "./UIProjectList.css";
 import ProList from "@ant-design/pro-list";
 import ReactMarkdown from "react-markdown";
+import { useDispatch } from "react-redux";
+import { ProjectInfo } from "../../store/ConfigureStore";
 const { TextArea } = Input;
 
-export type TableListItem = {
-  key: number;
-  name: string;
-  desc: string;
-  invitation: string;
-  status: boolean;
-  createdAt: Date;
-  image: string;
-};
+interface ProjectListProps {
+  readonly userInfo: string;
+}
 
-// interface ProjectListProps {
-//   readonly showChoose: boolean;
-//   readonly myIRKey: number;
-//   readonly curProjectKey: number[];
-// }
-
-const UIProjectList = () => {
+const UIProjectList = (props: ProjectListProps) => {
   // 总任务列表
-  const dataProjectList: TableListItem[] = [];
-  for (let i = 0; i < 10; i += 1) {
+  const ProjectList = JSON.parse(props.userInfo).data.projects;
+  const dispatcher = useDispatch();
+  const dataProjectList: ProjectInfo[] = [];
+  ProjectList.forEach((value: any, index: number) => {
     dataProjectList.push({
-      key: i,
-      name: "My Project",
-      desc: "这是一个**很长很长很长很长**有多长呢我也不知道诶怎么办的项目任务描述",
-      invitation: "XRT67D53RTGFD568",
-      status: true,
-      createdAt: new Date(),
+      id: value.id,
+      title: value.title,
+      description: value.description,
+      invitation: value.invitation,
+      createdAt: value.createdAt * 1000,
       image:
         "https://gw.alipayobjects.com/zos/antfincdn/efFD%24IOql2/weixintupian_20170331104822.jpg",
     });
-  }
+  });
   const [tableListDataSource, settableListDataSource] =
-    useState<TableListItem[]>(dataProjectList);
+    useState<ProjectInfo[]>(dataProjectList);
   const [isModalVisible, setIsModalVisible] = useState(false);
-
-  // useEffect(() => {
-  //   const curProjectList = [];
-  //   for (let i = 0; i < props.curProjectKey.length; i += 1) {
-  //     curProjectList.push(dataProjectList[props.curProjectKey[i]]);
-  //   }
-  //   // 如果是下拉表，则显示当前的关联任务
-  //   if (!props.showChoose) {
-  //     settableListDataSource(curProjectList);
-  //   }
-  // }, [1]);
+  const [newTitle, setNewTitle] = useState(false);
+  const [newInvite, setNewInvite] = useState(false);
+  const [newDesc, setNewDesc] = useState(false);
+  const [newDate, setNewDate] = useState(false);
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -80,7 +64,7 @@ const UIProjectList = () => {
 
   return (
     <div className={"prjlist"}>
-      <ProList<TableListItem>
+      <ProList<ProjectInfo>
         toolBarRender={() => {
           return [
             <Button onClick={showModal} key="add" type="primary">
@@ -88,7 +72,7 @@ const UIProjectList = () => {
             </Button>,
           ];
         }}
-        onRow={(record: TableListItem) => {
+        onRow={(record: ProjectInfo) => {
           return {
             onClick: () => {
               console.log(record);
@@ -100,7 +84,7 @@ const UIProjectList = () => {
         dataSource={tableListDataSource}
         metas={{
           title: {
-            render: (record: any, item: TableListItem) => (
+            render: (record: any, item: ProjectInfo) => (
               <a
                 style={{
                   color: "black",
@@ -110,7 +94,7 @@ const UIProjectList = () => {
                   console.log("title clicked");
                 }}
               >
-                {item.name}
+                {item.title}
               </a>
             ),
           },
@@ -118,7 +102,7 @@ const UIProjectList = () => {
             dataIndex: "image",
           },
           subTitle: {
-            render: (record: any, item: TableListItem) => {
+            render: (record: any, item: ProjectInfo) => {
               return (
                 <div
                   style={{
@@ -128,27 +112,29 @@ const UIProjectList = () => {
                   }}
                 >
                   <Space size={0}>
-                    <Tag color="orange">邀请码：{item.invitation}</Tag>
-                  </Space>
-                  <Space size={0}>
-                    <Tag color="green">
-                      创建时间：{item.createdAt.toDateString()}
-                    </Tag>
+                    <Tag color="green">创建时间：{item.createdAt}</Tag>
                   </Space>
                 </div>
               );
             },
           },
           content: {
-            render: (record: any, item: TableListItem) => (
+            render: (record: any, item: ProjectInfo) => (
               <div
                 style={{
                   width: "auto",
                   marginLeft: "400px",
                   fontSize: "15px",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  // overflow : "hidden",
+                  // text-overflow: "ellipsis",
+                  // display: "-webkit-box",
+                  // -webkit-line-clamp: 2,
+                  // -webkit-box-orient: "vertical",
                 }}
               >
-                <ReactMarkdown children={item.desc} />
+                <ReactMarkdown children={item.description} />
               </div>
             ),
           },

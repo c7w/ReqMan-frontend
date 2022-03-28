@@ -66,12 +66,6 @@ const SiteRouter = () => {
             element={<SRList showChoose={true} myIRKey={1} curSRKey={[1]} />}
           />
           <Route
-            path="IR_List"
-            element={
-              <UIIRList project_id={0} IRListStr={testIR} userInfo={" "} />
-            }
-          />
-          <Route
             path={"dev/loading"}
             element={
               <Home sidebar={true}>

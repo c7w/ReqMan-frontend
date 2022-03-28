@@ -25,7 +25,6 @@ IRListData example:
 */
 
 const UIIRList = (props: IRListProps) => {
-  console.log("hi");
   const IRListData = JSON.parse(props.IRListStr).data;
   const userData = JSON.parse(props.userInfo);
   const dispatcher = useDispatch();
