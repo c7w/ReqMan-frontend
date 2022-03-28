@@ -1,41 +1,50 @@
-import React, { useState } from "react";
+import React, { Key, useState } from "react";
 import type { ProColumns } from "@ant-design/pro-table";
 import { EditableProTable } from "@ant-design/pro-table";
 import { Modal, Progress } from "antd";
-import "./IRList.css";
+import { IRCard } from "../../store/ConfigureStore";
+import "./UIIRList.css";
 import SRList from "./SRList";
+import { useDispatch } from "react-redux";
+import { createIRInfo, deleteIRInfo } from "../../store/functions/RMS";
 
-export type TableListItem = {
-  key: number;
-  name: string;
-  desc: string;
-  progress: number;
-  creator: string;
-  createdAt: number;
-  curSRKey: number[]; //关联SR
-};
+interface IRListProps {
+  readonly project_id: number;
+  readonly IRListStr: string;
+  readonly userInfo: string;
+}
 
-// interface IRListProps {
-//   readonly unimportant: string;
-// }
+/*
+IRListData example:
+[
+  {id: 1, project: 2, title: 'I am the first IR', description: 'hahahahahahah', rank: 1, ...}
+  {id: 1, project: 2, title: 'I am the first IR', description: 'hahahahahahah', rank: 1, ...}
+  {id: 1, project: 2, title: 'I am the first IR', description: 'hahahahahahah', rank: 1, ...}
+]
+*/
 
-const IRList = () => {
-  const dataIRList: TableListItem[] = [];
-  const creators = ["qc", "c7w", "hxj", "wxy", "lmd"];
-  for (let i = 0; i < 30; i += 1) {
+const UIIRList = (props: IRListProps) => {
+  const IRListData = JSON.parse(props.IRListStr).data;
+  const userData = JSON.parse(props.userInfo);
+  const dispatcher = useDispatch();
+  // console.log(IRListData);
+
+  const dataIRList: IRCard[] = [];
+  IRListData.forEach((value: any, index: number) => {
     dataIRList.push({
-      key: i,
-      // progress 数据须与后端刷新数据进行对接
-      progress: 50,
-      name: "[IR.001.002]",
-      desc: "我是关于这个任务很长很长很长很长很长很长长很长很长很长长很长很长很长长很长很长很长的描述",
-      creator: creators[Math.floor(Math.random() * creators.length)],
-      createdAt: Date.now() - Math.floor(Math.random() * 1000000000),
-      curSRKey: [i],
+      id: value.id,
+      project: value.project,
+      title: value.title,
+      description: value.description,
+      rank: value.rank,
+      createdBy: value.createdBy,
+      createdAt: value.createdAt * 1000,
+      disabled: value.disabled,
+      curSRKey: value.curSRKey,
     });
-  }
+  });
   const [tableListDataSource, settableListDataSource] =
-    useState<TableListItem[]>(dataIRList);
+    useState<IRCard[]>(dataIRList);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [modalIRKey, setModalIRKey] = useState<number>(0);
   const [modalSRKey, setModalSRKey] = useState<number[]>([]);
@@ -54,21 +63,29 @@ const IRList = () => {
     setIsModalVisible(false);
   };
 
-  const expandedRowRender = (rowKey: TableListItem) => {
+  const handleSave = (record: IRCard) => {
+    createIRInfo(dispatcher, props.project_id, record);
+  };
+
+  const handleDelete = (record: IRCard) => {
+    deleteIRInfo(dispatcher, props.project_id, record);
+  };
+
+  const expandedRowRender = (rowKey: IRCard) => {
     return (
       <SRList
         showChoose={false}
-        myIRKey={rowKey.key}
+        myIRKey={rowKey.id}
         curSRKey={rowKey.curSRKey}
       />
     );
   };
 
-  const columns: ProColumns<TableListItem>[] = [
+  const columns: ProColumns<IRCard>[] = [
     {
       title: "IR标题",
       width: 100,
-      dataIndex: "name",
+      dataIndex: "title",
       align: "center",
       formItemProps: {
         rules: [
@@ -83,7 +100,7 @@ const IRList = () => {
     {
       title: "任务描述",
       width: 240,
-      dataIndex: "desc",
+      dataIndex: "description",
       align: "center",
       formItemProps: {
         rules: [
@@ -97,24 +114,17 @@ const IRList = () => {
     {
       title: "进度",
       width: 80,
-      dataIndex: "creator",
       align: "center",
       editable: false,
-      render: (_, record) => <Progress percent={record.progress} />,
+      // test
+      render: (_, record) => <Progress percent={50} />,
     },
     {
       title: "创建者",
       width: 80,
-      dataIndex: "creator",
+      dataIndex: "createdBy",
       align: "center",
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: "此项为必填项",
-          },
-        ],
-      },
+      editable: false,
     },
     {
       title: "创建时间",
@@ -142,14 +152,14 @@ const IRList = () => {
         <a
           key="editable"
           onClick={() => {
-            action?.startEditable?.(record.key);
+            action?.startEditable?.(record.id);
           }}
         >
           编辑
         </a>,
         <a
           onClick={() => {
-            showModal(record.key, record.curSRKey);
+            showModal(record.id, record.curSRKey);
           }}
         >
           关联SR
@@ -160,7 +170,7 @@ const IRList = () => {
 
   return (
     <div className={`IRTable`}>
-      <EditableProTable<TableListItem>
+      <EditableProTable<IRCard>
         columns={columns}
         // dataSource={temp}
         request={() => {
@@ -169,7 +179,7 @@ const IRList = () => {
             success: true,
           });
         }}
-        rowKey="key"
+        rowKey="id"
         expandable={{ expandedRowRender }}
         pagination={{
           pageSize: 10,
@@ -177,15 +187,23 @@ const IRList = () => {
         }}
         editable={{
           type: "multiple",
+          onSave: async (key: any, record: IRCard): Promise<void> => {
+            handleSave(record);
+          },
+          onDelete: async (key: any, record: IRCard): Promise<void> => {
+            handleDelete(record);
+          },
         }}
         recordCreatorProps={{
           record: (index: number) => ({
-            key: index,
-            name: "",
-            desc: "",
-            progress: 0,
-            creator: "",
+            id: index,
+            project: props.project_id,
+            title: "",
+            description: "",
+            rank: 1,
+            createdBy: userData.name,
             createdAt: Date.now(),
+            disabled: false,
             curSRKey: [],
           }),
           position: "top",
@@ -207,4 +225,4 @@ const IRList = () => {
   );
 };
 
-export default IRList;
+export default UIIRList;

@@ -9,7 +9,7 @@ import ProjectSliceReducer from "./slices/ProjectSlice";
 
 interface SRCard {
   readonly id: number; // id
-  readonly project: string; // the project belongs to
+  readonly project: number; // the project belongs to
   readonly title: string; // title
   readonly description: string; // description
   readonly priority: number; // the priority which indicates the importance of the SR
@@ -22,13 +22,15 @@ interface SRCard {
 
 interface IRCard {
   readonly id: number; // id
-  readonly project: string; // the project belongs to
+  readonly project: number; // the project belongs to
   readonly title: string; // title
   readonly description: string; // description
   readonly rank: number;
   readonly createdBy: string; // somebody
   readonly createdAt: number; // sometime
   readonly disabled: boolean;
+  // test
+  readonly curSRKey: number[];
 }
 
 const { createReduxHistory, routerMiddleware, routerReducer } =

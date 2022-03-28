@@ -1,27 +1,17 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { IRCard, SRCard } from "../ConfigureStore";
+import { SRCard } from "../ConfigureStore";
 
 export const rmsSlice = createSlice({
   name: "rms",
   initialState: {
-    IRList: Array<IRCard>(), // add IRCard Components
+    IRList: "",
     SRList: Array<SRCard>(),
   },
   reducers: {
     // 增删性能待调整，是否允许换位显示？
-    // 增加 IR 需求 ( payload 为 IR 详细信息)
-    addIRStore: (state, action) => {
-      state.IRList.push(action.payload);
-    },
-    updateIRStore: (state, action) => {
-      console.log(
-        " ======================= updating ============================" +
-          action.payload
-      );
-    },
-    // 删除 IR 需求
-    deleteIRStore: (state, action) => {
-      state.IRList.filter((item) => item.id !== action.payload);
+    updateIRListStore: (state, action) => {
+      console.log(action.payload);
+      state.IRList = action.payload;
     },
     // 增加 SR 需求 ( payload 为 SR 详细信息 )
     addSRStore: (state, action) => {
@@ -38,30 +28,13 @@ export const rmsSlice = createSlice({
     deleteSRStore: (state, action) => {
       state.SRList.filter((item) => item.id !== action.payload);
     },
-    // 初始化 IRList
-    initIRListStore: (state, action) => {
-      console.log(" ================== init IR ing ===================");
-      console.log(action.payload);
-    },
-    // 初始化 SRList
-    initSRListStore: (state, action) => {
-      console.log(action.payload);
-    },
   },
 });
 
-export const {
-  addIRStore,
-  updateIRStore,
-  deleteIRStore,
-  addSRStore,
-  updateSRStore,
-  deleteSRStore,
-  initIRListStore,
-  initSRListStore,
-} = rmsSlice.actions;
+export const { updateIRListStore, addSRStore, updateSRStore, deleteSRStore } =
+  rmsSlice.actions;
 
-export const getIRListStore = (state: { rms: { IRList: Array<IRCard> } }) => {
+export const getIRListStore = (state: { rms: { IRList: string } }) => {
   return state.rms.IRList;
 };
 
