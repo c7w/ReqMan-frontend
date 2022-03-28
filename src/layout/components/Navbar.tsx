@@ -21,7 +21,7 @@ const Navbar = () => {
       return "";
     }
     const userInfo = JSON.parse(userStore);
-    if (userInfo.data.user.avatar === "") {
+    if (userInfo.data.user.avatar.length < 5) {
       return `https://www.gravatar.com/avatar/${CryptoJS.MD5(
         userInfo.data.user.email
       )}`;
