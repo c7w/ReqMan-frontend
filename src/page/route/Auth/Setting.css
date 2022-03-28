@@ -1,0 +1,59 @@
+.personal-setting-container {
+
+  width: 70vw;
+  background-color: rgba(249, 249, 249);
+  margin: 2rem auto 1rem;
+  padding: 3rem;
+  border-radius: 1rem;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+
+
+.avatar-column {
+  text-align: left;
+  border-right: 1px gray solid;
+}
+
+.setting-row {
+  display: flex;
+  flex-direction: row;
+  margin-right: -15px;
+  margin-left: -15px;
+  width: 90%;
+  margin-bottom: 2rem;
+}
+
+.column-1 {
+  flex: 0 0 33.33333%;
+  max-width: 33.33333%;
+  border-right: 1px grey solid;
+  padding: 1rem;
+}
+
+.column-2 {
+  padding: 0 2rem;
+  flex: 0 0 66.66667%;
+  max-width: 66.66667%;
+}
+
+.setting-input {
+  width: 20rem;
+  border: 1px black solid;
+  border-radius: 1rem;
+}
+.setting-input:active {
+  width: 20rem;
+  border: 1px black solid;
+  border-radius: 1rem;
+}
+.setting-input:hover {
+  width: 20rem;
+  border: 1px black solid;
+  border-radius: 1rem;
+}
+
+

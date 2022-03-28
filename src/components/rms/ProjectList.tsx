@@ -100,7 +100,7 @@ const ProjectList = () => {
         dataSource={tableListDataSource}
         metas={{
           title: {
-            render: (record, item: TableListItem) => (
+            render: (record: any, item: TableListItem) => (
               <a
                 style={{
                   color: "black",
@@ -118,7 +118,7 @@ const ProjectList = () => {
             dataIndex: "image",
           },
           subTitle: {
-            render: (record, item: TableListItem) => {
+            render: (record: any, item: TableListItem) => {
               return (
                 <div
                   style={{
@@ -140,7 +140,7 @@ const ProjectList = () => {
             },
           },
           content: {
-            render: (record, item: TableListItem) => (
+            render: (record: any, item: TableListItem) => (
               <div
                 style={{
                   width: "auto",
