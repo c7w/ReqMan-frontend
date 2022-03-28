@@ -4,7 +4,6 @@ import { HistoryRouter as Router } from "redux-first-history/rr6";
 import { store, history } from "../store/ConfigureStore";
 import Login from "./route/Auth/Login";
 import Home from "../layout/Home";
-import IRList from "../components/rms/UIIRList";
 import SRList from "../components/rms/SRList";
 import Root from "./route/Root/Root";
 import "izitoast-react/dist/iziToast.css";
@@ -24,8 +23,12 @@ import PersonalSetting from "./route/Auth/Setting";
 import ProjectServiceReadonly from "./route/Project/ProjectServiceReadonly";
 import ProjectRequirementsReadonly from "./route/Project/ProjectRequirementsReadonly";
 import ProjectMember from "./route/Project/ProjectMember";
+import UIIRList from "../components/rms/UIIRList";
 
 const SiteRouter = () => {
+  const testIR =
+    "[{id: 1, project: 2, title: 'I am the first IR', description: 'hahahahahahah', rank: 1, createdBy: 'c7w', createdAt: 10000000000, disabled: false}]";
+
   return (
     <Provider store={store}>
       <Router history={history}>
@@ -61,6 +64,12 @@ const SiteRouter = () => {
           <Route
             path="SR_List"
             element={<SRList showChoose={true} myIRKey={1} curSRKey={[1]} />}
+          />
+          <Route
+            path="IR_List"
+            element={
+              <UIIRList project_id={0} IRListStr={testIR} userInfo={" "} />
+            }
           />
           <Route
             path={"dev/loading"}
