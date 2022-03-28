@@ -8,7 +8,7 @@ import {
 import { Redirect, ToastMessage } from "../../../utils/Navigation";
 import UIIRList from "../../../components/rms/UIIRList";
 import { getIRListInfo } from "../../../store/functions/RMS";
-import { getIRListStore } from "../../../store/slices/rmsSlice";
+import { getIRListStore } from "../../../store/slices/IRSRSlice";
 import { useParams } from "react-router-dom";
 import { getProjectStore } from "../../../store/slices/ProjectSlice";
 
@@ -19,6 +19,7 @@ const ProjectIR = () => {
   const userInfo = useSelector(getUserStore);
   const projectInfo = useSelector(getProjectStore);
   const IRListInfo = useSelector(getIRListStore);
+
   const dispatcher = useDispatch();
 
   const params = useParams<"id">();

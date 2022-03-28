@@ -162,6 +162,9 @@ body {
   padding: 0;
   height: auto;
   font-family: "Barlow", sans-serif;
+}
+
+.fallback {
   background: #695681;
 }
 

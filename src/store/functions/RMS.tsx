@@ -1,6 +1,6 @@
 import request_json from "../../utils/Network";
 import API from "../../utils/APIList";
-import { updateIRListStore } from "../slices/rmsSlice";
+import { updateIRListStore } from "../slices/IRSRSlice";
 import { IRCard } from "../ConfigureStore";
 
 const getIRListInfo = async (

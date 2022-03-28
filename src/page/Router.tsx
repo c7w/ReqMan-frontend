@@ -11,7 +11,7 @@ import "izitoast-react/dist/iziToast.css";
 import Register from "./route/Auth/Register";
 import Dashboard from "./route/Dashboard";
 import Fallback from "./route/Fallback";
-import ProjectList from "../components/rms/ProjectList";
+import ProjectList from "./route/Project/ProjectList";
 import Project from "./route/Project/Project";
 import ProjectService from "./route/Project/ProjectService";
 import ProjectSR from "./route/Project/ProjectSR";
@@ -62,7 +62,6 @@ const SiteRouter = () => {
             path="SR_List"
             element={<SRList showChoose={true} myIRKey={1} curSRKey={[1]} />}
           />
-          <Route path="ProjectList" element={<ProjectList />} />
           <Route
             path={"dev/loading"}
             element={

@@ -4,7 +4,7 @@ import { createReduxHistoryContext } from "redux-first-history";
 import { createBrowserHistory } from "history";
 import sidebarReducer from "./slices/SidebarSlice";
 import UserSliceReducer from "./slices/UserSlice";
-import rmsReducer from "./slices/rmsSlice";
+import IRSRReducer from "./slices/IRSRSlice";
 import ProjectSliceReducer from "./slices/ProjectSlice";
 
 interface SRCard {
@@ -40,7 +40,7 @@ export const store = configureStore({
   reducer: combineReducers({
     router: routerReducer,
     sidebar: sidebarReducer,
-    rms: rmsReducer,
+    ir_sr_store: IRSRReducer,
     user_store: UserSliceReducer,
     project_store: ProjectSliceReducer,
     // rest of your reducers

@@ -8,6 +8,7 @@ import {
 import { Redirect, ToastMessage } from "../../../utils/Navigation";
 import { getProjectStore } from "../../../store/slices/ProjectSlice";
 import { useParams } from "react-router-dom";
+import UIProject from "../../../components/rms/UIProject";
 
 const Project = () => {
   // 1. Judge if user logged in, if not send to `/login`
@@ -51,8 +52,14 @@ const Project = () => {
           return (
             <Home sidebar={true}>
               <div>
-                <p>{userInfo}</p>
-                <p>{projectInfo}</p>
+                <UIProject
+                  id={projectData.data.project.id}
+                  title={projectData.data.project.title}
+                  description={projectData.data.project.description}
+                  invitation={projectData.data.project.invitation}
+                  disabled={projectData.data.project.disabled}
+                  createdAt={projectData.data.project.createdAt}
+                />
               </div>
             </Home>
           );

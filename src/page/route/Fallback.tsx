@@ -10,7 +10,7 @@ const Fallback = () => {
     Redirect(dispatcher, "/login", 0);
   };
   return (
-    <>
+    <div className="fallback">
       <div className="about">
         <a
           className="bg_links social portfolio"
@@ -109,7 +109,7 @@ const Fallback = () => {
           </div>
         </div>
       </section>
-    </>
+    </div>
   );
 };
 

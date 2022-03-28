@@ -1,10 +1,9 @@
 import Home from "../../../layout/Home";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserStore } from "../../../store/slices/UserSlice";
-import { immediateToast } from "izitoast-react";
 import { Redirect, ToastMessage } from "../../../utils/Navigation";
 import { updateUserInfo } from "../../../store/functions/UMS";
-import Project from "./ProjectList";
+import UIProjectList from "../../../components/rms/UIProjectList";
 
 const ProjectList = () => {
   // Judge if project list in user state
@@ -22,11 +21,12 @@ const ProjectList = () => {
     Redirect(dispatcher, "/login");
   } else {
     // Render Page
+
     const data = JSON.parse(userInfo);
     return (
       <Home sidebar={false}>
         <div>
-          <p>{userInfo}</p>
+          <UIProjectList />
         </div>
       </Home>
     );

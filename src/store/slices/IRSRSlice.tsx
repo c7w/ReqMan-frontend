@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { SRCard } from "../ConfigureStore";
 
-export const rmsSlice = createSlice({
-  name: "rms",
+export const IRSRSlice = createSlice({
+  name: "ir_sr_slice",
   initialState: {
     IRList: "",
     SRList: Array<SRCard>(),
@@ -32,14 +32,16 @@ export const rmsSlice = createSlice({
 });
 
 export const { updateIRListStore, addSRStore, updateSRStore, deleteSRStore } =
-  rmsSlice.actions;
+  IRSRSlice.actions;
 
-export const getIRListStore = (state: { rms: { IRList: string } }) => {
-  return state.rms.IRList;
+export const getIRListStore = (state: { ir_sr_store: { IRList: string } }) => {
+  return state.ir_sr_store.IRList;
 };
 
-export const getSRListStore = (state: { rms: { SRList: Array<SRCard> } }) => {
-  return state.rms.SRList;
+export const getSRListStore = (state: {
+  ir_sr_slice: { SRList: Array<SRCard> };
+}) => {
+  return state.ir_sr_slice.SRList;
 };
 
 // test SR
@@ -61,4 +63,4 @@ export const getSR =
     // return state.rms.SRList[id];
   };
 
-export default rmsSlice.reducer;
+export default IRSRSlice.reducer;
