@@ -1,12 +1,13 @@
 @import "~antd/dist/antd.css";
 
 .prjlist {
-  width: 70%;
-  padding: 100px;
+  width: 60%;
+  text-align: center;
 }
 
 .ant-pro-list-row-title {
   width: 300px;
+  text-align: left;
 }
 
 .ant-pro-table-list-toolbar-container {
@@ -25,4 +26,8 @@
 
 .ant-list-item-meta-avatar {
   padding-top: 20%;
+}
+
+.ant-pro-list-row-content {
+  display: flex;
 }

@@ -5,6 +5,7 @@ import ProList from "@ant-design/pro-list";
 import ReactMarkdown from "react-markdown";
 import { useDispatch } from "react-redux";
 import { ProjectInfo } from "../../store/ConfigureStore";
+import moment from "moment";
 const { TextArea } = Input;
 
 interface ProjectListProps {
@@ -30,10 +31,10 @@ const UIProjectList = (props: ProjectListProps) => {
   const [tableListDataSource, settableListDataSource] =
     useState<ProjectInfo[]>(dataProjectList);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [newTitle, setNewTitle] = useState(false);
-  const [newInvite, setNewInvite] = useState(false);
-  const [newDesc, setNewDesc] = useState(false);
-  const [newDate, setNewDate] = useState(false);
+  const [newTitle, setNewTitle] = useState("");
+  const [newInvite, setNewInvite] = useState("");
+  const [newDesc, setNewDesc] = useState("");
+  const [newDate, setNewDate] = useState("");
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -48,7 +49,7 @@ const UIProjectList = (props: ProjectListProps) => {
   };
 
   const createTitle = () => {
-    console.log("create title!");
+    setNewTitle("");
   };
   const createInvite = () => {
     console.log("create invite!");
@@ -81,6 +82,7 @@ const UIProjectList = (props: ProjectListProps) => {
         }}
         rowKey="name"
         headerTitle="项目列表"
+        split={true}
         dataSource={tableListDataSource}
         metas={{
           title: {
@@ -112,7 +114,10 @@ const UIProjectList = (props: ProjectListProps) => {
                   }}
                 >
                   <Space size={0}>
-                    <Tag color="green">创建时间：{item.createdAt}</Tag>
+                    <Tag color="green">
+                      创建时间：
+                      {moment(item.createdAt).format("YYYY-MM-DD HH:mm:ss")}
+                    </Tag>
                   </Space>
                 </div>
               );
@@ -122,21 +127,22 @@ const UIProjectList = (props: ProjectListProps) => {
             render: (record: any, item: ProjectInfo) => (
               <div
                 style={{
-                  width: "auto",
-                  marginLeft: "400px",
+                  width: "100%",
+                  marginLeft: "200px",
                   fontSize: "15px",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
-                  // overflow : "hidden",
-                  // text-overflow: "ellipsis",
-                  // display: "-webkit-box",
-                  // -webkit-line-clamp: 2,
-                  // -webkit-box-orient: "vertical",
+                  display: "flex",
                 }}
               >
                 <ReactMarkdown children={item.description} />
               </div>
             ),
+          },
+          actions: {
+            render: () => {
+              return [<a key="init">邀请</a>];
+            },
           },
         }}
       />
@@ -152,7 +158,12 @@ const UIProjectList = (props: ProjectListProps) => {
         >
           项目名称
         </p>
-        <Input placeholder="Input" onChange={createTitle} />
+        <Input
+          placeholder="请输入"
+          onChange={(e) => {
+            setNewTitle(e.target.value);
+          }}
+        />
         <p
           style={{ paddingTop: "10px", marginBottom: "5px", fontSize: "16px" }}
         >
