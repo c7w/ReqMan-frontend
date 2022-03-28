@@ -75,7 +75,6 @@ const PersonalSetting = () => {
   };
 
   const onBeforeUpload = (file: File) => {
-    console.debug(file);
     const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
     const reader = new FileReader();
     reader.addEventListener("load", () => {
@@ -119,7 +118,6 @@ const PersonalSetting = () => {
               className="setting-card"
               style={{ display: "flex", flexDirection: "row" }}
             >
-              {/*// TODO: get user avatar*/}
               <Avatar src={getUserAvatar(userStore)} size={100}></Avatar>
               <div
                 style={{
