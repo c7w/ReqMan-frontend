@@ -43,6 +43,13 @@ interface ProjectInfo {
   image: string;
 }
 
+interface ManageUserInfo {
+  id: number;
+  name: string;
+  email: string;
+  avatar: string;
+}
+
 const { createReduxHistory, routerMiddleware, routerReducer } =
   createReduxHistoryContext({ history: createBrowserHistory() });
 
@@ -59,4 +66,4 @@ export const store = configureStore({
 });
 
 export const history = createReduxHistory(store);
-export type { IRCard, SRCard, ProjectInfo };
+export type { IRCard, SRCard, ProjectInfo, ManageUserInfo };

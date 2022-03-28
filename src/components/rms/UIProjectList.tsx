@@ -34,7 +34,7 @@ const UIProjectList = (props: ProjectListProps) => {
   const [newTitle, setNewTitle] = useState("");
   const [newInvite, setNewInvite] = useState("");
   const [newDesc, setNewDesc] = useState("");
-  const [newDate, setNewDate] = useState("");
+  const [newDate, setNewDate] = useState(0);
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -46,21 +46,6 @@ const UIProjectList = (props: ProjectListProps) => {
 
   const handleCancel = () => {
     setIsModalVisible(false);
-  };
-
-  const createTitle = () => {
-    setNewTitle("");
-  };
-  const createInvite = () => {
-    console.log("create invite!");
-  };
-
-  const createDesc = () => {
-    console.log("create desc!");
-  };
-
-  const createDate = () => {
-    console.log("create date!");
   };
 
   return (
@@ -169,19 +154,34 @@ const UIProjectList = (props: ProjectListProps) => {
         >
           项目邀请码
         </p>
-        <Input placeholder="Input" onChange={createInvite} />
+        <Input
+          placeholder="Input"
+          onChange={(e) => {
+            setNewInvite(e.target.value);
+          }}
+        />
         <p
           style={{ paddingTop: "10px", marginBottom: "5px", fontSize: "16px" }}
         >
           项目介绍
         </p>
-        <TextArea rows={4} allowClear onChange={createDesc} />
+        <TextArea
+          rows={4}
+          onChange={(e) => {
+            setNewDesc(e.target.value);
+          }}
+        />
         <p
           style={{ paddingTop: "10px", marginBottom: "5px", fontSize: "16px" }}
         >
           创建日期
         </p>
-        <DatePicker style={{ width: "50%" }} onChange={createDate} />
+        <DatePicker
+          style={{ width: "50%" }}
+          onChange={(date: moment, datestring: string) => {
+            setNewDate(date.unix());
+          }}
+        />
       </Modal>
     </div>
   );
