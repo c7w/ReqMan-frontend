@@ -7,7 +7,7 @@ import {
 } from "../../../store/functions/UMS";
 import { Redirect, ToastMessage } from "../../../utils/Navigation";
 import { getProjectStore } from "../../../store/slices/ProjectSlice";
-import { Params, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 const Project = () => {
   // 1. Judge if user logged in, if not send to `/login`

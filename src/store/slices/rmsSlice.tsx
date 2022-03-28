@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { IRCard, SRCard } from "../ConfigureStore";
+import { SRCard } from "../ConfigureStore";
 
 export const rmsSlice = createSlice({
   name: "rms",
@@ -10,6 +10,7 @@ export const rmsSlice = createSlice({
   reducers: {
     // 增删性能待调整，是否允许换位显示？
     updateIRListStore: (state, action) => {
+      console.log(action.payload);
       state.IRList = action.payload;
     },
     // 增加 SR 需求 ( payload 为 SR 详细信息 )

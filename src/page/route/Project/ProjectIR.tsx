@@ -7,7 +7,7 @@ import {
 } from "../../../store/functions/UMS";
 import { Redirect, ToastMessage } from "../../../utils/Navigation";
 import UIIRList from "../../../components/rms/UIIRList";
-import { updateIRListInfo } from "../../../store/functions/RMS";
+import { getIRListInfo } from "../../../store/functions/RMS";
 import { getIRListStore } from "../../../store/slices/rmsSlice";
 import { useParams } from "react-router-dom";
 import { getProjectStore } from "../../../store/slices/ProjectSlice";
@@ -50,13 +50,17 @@ const ProjectIR = () => {
         } else {
           if (IRListInfo === "") {
             // without IR, update from backend
-            updateIRListInfo(dispatcher, Number(project_id));
+            getIRListInfo(dispatcher, Number(project_id));
           } else {
             console.log(JSON.parse(IRListInfo));
             return (
               <Home sidebar={true}>
                 <div>
-                  <UIIRList IRListStr={IRListInfo} />
+                  <UIIRList
+                    IRListStr={IRListInfo}
+                    project_id={Number(project_id)}
+                    userInfo={userInfo}
+                  />
                 </div>
               </Home>
             );
