@@ -2,6 +2,7 @@ import request_json from "../../utils/Network";
 import API from "../../utils/APIList";
 import { updateIRListStore } from "../slices/IRSRSlice";
 import { IRCard } from "../ConfigureStore";
+import { updateServiceStore } from "../slices/ServiceSlice";
 
 const getIRListInfo = async (
   dispatcher: any,
@@ -76,4 +77,16 @@ const deleteIRInfo = async (
   getIRListInfo(dispatcher, project_id);
 };
 
-export { getIRListInfo, createIRInfo, updateIRInfo, deleteIRInfo };
+const updateServiceInfo = async (dispatcher: any, project_id: number) => {
+  request_json(API.GET_RMS, {
+    getParams: { project: project_id, type: "service" },
+  }).then((data) => dispatcher(updateServiceStore(JSON.stringify(data))));
+};
+
+export {
+  getIRListInfo,
+  createIRInfo,
+  updateIRInfo,
+  deleteIRInfo,
+  updateServiceInfo,
+};
