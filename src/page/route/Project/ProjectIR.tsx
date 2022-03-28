@@ -5,7 +5,7 @@ import { updateUserInfo } from "../../../store/functions/UMS";
 import { Redirect, ToastMessage } from "../../../utils/Navigation";
 import IRList from "../../../components/rms/IRList";
 import { updateIRListInfo } from "../../../store/functions/RMS";
-import { getIRListStore } from "../../../store/slices/rmsSlice";
+import { getIRListStore } from "../../../store/slices/IRSRSlice";
 
 const ProjectIR = () => {
   // Judge if project list in user state
@@ -14,6 +14,7 @@ const ProjectIR = () => {
   const userInfo = useSelector(getUserStore);
   const IRListInfo = useSelector(getIRListStore);
   const dispatch = useDispatch();
+
   if (userInfo === "") {
     updateUserInfo(dispatch);
   } else if (JSON.parse(userInfo).code !== 0) {
@@ -22,6 +23,7 @@ const ProjectIR = () => {
     Redirect(dispatch, "/login");
   } else {
     updateIRListInfo(dispatch);
+
     const user_data = JSON.parse(userInfo);
     return (
       <Home sidebar={true}>

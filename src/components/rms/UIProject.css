@@ -1,0 +1,46 @@
+.ui-project-breadcrumb {
+  padding: 1rem;
+}
+
+.ui-project-breadcrumb-item {
+  font-size: 1rem;
+  cursor: pointer;
+  font-family: "Consolas", arial, sans-serif;
+}
+
+.ui-project-breadcrumb-item:hover {
+  background: #f0f0f0;
+}
+
+.ui-project-avatar-group {
+  padding: 1rem;
+}
+
+.ui-project-avatar {
+  cursor: pointer;
+}
+
+.ui-project-info {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: nowrap;
+}
+
+.ui-project-info-left {
+  min-width: 0;
+  max-width: 100%;
+  margin-bottom: 8px;
+  flex: 1 1 auto;
+  font-size: 2rem;
+  padding-left: 1rem;
+  font-family: "Consolas", arial, sans-serif;
+}
+
+.ui-project-info-right {
+  max-width: 100%;
+  margin-bottom: 8px;
+  margin-left: auto;
+  padding-left: 32px;
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
