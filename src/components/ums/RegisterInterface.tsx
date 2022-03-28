@@ -75,6 +75,7 @@ const RegisterInterface = (props: RegisterInterfaceProps) => {
 
   // 邀请码检查
   const invitationCheck = (event: { target: { value: string } }) => {
+    setInvitation(event.target.value);
     const invitation = event.target.value;
     if (invitation === "") {
       setInvitationError("");
@@ -86,7 +87,6 @@ const RegisterInterface = (props: RegisterInterfaceProps) => {
       setInvitationError("邀请码格式有误");
     } else {
       setInvitationError(" ");
-      setInvitation(invitation);
     }
   };
 
@@ -117,6 +117,7 @@ const RegisterInterface = (props: RegisterInterfaceProps) => {
 
   // 密码判断
   const passwordCheck = (event: { target: { value: string } }) => {
+    setPassword(event.target.value);
     const password = event.target.value;
     const reg1 = /^.{6,20}$/;
     const reg2 = /^[0-9]+$/;
@@ -138,7 +139,6 @@ const RegisterInterface = (props: RegisterInterfaceProps) => {
       setPasswordError("密码需包含数字、大小写字母或包含特殊字符");
     } else {
       setPasswordError(" ");
-      setPassword(password);
     }
   };
 

@@ -143,7 +143,7 @@ const Sidebar = () => {
           onClick={() => Redirect(dispatch, `/project/${project_id}/member`, 0)}
           icon={<UserOutlined />}
         >
-          成员
+          项目成员
         </Menu.Item>
         <Menu.Item
           key="IRManager"
