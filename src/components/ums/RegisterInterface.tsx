@@ -82,7 +82,7 @@ const RegisterInterface = (props: RegisterInterfaceProps) => {
       setInvitation("");
       return;
     }
-    const reg = /^[a-zA-Z0-9]{16}$/;
+    const reg = /^[A-Z0-9]{8}$/;
     if (!reg.test(invitation)) {
       setInvitationError("邀请码格式有误");
     } else {

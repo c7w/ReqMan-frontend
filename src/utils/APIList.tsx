@@ -31,6 +31,18 @@ const API = {
     path: "/ums/upload_user_avatar/",
     method: "post",
   },
+  UPLOAD_PROJECT_AVATAR: {
+    path: "/ums/upload_project_avatar/",
+    method: "post",
+  },
+  GET_PROJECT_INVITATION: {
+    path: "/ums/get_invitation/",
+    method: "post",
+  },
+  REFRESH_PROJECT_INVITATION: {
+    path: "/ums/refresh_invitation/",
+    method: "post",
+  },
   CHANGE_USER_PASSWORD: {
     path: "/ums/modify_password/",
     method: "post",
