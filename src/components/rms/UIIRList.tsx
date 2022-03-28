@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import type { ProColumns } from "@ant-design/pro-table";
 import { EditableProTable } from "@ant-design/pro-table";
 import { Modal, Progress } from "antd";
-import "./IRList.css";
+import "./UIIRList.css";
 import SRList from "./SRList";
 
 export type TableListItem = {
@@ -15,11 +15,12 @@ export type TableListItem = {
   curSRKey: number[]; //关联SR
 };
 
-// interface IRListProps {
-//   readonly unimportant: string;
-// }
+interface IRListProps {
+  readonly IRListStr: string;
+}
 
-const IRList = () => {
+const UIIRList = (props: IRListProps) => {
+  const IRListData = JSON.parse(props.IRListStr);
   const dataIRList: TableListItem[] = [];
   const creators = ["qc", "c7w", "hxj", "wxy", "lmd"];
   for (let i = 0; i < 30; i += 1) {
@@ -207,4 +208,4 @@ const IRList = () => {
   );
 };
 
-export default IRList;
+export default UIIRList;

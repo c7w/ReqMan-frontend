@@ -4,7 +4,7 @@ import { HistoryRouter as Router } from "redux-first-history/rr6";
 import { store, history } from "../store/ConfigureStore";
 import Login from "./route/Auth/Login";
 import Home from "../layout/Home";
-import IRList from "../components/rms/IRList";
+import IRList from "../components/rms/UIIRList";
 import SRList from "../components/rms/SRList";
 import Root from "./route/Root/Root";
 import "izitoast-react/dist/iziToast.css";
@@ -58,7 +58,6 @@ const SiteRouter = () => {
           <Route path="projects" element={<ProjectList />} />
 
           {/* Dev Paths */}
-          <Route path="IR_List" element={<IRList />} />
           <Route
             path="SR_List"
             element={<SRList showChoose={true} myIRKey={1} curSRKey={[1]} />}
