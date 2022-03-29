@@ -3,7 +3,7 @@ import API from "../../utils/APIList";
 import { updateUserStore } from "../slices/UserSlice";
 import { immediateToast } from "izitoast-react";
 import { push } from "redux-first-history";
-import { updateProjectStore } from "../slices/ProjectSlice";
+import { getProjectStore, updateProjectStore } from "../slices/ProjectSlice";
 import { ProjectInfo } from "../ConfigureStore";
 
 const updateUserInfo = async (dispatcher: any): Promise<void> => {
@@ -43,7 +43,14 @@ const createProject = async (dispatcher: any, project: ProjectInfo) => {
   const myBody = {
     title: project.title,
     description: project.description,
+    avatar: "X",
   };
+  return request_json(API.CREATE_PROJECT, { body: myBody }).then((data) => {
+    if (data.code === 0) {
+      updateUserInfo(dispatcher);
+    }
+    return data;
+  });
 };
 
-export { updateUserInfo, updateProjectInfo, logOut };
+export { updateUserInfo, updateProjectInfo, logOut, createProject };

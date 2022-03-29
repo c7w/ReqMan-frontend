@@ -9,24 +9,24 @@ interface UserManageProps {
 
 const UserManage = (props: UserManageProps) => {
   // 总任务列表
-  const ProjectList = JSON.parse(props.userInfo).data.user;
+  const ProjectList = JSON.parse(props.userInfo).data.users;
   const dataProjectList: ManageUserInfo[] = [];
-  // ProjectList.forEach((value: any, index: number) => {
-  //   dataProjectList.push({
-  //     id: value.id,
-  //     name: value.name,
-  //     email: value.email,
-  //     avatar: value.avatar,
-  //   });
-  // });
-  for (let i = 0; i <= 30; i++) {
+  ProjectList.forEach((value: any, index: number) => {
     dataProjectList.push({
-      id: ProjectList.id,
-      name: ProjectList.name,
-      email: ProjectList.email,
-      avatar: ProjectList.avatar,
+      id: value.id,
+      name: value.name,
+      email: value.email,
+      avatar: value.avatar,
     });
-  }
+  });
+  // for (let i = 0; i <= 30; i++) {
+  //   dataProjectList.push({
+  //     id: ProjectList.id,
+  //     name: ProjectList.name,
+  //     email: ProjectList.email,
+  //     avatar: ProjectList.avatar,
+  //   });
+  // }
   const [tableListDataSource] = useState<ManageUserInfo[]>(dataProjectList);
 
   return (

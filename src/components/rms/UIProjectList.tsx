@@ -6,8 +6,8 @@ import ReactMarkdown from "react-markdown";
 import { useDispatch } from "react-redux";
 import { ProjectInfo } from "../../store/ConfigureStore";
 import moment from "moment";
-import getProjectAvatar from "./UIProjectSetting";
-import { Redirect } from "../../utils/Navigation";
+import { Redirect, ToastMessage } from "../../utils/Navigation";
+import { createProject } from "../../store/functions/UMS";
 const { TextArea } = Input;
 
 interface ProjectListProps {
@@ -37,9 +37,7 @@ const UIProjectList = (props: ProjectListProps) => {
   const [tableListDataSource] = useState<ProjectInfo[]>(dataProjectList);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [newTitle, setNewTitle] = useState("");
-  const [newInvite, setNewInvite] = useState("");
   const [newDesc, setNewDesc] = useState("");
-  const [newDate, setNewDate] = useState(0);
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -50,11 +48,18 @@ const UIProjectList = (props: ProjectListProps) => {
       id: -1,
       title: newTitle,
       description: newDesc,
-      invitation: newInvite,
-      createdAt: newDate,
+      invitation: "",
+      createdAt: 0,
       avatar: "",
     };
-
+    createProject(dispatcher, newProject).then((data) => {
+      if (data.code === 0) {
+        ToastMessage("success", "创建成功", "您的项目创建成功");
+        setTimeout(() => window.location.reload(), 1000);
+      } else {
+        ToastMessage("error", "创建失败", "您的项目创建失败");
+      }
+    });
     setIsModalVisible(false);
   };
 
@@ -167,33 +172,12 @@ const UIProjectList = (props: ProjectListProps) => {
         <p
           style={{ paddingTop: "10px", marginBottom: "5px", fontSize: "16px" }}
         >
-          项目邀请码
-        </p>
-        <Input
-          onChange={(e) => {
-            setNewInvite(e.target.value);
-          }}
-        />
-        <p
-          style={{ paddingTop: "10px", marginBottom: "5px", fontSize: "16px" }}
-        >
           项目介绍
         </p>
         <TextArea
           rows={4}
           onChange={(e) => {
             setNewDesc(e.target.value);
-          }}
-        />
-        <p
-          style={{ paddingTop: "10px", marginBottom: "5px", fontSize: "16px" }}
-        >
-          创建日期
-        </p>
-        <DatePicker
-          style={{ width: "50%" }}
-          onChange={(date: any) => {
-            setNewDate(date.unix());
           }}
         />
       </Modal>
