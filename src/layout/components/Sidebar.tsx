@@ -135,7 +135,7 @@ const Sidebar = () => {
           }
           icon={<ClockCircleOutlined />}
         >
-          周期进度
+          迭代周期
         </Menu.Item>
         <Menu.Item
           key="member"

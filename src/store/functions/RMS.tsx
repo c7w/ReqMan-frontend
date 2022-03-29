@@ -2,6 +2,7 @@ import request_json from "../../utils/Network";
 import API from "../../utils/APIList";
 import { updateIRListStore } from "../slices/IRSRSlice";
 import { IRCard } from "../ConfigureStore";
+import { getServiceStore, updateServiceStore } from "../slices/ServiceSlice";
 
 const getIRListInfo = async (
   dispatcher: any,
@@ -76,4 +77,62 @@ const deleteIRInfo = async (
   getIRListInfo(dispatcher, project_id);
 };
 
-export { getIRListInfo, createIRInfo, updateIRInfo, deleteIRInfo };
+const updateServiceInfo = async (dispatcher: any, project_id: number) => {
+  request_json(API.GET_RMS, {
+    getParams: { project: project_id, type: "service" },
+  }).then((data) => dispatcher(updateServiceStore(JSON.stringify(data))));
+};
+
+const doUpdateServiceInfo = async (
+  dispatcher: any,
+  project_id: number,
+  info: any
+) => {
+  return request_json(API.POST_RMS, {
+    body: {
+      project: project_id,
+      type: "service",
+      operation: "update",
+      data: {
+        id: info.id,
+        updateData: {
+          title: info.title,
+          description: info.description,
+        },
+      },
+    },
+  }).then((data) => {
+    updateServiceInfo(dispatcher, project_id);
+    return data;
+  });
+};
+
+const deleteServiceInfo = async (
+  dispatcher: any,
+  project_id: number,
+  info: any
+) => {
+  return request_json(API.POST_RMS, {
+    body: {
+      project: project_id,
+      type: "service",
+      operation: "delete",
+      data: {
+        id: info.id,
+      },
+    },
+  }).then((data) => {
+    updateServiceInfo(dispatcher, project_id);
+    return data;
+  });
+};
+
+export {
+  getIRListInfo,
+  createIRInfo,
+  updateIRInfo,
+  deleteIRInfo,
+  updateServiceInfo,
+  doUpdateServiceInfo,
+  deleteServiceInfo,
+};
