@@ -1,12 +1,7 @@
-import React, { useState } from "react";
+import React, { ReactNode, useState } from "react";
 import "./UIUserManage.css";
 import ProList from "@ant-design/pro-list";
-import { useDispatch } from "react-redux";
 import { ManageUserInfo } from "../../store/ConfigureStore";
-import { ProFormSwitch } from "@ant-design/pro-form";
-import { Space, Tag } from "antd";
-import moment from "moment";
-import ReactMarkdown from "react-markdown";
 
 interface UserManageProps {
   readonly userInfo: string;
@@ -15,8 +10,6 @@ interface UserManageProps {
 const UserManage = (props: UserManageProps) => {
   // 总任务列表
   const ProjectList = JSON.parse(props.userInfo).data.user;
-  console.log(ProjectList);
-  const dispatcher = useDispatch();
   const dataProjectList: ManageUserInfo[] = [];
   // ProjectList.forEach((value: any, index: number) => {
   //   dataProjectList.push({
@@ -34,12 +27,11 @@ const UserManage = (props: UserManageProps) => {
       avatar: ProjectList.avatar,
     });
   }
-  const [tableListDataSource, settableListDataSource] =
-    useState<ManageUserInfo[]>(dataProjectList);
+  const [tableListDataSource] = useState<ManageUserInfo[]>(dataProjectList);
 
   return (
     <div className={"prjuser"}>
-      <ProList<any>
+      <ProList<ManageUserInfo>
         pagination={{
           defaultPageSize: 8,
           showSizeChanger: false,
@@ -47,7 +39,7 @@ const UserManage = (props: UserManageProps) => {
         grid={{ gutter: 16, column: 4 }}
         metas={{
           title: {
-            render: (record: any, item: ManageUserInfo) => (
+            render: (record: ReactNode, item: ManageUserInfo) => (
               <div
                 style={{
                   width: "100%",
@@ -58,12 +50,12 @@ const UserManage = (props: UserManageProps) => {
                   display: "flex",
                 }}
               >
-                <img className={"avatarimg"} src={item.avatar} />
+                <img alt={""} className={"avatarimg"} src={item.avatar} />
               </div>
             ),
           },
           subTitle: {
-            render: (record: any, item: ManageUserInfo) => {
+            render: (record: ReactNode, item: ManageUserInfo) => {
               return (
                 <div
                   style={{
@@ -82,7 +74,7 @@ const UserManage = (props: UserManageProps) => {
             },
           },
           content: {
-            render: (record: any, item: ManageUserInfo) => (
+            render: (record: ReactNode, item: ManageUserInfo) => (
               <div
                 style={{
                   flexDirection: "row",

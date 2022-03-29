@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { ReactNode, useState } from "react";
 import { Input, Modal, Space, Tag, Button, DatePicker } from "antd";
 import "./UIProjectList.css";
 import ProList from "@ant-design/pro-list";
@@ -18,7 +18,7 @@ const UIProjectList = (props: ProjectListProps) => {
   const ProjectList = JSON.parse(props.userInfo).data.projects;
   const dispatcher = useDispatch();
   const dataProjectList: ProjectInfo[] = [];
-  ProjectList.forEach((value: any, index: number) => {
+  ProjectList.forEach((value: ProjectInfo) => {
     dataProjectList.push({
       id: value.id,
       title: value.title,
@@ -29,8 +29,7 @@ const UIProjectList = (props: ProjectListProps) => {
         "https://gw.alipayobjects.com/zos/antfincdn/efFD%24IOql2/weixintupian_20170331104822.jpg",
     });
   });
-  const [tableListDataSource, settableListDataSource] =
-    useState<ProjectInfo[]>(dataProjectList);
+  const [tableListDataSource] = useState<ProjectInfo[]>(dataProjectList);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [newTitle, setNewTitle] = useState("");
   const [newInvite, setNewInvite] = useState("");
@@ -73,8 +72,8 @@ const UIProjectList = (props: ProjectListProps) => {
         dataSource={tableListDataSource}
         metas={{
           title: {
-            render: (record: any, item: ProjectInfo) => (
-              <a
+            render: (record: ReactNode, item: ProjectInfo) => (
+              <div
                 style={{
                   color: "black",
                   fontSize: "20px",
@@ -85,14 +84,14 @@ const UIProjectList = (props: ProjectListProps) => {
                 }}
               >
                 {item.title}
-              </a>
+              </div>
             ),
           },
           avatar: {
             dataIndex: "image",
           },
           subTitle: {
-            render: (record: any, item: ProjectInfo) => {
+            render: (record: ReactNode, item: ProjectInfo) => {
               return (
                 <div
                   style={{
@@ -112,7 +111,7 @@ const UIProjectList = (props: ProjectListProps) => {
             },
           },
           content: {
-            render: (record: any, item: ProjectInfo) => (
+            render: (record: ReactNode, item: ProjectInfo) => (
               <div
                 style={{
                   width: "100%",
@@ -147,7 +146,6 @@ const UIProjectList = (props: ProjectListProps) => {
           项目名称
         </p>
         <Input
-          placeholder="请输入"
           onChange={(e) => {
             setNewTitle(e.target.value);
           }}
@@ -158,7 +156,6 @@ const UIProjectList = (props: ProjectListProps) => {
           项目邀请码
         </p>
         <Input
-          placeholder="Input"
           onChange={(e) => {
             setNewInvite(e.target.value);
           }}
@@ -181,7 +178,7 @@ const UIProjectList = (props: ProjectListProps) => {
         </p>
         <DatePicker
           style={{ width: "50%" }}
-          onChange={(date: any, datestring: string) => {
+          onChange={(date: any) => {
             setNewDate(date.unix());
           }}
         />
