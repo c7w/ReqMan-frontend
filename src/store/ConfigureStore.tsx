@@ -6,6 +6,7 @@ import sidebarReducer from "./slices/SidebarSlice";
 import UserSliceReducer from "./slices/UserSlice";
 import IRSRReducer from "./slices/IRSRSlice";
 import ProjectSliceReducer from "./slices/ProjectSlice";
+import IterationReducer from "./slices/IterationSlice";
 
 interface SRCard {
   readonly id: number; // id
@@ -43,6 +44,7 @@ export const store = configureStore({
     ir_sr_store: IRSRReducer,
     user_store: UserSliceReducer,
     project_store: ProjectSliceReducer,
+    iteration_store: IterationReducer,
     // rest of your reducers
   }),
   middleware: [routerMiddleware],
