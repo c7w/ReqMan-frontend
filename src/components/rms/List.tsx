@@ -9,7 +9,7 @@ interface ListProps {
 
 const List = (props: ListProps) => {
   return (
-    <div className="list">
+    <div className="list-list">
       <div className="list-header">{props.name}</div>
       <Divider />
       <div className="list-content">

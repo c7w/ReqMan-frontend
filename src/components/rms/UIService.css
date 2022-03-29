@@ -1,0 +1,19 @@
+.ServiceHeader {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: flex-end;
+  width: 90%;
+}
+
+.ServiceShowcase {
+  display: flex;
+}
+
+.ServiceShowcaseLeft {
+  flex-grow: 1;
+}
+
+.ServiceShowcaseRight {
+  flex-grow: 1;
+}

@@ -25,7 +25,7 @@ const Home = (props: LayoutProps) => {
         <Layout className="layout">
           {props.sidebar ? <Sidebar /> : <></>}
           <div className="layout-right">
-            <Content className="content">{props.children}</Content>
+            <Content className="layout-content">{props.children}</Content>
             <div className={"layout-footer"}>
               © 2022 undefined. All rights reserved.
             </div>
