@@ -1,5 +1,5 @@
 import { Service } from "./UIServiceReadonly";
-import { Button, Input, Modal, Progress, Typography } from "antd";
+import { Button, Empty, Input, Modal, Progress, Typography } from "antd";
 import "./UIService.css";
 import { ReactElement, useEffect, useMemo, useState } from "react";
 import MDEditor from "@uiw/react-md-editor";
@@ -20,6 +20,11 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import moment from "moment";
+import {
+  deleteServiceInfo,
+  doUpdateServiceInfo,
+  updateServiceInfo,
+} from "../../store/functions/RMS";
 
 interface ProjectServiceCardProps {
   data: string;
@@ -62,16 +67,15 @@ const ProjectServiceCard = (props: ProjectServiceCardProps) => {
   );
 };
 
-const ServiceModal = (props: { data: string }) => {
+const ServiceModal = (props: { data: string; close: () => void }) => {
   const data = JSON.parse(props.data);
-  console.debug(data);
 
   const [title, setTitle] = useState(data.title);
   const [desp, setDesp] = useState(data.description);
 
-  const submitUpdateService = () => {
-    request_json(API.POST_RMS, {});
-  };
+  const dispatcher = useDispatch();
+  const params = useParams<"id">();
+  const project_id = params.id;
 
   const [deleteModal, setDeleteModal] = useState(false);
 
@@ -137,7 +141,18 @@ const ServiceModal = (props: { data: string }) => {
         <Button
           type={"primary"}
           disabled={!(title.trim() !== "" && desp?.trim() !== "")}
-          onClick={() => submitUpdateService()}
+          onClick={() =>
+            doUpdateServiceInfo(dispatcher, Number(project_id), {
+              id: data.id,
+              title,
+              description: desp,
+            }).then((data) => {
+              if (data.code === 0) {
+                ToastMessage("success", "更新成功", "服务信息更新成功");
+                props.close();
+              }
+            })
+          }
           style={{ marginTop: "1rem" }}
         >
           确认提交
@@ -150,7 +165,23 @@ const ServiceModal = (props: { data: string }) => {
           title={"删除服务"}
           visible={deleteModal}
           onCancel={() => setDeleteModal(false)}
-          footer={<Button danger={true}>确认</Button>}
+          footer={
+            <Button
+              danger={true}
+              onClick={() => {
+                deleteServiceInfo(dispatcher, Number(project_id), {
+                  id: data.id,
+                }).then((data) => {
+                  if (data.code === 0) {
+                    ToastMessage("success", "删除成功", "服务信息删除成功");
+                    props.close();
+                  }
+                });
+              }}
+            >
+              确认
+            </Button>
+          }
         >
           <Typography.Text>确定要删除该服务吗？</Typography.Text>
           <br />
@@ -227,7 +258,7 @@ const UIService = () => {
         ToastMessage("success", "提交成功", "您的服务创建成功");
         setTitle("");
         setDesp("");
-        Redirect(dispatcher, `/project/${project_id}/ServiceManager`, 1000);
+        updateServiceInfo(dispatcher, Number(project_id));
       }
     });
   };
@@ -279,6 +310,16 @@ const UIService = () => {
         <div className={"ServiceShowcaseLeft"}>{leftService}</div>
         <div className={"ServiceShowcaseRight"}>{rightService}</div>
       </div>
+      <div
+        style={{
+          visibility:
+            leftService.length === 0 && rightService.length === 0
+              ? "visible"
+              : "hidden",
+        }}
+      >
+        <Empty description={"请创建项目服务"} />
+      </div>
       <Modal
         title={"服务修改"}
         footer={null}
@@ -287,7 +328,7 @@ const UIService = () => {
         onCancel={() => setModal(false)}
         destroyOnClose={true}
       >
-        <ServiceModal data={cached} />
+        <ServiceModal data={cached} close={() => setModal(false)} />
       </Modal>
     </div>
   );

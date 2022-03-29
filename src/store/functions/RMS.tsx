@@ -2,7 +2,7 @@ import request_json from "../../utils/Network";
 import API from "../../utils/APIList";
 import { updateIRListStore } from "../slices/IRSRSlice";
 import { IRCard } from "../ConfigureStore";
-import { updateServiceStore } from "../slices/ServiceSlice";
+import { getServiceStore, updateServiceStore } from "../slices/ServiceSlice";
 
 const getIRListInfo = async (
   dispatcher: any,
@@ -102,7 +102,28 @@ const doUpdateServiceInfo = async (
       },
     },
   }).then((data) => {
-    dispatcher(updateServiceStore(JSON.stringify(data)));
+    updateServiceInfo(dispatcher, project_id);
+    return data;
+  });
+};
+
+const deleteServiceInfo = async (
+  dispatcher: any,
+  project_id: number,
+  info: any
+) => {
+  return request_json(API.POST_RMS, {
+    body: {
+      project: project_id,
+      type: "service",
+      operation: "delete",
+      data: {
+        id: info.id,
+      },
+    },
+  }).then((data) => {
+    updateServiceInfo(dispatcher, project_id);
+    return data;
   });
 };
 
@@ -112,4 +133,6 @@ export {
   updateIRInfo,
   deleteIRInfo,
   updateServiceInfo,
+  doUpdateServiceInfo,
+  deleteServiceInfo,
 };
