@@ -5,7 +5,7 @@ import { store, history } from "../store/ConfigureStore";
 import Login from "./route/Auth/Login";
 import Home from "../layout/Home";
 import IRList from "../components/rms/UIIRList";
-import SRList from "../components/rms/SRList";
+import SRList from "../components/rms/UISRList";
 import Root from "./route/Root/Root";
 import "izitoast-react/dist/iziToast.css";
 import Register from "./route/Auth/Register";
@@ -58,10 +58,7 @@ const SiteRouter = () => {
           <Route path="projects" element={<ProjectList />} />
 
           {/* Dev Paths */}
-          <Route
-            path="SR_List"
-            element={<SRList showChoose={true} myIRKey={1} curSRKey={[1]} />}
-          />
+          <Route path="SR_List" element={<ProjectSR />} />
           <Route
             path={"dev/loading"}
             element={

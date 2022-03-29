@@ -4,11 +4,11 @@ import { EditableProTable } from "@ant-design/pro-table";
 import { Modal, Progress } from "antd";
 import { IRCard } from "../../store/ConfigureStore";
 import "./UIIRList.css";
-import SRList from "./SRList";
+import SRList from "./UISRList";
 import { useDispatch } from "react-redux";
 import { createIRInfo, deleteIRInfo } from "../../store/functions/RMS";
 
-interface IRListProps {
+interface UIIRListProps {
   readonly project_id: number;
   readonly IRListStr: string;
   readonly userInfo: string;
@@ -23,7 +23,7 @@ IRListData example:
 ]
 */
 
-const UIIRList = (props: IRListProps) => {
+const UIIRList = (props: UIIRListProps) => {
   const IRListData = JSON.parse(props.IRListStr).data;
   const userData = JSON.parse(props.userInfo);
   const dispatcher = useDispatch();
@@ -77,6 +77,9 @@ const UIIRList = (props: IRListProps) => {
         showChoose={false}
         myIRKey={rowKey.id}
         curSRKey={rowKey.curSRKey}
+        project_id={Number(props.project_id)}
+        SRListStr={""}
+        userInfo={props.userInfo}
       />
     );
   };
@@ -219,7 +222,14 @@ const UIIRList = (props: IRListProps) => {
         onCancel={handleCancel}
         width={"70%"}
       >
-        <SRList showChoose={true} myIRKey={modalIRKey} curSRKey={modalSRKey} />
+        <SRList
+          showChoose={true}
+          myIRKey={modalIRKey}
+          curSRKey={modalSRKey}
+          project_id={Number(props.project_id)}
+          SRListStr={""}
+          userInfo={props.userInfo}
+        />
       </Modal>
     </div>
   );

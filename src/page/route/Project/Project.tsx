@@ -45,6 +45,7 @@ const Project = () => {
         updateProjectInfo(dispatcher, Number(project_id));
       } else {
         const projectData = JSON.parse(projectInfo);
+        // 如果得到的 project 信息跟用户键入的 url 中的 project_id 不符
         if (projectData.data.project.id !== Number(project_id)) {
           updateProjectInfo(dispatcher, Number(project_id));
         } else {

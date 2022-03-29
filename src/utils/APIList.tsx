@@ -51,6 +51,22 @@ const API = {
     path: "/ums/project/",
     method: "post",
   },
+  MODIFY_USER_ROLE: {
+    path: "/ums/modify_user_role/",
+    method: "post",
+  },
+  ADD_USER: {
+    path: "/ums/project_add_user/",
+    method: "post",
+  },
+  RM_USER: {
+    path: "/ums/project_rm_user/",
+    method: "post",
+  },
+  MODIFY_PROJECT: {
+    path: "/ums/modify_project/",
+    method: "post",
+  },
   GET_RMS: {
     path: "/rms/project/",
     method: "get",
