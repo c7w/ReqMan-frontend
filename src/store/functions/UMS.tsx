@@ -4,6 +4,7 @@ import { updateUserStore } from "../slices/UserSlice";
 import { immediateToast } from "izitoast-react";
 import { push } from "redux-first-history";
 import { updateProjectStore } from "../slices/ProjectSlice";
+import { ProjectInfo } from "../ConfigureStore";
 
 const updateUserInfo = async (dispatcher: any): Promise<void> => {
   const user_data = await request_json(API.GET_USER);
@@ -35,6 +36,14 @@ const updateProjectInfo = async (dispatcher: any, project_id: number) => {
     body: { project: project_id },
   });
   dispatcher(updateProjectStore(JSON.stringify(projectData)));
+};
+
+// Backend: [POST] /ums/create_project/
+const createProject = async (dispatcher: any, project: ProjectInfo) => {
+  const myBody = {
+    title: project.title,
+    description: project.description,
+  };
 };
 
 export { updateUserInfo, updateProjectInfo, logOut };

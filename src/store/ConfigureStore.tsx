@@ -39,8 +39,7 @@ interface ProjectInfo {
   description: string;
   invitation: string;
   createdAt: number;
-  //test
-  image: string;
+  avatar: string;
 }
 
 interface ManageUserInfo {

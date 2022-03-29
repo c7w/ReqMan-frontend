@@ -6,6 +6,7 @@ import ReactMarkdown from "react-markdown";
 import { useDispatch } from "react-redux";
 import { ProjectInfo } from "../../store/ConfigureStore";
 import moment from "moment";
+import getProjectAvatar from "./UIProjectSetting";
 import { Redirect } from "../../utils/Navigation";
 const { TextArea } = Input;
 
@@ -15,18 +16,22 @@ interface ProjectListProps {
 
 const UIProjectList = (props: ProjectListProps) => {
   // 总任务列表
+  console.log(JSON.parse(props.userInfo).data);
   const ProjectList = JSON.parse(props.userInfo).data.projects;
   const dispatcher = useDispatch();
   const dataProjectList: ProjectInfo[] = [];
   ProjectList.forEach((value: ProjectInfo) => {
+    let img = value.avatar;
+    if (value.avatar.length < 5) {
+      img = "https://s2.loli.net/2022/03/28/IyrFghsLGz3WlbO.png";
+    }
     dataProjectList.push({
       id: value.id,
       title: value.title,
       description: value.description,
       invitation: value.invitation,
       createdAt: value.createdAt * 1000,
-      image:
-        "https://gw.alipayobjects.com/zos/antfincdn/efFD%24IOql2/weixintupian_20170331104822.jpg",
+      avatar: img,
     });
   });
   const [tableListDataSource] = useState<ProjectInfo[]>(dataProjectList);
@@ -41,6 +46,15 @@ const UIProjectList = (props: ProjectListProps) => {
   };
 
   const handleOk = () => {
+    const newProject: ProjectInfo = {
+      id: -1,
+      title: newTitle,
+      description: newDesc,
+      invitation: newInvite,
+      createdAt: newDate,
+      avatar: "",
+    };
+
     setIsModalVisible(false);
   };
 
@@ -88,7 +102,7 @@ const UIProjectList = (props: ProjectListProps) => {
             ),
           },
           avatar: {
-            dataIndex: "image",
+            dataIndex: "avatar",
           },
           subTitle: {
             render: (record: ReactNode, item: ProjectInfo) => {

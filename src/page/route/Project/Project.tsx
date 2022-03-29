@@ -18,7 +18,6 @@ const Project = () => {
   const userInfo = useSelector(getUserStore);
   const projectInfo = useSelector(getProjectStore);
   const dispatcher = useDispatch();
-
   const params = useParams<"id">();
   const project_id = params.id;
 
