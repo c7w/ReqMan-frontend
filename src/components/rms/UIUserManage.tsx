@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./UIProjectList.css";
+import "./UIUserManage.css";
 import ProList from "@ant-design/pro-list";
 import { useDispatch } from "react-redux";
 import { ManageUserInfo } from "../../store/ConfigureStore";
@@ -26,7 +26,7 @@ const UserManage = (props: UserManageProps) => {
   //     avatar: value.avatar,
   //   });
   // });
-  for (let i = 0; i <= 5; i++) {
+  for (let i = 0; i <= 30; i++) {
     dataProjectList.push({
       id: ProjectList.id,
       name: ProjectList.name,
@@ -36,93 +36,63 @@ const UserManage = (props: UserManageProps) => {
   }
   const [tableListDataSource, settableListDataSource] =
     useState<ManageUserInfo[]>(dataProjectList);
-  console.log(tableListDataSource);
-  const [cardActionProps, setCardActionProps] = useState<"actions" | "extra">(
-    "extra"
-  );
 
-  const [ghost, setGhost] = useState<boolean>(false);
   return (
-    <div>
-      {/*<ProFormRadio.Group*/}
-      {/*  label="actions 放置的地方"*/}
-      {/*  options={[*/}
-      {/*    {*/}
-      {/*      label: "设置为 action",*/}
-      {/*      value: "actions",*/}
-      {/*    },*/}
-      {/*    {*/}
-      {/*      label: "设置为 extra",*/}
-      {/*      value: "extra",*/}
-      {/*    },*/}
-      {/*  ]}*/}
-      {/*  fieldProps={{*/}
-      {/*    value: cardActionProps,*/}
-      {/*    onChange: (e) => setCardActionProps(e.target.value),*/}
-      {/*  }}*/}
-      {/*/>*/}
-      <ProFormSwitch
-        label="幽灵模式"
-        fieldProps={{
-          checked: ghost,
-          onChange: (e) => setGhost(e),
-        }}
-      />
+    <div className={"prjuser"}>
       <ProList<any>
-        ghost={ghost}
-        itemCardProps={{
-          ghost,
-        }}
         pagination={{
           defaultPageSize: 8,
           showSizeChanger: false,
         }}
-        showActions="hover"
-        rowSelection={{}}
-        grid={{ gutter: 16, column: 2 }}
+        grid={{ gutter: 16, column: 4 }}
         metas={{
           title: {
             render: (record: any, item: ManageUserInfo) => (
-              <a
+              <div
                 style={{
-                  color: "black",
-                  fontSize: "20px",
-                }}
-                onClick={() => {
-                  console.log("title clicked");
+                  width: "100%",
+                  height: "100%",
+                  textAlign: "center",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  display: "flex",
                 }}
               >
-                {item.name}
-              </a>
+                <img className={"avatarimg"} src={item.avatar} />
+              </div>
             ),
-          },
-          avatar: {
-            dataIndex: "image",
           },
           subTitle: {
             render: (record: any, item: ManageUserInfo) => {
               return (
                 <div
                   style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    paddingTop: "5px",
+                    color: "black",
+                    fontSize: "30px",
+                    padding: "10px",
+                    textAlign: "center",
+                  }}
+                  onClick={() => {
+                    console.log("title clicked");
                   }}
                 >
-                  {item.email}
+                  {item.name}
                 </div>
               );
             },
           },
           content: {
             render: (record: any, item: ManageUserInfo) => (
-              <div style={{}}></div>
+              <div
+                style={{
+                  flexDirection: "row",
+                  fontSize: "16px",
+                  textAlign: "center",
+                }}
+              >
+                {item.email}
+              </div>
             ),
-          },
-          actions: {
-            render: () => {
-              return [<a key="init">邀请</a>];
-            },
           },
         }}
         headerTitle="项目成员展示"

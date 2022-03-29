@@ -6,6 +6,7 @@ import ReactMarkdown from "react-markdown";
 import { useDispatch } from "react-redux";
 import { ProjectInfo } from "../../store/ConfigureStore";
 import moment from "moment";
+import { Redirect } from "../../utils/Navigation";
 const { TextArea } = Input;
 
 interface ProjectListProps {
@@ -61,11 +62,12 @@ const UIProjectList = (props: ProjectListProps) => {
         onRow={(record: ProjectInfo) => {
           return {
             onClick: () => {
-              console.log(record);
+              const url = "/project/" + record.id;
+              Redirect(dispatcher, url, 0);
             },
           };
         }}
-        rowKey="name"
+        rowKey="id"
         headerTitle="项目列表"
         split={true}
         dataSource={tableListDataSource}
@@ -78,7 +80,8 @@ const UIProjectList = (props: ProjectListProps) => {
                   fontSize: "20px",
                 }}
                 onClick={() => {
-                  console.log("title clicked");
+                  const url = "/project/" + item.id;
+                  Redirect(dispatcher, url, 0);
                 }}
               >
                 {item.title}

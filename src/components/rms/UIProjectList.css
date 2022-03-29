@@ -1,8 +1,16 @@
 @import "~antd/dist/antd.css";
 
+
+
 .prjlist {
   width: 60%;
   text-align: center;
+  padding: 20px;
+  background-color: #ffffff;
+}
+
+.ant-pro-list-row:hover{
+  background-color: #e7f0ff;
 }
 
 .ant-pro-list-row-title {
