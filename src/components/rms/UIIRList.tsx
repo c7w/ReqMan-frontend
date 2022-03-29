@@ -1,13 +1,12 @@
-import React, { Key, useState } from "react";
+import React, { useState } from "react";
 import type { ProColumns } from "@ant-design/pro-table";
 import { EditableProTable } from "@ant-design/pro-table";
-import { Button, DatePicker, Input, Modal, Progress } from "antd";
+import { Button, Modal, Progress } from "antd";
 import { IRCard } from "../../store/ConfigureStore";
 import "./UIIRList.css";
 import SRList from "./SRList";
 import { useDispatch } from "react-redux";
 import { createIRInfo, deleteIRInfo } from "../../store/functions/RMS";
-const { TextArea } = Input;
 
 interface IRListProps {
   readonly project_id: number;
@@ -26,12 +25,12 @@ IRListData example:
 
 const UIIRList = (props: IRListProps) => {
   const IRListData = JSON.parse(props.IRListStr).data;
-  const userData = JSON.parse(props.userInfo);
+  // const userData = JSON.parse(props.userInfo);
   const dispatcher = useDispatch();
   // console.log(IRListData);
 
   const dataIRList: IRCard[] = [];
-  IRListData.forEach((value: any, index: number) => {
+  IRListData.forEach((value: IRCard) => {
     dataIRList.push({
       id: value.id,
       project: value.project,
@@ -44,8 +43,7 @@ const UIIRList = (props: IRListProps) => {
       curSRKey: [0, 1, 2],
     });
   });
-  const [tableListDataSource, settableListDataSource] =
-    useState<IRCard[]>(dataIRList);
+  const [tableListDataSource] = useState<IRCard[]>(dataIRList);
   const [isSRModalVisible, setIsSRModalVisible] = useState<boolean>(false);
   const [isCreateModalVisible, setIsCreateModalVisible] =
     useState<boolean>(false);
