@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { Input, Modal, Space, Tag, Button, DatePicker } from "antd";
 import "./UIProjectList.css";
 import ProList from "@ant-design/pro-list";
 import { useDispatch } from "react-redux";
@@ -12,19 +11,29 @@ interface UserManageProps {
 
 const UserManage = (props: UserManageProps) => {
   // 总任务列表
-  const ProjectList = JSON.parse(props.userInfo).data.projects;
+  const ProjectList = JSON.parse(props.userInfo).data.user;
+  console.log(ProjectList);
   const dispatcher = useDispatch();
   const dataProjectList: ManageUserInfo[] = [];
-  ProjectList.forEach((value: any, index: number) => {
+  // ProjectList.forEach((value: any, index: number) => {
+  //   dataProjectList.push({
+  //     id: value.id,
+  //     name: value.name,
+  //     email: value.email,
+  //     avatar: value.avatar,
+  //   });
+  // });
+  for (let i = 0; i <= 5; i++) {
     dataProjectList.push({
-      id: value.id,
-      name: value.name,
-      email: value.email,
-      avatar: value.avatar,
+      id: ProjectList.id,
+      name: ProjectList.name,
+      email: ProjectList.email,
+      avatar: ProjectList.avatar,
     });
-  });
+  }
   const [tableListDataSource, settableListDataSource] =
     useState<ManageUserInfo[]>(dataProjectList);
+  console.log(tableListDataSource);
   const [cardActionProps, setCardActionProps] = useState<"actions" | "extra">(
     "extra"
   );
@@ -34,8 +43,6 @@ const UserManage = (props: UserManageProps) => {
     <div
       style={{
         backgroundColor: "#eee",
-        margin: -24,
-        padding: 24,
       }}
     >
       {/*<ProFormRadio.Group*/}
@@ -85,7 +92,7 @@ const UserManage = (props: UserManageProps) => {
           },
         }}
         headerTitle="项目成员展示"
-        //dataSource={data}
+        dataSource={tableListDataSource}
       />
     </div>
   );

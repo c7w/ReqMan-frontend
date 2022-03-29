@@ -23,15 +23,11 @@ const ProjectMember = () => {
   } else {
     // Render Page
     const user_data = JSON.parse(userInfo);
-    console.log(user_data.data);
+    console.log(userInfo);
     return (
       <Home sidebar={false}>
         <div>
-          <UIUserManage
-            userInfo={
-              "[{id: 1, name: 'hahah', email: 'c7w@nb.com', avatar: '...'}]"
-            }
-          />
+          <UIUserManage userInfo={userInfo} />
         </div>
       </Home>
     );
