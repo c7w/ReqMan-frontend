@@ -178,7 +178,7 @@ const UIProjectList = (props: ProjectListProps) => {
         </p>
         <DatePicker
           style={{ width: "50%" }}
-          onChange={(date: moment, datestring: string) => {
+          onChange={(date: any, datestring: string) => {
             setNewDate(date.unix());
           }}
         />
