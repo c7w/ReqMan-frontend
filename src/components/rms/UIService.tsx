@@ -31,7 +31,7 @@ interface ProjectServiceCardProps {
   modal: (raw: string) => void;
 }
 
-const ProjectServiceCard = (props: ProjectServiceCardProps) => {
+export const ProjectServiceCard = (props: ProjectServiceCardProps) => {
   const data = JSON.parse(props.data);
   return (
     <div className={"service-card"} onClick={() => props.modal(props.data)}>
