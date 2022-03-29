@@ -45,7 +45,7 @@ const ProjectService = () => {
       // 3. Continue, lookup projectInfo in cache.
       // If cached projectInfo not exists or cached ID not equal to project_id, then re-request, render Loading.
       // Else render page.
-      if (projectInfo === "") {
+      if (projectInfo === "" || serviceStore === "") {
         // Re-request
         updateProjectInfo(dispatcher, Number(project_id));
         updateServiceInfo(dispatcher, Number(project_id));

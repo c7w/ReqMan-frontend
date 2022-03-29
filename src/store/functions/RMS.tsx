@@ -83,6 +83,29 @@ const updateServiceInfo = async (dispatcher: any, project_id: number) => {
   }).then((data) => dispatcher(updateServiceStore(JSON.stringify(data))));
 };
 
+const doUpdateServiceInfo = async (
+  dispatcher: any,
+  project_id: number,
+  info: any
+) => {
+  return request_json(API.POST_RMS, {
+    body: {
+      project: project_id,
+      type: "service",
+      operation: "update",
+      data: {
+        id: info.id,
+        updateData: {
+          title: info.title,
+          description: info.description,
+        },
+      },
+    },
+  }).then((data) => {
+    dispatcher(updateServiceStore(JSON.stringify(data)));
+  });
+};
+
 export {
   getIRListInfo,
   createIRInfo,

@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 import Router from "./page/Router";
-import iziToast from "izitoast";
+import "moment/locale/zh-cn";
 
 // Entrance
 ReactDOM.render(<Router />, document.getElementById("root"));
