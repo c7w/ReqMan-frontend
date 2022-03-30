@@ -2,15 +2,17 @@ import { Button } from "antd";
 import { useDispatch } from "react-redux";
 import {
   createIRInfo,
-  createIRSRAssociation,
+  createIRSR,
+  createIteration,
   createSRInfo,
+  createSRIteration,
 } from "../store/functions/RMS";
 import {
   IRCard,
   IRSRAssociation,
   Iteration,
   SRCard,
-  SRIterationAssociation,
+  SRIteration,
 } from "../store/ConfigureStore";
 
 const Test = () => {
@@ -37,12 +39,22 @@ const Test = () => {
     createdAt: Date.now(),
     disabled: false,
   };
+  const Iteration: Iteration = {
+    id: 1,
+    project: 2,
+    sid: 1,
+    title: "test_iteration",
+    begin: Date.now(),
+    end: Date.now(),
+    disabled: false,
+    createdAt: Date.now(),
+  };
   const IRSRAssociation: IRSRAssociation = {
     id: 1,
     IRId: 7,
     SRId: 2,
   };
-  const SRIterationAssociation: SRIterationAssociation = {
+  const SRIteration: SRIteration = {
     id: 1,
     SRId: 2,
     iteration: 1,
@@ -51,9 +63,11 @@ const Test = () => {
     console.log("click");
     createIRInfo(dispatcher, 2, IR);
     createSRInfo(dispatcher, 2, SR);
-    createIRSRAssociation(dispatcher, 2, IRSRAssociation);
+    createIRSR(dispatcher, 2, IRSRAssociation);
+    createIteration(dispatcher, 2, Iteration);
+    createSRIteration(dispatcher, 2, SRIteration);
   };
-  return <Button />;
+  return <Button onClick={() => handleOnClick()} />;
 };
 
 export default Test;

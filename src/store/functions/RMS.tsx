@@ -4,10 +4,19 @@ import { getServiceStore, updateServiceStore } from "../slices/ServiceSlice";
 import {
   updateIRListStore,
   updateSRListStore,
-  updateIRSRAssociationStore,
+  updateIRSRStore,
 } from "../slices/IRSRSlice";
-import { IRCard, Iteration, SRCard, IRSRAssociation } from "../ConfigureStore";
-import { updateIterationStore } from "../slices/IterationSlice";
+import {
+  IRCard,
+  Iteration,
+  SRCard,
+  IRSRAssociation,
+  SRIteration,
+} from "../ConfigureStore";
+import {
+  updateIterationStore,
+  updateSRIterationStore,
+} from "../slices/IterationSlice";
 
 const getIRListInfo = async (
   dispatcher: any,
@@ -289,7 +298,7 @@ const deleteIterationInfo = async (
   getIterationInfo(dispatcher, project_id);
 };
 
-const getIRSRAssociationInfo = async (
+const getIRSRInfo = async (
   dispatcher: any,
   project_id: number
 ): Promise<void> => {
@@ -300,10 +309,10 @@ const getIRSRAssociationInfo = async (
   const IRSRAssociation_data = await request_json(API.GET_RMS, {
     getParams: myParams,
   });
-  dispatcher(updateIRSRAssociationStore(JSON.stringify(IRSRAssociation_data)));
+  dispatcher(updateIRSRStore(JSON.stringify(IRSRAssociation_data)));
 };
 
-const createIRSRAssociation = async (
+const createIRSR = async (
   dispatcher: any,
   project_id: number,
   IRSRAssociation: IRSRAssociation
@@ -322,10 +331,10 @@ const createIRSRAssociation = async (
   };
   request_json(API.POST_RMS, { body: myBody });
   // 更新 Iteration 的 store
-  getIRSRAssociationInfo(dispatcher, project_id);
+  getIRSRInfo(dispatcher, project_id);
 };
 
-const deleteIRSRAssociation = async (
+const deleteIRSR = async (
   dispatcher: any,
   project_id: number,
   IRSRAssociation: IRSRAssociation
@@ -340,7 +349,61 @@ const deleteIRSRAssociation = async (
     },
   };
   request_json(API.POST_RMS, { body: myBody });
-  getIRSRAssociationInfo(dispatcher, project_id);
+  getIRSRInfo(dispatcher, project_id);
+};
+
+const getSRIterationInfo = async (
+  dispatcher: any,
+  project_id: number
+): Promise<void> => {
+  const myParams = {
+    project: project_id,
+    type: "sr-iteration",
+  };
+  const SRIteration_data = await request_json(API.GET_RMS, {
+    getParams: myParams,
+  });
+  dispatcher(updateSRIterationStore(JSON.stringify(SRIteration_data)));
+};
+
+const createSRIteration = async (
+  dispatcher: any,
+  project_id: number,
+  SRIteration: SRIteration
+): Promise<void> => {
+  console.log(SRIteration);
+  const myBody = {
+    project: project_id,
+    type: "sr-iteration",
+    operation: "create",
+    data: {
+      updateData: {
+        iterationId: SRIteration.iteration,
+        SRId: SRIteration.SRId,
+      },
+    },
+  };
+  request_json(API.POST_RMS, { body: myBody });
+  // 更新 Iteration 的 store
+  getSRIterationInfo(dispatcher, project_id);
+};
+
+const deleteSRIteration = async (
+  dispatcher: any,
+  project_id: number,
+  SRIteration: SRIteration
+): Promise<void> => {
+  const myBody = {
+    project: project_id,
+    type: "sr-iteration",
+    operation: "delete",
+    data: {
+      iterationId: SRIteration.iteration,
+      SRId: SRIteration.SRId,
+    },
+  };
+  request_json(API.POST_RMS, { body: myBody });
+  getSRIterationInfo(dispatcher, project_id);
 };
 
 export {
@@ -355,11 +418,14 @@ export {
   createSRInfo,
   updateSRInfo,
   deleteSRInfo,
-  getIRSRAssociationInfo,
-  createIRSRAssociation,
-  deleteIRSRAssociation,
+  getIRSRInfo,
+  createIRSR,
+  deleteIRSR,
   getIterationInfo,
   createIteration,
   updateIterationInfo,
   deleteIterationInfo,
+  getSRIterationInfo,
+  createSRIteration,
+  deleteSRIteration,
 };

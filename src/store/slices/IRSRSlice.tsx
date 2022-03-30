@@ -6,7 +6,7 @@ export const IRSRSlice = createSlice({
   initialState: {
     IRList: "",
     SRList: "",
-    IRSRAssociation: "",
+    IR_SR: "",
   },
   reducers: {
     // 增删性能待调整，是否允许换位显示？
@@ -20,18 +20,15 @@ export const IRSRSlice = createSlice({
       state.SRList = action.payload;
     },
     // 修改 IR-SR 联系
-    updateIRSRAssociationStore: (state, action) => {
+    updateIRSRStore: (state, action) => {
       console.log(action.payload);
-      state.IRSRAssociation = action.payload;
+      state.IR_SR = action.payload;
     },
   },
 });
 
-export const {
-  updateIRListStore,
-  updateSRListStore,
-  updateIRSRAssociationStore,
-} = IRSRSlice.actions;
+export const { updateIRListStore, updateSRListStore, updateIRSRStore } =
+  IRSRSlice.actions;
 
 export const getIRListStore = (state: { ir_sr_store: { IRList: string } }) => {
   return state.ir_sr_store.IRList;
@@ -41,10 +38,8 @@ export const getSRListStore = (state: { ir_sr_store: { SRList: string } }) => {
   return state.ir_sr_store.SRList;
 };
 
-export const getIRSRAssociationStore = (state: {
-  ir_sr_store: { IRSRAssociation: string };
-}) => {
-  return state.ir_sr_store.IRSRAssociation;
+export const getIRSRStore = (state: { ir_sr_store: { IR_SR: string } }) => {
+  return state.ir_sr_store.IR_SR;
 };
 
 // test SR

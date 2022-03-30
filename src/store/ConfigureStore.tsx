@@ -40,7 +40,7 @@ interface IRSRAssociation {
   readonly SRId: number;
 }
 
-interface SRIterationAssociation {
+interface SRIteration {
   readonly id: number;
   readonly SRId: number;
   readonly iteration: number;
@@ -66,8 +66,8 @@ interface Iteration {
   readonly project: number;
   readonly sid: number; // 创建必填，在项目中的 id
   readonly title: string; // 创建必填
-  readonly begin: string; // 创建必填
-  readonly end: string; // 创建必填
+  readonly begin: number; // 创建必填
+  readonly end: number; // 创建必填
   readonly disabled: boolean;
   readonly createdAt: number;
 }
@@ -94,7 +94,7 @@ export type {
   IRCard,
   SRCard,
   IRSRAssociation,
-  SRIterationAssociation,
+  SRIteration,
   ProjectInfo,
   ManageUserInfo,
   Iteration,
