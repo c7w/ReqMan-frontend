@@ -35,7 +35,7 @@ const UISRList = (props: UISRListProps) => {
       description: value.description,
       priority: value.priority,
       rank: value.rank,
-      currState: value.currState,
+      currState: value.state,
       createdBy: value.createdBy,
       createdAt: value.createdAt * 1000,
       disabled: value.disabled,

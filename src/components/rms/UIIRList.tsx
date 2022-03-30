@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import type { ProColumns } from "@ant-design/pro-table";
-import { EditableProTable } from "@ant-design/pro-table";
-import { Button, Modal, Progress } from "antd";
+import ProTable from "@ant-design/pro-table";
+import { Input, Button, Modal, Progress } from "antd";
 import { IRCard } from "../../store/ConfigureStore";
 import "./UIIRList.css";
 import SRList from "./UISRList";
 import { useDispatch } from "react-redux";
 import { createIRInfo, deleteIRInfo } from "../../store/functions/RMS";
+const { TextArea } = Input;
 
 interface UIIRListProps {
   readonly project_id: number;
@@ -40,28 +41,34 @@ const UIIRList = (props: UIIRListProps) => {
       createdBy: value.createdBy,
       createdAt: value.createdAt * 1000,
       disabled: value.disabled,
-      curSRKey: [0, 1, 2],
+      // curSRKey: [0, 1, 2],
     });
   });
   const [tableListDataSource] = useState<IRCard[]>(dataIRList);
-  const [isSRModalVisible, setIsSRModalVisible] = useState<boolean>(false);
+  const [isEditModalVisible, setIsEditModalVisible] = useState<boolean>(false);
   const [isCreateModalVisible, setIsCreateModalVisible] =
     useState<boolean>(false);
-  const [modalIRKey, setModalIRKey] = useState<number>(0);
-  const [modalSRKey, setModalSRKey] = useState<number[]>([]);
 
-  const showSRModal = (myIRKey: number, curSRKey: number[]) => {
-    setModalIRKey(myIRKey);
-    setModalSRKey(curSRKey);
-    setIsSRModalVisible(true);
+  const [title, setTitle] = useState<string>("");
+  const [desc, setDesc] = useState<string>("");
+  const [rank, setRank] = useState<number>(0);
+
+  // const [modalIRKey, setModalIRKey] = useState<number>(0);
+  // const [modalSRKey, setModalSRKey] = useState<number[]>([]);
+
+  const showEditModal = (record: IRCard) => {
+    setTitle(record.title);
+    setDesc(record.description);
+    setRank(record.rank);
+    setIsEditModalVisible(true);
   };
 
-  const handleSROk = () => {
-    setIsSRModalVisible(false);
+  const handleEditOk = () => {
+    setIsEditModalVisible(false);
   };
 
-  const handleSRCancel = () => {
-    setIsSRModalVisible(false);
+  const handleEditCancel = () => {
+    setIsEditModalVisible(false);
   };
 
   const showCreateModal = () => {
@@ -82,19 +89,6 @@ const UIIRList = (props: UIIRListProps) => {
 
   const handleDelete = (record: IRCard) => {
     deleteIRInfo(dispatcher, props.project_id, record);
-  };
-
-  const expandedRowRender = (rowKey: IRCard) => {
-    return (
-      <SRList
-        showChoose={false}
-        myIRKey={rowKey.id}
-        curSRKey={[0, 1, 2]}
-        project_id={Number(props.project_id)}
-        SRListStr={""}
-        userInfo={props.userInfo}
-      />
-    );
   };
 
   const columns: ProColumns<IRCard>[] = [
@@ -165,20 +159,13 @@ const UIIRList = (props: UIIRListProps) => {
       align: "center",
       render: (text, record, _, action) => [
         // 编辑内含修改删除等，须继续与后端接口适配
-        <a
-          key="editable"
-          onClick={() => {
-            action?.startEditable?.(record.id);
-          }}
-        >
-          编辑
-        </a>,
+        <a onClick={() => showEditModal(record)}>编辑</a>,
         <a
           onClick={() => {
-            showSRModal(record.id, [1, 2, 3]);
+            console.log("删除");
           }}
         >
-          关联SR
+          删除
         </a>,
       ],
     },
@@ -186,10 +173,10 @@ const UIIRList = (props: UIIRListProps) => {
 
   return (
     <div className={`IRTable`}>
-      <EditableProTable<IRCard>
+      <ProTable<IRCard>
         toolBarRender={() => {
           return [
-            <Button onClick={showCreateModal} key="add" type="primary">
+            <Button onClick={showCreateModal} type="primary">
               新建IR
             </Button>,
           ];
@@ -202,39 +189,31 @@ const UIIRList = (props: UIIRListProps) => {
           });
         }}
         rowKey="id"
-        expandable={{ expandedRowRender }}
         pagination={{
           pageSize: 10,
           showSizeChanger: true,
         }}
-        editable={{
-          type: "multiple",
-          onSave: async (key: any, record: IRCard): Promise<void> => {
-            handleSave(record);
-          },
-          onDelete: async (key: any, record: IRCard): Promise<void> => {
-            handleDelete(record);
-          },
-        }}
         dateFormatter="string"
       />
-      <Modal
-        title="SR 任务关联列表"
-        centered={true}
-        visible={isSRModalVisible}
-        onOk={handleSROk}
-        onCancel={handleSRCancel}
-        width={"70%"}
-      >
-        <SRList
-          showChoose={true}
-          myIRKey={modalIRKey}
-          curSRKey={modalSRKey}
-          project_id={Number(props.project_id)}
-          SRListStr={""}
-          userInfo={props.userInfo}
-        />
-      </Modal>
+
+      {/*<Modal*/}
+      {/*  title="SR 任务关联列表"*/}
+      {/*  centered={true}*/}
+      {/*  visible={isSRModalVisible}*/}
+      {/*  onOk={handleSROk}*/}
+      {/*  onCancel={handleSRCancel}*/}
+      {/*  width={"70%"}*/}
+      {/*>*/}
+      {/*  <SRList*/}
+      {/*    showChoose={true}*/}
+      {/*    myIRKey={modalIRKey}*/}
+      {/*    curSRKey={modalSRKey}*/}
+      {/*    project_id={Number(props.project_id)}*/}
+      {/*    SRListStr={""}*/}
+      {/*    userInfo={props.userInfo}*/}
+      {/*  />*/}
+      {/*</Modal>*/}
+
       {/*<Modal*/}
       {/*  title="新增IR任务"*/}
       {/*  centered={true}*/}
@@ -261,13 +240,46 @@ const UIIRList = (props: UIIRListProps) => {
       {/*    项目介绍*/}
       {/*  </p>*/}
       {/*  <TextArea rows={4} allowClear onChange={createDesc} />*/}
-      {/*  <p*/}
-      {/*    style={{ paddingTop: "10px", marginBottom: "5px", fontSize: "16px" }}*/}
-      {/*  >*/}
-      {/*    创建日期*/}
-      {/*  </p>*/}
-      {/*  <DatePicker style={{ width: "50%" }} onChange={createDate} />*/}
+      {/*  /!*  <p*!/*/}
+      {/*  /!*    style={{ paddingTop: "10px", marginBottom: "5px", fontSize: "16px" }}*!/*/}
+      {/*  /!*  >*!/*/}
+      {/*  /!*    创建日期*!/*/}
+      {/*  /!*  </p>*!/*/}
+      {/*  /!*  <DatePicker style={{ width: "50%" }} onChange={createDate} />*!/*/}
       {/*</Modal>*/}
+      <Modal
+        title="编辑IR项"
+        centered={true}
+        visible={isEditModalVisible}
+        onOk={handleEditOk}
+        onCancel={handleEditCancel}
+        width={"70%"}
+      >
+        <p
+          style={{ paddingTop: "10px", marginBottom: "5px", fontSize: "16px" }}
+        >
+          项目名称
+        </p>
+        <Input
+          value={title}
+          onChange={(e) => {
+            setTitle(e.target.value);
+          }}
+        />
+        <p
+          style={{ paddingTop: "10px", marginBottom: "5px", fontSize: "16px" }}
+        >
+          项目介绍
+        </p>
+        <TextArea
+          rows={4}
+          allowClear
+          value={desc}
+          onChange={(e) => {
+            setDesc(e.target.value);
+          }}
+        />
+      </Modal>
     </div>
   );
 };

@@ -32,7 +32,7 @@ interface IRCard {
   readonly createdAt: number; // sometime
   readonly disabled: boolean;
   // test
-  readonly curSRKey: number[];
+  // readonly curSRKey: number[];
 }
 
 interface ProjectInfo {
