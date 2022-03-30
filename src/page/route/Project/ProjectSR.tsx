@@ -10,6 +10,7 @@ import {
 } from "../../../store/functions/UMS";
 import { Redirect, ToastMessage } from "../../../utils/Navigation";
 import UISRList from "../../../components/rms/UISRList";
+import { getSRListInfo } from "../../../store/functions/RMS";
 
 const ProjectSR = () => {
   // Judge if project list in user state
@@ -45,24 +46,31 @@ const ProjectSR = () => {
         updateProjectInfo(dispatcher, Number(project_id));
       } else {
         const projectData = JSON.parse(projectInfo);
+        console.log("===============================");
+        console.log(projectInfo);
         // 如果得到的 project 信息跟用户键入的 url 中的 project_id 不符
         if (projectData.data.project.id !== Number(project_id)) {
           updateProjectInfo(dispatcher, Number(project_id));
         } else {
-          return (
-            <Home sidebar={true}>
-              <div>
-                <UISRList
-                  showChoose={true}
-                  myIRKey={1}
-                  curSRKey={[1]}
-                  project_id={2}
-                  SRListStr={""}
-                  userInfo={""}
-                />
-              </div>
-            </Home>
-          );
+          if (SRListInfo === "") {
+            getSRListInfo(dispatcher, Number(project_id));
+          } else {
+            console.log("SRList:  " + SRListInfo);
+            return (
+              <Home sidebar={true}>
+                <div>
+                  <UISRList
+                    showChoose={true}
+                    myIRKey={1}
+                    curSRKey={[1]}
+                    project_id={2}
+                    SRListStr={SRListInfo}
+                    userInfo={userInfo}
+                  />
+                </div>
+              </Home>
+            );
+          }
         }
       }
     } else {

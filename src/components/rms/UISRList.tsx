@@ -15,7 +15,13 @@ interface UISRListProps {
   readonly userInfo: string;
 }
 
+/*
+SRListStr:  {"code":0,"data":[{"id":1,"project":2,"title":"sr","description":"sr","priority":1000,"rank":1000,"state":"TODO","createdBy":17,"createdAt":1648475583.008951,"disabled":false}]}
+ */
+
 const UISRList = (props: UISRListProps) => {
+  console.log(props.SRListStr);
+  console.log(props.userInfo);
   const SRListData = JSON.parse(props.SRListStr).data;
   const userData = JSON.parse(props.userInfo);
   const dispatcher = useDispatch();
