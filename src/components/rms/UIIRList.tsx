@@ -40,7 +40,7 @@ IRListData example:
 const UIIRList = (props: UIIRListProps) => {
   const IRListData = JSON.parse(props.IRListStr).data;
   const dispatcher = useDispatch();
-  let project = -1;
+  const project = props.project_id;
   const dataIRList: IRCard[] = [];
   IRListData.forEach((value: IRCard) => {
     dataIRList.push({
@@ -53,7 +53,6 @@ const UIIRList = (props: UIIRListProps) => {
       createdAt: value.createdAt * 1000,
       disabled: value.disabled,
     });
-    project = value.project;
   });
   const [tableListDataSource] = useState<IRCard[]>(dataIRList);
   const [isEditModalVisible, setIsEditModalVisible] = useState<boolean>(false);
@@ -108,7 +107,6 @@ const UIIRList = (props: UIIRListProps) => {
   };
 
   const showCreateModal = () => {
-    console.log("I am here");
     setIsCreateModalVisible(true);
   };
 
@@ -168,14 +166,6 @@ const UIIRList = (props: UIIRListProps) => {
       width: 100,
       dataIndex: "title",
       align: "center",
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: "此项为必填项",
-          },
-        ],
-      },
       render: (_) => <a>{_}</a>,
     },
     {
@@ -183,20 +173,11 @@ const UIIRList = (props: UIIRListProps) => {
       width: 240,
       dataIndex: "description",
       align: "center",
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: "此项为必填项",
-          },
-        ],
-      },
     },
     {
       title: "进度",
       width: 80,
       align: "center",
-      editable: false,
       // test
       render: (_, record) => <Progress percent={50} />,
     },
@@ -205,7 +186,6 @@ const UIIRList = (props: UIIRListProps) => {
       width: 80,
       dataIndex: "createdBy",
       align: "center",
-      editable: false,
     },
     {
       title: "创建时间",
@@ -213,14 +193,6 @@ const UIIRList = (props: UIIRListProps) => {
       dataIndex: "createdAt",
       valueType: "dateTime",
       align: "center",
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: "此项为必填项",
-          },
-        ],
-      },
       sorter: (a, b) => a.createdAt - b.createdAt,
     },
     {

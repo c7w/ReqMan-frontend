@@ -5,17 +5,9 @@
   padding-top: 1rem;
 }
 
-.ant-table-row-expand-icon {
-  margin-left: 10px;
-}
-
 .ant-pro-table-list-toolbar-container {
   text-align: right;
   margin: 20px;
-}
-
-.ant-table-expand-icon-col {
-  width: 30px;
 }
 
 .ant-modal-content {
