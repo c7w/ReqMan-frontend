@@ -1,7 +1,15 @@
 import React, { useState } from "react";
 import type { ProColumns } from "@ant-design/pro-table";
 import ProTable from "@ant-design/pro-table";
-import { Input, Button, Modal, Progress, InputNumber } from "antd";
+import {
+  Input,
+  Button,
+  Modal,
+  Progress,
+  InputNumber,
+  Popconfirm,
+  message,
+} from "antd";
 import { IRCard } from "../../store/ConfigureStore";
 import "./UIIRList.css";
 import SRList from "./UISRList";
@@ -31,9 +39,7 @@ IRListData example:
 
 const UIIRList = (props: UIIRListProps) => {
   const IRListData = JSON.parse(props.IRListStr).data;
-  // const userData = JSON.parse(props.userInfo);
   const dispatcher = useDispatch();
-  // console.log(IRListData);
   let project = -1;
   const dataIRList: IRCard[] = [];
   IRListData.forEach((value: IRCard) => {
@@ -108,7 +114,7 @@ const UIIRList = (props: UIIRListProps) => {
 
   const handleCreateOk = () => {
     const newIR: IRCard = {
-      id: -1,
+      id: id,
       project: project,
       title: title,
       description: desc,
@@ -139,6 +145,22 @@ const UIIRList = (props: UIIRListProps) => {
     setRank(1);
     setIsCreateModalVisible(false);
   };
+
+  function confirmDelete(record: IRCard) {
+    deleteIRInfo(dispatcher, project, record).then((data: any) => {
+      if (data.code === 0) {
+        ToastMessage("success", "删除成功", "您的IR删除成功");
+        setTimeout(() => window.location.reload(), 1000);
+        setId(-1);
+        setTitle("");
+        setDesc("");
+        setRank(1);
+        setIsCreateModalVisible(false);
+      } else {
+        ToastMessage("error", "删除失败", "您的IR删除失败");
+      }
+    });
+  }
 
   const columns: ProColumns<IRCard>[] = [
     {
@@ -209,13 +231,14 @@ const UIIRList = (props: UIIRListProps) => {
       render: (text, record, _, action) => [
         // 编辑内含修改删除等，须继续与后端接口适配
         <a onClick={() => showEditModal(record)}>编辑</a>,
-        <a
-          onClick={() => {
-            console.log("删除");
-          }}
+        <Popconfirm
+          title="你确定要删除该原始需求吗？"
+          onConfirm={() => confirmDelete(record)}
+          okText="是"
+          cancelText="否"
         >
-          删除
-        </a>,
+          <a href="#">删除</a>
+        </Popconfirm>,
       ],
     },
   ];
