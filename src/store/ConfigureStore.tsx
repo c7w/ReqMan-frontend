@@ -32,7 +32,18 @@ interface IRCard {
   readonly createdAt: number; // sometime
   readonly disabled: boolean;
   // test
-  readonly curSRKey: number[];
+}
+
+interface IRSRAssociation {
+  readonly id: number;
+  readonly IRId: number;
+  readonly SRId: number;
+}
+
+interface SRIterationAssociation {
+  readonly id: number;
+  readonly SRId: number;
+  readonly iteration: number;
 }
 
 interface ProjectInfo {
@@ -79,4 +90,12 @@ export const store = configureStore({
 });
 
 export const history = createReduxHistory(store);
-export type { IRCard, SRCard, ProjectInfo, ManageUserInfo, Iteration };
+export type {
+  IRCard,
+  SRCard,
+  IRSRAssociation,
+  SRIterationAssociation,
+  ProjectInfo,
+  ManageUserInfo,
+  Iteration,
+};

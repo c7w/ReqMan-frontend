@@ -1,8 +1,12 @@
 import request_json from "../../utils/Network";
 import API from "../../utils/APIList";
 import { getServiceStore, updateServiceStore } from "../slices/ServiceSlice";
-import { updateIRListStore, updateSRListStore } from "../slices/IRSRSlice";
-import { IRCard, Iteration, SRCard } from "../ConfigureStore";
+import {
+  updateIRListStore,
+  updateSRListStore,
+  updateIRSRAssociationStore,
+} from "../slices/IRSRSlice";
+import { IRCard, Iteration, SRCard, IRSRAssociation } from "../ConfigureStore";
 import { updateIterationStore } from "../slices/IterationSlice";
 
 const getIRListInfo = async (
@@ -285,6 +289,60 @@ const deleteIterationInfo = async (
   getIterationInfo(dispatcher, project_id);
 };
 
+const getIRSRAssociationInfo = async (
+  dispatcher: any,
+  project_id: number
+): Promise<void> => {
+  const myParams = {
+    project: project_id,
+    type: "ir-sr",
+  };
+  const IRSRAssociation_data = await request_json(API.GET_RMS, {
+    getParams: myParams,
+  });
+  dispatcher(updateIRSRAssociationStore(JSON.stringify(IRSRAssociation_data)));
+};
+
+const createIRSRAssociation = async (
+  dispatcher: any,
+  project_id: number,
+  IRSRAssociation: IRSRAssociation
+): Promise<void> => {
+  console.log(IRSRAssociation);
+  const myBody = {
+    project: project_id,
+    type: "ir-sr",
+    operation: "create",
+    data: {
+      updateData: {
+        IRId: IRSRAssociation.IRId,
+        SRId: IRSRAssociation.SRId,
+      },
+    },
+  };
+  request_json(API.POST_RMS, { body: myBody });
+  // 更新 Iteration 的 store
+  getIRSRAssociationInfo(dispatcher, project_id);
+};
+
+const deleteIRSRAssociation = async (
+  dispatcher: any,
+  project_id: number,
+  IRSRAssociation: IRSRAssociation
+): Promise<void> => {
+  const myBody = {
+    project: project_id,
+    type: "ir-sr",
+    operation: "delete",
+    data: {
+      IRId: IRSRAssociation.IRId,
+      SRId: IRSRAssociation.SRId,
+    },
+  };
+  request_json(API.POST_RMS, { body: myBody });
+  getIRSRAssociationInfo(dispatcher, project_id);
+};
+
 export {
   getIRListInfo,
   createIRInfo,
@@ -297,6 +355,9 @@ export {
   createSRInfo,
   updateSRInfo,
   deleteSRInfo,
+  getIRSRAssociationInfo,
+  createIRSRAssociation,
+  deleteIRSRAssociation,
   getIterationInfo,
   createIteration,
   updateIterationInfo,
