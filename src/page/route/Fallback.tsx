@@ -6,35 +6,8 @@ import { Redirect } from "../../utils/Navigation";
 
 const Fallback = () => {
   const dispatcher = useDispatch();
-  const handleOnClick = () => {
-    Redirect(dispatcher, "/login", 0);
-  };
   return (
     <div className="fallback">
-      <div className="about">
-        <a
-          className="bg_links social portfolio"
-          href="https://www.baidu.com"
-          target="_blank"
-        >
-          <span className="icon"></span>
-        </a>
-        <a
-          className="bg_links social dribbble"
-          href="https://www.baidu.com"
-          target="_blank"
-        >
-          <span className="icon"></span>
-        </a>
-        <a
-          className="bg_links social linkedin"
-          href="https://www.baidu.com"
-          target="_blank"
-        >
-          <span className="icon"></span>
-        </a>
-        <a className="bg_links logo"></a>
-      </div>
       <nav>
         <div className="menu">
           <img
@@ -43,16 +16,20 @@ const Fallback = () => {
             alt="undefined"
             width={200}
             height={55}
+            onClick={() => (window.location.href = "/dashboard")}
           />
           <div className="menu_links">
-            <a href="" className="link">
-              about
+            <a
+              className="link"
+              onClick={() => Redirect(dispatcher, "./about", 0)}
+            >
+              关于我们
             </a>
-            <a href="" className="link">
-              projects
-            </a>
-            <a href="" className="link">
-              contacts
+            <a
+              className="link"
+              onClick={() => Redirect(dispatcher, "./projects", 0)}
+            >
+              项目列表
             </a>
           </div>
           <div className="menu_icon">
@@ -100,11 +77,10 @@ const Fallback = () => {
 
           <div className="text">
             <article>
-              <p>Uh oh! Looks like you got lost.</p>
-              <p style={{ fontWeight: "bolder" }}>
-                Go back to the homepage below
-              </p>
-              <button onClick={() => handleOnClick()}>Click me ！</button>
+              <p style={{ fontWeight: "bolder" }}>哦不，页面走丢了~</p>
+              <button onClick={() => Redirect(dispatcher, "/login", 0)}>
+                回到工作面板
+              </button>
             </article>
           </div>
         </div>
