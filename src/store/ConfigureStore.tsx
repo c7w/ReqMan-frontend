@@ -31,7 +31,6 @@ interface IRCard {
   readonly createdBy: string; // somebody
   readonly createdAt: number; // sometime
   readonly disabled: boolean;
-  // test
 }
 
 interface IRSRAssociation {

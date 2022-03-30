@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from "react";
 import type { ProColumns } from "@ant-design/pro-table";
 import ProTable, { EditableProTable } from "@ant-design/pro-table";
-import { Space, Table } from "antd";
+import { Button, Input, InputNumber, Modal, Popconfirm } from "antd";
 import "./UISRList.css";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { SRCard } from "../../store/ConfigureStore";
+import { createSRInfo } from "../../store/functions/RMS";
+import { ToastMessage } from "../../utils/Navigation";
+const { TextArea } = Input;
 
 interface UISRListProps {
   readonly showChoose: boolean;
-  readonly myIRKey: number;
-  readonly curSRKey: number[];
+  // readonly myIRKey: number;
+  // readonly curSRKey: number[];
   readonly project_id: number;
   readonly SRListStr: string;
   readonly userInfo: string;
@@ -25,6 +28,7 @@ const UISRList = (props: UISRListProps) => {
   const SRListData = JSON.parse(props.SRListStr).data;
   const userData = JSON.parse(props.userInfo);
   const dispatcher = useDispatch();
+  const project = props.project_id;
   // 总任务列表
   const dataSRList: SRCard[] = [];
   SRListData.forEach((value: any, index: number) => {
@@ -35,105 +39,127 @@ const UISRList = (props: UISRListProps) => {
       description: value.description,
       priority: value.priority,
       rank: value.rank,
-      currState: value.currState,
+      currState: value.state,
       createdBy: value.createdBy,
       createdAt: value.createdAt * 1000,
       disabled: value.disabled,
     });
   });
+
+  // useEffect(() => {
+  //   const curSRList = [];
+  //   for (let i = 0; i < props.curSRKey.length; i += 1) {
+  //     curSRList.push(dataSRList[props.curSRKey[i]]);
+  //   }
+  //   // 如果是下拉表，则显示当前的关联任务
+  //   if (!props.showChoose) {
+  //     settableListDataSource(curSRList);
+  //   }
+  // }, [1]);
+
   const [tableListDataSource, settableListDataSource] =
     useState<SRCard[]>(dataSRList);
+  const [isEditModalVisible, setIsEditModalVisible] = useState<boolean>(false);
+  const [isCreateModalVisible, setIsCreateModalVisible] =
+    useState<boolean>(false);
+  const [id, setId] = useState<number>(-1);
+  const [title, setTitle] = useState<string>("");
+  const [desc, setDesc] = useState<string>("");
+  const [priority, setPriority] = useState<number>(1);
+  const [rank, setRank] = useState<number>(1);
+  const [currState, setCurrState] = useState<string>("TODO");
 
-  useEffect(() => {
-    const curSRList = [];
-    for (let i = 0; i < props.curSRKey.length; i += 1) {
-      curSRList.push(dataSRList[props.curSRKey[i]]);
-    }
-    // 如果是下拉表，则显示当前的关联任务
-    if (!props.showChoose) {
-      settableListDataSource(curSRList);
-    }
-  }, [1]);
+  const showCreateModal = () => {
+    setIsCreateModalVisible(true);
+  };
+
+  const handleCreateOk = () => {
+    const newSR: SRCard = {
+      id: id,
+      project: project,
+      title: title,
+      description: desc,
+      priority: priority,
+      rank: rank,
+      currState: currState,
+      createdBy: "", // 未用到
+      createdAt: -1, // 未用到
+      disabled: true, // 未用到
+    };
+    createSRInfo(dispatcher, project, newSR).then((data: any) => {
+      if (data.code === 0) {
+        ToastMessage("success", "创建成功", "您的SR创建成功");
+        setTimeout(() => window.location.reload(), 1000);
+        setId(-1);
+        setTitle("");
+        setDesc("");
+        setPriority(1);
+        setRank(1);
+        setCurrState("TODO");
+        setIsCreateModalVisible(false);
+      } else {
+        ToastMessage("error", "创建失败", "您的SR创建失败");
+      }
+    });
+  };
+
+  const handleCreateCancel = () => {
+    setId(-1);
+    setTitle("");
+    setDesc("");
+    setPriority(1);
+    setRank(1);
+    setCurrState("TODO");
+    setIsCreateModalVisible(false);
+  };
 
   const columns: ProColumns<SRCard>[] = [
     {
       title: "SR标题",
       width: 100,
-      dataIndex: "name",
+      dataIndex: "title",
       align: "center",
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: "此项为必填项",
-          },
-        ],
-      },
       render: (_) => <a>{_}</a>,
     },
     {
       title: "状态",
       width: 90,
-      dataIndex: "status",
+      dataIndex: "currState",
       filters: true,
       onFilter: true,
       align: "center",
       valueType: "select",
       valueEnum: {
-        start: {
-          text: "未开始",
+        TODO: {
+          text: "TODO",
           status: "Default",
         },
-        progress: {
-          text: "进行中",
+        WIP: {
+          text: "WIP",
           status: "Processing",
         },
-        finished: {
-          text: "已完成",
+        Done: {
+          text: "Done",
           status: "Success",
         },
-        debug: {
-          text: "调试中",
+        Reviewing: {
+          text: "Reviewing",
           status: "Warning",
         },
-      },
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: "此项为必填项",
-          },
-        ],
       },
       // render: (_, record) => <Tag color={record.status.color}>{record.status.text}</Tag>,
     },
     {
       title: "任务描述",
       width: 280,
-      dataIndex: "desc",
+      dataIndex: "description",
       align: "center",
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: "此项为必填项",
-          },
-        ],
-      },
     },
     {
       title: "创建者",
       width: 100,
-      dataIndex: "creator",
+      dataIndex: "createdBy",
       align: "center",
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: "此项为必填项",
-          },
-        ],
-      },
     },
     {
       title: "创建时间",
@@ -141,14 +167,6 @@ const UISRList = (props: UISRListProps) => {
       dataIndex: "createdAt",
       valueType: "dateTime",
       align: "center",
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: "此项为必填项",
-          },
-        ],
-      },
       sorter: (a, b) => a.createdAt - b.createdAt,
     },
     {
@@ -158,52 +176,62 @@ const UISRList = (props: UISRListProps) => {
       align: "center",
       render: (text, record, _, action) => [
         // 编辑内含修改删除等，须继续与后端接口适配
-        <a
-          key="editable"
-          onClick={() => {
-            action?.startEditable?.(record.id);
-          }}
-        >
-          编辑
-        </a>,
+        // <a onClick={() => showEditModal(record)}>编辑</a>,
+        // <Popconfirm
+        //   title="你确定要删除该功能需求吗？"
+        //   onConfirm={() => confirmDelete(record)}
+        //   okText="是"
+        //   cancelText="否"
+        // >
+        //   <a href="#">删除</a>
+        // </Popconfirm>,
       ],
     },
   ];
 
-  const chooseColumn: ProColumns<SRCard>[] = [];
-  for (let i = 0; i < 5; i += 1) {
-    columns[i].filters = false;
-    chooseColumn.push(columns[i]);
-  }
-
-  const rowSelection = {
-    onChange: (
-      selectedRowKeys: React.Key[],
-      selectedRows: ProColumns<SRCard>[]
-    ) => {
-      const selectedSR = [];
-      for (let i = 0; i < selectedRowKeys.length; i++) {
-        selectedSR.push(selectedRows[i].key);
-      }
-      for (let i = 0; i < props.curSRKey.length; i++) {
-        selectedSR.push(props.curSRKey[i]);
-      }
-    },
-    getCheckboxProps: (record: ProColumns<SRCard>) => {
-      console.log("=================");
-      for (let i = 0; i < props.curSRKey.length; i++) {
-        if (props.curSRKey[i] === record.key) {
-          return { disabled: true };
-        }
-      }
-      return { disabled: false };
-    },
-  };
+  // const chooseColumn: ProColumns<SRCard>[] = [];
+  // for (let i = 0; i < 5; i += 1) {
+  //   columns[i].filters = false;
+  //   chooseColumn.push(columns[i]);
+  // }
+  //
+  // const rowSelection = {
+  //   onChange: (
+  //     selectedRowKeys: React.Key[],
+  //     selectedRows: ProColumns<SRCard>[]
+  //   ) => {
+  //     const selectedSR = [];
+  //     for (let i = 0; i < selectedRowKeys.length; i++) {
+  //       selectedSR.push(selectedRows[i].key);
+  //     }
+  //     for (let i = 0; i < props.curSRKey.length; i++) {
+  //       selectedSR.push(props.curSRKey[i]);
+  //     }
+  //   },
+  //   getCheckboxProps: (record: ProColumns<SRCard>) => {
+  //     console.log("=================");
+  //     for (let i = 0; i < props.curSRKey.length; i++) {
+  //       if (props.curSRKey[i] === record.key) {
+  //         return { disabled: true };
+  //       }
+  //     }
+  //     return { disabled: false };
+  //   },
+  // };
 
   if (!props.showChoose) {
     return (
       <div className={"SRTable"}>
-        <EditableProTable<SRCard>
+        <ProTable<SRCard>
+          headerTitle="功能需求列表"
+          toolBarRender={() => {
+            return [
+              <Button key="create" onClick={showCreateModal} type="primary">
+                新建SR
+              </Button>,
+            ];
+          }}
+          rowKey="id"
           columns={columns}
           request={() => {
             return Promise.resolve({
@@ -212,69 +240,106 @@ const UISRList = (props: UISRListProps) => {
             });
           }}
           pagination={{
-            pageSize: 5,
+            pageSize: 10,
           }}
-          rowKey="key"
-          editable={{
-            type: "multiple",
-          }}
-          recordCreatorProps={{
-            record: (index: number) => ({
-              id: index,
-              project: props.project_id,
-              title: "",
-              description: "",
-              priority: 1,
-              rank: 1,
-              currState: "TODO",
-              createdBy: userData.name,
-              createdAt: Date.now(),
-              disabled: false,
-            }),
-            position: "top",
-            creatorButtonText: "新增 SR 任务",
-          }}
+          search={false}
           dateFormatter="string"
         />
+        <Modal
+          title="新增SR任务"
+          centered={true}
+          visible={isCreateModalVisible}
+          onOk={handleCreateOk}
+          onCancel={handleCreateCancel}
+          width={"70%"}
+        >
+          <p
+            style={{
+              paddingTop: "10px",
+              marginBottom: "5px",
+              fontSize: "16px",
+            }}
+          >
+            项目名称
+          </p>
+          <Input
+            value={title}
+            onChange={(e) => {
+              setTitle(e.target.value);
+            }}
+          />
+          <p
+            style={{
+              paddingTop: "10px",
+              marginBottom: "5px",
+              fontSize: "16px",
+            }}
+          >
+            项目介绍
+          </p>
+          <TextArea
+            rows={4}
+            allowClear
+            value={desc}
+            onChange={(e) => {
+              setDesc(e.target.value);
+            }}
+          />
+          <p
+            style={{
+              paddingTop: "10px",
+              marginBottom: "5px",
+              fontSize: "16px",
+            }}
+          >
+            项目重要性
+          </p>
+          <InputNumber
+            value={rank}
+            onChange={(e: number) => {
+              setRank(e);
+            }}
+          />
+        </Modal>
       </div>
     );
   } else {
     return (
       <div className={"SRTable"}>
-        <ProTable<SRCard>
-          columns={chooseColumn}
-          rowSelection={{
-            selections: [Table.SELECTION_ALL, Table.SELECTION_INVERT],
-            defaultSelectedRowKeys: [],
-            ...rowSelection,
-          }}
-          tableAlertRender={({
-            selectedRowKeys,
-            selectedRows,
-            onCleanSelected,
-          }) => (
-            <Space size={24}>
-              <span>已选 {selectedRowKeys.length} 项</span>
-              <span>{`关联 SR 任务: ${selectedRows.reduce(
-                (pre, item) => pre + " " + item.title,
-                ""
-              )} `}</span>
-            </Space>
-          )}
-          request={() => {
-            return Promise.resolve({
-              data: tableListDataSource,
-              success: true,
-            });
-          }}
-          pagination={{
-            pageSize: 5,
-          }}
-          rowKey="key"
-          search={false}
-          dateFormatter="string"
-          toolBarRender={false}
-        />
+        {/*<ProTable<SRCard>*/}
+        {/*  columns={chooseColumn}*/}
+        {/*  rowSelection={{*/}
+        {/*    selections: [Table.SELECTION_ALL, Table.SELECTION_INVERT],*/}
+        {/*    defaultSelectedRowKeys: [],*/}
+        {/*    ...rowSelection,*/}
+        {/*  }}*/}
+        {/*  tableAlertRender={({*/}
+        {/*    selectedRowKeys,*/}
+        {/*    selectedRows,*/}
+        {/*    onCleanSelected,*/}
+        {/*  }) => (*/}
+        {/*    <Space size={24}>*/}
+        {/*      <span>已选 {selectedRowKeys.length} 项</span>*/}
+        {/*      <span>{`关联 SR 任务: ${selectedRows.reduce(*/}
+        {/*        (pre, item) => pre + " " + item.title,*/}
+        {/*        ""*/}
+        {/*      )} `}</span>*/}
+        {/*    </Space>*/}
+        {/*  )}*/}
+        {/*  request={() => {*/}
+        {/*    return Promise.resolve({*/}
+        {/*      data: tableListDataSource,*/}
+        {/*      success: true,*/}
+        {/*    });*/}
+        {/*  }}*/}
+        {/*  pagination={{*/}
+        {/*    pageSize: 5,*/}
+        {/*  }}*/}
+        {/*  rowKey="key"*/}
+        {/*  search={false}*/}
+        {/*  dateFormatter="string"*/}
+        {/*  toolBarRender={false}*/}
+        {/*/>*/}
       </div>
     );
   }

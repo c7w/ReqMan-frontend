@@ -61,10 +61,10 @@ const ProjectSR = () => {
               <Home sidebar={true}>
                 <div>
                   <UISRList
-                    showChoose={true}
-                    myIRKey={1}
-                    curSRKey={[1]}
-                    project_id={2}
+                    showChoose={false}
+                    //myIRKey={1}
+                    //curSRKey={[1]}
+                    project_id={Number(project_id)}
                     SRListStr={SRListInfo}
                     userInfo={userInfo}
                   />
