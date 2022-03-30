@@ -43,7 +43,13 @@ interface IRSRAssociation {
 interface SRIteration {
   readonly id: number;
   readonly SRId: number;
-  readonly iteration: number;
+  readonly iterationId: number;
+}
+
+interface UserIteration {
+  readonly id: number;
+  readonly userId: number;
+  readonly iterationId: number;
 }
 
 interface ProjectInfo {
@@ -94,6 +100,7 @@ export type {
   IRCard,
   SRCard,
   IRSRAssociation,
+  UserIteration,
   SRIteration,
   ProjectInfo,
   ManageUserInfo,

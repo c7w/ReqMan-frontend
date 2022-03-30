@@ -22,6 +22,7 @@ import PersonalSetting from "./route/Auth/Setting";
 import ProjectServiceReadonly from "./route/Project/ProjectServiceReadonly";
 import ProjectRequirementsReadonly from "./route/Project/ProjectRequirementsReadonly";
 import ProjectMember from "./route/Project/ProjectMember";
+import Test from "../components/test"; // 测试接口
 
 const SiteRouter = () => {
   const testIR =
@@ -60,6 +61,8 @@ const SiteRouter = () => {
 
           {/* Dev Paths */}
           <Route path="SR_List" element={<ProjectSR />} />
+          <Route path="test" element={<Test />} />
+
           <Route
             path={"dev/loading"}
             element={

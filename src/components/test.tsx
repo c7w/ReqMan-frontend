@@ -2,10 +2,14 @@ import { Button } from "antd";
 import { useDispatch } from "react-redux";
 import {
   createIRInfo,
+  updateIRInfo,
   createIRSR,
   createIteration,
   createSRInfo,
   createSRIteration,
+  createUserIteration,
+  updateSRInfo,
+  updateIterationInfo,
 } from "../store/functions/RMS";
 import {
   IRCard,
@@ -13,15 +17,16 @@ import {
   Iteration,
   SRCard,
   SRIteration,
+  UserIteration,
 } from "../store/ConfigureStore";
 
 const Test = () => {
   const dispatcher = useDispatch();
   const IR: IRCard = {
-    id: 1,
+    id: 27,
     project: 2,
-    title: "test_ir",
-    description: "test_ir",
+    title: "邪门了",
+    description: "我就不信了",
     rank: 1,
     createdBy: "17",
     createdAt: Date.now(),
@@ -30,8 +35,8 @@ const Test = () => {
   const SR: SRCard = {
     id: 1,
     project: 2,
-    title: "test_ir",
-    description: "test_ir",
+    title: "test_sfdafafar",
+    description: "testfadfafafa_sr",
     priority: 1,
     rank: 1,
     currState: "TODO",
@@ -51,23 +56,39 @@ const Test = () => {
   };
   const IRSRAssociation: IRSRAssociation = {
     id: 1,
-    IRId: 7,
-    SRId: 2,
+    IRId: 19,
+    SRId: 5,
   };
   const SRIteration: SRIteration = {
     id: 1,
     SRId: 2,
-    iteration: 1,
+    iterationId: 3,
+  };
+  const UserIteration: UserIteration = {
+    id: 1,
+    userId: 1,
+    iterationId: 1,
   };
   const handleOnClick = () => {
     console.log("click");
-    createIRInfo(dispatcher, 2, IR);
-    createSRInfo(dispatcher, 2, SR);
-    createIRSR(dispatcher, 2, IRSRAssociation);
-    createIteration(dispatcher, 2, Iteration);
-    createSRIteration(dispatcher, 2, SRIteration);
+    // createIRInfo(dispatcher, 2, IR);
+    // createSRInfo(dispatcher, 2, SR);
+    // createIRSR(dispatcher, 2, IRSRAssociation);
+    // createIteration(dispatcher, 2, Iteration); 待解决 bug
+    // createSRIteration(dispatcher, 2, SRIteration);
+    // createUserIteration(dispatcher, 2, UserIteration);
+    // updateIRInfo(dispatcher, 2, IR);
+    // updateSRInfo(dispatcher, 2, SR);
+    // updateIterationInfo(dispatcher, 2, Iteration); 待解决 bug
   };
-  return <Button onClick={() => handleOnClick()} />;
+  return (
+    <>
+      <p>I am test page</p>
+      <Button type="primary" onClick={() => handleOnClick()}>
+        Primary Button
+      </Button>
+    </>
+  );
 };
 
 export default Test;

@@ -12,10 +12,12 @@ import {
   SRCard,
   IRSRAssociation,
   SRIteration,
+  UserIteration,
 } from "../ConfigureStore";
 import {
   updateIterationStore,
   updateSRIterationStore,
+  updateUserIterationStore,
 } from "../slices/IterationSlice";
 
 const getIRListInfo = async (
@@ -63,6 +65,7 @@ const updateIRInfo = async (
     type: "ir",
     operation: "update",
     data: {
+      id: ir.id,
       updateData: {
         title: ir.title,
         description: ir.description,
@@ -248,11 +251,12 @@ const createIteration = async (
       updateData: {
         title: iteration.title,
         sid: iteration.sid,
-        begin: iteration.begin,
-        end: iteration.end,
+        begin: iteration.begin.toFixed(1),
+        end: iteration.end.toFixed(1),
       },
     },
   };
+  console.log("create Iteration: " + myBody.data.updateData.begin);
   request_json(API.POST_RMS, { body: myBody });
   // 更新 Iteration 的 store
   getIterationInfo(dispatcher, project_id);
@@ -378,7 +382,7 @@ const createSRIteration = async (
     operation: "create",
     data: {
       updateData: {
-        iterationId: SRIteration.iteration,
+        iterationId: SRIteration.iterationId,
         SRId: SRIteration.SRId,
       },
     },
@@ -398,12 +402,66 @@ const deleteSRIteration = async (
     type: "sr-iteration",
     operation: "delete",
     data: {
-      iterationId: SRIteration.iteration,
+      iterationId: SRIteration.iterationId,
       SRId: SRIteration.SRId,
     },
   };
   request_json(API.POST_RMS, { body: myBody });
   getSRIterationInfo(dispatcher, project_id);
+};
+
+const getUserIterationInfo = async (
+  dispatcher: any,
+  project_id: number
+): Promise<void> => {
+  const myParams = {
+    project: project_id,
+    type: "user-iteration",
+  };
+  const UserIteration_data = await request_json(API.GET_RMS, {
+    getParams: myParams,
+  });
+  dispatcher(updateUserIterationStore(JSON.stringify(UserIteration_data)));
+};
+
+const createUserIteration = async (
+  dispatcher: any,
+  project_id: number,
+  UserIteration: UserIteration
+): Promise<void> => {
+  console.log(UserIteration);
+  const myBody = {
+    project: project_id,
+    type: "user-iteration",
+    operation: "create",
+    data: {
+      updateData: {
+        iterationId: UserIteration.iterationId,
+        userId: UserIteration.userId,
+      },
+    },
+  };
+  request_json(API.POST_RMS, { body: myBody });
+  // 更新 Iteration 的 store
+  getUserIterationInfo(dispatcher, project_id);
+};
+
+const deleteUserIteration = async (
+  dispatcher: any,
+  project_id: number,
+  UserIteration: UserIteration
+): Promise<void> => {
+  const myBody = {
+    project: project_id,
+    type: "user-iteration",
+    operation: "delete",
+    data: {
+      iterationId: UserIteration.iterationId,
+      userId: UserIteration.userId,
+    },
+  };
+  request_json(API.POST_RMS, { body: myBody });
+  getUserIterationInfo(dispatcher, project_id);
 };
 
 export {
@@ -425,6 +483,9 @@ export {
   createIteration,
   updateIterationInfo,
   deleteIterationInfo,
+  getUserIterationInfo,
+  createUserIteration,
+  deleteUserIteration,
   getSRIterationInfo,
   createSRIteration,
   deleteSRIteration,
