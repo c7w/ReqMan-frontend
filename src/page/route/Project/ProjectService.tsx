@@ -13,6 +13,7 @@ import { updateServiceInfo } from "../../../store/functions/RMS";
 import UIServiceReadonly from "../../../components/rms/UIServiceReadonly";
 import Loading from "../../../layout/components/Loading";
 import UIService from "../../../components/rms/UIService";
+import { useEffect } from "react";
 
 const ProjectService = () => {
   // 1. Judge if user logged in, if not send to `/login`
@@ -26,6 +27,10 @@ const ProjectService = () => {
 
   const params = useParams<"id">();
   const project_id = params.id;
+
+  useEffect(() => {
+    updateServiceInfo(dispatcher, Number(project_id));
+  }, []);
 
   // 1. User State Judge
   if (userInfo === "") {
@@ -51,9 +56,10 @@ const ProjectService = () => {
         updateServiceInfo(dispatcher, Number(project_id));
       } else {
         const projectData = JSON.parse(projectInfo);
+        const serviceData = JSON.parse(serviceStore);
+        console.debug(serviceData);
         if (projectData.data.project.id !== Number(project_id)) {
           updateProjectInfo(dispatcher, Number(project_id));
-          updateServiceInfo(dispatcher, Number(project_id));
         } else {
           return (
             <Home sidebar={true}>
