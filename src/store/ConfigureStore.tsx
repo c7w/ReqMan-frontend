@@ -51,14 +51,14 @@ interface ManageUserInfo {
   avatar: string;
 }
 interface Iteration {
-  readonly id: number;
-  readonly project: number;
-  readonly sid: number; // 创建必填，在项目中的 id
+  readonly id?: number;
+  readonly project?: number;
+  readonly sid: number;
   readonly title: string; // 创建必填
-  readonly begin: string; // 创建必填
-  readonly end: string; // 创建必填
-  readonly disabled: boolean;
-  readonly createdAt: number;
+  readonly begin: number; // 创建必填
+  readonly end: number; // 创建必填
+  readonly disabled?: boolean;
+  readonly createdAt?: number;
 }
 
 const { createReduxHistory, routerMiddleware, routerReducer } =

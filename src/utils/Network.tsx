@@ -60,10 +60,10 @@ const request_json = async (config: APIConfig, settings: Settings = {}) => {
   }
   // console.log("initRequest: " + JSON.stringify(initRequest));
   // console.log("path: " + path);
-  return await fetch(path, initRequest)
+  return fetch(path, initRequest)
     .then((data) => data.json())
     .then((json) => {
-      console.debug(`Fetched ${path} successfully: ` + JSON.stringify(json));
+      // console.debug(`Fetched ${path} successfully: ` + JSON.stringify(json));
       return json;
     });
 };
