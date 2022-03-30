@@ -21,7 +21,7 @@ SRListStr:  {"code":0,"data":[{"id":1,"project":2,"title":"sr","description":"sr
 
 const UISRList = (props: UISRListProps) => {
   console.log(props.SRListStr);
-  console.log(props.userInfo);
+  console.log(props.userInfo); // 当前 user 的所有 project 信息
   const SRListData = JSON.parse(props.SRListStr).data;
   const userData = JSON.parse(props.userInfo);
   const dispatcher = useDispatch();

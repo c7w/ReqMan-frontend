@@ -1,5 +1,4 @@
 .personal-setting-container {
-
   width: 70vw;
   background-color: rgba(249, 249, 249);
   margin: 2rem auto 1rem;
@@ -10,8 +9,6 @@
   flex-direction: column;
   align-items: center;
 }
-
-
 
 .avatar-column {
   text-align: left;
@@ -55,5 +52,3 @@
   border: 1px black solid;
   border-radius: 1rem;
 }
-
-
