@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from "react";
 import type { ProColumns } from "@ant-design/pro-table";
 import ProTable, { EditableProTable } from "@ant-design/pro-table";
-import { Button, Input, InputNumber, Modal, Popconfirm } from "antd";
+import { Button, Input, InputNumber, Modal, Popconfirm, Select } from "antd";
 import "./UISRList.css";
 import { useDispatch, useSelector } from "react-redux";
-import { SRCard } from "../../store/ConfigureStore";
-import { createSRInfo, getIRSRInfo } from "../../store/functions/RMS";
+import { IRCard, SRCard } from "../../store/ConfigureStore";
+import {
+  createSRInfo,
+  deleteSRInfo,
+  updateSRInfo,
+} from "../../store/functions/RMS";
 import { ToastMessage } from "../../utils/Navigation";
-import { getIRSRStore } from "../../store/slices/IRSRSlice";
 const { TextArea } = Input;
+const { Option } = Select;
 
 interface UISRListProps {
   readonly showChoose: boolean;
@@ -81,6 +85,56 @@ const UISRList = (props: UISRListProps) => {
   const [rank, setRank] = useState<number>(1);
   const [currState, setCurrState] = useState<string>("TODO");
 
+  const showEditModal = (record: SRCard) => {
+    setId(record.id);
+    setTitle(record.title);
+    setDesc(record.description);
+    setPriority(record.priority);
+    setRank(record.rank);
+    setCurrState(record.currState);
+    setIsEditModalVisible(true);
+  };
+
+  const handleEditOk = () => {
+    const newSR: SRCard = {
+      id: id,
+      project: project,
+      title: title,
+      description: desc,
+      priority: priority,
+      rank: rank,
+      currState: currState,
+      createdBy: "", // 未用到
+      createdAt: -1, // 未用到
+      disabled: true, // 未用到
+    };
+    updateSRInfo(dispatcher, project, newSR).then((data: any) => {
+      if (data.code === 0) {
+        ToastMessage("success", "创建成功", "您的SR修改成功");
+        setTimeout(() => window.location.reload(), 1000);
+        setId(-1);
+        setTitle("");
+        setDesc("");
+        setPriority(1);
+        setRank(1);
+        setCurrState("TODO");
+        setIsEditModalVisible(false);
+      } else {
+        ToastMessage("error", "创建失败", "您的SR修改失败");
+      }
+    });
+  };
+
+  const handleEditCancel = () => {
+    setId(-1);
+    setTitle("");
+    setDesc("");
+    setPriority(1);
+    setRank(1);
+    setCurrState("TODO");
+    setIsEditModalVisible(false);
+  };
+
   const showCreateModal = () => {
     setIsCreateModalVisible(true);
   };
@@ -124,6 +178,29 @@ const UISRList = (props: UISRListProps) => {
     setCurrState("TODO");
     setIsCreateModalVisible(false);
   };
+
+  function confirmDelete(record: SRCard) {
+    deleteSRInfo(dispatcher, project, record).then((data: any) => {
+      if (data.code === 0) {
+        ToastMessage("success", "删除成功", "您的SR删除成功");
+        setTimeout(() => window.location.reload(), 1000);
+        setId(-1);
+        setTitle("");
+        setDesc("");
+        setPriority(1);
+        setRank(1);
+        setCurrState("TODO");
+        setIsCreateModalVisible(false);
+      } else {
+        ToastMessage("error", "删除失败", "您的SR删除失败");
+      }
+    });
+  }
+
+  function handleStateChange(value: string) {
+    console.log(`selected ${value}`);
+    setCurrState(value);
+  }
 
   const columns: ProColumns<SRCard>[] = [
     {
@@ -253,6 +330,7 @@ const UISRList = (props: UISRListProps) => {
           }}
           pagination={{
             pageSize: 10,
+            showSizeChanger: true,
           }}
           search={false}
           dateFormatter="string"
@@ -304,6 +382,31 @@ const UISRList = (props: UISRListProps) => {
               fontSize: "16px",
             }}
           >
+            状态选择
+          </p>
+          <Select
+            defaultValue={currState}
+            style={{ width: 120 }}
+            onChange={handleStateChange}
+          >
+            <Option value="TODO">TODO</Option>
+            <Option value="WIP" disabled>
+              WIP
+            </Option>
+            <Option value="Reviewing" disabled>
+              Reviewing
+            </Option>
+            <Option value="Done" disabled>
+              Done
+            </Option>
+          </Select>
+          <p
+            style={{
+              paddingTop: "10px",
+              marginBottom: "5px",
+              fontSize: "16px",
+            }}
+          >
             项目优先级
           </p>
           <InputNumber
@@ -332,8 +435,8 @@ const UISRList = (props: UISRListProps) => {
           title="编辑SR任务"
           centered={true}
           visible={isEditModalVisible}
-          // onOk={handleEditOk}
-          // onCancel={handleEditCancel}
+          onOk={handleEditOk}
+          onCancel={handleEditCancel}
           width={"70%"}
         >
           <p
@@ -368,6 +471,25 @@ const UISRList = (props: UISRListProps) => {
               setDesc(e.target.value);
             }}
           />
+          <p
+            style={{
+              paddingTop: "10px",
+              marginBottom: "5px",
+              fontSize: "16px",
+            }}
+          >
+            状态选择
+          </p>
+          <Select
+            defaultValue={currState}
+            style={{ width: 120 }}
+            onChange={handleStateChange}
+          >
+            <Option value="TODO">TODO</Option>
+            <Option value="WIP">WIP</Option>
+            <Option value="Reviewing">Reviewing</Option>
+            <Option value="Done">Done</Option>
+          </Select>
           <p
             style={{
               paddingTop: "10px",
