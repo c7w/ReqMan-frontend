@@ -13,9 +13,11 @@ import {
 } from "antd";
 import "./UISRList.css";
 import { useDispatch, useSelector } from "react-redux";
-import { IRCard, SRCard } from "../../store/ConfigureStore";
+import { IRCard, IRSRAssociation, SRCard } from "../../store/ConfigureStore";
 import {
+  createIRSR,
   createSRInfo,
+  deleteIRSR,
   deleteSRInfo,
   updateSRInfo,
 } from "../../store/functions/RMS";
@@ -45,17 +47,17 @@ userData: {"code":0,"data":{"user":{"id":17,"name":"hbx20","email":"hbx@hbx.boy"
 */
 
 const UISRList = (props: UISRListProps) => {
-  console.log(props.SRListStr);
-  console.log(props.userInfo); // 当前 user 的所有 project 信息
+  // console.log(props.SRListStr);
+  // console.log(props.userInfo); // 当前 user 的所有 project 信息
 
   const SRListData = JSON.parse(props.SRListStr).data;
   const userData = JSON.parse(props.userInfo).data;
   const IRSRAssociationData = JSON.parse(props.IRSRAssociation).data;
 
-  console.log("test: " + props.IRSRAssociation);
+  // console.log("test: " + props.IRSRAssociation);
   const dispatcher = useDispatch();
   const project = props.project_id;
-
+  // const [choosedSRKey, setchoosedSRKey] = useState<number[]>([]);
   const curSRKey: number[] = [];
   if (props.IR_id != -1) {
     IRSRAssociationData.forEach((value: any, index: number) => {
@@ -305,27 +307,47 @@ const UISRList = (props: UISRListProps) => {
   }
 
   const rowSelection = {
-    onChange: (
-      selectedRowKeys: React.Key[],
+    // onChange: (
+    //   selectedRowKeys: React.Key[],
+    //   selectedRows: ProColumns<SRCard>[]
+    // ) => {
+    //   const selectedSR = [];
+    //   console.log("===========hey I change===========");
+    //   // for (let i = 0; i < selectedRowKeys.length; i++) {
+    //   //   selectedSR.push(selectedRows[i].key);
+    //   // }
+    //   // for (let i = 0; i < props.curSRKey.length; i++) {
+    //   //   selectedSR.push(props.curSRKey[i]);
+    //   // }
+    // },
+    // getCheckboxProps: (record: ProColumns<SRCard>) => {
+    //   console.log("=================");
+    //   // for (let i = 0; i < props.curSRKey.length; i++) {
+    //   //   if (props.curSRKey[i] === record.key) {
+    //   //     return { disabled: true };
+    //   //   }
+    //   // }
+    //   return { disabled: false };
+    // },
+    onSelect: (
+      record: SRCard,
+      selected: boolean,
       selectedRows: ProColumns<SRCard>[]
     ) => {
-      const selectedSR = [];
-      console.log("===========hey I change===========");
-      // for (let i = 0; i < selectedRowKeys.length; i++) {
-      //   selectedSR.push(selectedRows[i].key);
-      // }
-      // for (let i = 0; i < props.curSRKey.length; i++) {
-      //   selectedSR.push(props.curSRKey[i]);
-      // }
-    },
-    getCheckboxProps: (record: ProColumns<SRCard>) => {
-      console.log("=================");
-      // for (let i = 0; i < props.curSRKey.length; i++) {
-      //   if (props.curSRKey[i] === record.key) {
-      //     return { disabled: true };
-      //   }
-      // }
-      return { disabled: false };
+      const IRSR: IRSRAssociation = {
+        id: 0,
+        IRId: props.IR_id,
+        SRId: record.id,
+      };
+      if (selected) {
+        createIRSR(dispatcher, props.project_id, IRSR).then((data: any) => {
+          console.log(data);
+        });
+      } else if (!selected) {
+        deleteIRSR(dispatcher, props.project_id, IRSR).then((data: any) => {
+          console.log(data);
+        });
+      }
     },
   };
 

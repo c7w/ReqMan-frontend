@@ -367,9 +367,13 @@ const createIRSR = async (
       },
     },
   };
-  request_json(API.POST_RMS, { body: myBody });
-  // 更新 Iteration 的 store
-  getIRSRInfo(dispatcher, project_id);
+  return request_json(API.POST_RMS, { body: myBody }).then((data) => {
+    console.log(data.code);
+    if (data.code === 0) {
+      getIRSRInfo(dispatcher, project_id);
+    }
+    return data;
+  });
 };
 
 const deleteIRSR = async (
@@ -386,8 +390,13 @@ const deleteIRSR = async (
       SRId: IRSRAssociation.SRId,
     },
   };
-  request_json(API.POST_RMS, { body: myBody });
-  getIRSRInfo(dispatcher, project_id);
+  return request_json(API.POST_RMS, { body: myBody }).then((data) => {
+    console.log(data.code);
+    if (data.code === 0) {
+      getIRSRInfo(dispatcher, project_id);
+    }
+    return data;
+  });
 };
 
 const getSRIterationInfo = async (
