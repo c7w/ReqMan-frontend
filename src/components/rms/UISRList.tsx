@@ -2,40 +2,47 @@ import React, { useEffect, useState } from "react";
 import type { ProColumns } from "@ant-design/pro-table";
 import ProTable, { EditableProTable } from "@ant-design/pro-table";
 import { Space, Table } from "antd";
-import "./SRList.css";
+import "./UISRList.css";
+import { useDispatch } from "react-redux";
+import { SRCard } from "../../store/ConfigureStore";
 
-export type TableListItem = {
-  key: number;
-  name: string;
-  desc: string;
-  creator: string;
-  status: string;
-  createdAt: number;
-};
-
-interface SRListProps {
+interface UISRListProps {
   readonly showChoose: boolean;
   readonly myIRKey: number;
   readonly curSRKey: number[];
+  readonly project_id: number;
+  readonly SRListStr: string;
+  readonly userInfo: string;
 }
 
-const SRList = (props: SRListProps) => {
+/*
+SRListStr:  {"code":0,"data":[{"id":1,"project":2,"title":"sr","description":"sr","priority":1000,"rank":1000,"state":"TODO","createdBy":17,"createdAt":1648475583.008951,"disabled":false}]}
+ */
+
+const UISRList = (props: UISRListProps) => {
+  console.log(props.SRListStr);
+  console.log(props.userInfo); // 当前 user 的所有 project 信息
+  const SRListData = JSON.parse(props.SRListStr).data;
+  const userData = JSON.parse(props.userInfo);
+  const dispatcher = useDispatch();
   // 总任务列表
-  const dataSRList: TableListItem[] = [];
-  const creators = ["qc", "c7w", "hxj", "wxy", "lmd"];
-  const my_status = ["start", "progress", "finished", "debug"];
-  for (let i = 0; i < 10; i += 1) {
+  const dataSRList: SRCard[] = [];
+  SRListData.forEach((value: any, index: number) => {
     dataSRList.push({
-      key: i,
-      name: "[SR.001.000]",
-      desc: "这是一个 SR 任务描述",
-      creator: creators[Math.floor(Math.random() * creators.length)],
-      status: my_status[i % 4],
-      createdAt: Date.now() - Math.floor(Math.random() * 1000000000),
+      id: value.id,
+      project: value.project,
+      title: value.title,
+      description: value.description,
+      priority: value.priority,
+      rank: value.rank,
+      currState: value.currState,
+      createdBy: value.createdBy,
+      createdAt: value.createdAt * 1000,
+      disabled: value.disabled,
     });
-  }
+  });
   const [tableListDataSource, settableListDataSource] =
-    useState<TableListItem[]>(dataSRList);
+    useState<SRCard[]>(dataSRList);
 
   useEffect(() => {
     const curSRList = [];
@@ -48,7 +55,7 @@ const SRList = (props: SRListProps) => {
     }
   }, [1]);
 
-  const columns: ProColumns<TableListItem>[] = [
+  const columns: ProColumns<SRCard>[] = [
     {
       title: "SR标题",
       width: 100,
@@ -154,7 +161,7 @@ const SRList = (props: SRListProps) => {
         <a
           key="editable"
           onClick={() => {
-            action?.startEditable?.(record.key);
+            action?.startEditable?.(record.id);
           }}
         >
           编辑
@@ -163,7 +170,7 @@ const SRList = (props: SRListProps) => {
     },
   ];
 
-  const chooseColumn: ProColumns<TableListItem>[] = [];
+  const chooseColumn: ProColumns<SRCard>[] = [];
   for (let i = 0; i < 5; i += 1) {
     columns[i].filters = false;
     chooseColumn.push(columns[i]);
@@ -172,7 +179,7 @@ const SRList = (props: SRListProps) => {
   const rowSelection = {
     onChange: (
       selectedRowKeys: React.Key[],
-      selectedRows: ProColumns<TableListItem>[]
+      selectedRows: ProColumns<SRCard>[]
     ) => {
       const selectedSR = [];
       for (let i = 0; i < selectedRowKeys.length; i++) {
@@ -182,7 +189,7 @@ const SRList = (props: SRListProps) => {
         selectedSR.push(props.curSRKey[i]);
       }
     },
-    getCheckboxProps: (record: ProColumns<TableListItem>) => {
+    getCheckboxProps: (record: ProColumns<SRCard>) => {
       console.log("=================");
       for (let i = 0; i < props.curSRKey.length; i++) {
         if (props.curSRKey[i] === record.key) {
@@ -196,7 +203,7 @@ const SRList = (props: SRListProps) => {
   if (!props.showChoose) {
     return (
       <div className={"SRTable"}>
-        <EditableProTable<TableListItem>
+        <EditableProTable<SRCard>
           columns={columns}
           request={() => {
             return Promise.resolve({
@@ -213,13 +220,16 @@ const SRList = (props: SRListProps) => {
           }}
           recordCreatorProps={{
             record: (index: number) => ({
-              key: index,
-              name: "",
+              id: index,
+              project: props.project_id,
               title: "",
-              status: "start",
-              desc: "",
-              creator: "",
+              description: "",
+              priority: 1,
+              rank: 1,
+              currState: "TODO",
+              createdBy: userData.name,
               createdAt: Date.now(),
+              disabled: false,
             }),
             position: "top",
             creatorButtonText: "新增 SR 任务",
@@ -231,7 +241,7 @@ const SRList = (props: SRListProps) => {
   } else {
     return (
       <div className={"SRTable"}>
-        <ProTable<TableListItem>
+        <ProTable<SRCard>
           columns={chooseColumn}
           rowSelection={{
             selections: [Table.SELECTION_ALL, Table.SELECTION_INVERT],
@@ -246,7 +256,7 @@ const SRList = (props: SRListProps) => {
             <Space size={24}>
               <span>已选 {selectedRowKeys.length} 项</span>
               <span>{`关联 SR 任务: ${selectedRows.reduce(
-                (pre, item) => pre + " " + item.name,
+                (pre, item) => pre + " " + item.title,
                 ""
               )} `}</span>
             </Space>
@@ -270,4 +280,4 @@ const SRList = (props: SRListProps) => {
   }
 };
 
-export default SRList;
+export default UISRList;

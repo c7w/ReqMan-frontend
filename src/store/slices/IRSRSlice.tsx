@@ -5,7 +5,7 @@ export const IRSRSlice = createSlice({
   name: "ir_sr_slice",
   initialState: {
     IRList: "",
-    SRList: Array<SRCard>(),
+    SRList: "",
   },
   reducers: {
     // 增删性能待调整，是否允许换位显示？
@@ -13,35 +13,22 @@ export const IRSRSlice = createSlice({
       console.log(action.payload);
       state.IRList = action.payload;
     },
-    // 增加 SR 需求 ( payload 为 SR 详细信息 )
-    addSRStore: (state, action) => {
-      state.SRList.push(action.payload);
-    },
     // 修改 SR 需求 ( payload 为 SR 信息)
-    updateSRStore: (state, action) => {
-      console.log(
-        " ======================= updating ============================" +
-          action.payload
-      );
-    },
-    // 删除 SR 需求 ( payload 为待删除 SR 的 id )
-    deleteSRStore: (state, action) => {
-      state.SRList.filter((item) => item.id !== action.payload);
+    updateSRListStore: (state, action) => {
+      console.log(action.payload);
+      state.SRList = action.payload;
     },
   },
 });
 
-export const { updateIRListStore, addSRStore, updateSRStore, deleteSRStore } =
-  IRSRSlice.actions;
+export const { updateIRListStore, updateSRListStore } = IRSRSlice.actions;
 
 export const getIRListStore = (state: { ir_sr_store: { IRList: string } }) => {
   return state.ir_sr_store.IRList;
 };
 
-export const getSRListStore = (state: {
-  ir_sr_slice: { SRList: Array<SRCard> };
-}) => {
-  return state.ir_sr_slice.SRList;
+export const getSRListStore = (state: { ir_sr_store: { SRList: string } }) => {
+  return state.ir_sr_store.SRList;
 };
 
 // test SR

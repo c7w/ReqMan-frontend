@@ -11,6 +11,7 @@ import UIUserManage from "../../../components/rms/UIUserManage";
 import { useParams } from "react-router-dom";
 import UIProject from "../../../components/rms/UIProject";
 import { getProjectStore } from "../../../store/slices/ProjectSlice";
+import Loading from "../../../layout/components/Loading";
 
 const ProjectMember = () => {
   // Judge if project list in user state
@@ -47,7 +48,7 @@ const ProjectMember = () => {
           // Render Page
           console.log(projectData);
           return (
-            <Home sidebar={false}>
+            <Home sidebar={true}>
               <div>
                 <UIUserManage userInfo={projectInfo} />
               </div>
@@ -66,7 +67,7 @@ const ProjectMember = () => {
   }
   return (
     <Home sidebar={true}>
-      <div>Loading Member Page</div>
+      <Loading />
     </Home>
   );
 };

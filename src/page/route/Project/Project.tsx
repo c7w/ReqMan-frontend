@@ -9,6 +9,7 @@ import { Redirect, ToastMessage } from "../../../utils/Navigation";
 import { getProjectStore } from "../../../store/slices/ProjectSlice";
 import { useParams } from "react-router-dom";
 import UIProject from "../../../components/rms/UIProject";
+import Loading from "../../../layout/components/Loading";
 
 const Project = () => {
   // 1. Judge if user logged in, if not send to `/login`
@@ -45,6 +46,7 @@ const Project = () => {
         updateProjectInfo(dispatcher, Number(project_id));
       } else {
         const projectData = JSON.parse(projectInfo);
+        // 如果得到的 project 信息跟用户键入的 url 中的 project_id 不符
         if (projectData.data.project.id !== Number(project_id)) {
           updateProjectInfo(dispatcher, Number(project_id));
         } else {
@@ -75,7 +77,7 @@ const Project = () => {
   // Return Loading here...
   return (
     <Home sidebar={true}>
-      <div>Loading...</div>
+      <Loading />
     </Home>
   );
 };

@@ -22,9 +22,9 @@ const UIProject = (props: UIProjectProps) => {
         <Breadcrumb className="ui-project-breadcrumb">
           <Breadcrumb.Item
             className="ui-project-breadcrumb-item"
-            onClick={() => Redirect(dispatcher, "/project", 0)}
+            onClick={() => Redirect(dispatcher, "/projects", 0)}
           >
-            Projects (return to project list)
+            项目列表
           </Breadcrumb.Item>
           <Breadcrumb.Item className="ui-project-breadcrumb-item">
             {props.title}
@@ -32,7 +32,7 @@ const UIProject = (props: UIProjectProps) => {
         </Breadcrumb>
         <div className="ui-project-info">
           <div className="ui-project-info-left">
-            {props.title.toUpperCase()} board
+            {props.title.toUpperCase()} 工作面板
           </div>
           <div className="ui-project-info-right">收藏+点赞</div>
         </div>

@@ -4,6 +4,7 @@ import { getUserStore } from "../../../store/slices/UserSlice";
 import { Redirect, ToastMessage } from "../../../utils/Navigation";
 import { updateUserInfo } from "../../../store/functions/UMS";
 import UIProjectList from "../../../components/rms/UIProjectList";
+import Loading from "../../../layout/components/Loading";
 
 const ProjectList = () => {
   // Judge if project list in user state
@@ -35,7 +36,7 @@ const ProjectList = () => {
   // Loading Page
   return (
     <Home sidebar={false}>
-      <div>Loading...</div>
+      <Loading />
     </Home>
   );
 };
