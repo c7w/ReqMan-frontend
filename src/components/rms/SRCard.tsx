@@ -3,7 +3,7 @@ import "./SRCard.css";
 import { Avatar, Typography, Menu, Dropdown } from "antd";
 import { UserOutlined, DownOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
-import { getSR, updateSRStore } from "../../store/slices/IRSRSlice";
+import { getSR, updateSRListStore } from "../../store/slices/IRSRSlice";
 const { Text } = Typography;
 
 interface SRCardProps {
@@ -24,7 +24,7 @@ const SRCard = (props: SRCardProps) => {
 
   const onClick = (e: any) => {
     alert("click " + e.key);
-    dispatch(updateSRStore(e.key));
+    dispatch(updateSRListStore(e.key));
   };
   const menu = (
     <Menu onClick={onClick}>

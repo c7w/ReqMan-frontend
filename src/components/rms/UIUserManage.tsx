@@ -2,6 +2,7 @@ import React, { ReactNode, useState } from "react";
 import "./UIUserManage.css";
 import ProList from "@ant-design/pro-list";
 import { ManageUserInfo } from "../../store/ConfigureStore";
+import CryptoJS from "crypto-js";
 
 interface UserManageProps {
   readonly userInfo: string;
@@ -16,7 +17,10 @@ const UserManage = (props: UserManageProps) => {
       id: value.id,
       name: value.name,
       email: value.email,
-      avatar: value.avatar,
+      avatar:
+        value.avatar.length > 5
+          ? value.avatar
+          : `https://www.gravatar.com/avatar/${CryptoJS.MD5(value.email)}`,
     });
   });
   // for (let i = 0; i <= 30; i++) {

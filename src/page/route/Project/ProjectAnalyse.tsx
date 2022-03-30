@@ -1,4 +1,5 @@
 import Home from "../../../layout/Home";
+import Loading from "../../../layout/components/Loading";
 
 const ProjectAnalyse = () => {
   // Judge if project list in user state
@@ -6,7 +7,7 @@ const ProjectAnalyse = () => {
   // Render the project list
   return (
     <Home sidebar={true}>
-      <div></div>
+      <Loading />
     </Home>
   );
 };

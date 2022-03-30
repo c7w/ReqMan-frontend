@@ -11,6 +11,7 @@ import { getIRListInfo } from "../../../store/functions/RMS";
 import { getIRListStore } from "../../../store/slices/IRSRSlice";
 import { useParams } from "react-router-dom";
 import { getProjectStore } from "../../../store/slices/ProjectSlice";
+import Loading from "../../../layout/components/Loading";
 
 const ProjectIR = () => {
   // Judge if project list in user state
@@ -28,14 +29,13 @@ const ProjectIR = () => {
   if (userInfo === "") {
     updateUserInfo(dispatcher);
   } else if (JSON.parse(userInfo).code !== 0) {
-    console.log("here");
     ToastMessage("error", "未登录", "跳转回登录界面");
     Redirect(dispatcher, "/login");
   } else {
     const user_data = JSON.parse(userInfo); // user data, include all projects belonged to user
-    console.log(user_data);
+    console.log("userInfo:  " + user_data);
     if (
-      JSON.parse(userInfo).data.projects.filter(
+      user_data.data.projects.filter(
         (obj: any) => obj.id.toString() === project_id
       ).length > 0
     ) {
@@ -69,13 +69,13 @@ const ProjectIR = () => {
         }
       }
     } else {
-      // without projects
+      // 该用户没有 project
       Redirect(dispatcher, "/error", 0);
     }
   }
   return (
     <Home sidebar={true}>
-      <div>loading...</div>
+      <Loading />
     </Home>
   );
 };

@@ -7,6 +7,7 @@ import UserSliceReducer from "./slices/UserSlice";
 import IRSRReducer from "./slices/IRSRSlice";
 import ProjectSliceReducer from "./slices/ProjectSlice";
 import ProjectServiceReducer from "./slices/ServiceSlice";
+import IterationReducer from "./slices/IterationSlice";
 
 interface SRCard {
   readonly id: number; // id
@@ -49,6 +50,16 @@ interface ManageUserInfo {
   email: string;
   avatar: string;
 }
+interface Iteration {
+  readonly id: number;
+  readonly project: number;
+  readonly sid: number; // 创建必填，在项目中的 id
+  readonly title: string; // 创建必填
+  readonly begin: string; // 创建必填
+  readonly end: string; // 创建必填
+  readonly disabled: boolean;
+  readonly createdAt: number;
+}
 
 const { createReduxHistory, routerMiddleware, routerReducer } =
   createReduxHistoryContext({ history: createBrowserHistory() });
@@ -61,10 +72,11 @@ export const store = configureStore({
     user_store: UserSliceReducer,
     project_store: ProjectSliceReducer,
     service_store: ProjectServiceReducer,
+    iteration_store: IterationReducer,
     // rest of your reducers
   }),
   middleware: [routerMiddleware],
 });
 
 export const history = createReduxHistory(store);
-export type { IRCard, SRCard, ProjectInfo, ManageUserInfo };
+export type { IRCard, SRCard, ProjectInfo, ManageUserInfo, Iteration };
