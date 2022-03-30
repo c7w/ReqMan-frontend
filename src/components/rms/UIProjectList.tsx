@@ -1,61 +1,65 @@
-import React, { useState } from "react";
+import React, { ReactNode, useState } from "react";
 import { Input, Modal, Space, Tag, Button, DatePicker } from "antd";
 import "./UIProjectList.css";
 import ProList from "@ant-design/pro-list";
 import ReactMarkdown from "react-markdown";
+import { useDispatch } from "react-redux";
+import { ProjectInfo } from "../../store/ConfigureStore";
+import moment from "moment";
+import { Redirect, ToastMessage } from "../../utils/Navigation";
+import { createProject } from "../../store/functions/UMS";
 const { TextArea } = Input;
 
-export type TableListItem = {
-  key: number;
-  name: string;
-  desc: string;
-  invitation: string;
-  status: boolean;
-  createdAt: Date;
-  image: string;
-};
+interface ProjectListProps {
+  readonly userInfo: string;
+}
 
-// interface ProjectListProps {
-//   readonly showChoose: boolean;
-//   readonly myIRKey: number;
-//   readonly curProjectKey: number[];
-// }
-
-const UIProjectList = () => {
+const UIProjectList = (props: ProjectListProps) => {
   // 总任务列表
-  const dataProjectList: TableListItem[] = [];
-  for (let i = 0; i < 10; i += 1) {
+  console.log(JSON.parse(props.userInfo).data);
+  const ProjectList = JSON.parse(props.userInfo).data.projects;
+  const dispatcher = useDispatch();
+  const dataProjectList: ProjectInfo[] = [];
+  ProjectList.forEach((value: ProjectInfo) => {
+    let img = value.avatar;
+    if (value.avatar.length < 5) {
+      img = "https://s2.loli.net/2022/03/28/IyrFghsLGz3WlbO.png";
+    }
     dataProjectList.push({
-      key: i,
-      name: "My Project",
-      desc: "这是一个**很长很长很长很长**有多长呢我也不知道诶怎么办的项目任务描述",
-      invitation: "XRT67D53RTGFD568",
-      status: true,
-      createdAt: new Date(),
-      image:
-        "https://gw.alipayobjects.com/zos/antfincdn/efFD%24IOql2/weixintupian_20170331104822.jpg",
+      id: value.id,
+      title: value.title,
+      description: value.description,
+      invitation: value.invitation,
+      createdAt: value.createdAt * 1000,
+      avatar: img,
     });
-  }
-  const [tableListDataSource, settableListDataSource] =
-    useState<TableListItem[]>(dataProjectList);
+  });
+  const [tableListDataSource] = useState<ProjectInfo[]>(dataProjectList);
   const [isModalVisible, setIsModalVisible] = useState(false);
-
-  // useEffect(() => {
-  //   const curProjectList = [];
-  //   for (let i = 0; i < props.curProjectKey.length; i += 1) {
-  //     curProjectList.push(dataProjectList[props.curProjectKey[i]]);
-  //   }
-  //   // 如果是下拉表，则显示当前的关联任务
-  //   if (!props.showChoose) {
-  //     settableListDataSource(curProjectList);
-  //   }
-  // }, [1]);
+  const [newTitle, setNewTitle] = useState("");
+  const [newDesc, setNewDesc] = useState("");
 
   const showModal = () => {
     setIsModalVisible(true);
   };
 
   const handleOk = () => {
+    const newProject: ProjectInfo = {
+      id: -1,
+      title: newTitle,
+      description: newDesc,
+      invitation: "",
+      createdAt: 0,
+      avatar: "",
+    };
+    createProject(dispatcher, newProject).then((data) => {
+      if (data.code === 0) {
+        ToastMessage("success", "创建成功", "您的项目创建成功");
+        setTimeout(() => window.location.reload(), 1000);
+      } else {
+        ToastMessage("error", "创建失败", "您的项目创建失败");
+      }
+    });
     setIsModalVisible(false);
   };
 
@@ -63,24 +67,9 @@ const UIProjectList = () => {
     setIsModalVisible(false);
   };
 
-  const createTitle = () => {
-    console.log("create title!");
-  };
-  const createInvite = () => {
-    console.log("create invite!");
-  };
-
-  const createDesc = () => {
-    console.log("create desc!");
-  };
-
-  const createDate = () => {
-    console.log("create date!");
-  };
-
   return (
     <div className={"prjlist"}>
-      <ProList<TableListItem>
+      <ProList<ProjectInfo>
         toolBarRender={() => {
           return [
             <Button onClick={showModal} key="add" type="primary">
@@ -88,37 +77,40 @@ const UIProjectList = () => {
             </Button>,
           ];
         }}
-        onRow={(record: TableListItem) => {
+        onRow={(record: ProjectInfo) => {
           return {
             onClick: () => {
-              console.log(record);
+              const url = "/project/" + record.id;
+              Redirect(dispatcher, url, 0);
             },
           };
         }}
-        rowKey="name"
+        rowKey="id"
         headerTitle="项目列表"
+        split={true}
         dataSource={tableListDataSource}
         metas={{
           title: {
-            render: (record: any, item: TableListItem) => (
-              <a
+            render: (record: ReactNode, item: ProjectInfo) => (
+              <div
                 style={{
                   color: "black",
                   fontSize: "20px",
                 }}
                 onClick={() => {
-                  console.log("title clicked");
+                  const url = "/project/" + item.id;
+                  Redirect(dispatcher, url, 0);
                 }}
               >
-                {item.name}
-              </a>
+                {item.title}
+              </div>
             ),
           },
           avatar: {
-            dataIndex: "image",
+            dataIndex: "avatar",
           },
           subTitle: {
-            render: (record: any, item: TableListItem) => {
+            render: (record: ReactNode, item: ProjectInfo) => {
               return (
                 <div
                   style={{
@@ -128,11 +120,9 @@ const UIProjectList = () => {
                   }}
                 >
                   <Space size={0}>
-                    <Tag color="orange">邀请码：{item.invitation}</Tag>
-                  </Space>
-                  <Space size={0}>
                     <Tag color="green">
-                      创建时间：{item.createdAt.toDateString()}
+                      创建时间：
+                      {moment(item.createdAt).format("YYYY-MM-DD HH:mm:ss")}
                     </Tag>
                   </Space>
                 </div>
@@ -140,17 +130,25 @@ const UIProjectList = () => {
             },
           },
           content: {
-            render: (record: any, item: TableListItem) => (
+            render: (record: ReactNode, item: ProjectInfo) => (
               <div
                 style={{
-                  width: "auto",
-                  marginLeft: "400px",
+                  width: "100%",
+                  marginLeft: "200px",
                   fontSize: "15px",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  display: "flex",
                 }}
               >
-                <ReactMarkdown children={item.desc} />
+                <ReactMarkdown children={item.description} />
               </div>
             ),
+          },
+          actions: {
+            render: () => {
+              return [<a key="init">邀请</a>];
+            },
           },
         }}
       />
@@ -166,25 +164,22 @@ const UIProjectList = () => {
         >
           项目名称
         </p>
-        <Input placeholder="Input" onChange={createTitle} />
-        <p
-          style={{ paddingTop: "10px", marginBottom: "5px", fontSize: "16px" }}
-        >
-          项目邀请码
-        </p>
-        <Input placeholder="Input" onChange={createInvite} />
+        <Input
+          onChange={(e) => {
+            setNewTitle(e.target.value);
+          }}
+        />
         <p
           style={{ paddingTop: "10px", marginBottom: "5px", fontSize: "16px" }}
         >
           项目介绍
         </p>
-        <TextArea rows={4} allowClear onChange={createDesc} />
-        <p
-          style={{ paddingTop: "10px", marginBottom: "5px", fontSize: "16px" }}
-        >
-          创建日期
-        </p>
-        <DatePicker style={{ width: "50%" }} onChange={createDate} />
+        <TextArea
+          rows={4}
+          onChange={(e) => {
+            setNewDesc(e.target.value);
+          }}
+        />
       </Modal>
     </div>
   );

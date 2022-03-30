@@ -1,7 +1,7 @@
-import React, { Key, useState } from "react";
+import React, { useState } from "react";
 import type { ProColumns } from "@ant-design/pro-table";
 import { EditableProTable } from "@ant-design/pro-table";
-import { Modal, Progress } from "antd";
+import { Button, Modal, Progress } from "antd";
 import { IRCard } from "../../store/ConfigureStore";
 import "./UIIRList.css";
 import SRList from "./SRList";
@@ -25,12 +25,12 @@ IRListData example:
 
 const UIIRList = (props: IRListProps) => {
   const IRListData = JSON.parse(props.IRListStr).data;
-  const userData = JSON.parse(props.userInfo);
+  // const userData = JSON.parse(props.userInfo);
   const dispatcher = useDispatch();
   // console.log(IRListData);
 
   const dataIRList: IRCard[] = [];
-  IRListData.forEach((value: any, index: number) => {
+  IRListData.forEach((value: IRCard) => {
     dataIRList.push({
       id: value.id,
       project: value.project,
@@ -40,27 +40,40 @@ const UIIRList = (props: IRListProps) => {
       createdBy: value.createdBy,
       createdAt: value.createdAt * 1000,
       disabled: value.disabled,
-      curSRKey: value.curSRKey,
+      curSRKey: [0, 1, 2],
     });
   });
-  const [tableListDataSource, settableListDataSource] =
-    useState<IRCard[]>(dataIRList);
-  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  const [tableListDataSource] = useState<IRCard[]>(dataIRList);
+  const [isSRModalVisible, setIsSRModalVisible] = useState<boolean>(false);
+  const [isCreateModalVisible, setIsCreateModalVisible] =
+    useState<boolean>(false);
   const [modalIRKey, setModalIRKey] = useState<number>(0);
   const [modalSRKey, setModalSRKey] = useState<number[]>([]);
 
-  const showModal = (myIRKey: number, curSRKey: number[]) => {
+  const showSRModal = (myIRKey: number, curSRKey: number[]) => {
     setModalIRKey(myIRKey);
     setModalSRKey(curSRKey);
-    setIsModalVisible(true);
+    setIsSRModalVisible(true);
   };
 
-  const handleOk = () => {
-    setIsModalVisible(false);
+  const handleSROk = () => {
+    setIsSRModalVisible(false);
   };
 
-  const handleCancel = () => {
-    setIsModalVisible(false);
+  const handleSRCancel = () => {
+    setIsSRModalVisible(false);
+  };
+
+  const showCreateModal = () => {
+    setIsCreateModalVisible(true);
+  };
+
+  const handleCreateOk = () => {
+    setIsCreateModalVisible(false);
+  };
+
+  const handleCreateCancel = () => {
+    setIsCreateModalVisible(false);
   };
 
   const handleSave = (record: IRCard) => {
@@ -73,11 +86,7 @@ const UIIRList = (props: IRListProps) => {
 
   const expandedRowRender = (rowKey: IRCard) => {
     return (
-      <SRList
-        showChoose={false}
-        myIRKey={rowKey.id}
-        curSRKey={rowKey.curSRKey}
-      />
+      <SRList showChoose={false} myIRKey={rowKey.id} curSRKey={[0, 1, 2]} />
     );
   };
 
@@ -159,7 +168,7 @@ const UIIRList = (props: IRListProps) => {
         </a>,
         <a
           onClick={() => {
-            showModal(record.id, record.curSRKey);
+            showSRModal(record.id, [1, 2, 3]);
           }}
         >
           关联SR
@@ -171,8 +180,14 @@ const UIIRList = (props: IRListProps) => {
   return (
     <div className={`IRTable`}>
       <EditableProTable<IRCard>
+        toolBarRender={() => {
+          return [
+            <Button onClick={showCreateModal} key="add" type="primary">
+              新建IR
+            </Button>,
+          ];
+        }}
         columns={columns}
-        // dataSource={temp}
         request={() => {
           return Promise.resolve({
             data: tableListDataSource,
@@ -194,33 +209,51 @@ const UIIRList = (props: IRListProps) => {
             handleDelete(record);
           },
         }}
-        recordCreatorProps={{
-          record: (index: number) => ({
-            id: index,
-            project: props.project_id,
-            title: "",
-            description: "",
-            rank: 1,
-            createdBy: userData.name,
-            createdAt: Date.now(),
-            disabled: false,
-            curSRKey: [],
-          }),
-          position: "top",
-          creatorButtonText: "新增 IR 任务",
-        }}
         dateFormatter="string"
       />
       <Modal
         title="SR 任务关联列表"
         centered={true}
-        visible={isModalVisible}
-        onOk={handleOk}
-        onCancel={handleCancel}
+        visible={isSRModalVisible}
+        onOk={handleSROk}
+        onCancel={handleSRCancel}
         width={"70%"}
       >
         <SRList showChoose={true} myIRKey={modalIRKey} curSRKey={modalSRKey} />
       </Modal>
+      {/*<Modal*/}
+      {/*  title="新增IR任务"*/}
+      {/*  centered={true}*/}
+      {/*  visible={isCreateModalVisible}*/}
+      {/*  onOk={handleCreateOk}*/}
+      {/*  onCancel={handleCreateCancel}*/}
+      {/*  width={"70%"}*/}
+      {/*>*/}
+      {/*  <p*/}
+      {/*    style={{ paddingTop: "10px", marginBottom: "5px", fontSize: "16px" }}*/}
+      {/*  >*/}
+      {/*    项目名称*/}
+      {/*  </p>*/}
+      {/*  <Input placeholder="Input" onChange={createTitle} />*/}
+      {/*  <p*/}
+      {/*    style={{ paddingTop: "10px", marginBottom: "5px", fontSize: "16px" }}*/}
+      {/*  >*/}
+      {/*    项目邀请码*/}
+      {/*  </p>*/}
+      {/*  <Input placeholder="Input" onChange={createInvite} />*/}
+      {/*  <p*/}
+      {/*    style={{ paddingTop: "10px", marginBottom: "5px", fontSize: "16px" }}*/}
+      {/*  >*/}
+      {/*    项目介绍*/}
+      {/*  </p>*/}
+      {/*  <TextArea rows={4} allowClear onChange={createDesc} />*/}
+      {/*  <p*/}
+      {/*    style={{ paddingTop: "10px", marginBottom: "5px", fontSize: "16px" }}*/}
+      {/*  >*/}
+      {/*    创建日期*/}
+      {/*  </p>*/}
+      {/*  <DatePicker style={{ width: "50%" }} onChange={createDate} />*/}
+      {/*</Modal>*/}
     </div>
   );
 };

@@ -18,7 +18,6 @@ const Project = () => {
   const userInfo = useSelector(getUserStore);
   const projectInfo = useSelector(getProjectStore);
   const dispatcher = useDispatch();
-
   const params = useParams<"id">();
   const project_id = params.id;
 
@@ -40,6 +39,7 @@ const Project = () => {
       // 3. Continue, lookup projectInfo in cache.
       // If cached projectInfo not exists or cached ID not equal to project_id, then re-request, render Loading.
       // Else render page.
+      console.log(JSON.parse(userInfo));
       if (projectInfo === "") {
         // Re-request
         updateProjectInfo(dispatcher, Number(project_id));
