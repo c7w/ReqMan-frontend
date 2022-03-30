@@ -5,8 +5,9 @@ import { Button, Input, InputNumber, Modal, Popconfirm } from "antd";
 import "./UISRList.css";
 import { useDispatch, useSelector } from "react-redux";
 import { SRCard } from "../../store/ConfigureStore";
-import { createSRInfo } from "../../store/functions/RMS";
+import { createSRInfo, getIRSRInfo } from "../../store/functions/RMS";
 import { ToastMessage } from "../../utils/Navigation";
+import { getIRSRStore } from "../../store/slices/IRSRSlice";
 const { TextArea } = Input;
 
 interface UISRListProps {
@@ -16,17 +17,28 @@ interface UISRListProps {
   readonly project_id: number;
   readonly SRListStr: string;
   readonly userInfo: string;
+  readonly IRSRAssociation: string;
 }
 
 /*
 SRListStr:  {"code":0,"data":[{"id":1,"project":2,"title":"sr","description":"sr","priority":1000,"rank":1000,"state":"TODO","createdBy":17,"createdAt":1648475583.008951,"disabled":false}]}
  */
+/*
+IRSRAssociation: {"code":0,"data":[{"id":6,"IR":19,"SR":5}]}
+*/
+/*
+userData: {"code":0,"data":{"user":{"id":17,"name":"hbx20","email":"hbx@hbx.boy","avatar":"","createdAt":1648273276.15087},"projects":[{"id":2,"title":"addIR","description":"test addIR","createdAt":1648384603.824133,"avatar":""},{"id":3,"title":"project QC","description":"df","createdAt":1648569673.895546,"avatar":"X"},{"id":8,"title":"aaaa","description":"aaaaaaaaaaaaaaaaaaaaaa","createdAt":1648609511.781126,"avatar":"X"}],"schedule":{"done":[],"wip":[],"todo":[]}},"avatar":""}
+*/
 
 const UISRList = (props: UISRListProps) => {
   console.log(props.SRListStr);
   console.log(props.userInfo); // 当前 user 的所有 project 信息
+
   const SRListData = JSON.parse(props.SRListStr).data;
-  const userData = JSON.parse(props.userInfo);
+  const userData = JSON.parse(props.userInfo).data;
+  const IRSRAssociationData = JSON.parse(props.IRSRAssociation).data;
+
+  console.log("test: " + props.IRSRAssociation);
   const dispatcher = useDispatch();
   const project = props.project_id;
   // 总任务列表
@@ -176,15 +188,15 @@ const UISRList = (props: UISRListProps) => {
       align: "center",
       render: (text, record, _, action) => [
         // 编辑内含修改删除等，须继续与后端接口适配
-        // <a onClick={() => showEditModal(record)}>编辑</a>,
-        // <Popconfirm
-        //   title="你确定要删除该功能需求吗？"
-        //   onConfirm={() => confirmDelete(record)}
-        //   okText="是"
-        //   cancelText="否"
-        // >
-        //   <a href="#">删除</a>
-        // </Popconfirm>,
+        <a onClick={() => showEditModal(record)}>编辑</a>,
+        <Popconfirm
+          title="你确定要删除该功能需求吗？"
+          onConfirm={() => confirmDelete(record)}
+          okText="是"
+          cancelText="否"
+        >
+          <a href="#">删除</a>
+        </Popconfirm>,
       ],
     },
   ];
@@ -283,6 +295,92 @@ const UISRList = (props: UISRListProps) => {
             value={desc}
             onChange={(e) => {
               setDesc(e.target.value);
+            }}
+          />
+          <p
+            style={{
+              paddingTop: "10px",
+              marginBottom: "5px",
+              fontSize: "16px",
+            }}
+          >
+            项目优先级
+          </p>
+          <InputNumber
+            value={priority}
+            onChange={(e: number) => {
+              setPriority(e);
+            }}
+          />
+          <p
+            style={{
+              paddingTop: "10px",
+              marginBottom: "5px",
+              fontSize: "16px",
+            }}
+          >
+            项目重要性
+          </p>
+          <InputNumber
+            value={rank}
+            onChange={(e: number) => {
+              setRank(e);
+            }}
+          />
+        </Modal>
+        <Modal
+          title="编辑SR任务"
+          centered={true}
+          visible={isEditModalVisible}
+          // onOk={handleEditOk}
+          // onCancel={handleEditCancel}
+          width={"70%"}
+        >
+          <p
+            style={{
+              paddingTop: "10px",
+              marginBottom: "5px",
+              fontSize: "16px",
+            }}
+          >
+            项目名称
+          </p>
+          <Input
+            value={title}
+            onChange={(e) => {
+              setTitle(e.target.value);
+            }}
+          />
+          <p
+            style={{
+              paddingTop: "10px",
+              marginBottom: "5px",
+              fontSize: "16px",
+            }}
+          >
+            项目介绍
+          </p>
+          <TextArea
+            rows={4}
+            allowClear
+            value={desc}
+            onChange={(e) => {
+              setDesc(e.target.value);
+            }}
+          />
+          <p
+            style={{
+              paddingTop: "10px",
+              marginBottom: "5px",
+              fontSize: "16px",
+            }}
+          >
+            项目优先级
+          </p>
+          <InputNumber
+            value={priority}
+            onChange={(e: number) => {
+              setPriority(e);
             }}
           />
           <p

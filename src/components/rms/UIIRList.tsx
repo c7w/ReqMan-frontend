@@ -27,6 +27,8 @@ interface UIIRListProps {
   readonly project_id: number;
   readonly IRListStr: string;
   readonly userInfo: string;
+  readonly SRListStr: string;
+  readonly IRSRAssociation: string;
 }
 
 /*
@@ -39,7 +41,6 @@ IRListData example:
 */
 
 const UIIRList = (props: UIIRListProps) => {
-  const SRListData = useSelector(getSRListStore);
   const IRListData = JSON.parse(props.IRListStr).data;
   const dispatcher = useDispatch();
   const project = props.project_id;

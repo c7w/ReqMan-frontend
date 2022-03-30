@@ -34,7 +34,7 @@ interface IRCard {
 }
 
 interface IRSRAssociation {
-  readonly id: number;
+  readonly id?: number;
   readonly IRId: number;
   readonly SRId: number;
 }
