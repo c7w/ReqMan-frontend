@@ -32,7 +32,24 @@ interface IRCard {
   readonly createdAt: number; // sometime
   readonly disabled: boolean;
   // test
-  readonly curSRKey: number[];
+}
+
+interface IRSRAssociation {
+  readonly id: number;
+  readonly IRId: number;
+  readonly SRId: number;
+}
+
+interface SRIteration {
+  readonly id: number;
+  readonly SRId: number;
+  readonly iterationId: number;
+}
+
+interface UserIteration {
+  readonly id: number;
+  readonly userId: number;
+  readonly iterationId: number;
 }
 
 interface ProjectInfo {
@@ -55,8 +72,8 @@ interface Iteration {
   readonly project: number;
   readonly sid: number; // 创建必填，在项目中的 id
   readonly title: string; // 创建必填
-  readonly begin: string; // 创建必填
-  readonly end: string; // 创建必填
+  readonly begin: number; // 创建必填
+  readonly end: number; // 创建必填
   readonly disabled: boolean;
   readonly createdAt: number;
 }
@@ -79,4 +96,13 @@ export const store = configureStore({
 });
 
 export const history = createReduxHistory(store);
-export type { IRCard, SRCard, ProjectInfo, ManageUserInfo, Iteration };
+export type {
+  IRCard,
+  SRCard,
+  IRSRAssociation,
+  UserIteration,
+  SRIteration,
+  ProjectInfo,
+  ManageUserInfo,
+  Iteration,
+};

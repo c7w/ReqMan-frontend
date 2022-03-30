@@ -4,21 +4,45 @@ export const IterationSlice = createSlice({
   name: "iteration_slice",
   initialState: {
     iteration: "",
+    SRIteration: "",
+    UserIteration: "",
   },
   reducers: {
     // 更新迭代
     updateIterationStore: (state, action) => {
       state.iteration = action.payload;
     },
+    updateSRIterationStore: (state, action) => {
+      state.SRIteration = action.payload;
+    },
+    updateUserIterationStore: (state, action) => {
+      state.UserIteration = action.payload;
+    },
   },
 });
 
-export const { updateIterationStore } = IterationSlice.actions;
+export const {
+  updateIterationStore,
+  updateSRIterationStore,
+  updateUserIterationStore,
+} = IterationSlice.actions;
 
 export const getIterationStore = (state: {
   iteration_store: { iteration: string };
 }) => {
   return state.iteration_store.iteration;
+};
+
+export const getSRIterationStore = (state: {
+  iteration_store: { SRIteration: string };
+}) => {
+  return state.iteration_store.SRIteration;
+};
+
+export const getUserIterationStore = (state: {
+  iteration_store: { UserIteration: string };
+}) => {
+  return state.iteration_store.UserIteration;
 };
 
 export default IterationSlice.reducer;

@@ -40,7 +40,6 @@ const UIIRList = (props: UIIRListProps) => {
       createdBy: value.createdBy,
       createdAt: value.createdAt * 1000,
       disabled: value.disabled,
-      curSRKey: [0, 1, 2],
     });
   });
   const [tableListDataSource] = useState<IRCard[]>(dataIRList);
