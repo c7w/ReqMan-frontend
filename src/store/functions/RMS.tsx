@@ -4,6 +4,7 @@ import { getServiceStore, updateServiceStore } from "../slices/ServiceSlice";
 import { updateIRListStore, updateSRListStore } from "../slices/IRSRSlice";
 import { IRCard, Iteration, SRCard } from "../ConfigureStore";
 import { updateIterationStore } from "../slices/IterationSlice";
+import { updateUserInfo } from "./UMS";
 
 const getIRListInfo = async (
   dispatcher: any,
@@ -36,8 +37,13 @@ const createIRInfo = async (
       },
     },
   };
-  request_json(API.POST_RMS, { body: myBody });
-  getIRListInfo(dispatcher, project_id);
+  return request_json(API.POST_RMS, { body: myBody }).then((data) => {
+    console.log(data.code);
+    if (data.code === 0) {
+      getIRListInfo(dispatcher, project_id);
+    }
+    return data;
+  });
 };
 
 const updateIRInfo = async (
@@ -45,6 +51,7 @@ const updateIRInfo = async (
   project_id: number,
   ir: IRCard
 ): Promise<void> => {
+  console.log(ir);
   const myBody = {
     project: ir.project,
     type: "ir",
@@ -57,8 +64,13 @@ const updateIRInfo = async (
       },
     },
   };
-  request_json(API.POST_RMS, { body: myBody });
-  getIRListInfo(dispatcher, project_id);
+  return request_json(API.POST_RMS, { body: myBody }).then((data) => {
+    console.log(data.code);
+    if (data.code === 0) {
+      getIRListInfo(dispatcher, project_id);
+    }
+    return data;
+  });
 };
 
 const deleteIRInfo = async (

@@ -1,12 +1,17 @@
 import React, { useState } from "react";
 import type { ProColumns } from "@ant-design/pro-table";
 import ProTable from "@ant-design/pro-table";
-import { Input, Button, Modal, Progress } from "antd";
+import { Input, Button, Modal, Progress, InputNumber } from "antd";
 import { IRCard } from "../../store/ConfigureStore";
 import "./UIIRList.css";
 import SRList from "./UISRList";
 import { useDispatch } from "react-redux";
-import { createIRInfo, deleteIRInfo } from "../../store/functions/RMS";
+import {
+  createIRInfo,
+  deleteIRInfo,
+  updateIRInfo,
+} from "../../store/functions/RMS";
+import { ToastMessage } from "../../utils/Navigation";
 const { TextArea } = Input;
 
 interface UIIRListProps {
@@ -41,7 +46,6 @@ const UIIRList = (props: UIIRListProps) => {
       createdBy: value.createdBy,
       createdAt: value.createdAt * 1000,
       disabled: value.disabled,
-      // curSRKey: [0, 1, 2],
     });
   });
   const [tableListDataSource] = useState<IRCard[]>(dataIRList);
@@ -49,14 +53,18 @@ const UIIRList = (props: UIIRListProps) => {
   const [isCreateModalVisible, setIsCreateModalVisible] =
     useState<boolean>(false);
 
+  const [id, setId] = useState<number>(-1);
+  const [project, setProject] = useState<number>(-1);
   const [title, setTitle] = useState<string>("");
   const [desc, setDesc] = useState<string>("");
-  const [rank, setRank] = useState<number>(0);
+  const [rank, setRank] = useState<number>(-1);
 
   // const [modalIRKey, setModalIRKey] = useState<number>(0);
   // const [modalSRKey, setModalSRKey] = useState<number[]>([]);
 
   const showEditModal = (record: IRCard) => {
+    setId(record.id);
+    setProject(record.project);
     setTitle(record.title);
     setDesc(record.description);
     setRank(record.rank);
@@ -64,31 +72,80 @@ const UIIRList = (props: UIIRListProps) => {
   };
 
   const handleEditOk = () => {
-    setIsEditModalVisible(false);
+    const newIR: IRCard = {
+      id: id,
+      project: project,
+      title: title,
+      description: desc,
+      rank: rank,
+      createdBy: "", // 未用到
+      createdAt: -1, // 未用到
+      disabled: true, // 未用到
+    };
+    updateIRInfo(dispatcher, id, newIR).then((data: any) => {
+      if (data.code === 0) {
+        ToastMessage("success", "修改成功", "您的IR修改成功");
+        setTimeout(() => window.location.reload(), 1000);
+        setId(-1);
+        setProject(-1);
+        setTitle("");
+        setDesc("");
+        setRank(-1);
+        setIsEditModalVisible(false);
+      } else {
+        ToastMessage("error", "修改失败", "您的IR修改失败");
+      }
+    });
   };
 
   const handleEditCancel = () => {
+    setId(-1);
+    setProject(-1);
+    setTitle("");
+    setDesc("");
+    setRank(-1);
     setIsEditModalVisible(false);
   };
 
   const showCreateModal = () => {
+    console.log("I am here");
     setIsCreateModalVisible(true);
   };
 
   const handleCreateOk = () => {
-    setIsCreateModalVisible(false);
+    const newIR: IRCard = {
+      id: -1,
+      project: project,
+      title: title,
+      description: desc,
+      rank: rank,
+      createdBy: "", // 未用到
+      createdAt: -1, // 未用到
+      disabled: true, // 未用到
+    };
+    updateIRInfo(dispatcher, id, newIR).then((data: any) => {
+      if (data.code === 0) {
+        ToastMessage("success", "创建成功", "您的IR创建成功");
+        setTimeout(() => window.location.reload(), 1000);
+        setId(-1);
+        setProject(-1);
+        setTitle("");
+        setDesc("");
+        setRank(-1);
+        setIsCreateModalVisible(false);
+      } else {
+        ToastMessage("error", "创建失败", "您的IR创建失败");
+      }
+    });
   };
 
   const handleCreateCancel = () => {
+    setId(-1);
+    setProject(-1);
+    setTitle("");
+    setDesc("");
+    setRank(-1);
     setIsCreateModalVisible(false);
-  };
-
-  const handleSave = (record: IRCard) => {
-    createIRInfo(dispatcher, props.project_id, record);
-  };
-
-  const handleDelete = (record: IRCard) => {
-    deleteIRInfo(dispatcher, props.project_id, record);
   };
 
   const columns: ProColumns<IRCard>[] = [
@@ -174,9 +231,10 @@ const UIIRList = (props: UIIRListProps) => {
   return (
     <div className={`IRTable`}>
       <ProTable<IRCard>
+        headerTitle="原始需求列表"
         toolBarRender={() => {
           return [
-            <Button onClick={showCreateModal} type="primary">
+            <Button key="create" onClick={showCreateModal} type="primary">
               新建IR
             </Button>,
           ];
@@ -194,6 +252,7 @@ const UIIRList = (props: UIIRListProps) => {
           showSizeChanger: true,
         }}
         dateFormatter="string"
+        search={false}
       />
 
       {/*<Modal*/}
@@ -214,39 +273,50 @@ const UIIRList = (props: UIIRListProps) => {
       {/*  />*/}
       {/*</Modal>*/}
 
-      {/*<Modal*/}
-      {/*  title="新增IR任务"*/}
-      {/*  centered={true}*/}
-      {/*  visible={isCreateModalVisible}*/}
-      {/*  onOk={handleCreateOk}*/}
-      {/*  onCancel={handleCreateCancel}*/}
-      {/*  width={"70%"}*/}
-      {/*>*/}
-      {/*  <p*/}
-      {/*    style={{ paddingTop: "10px", marginBottom: "5px", fontSize: "16px" }}*/}
-      {/*  >*/}
-      {/*    项目名称*/}
-      {/*  </p>*/}
-      {/*  <Input placeholder="Input" onChange={createTitle} />*/}
-      {/*  <p*/}
-      {/*    style={{ paddingTop: "10px", marginBottom: "5px", fontSize: "16px" }}*/}
-      {/*  >*/}
-      {/*    项目邀请码*/}
-      {/*  </p>*/}
-      {/*  <Input placeholder="Input" onChange={createInvite} />*/}
-      {/*  <p*/}
-      {/*    style={{ paddingTop: "10px", marginBottom: "5px", fontSize: "16px" }}*/}
-      {/*  >*/}
-      {/*    项目介绍*/}
-      {/*  </p>*/}
-      {/*  <TextArea rows={4} allowClear onChange={createDesc} />*/}
-      {/*  /!*  <p*!/*/}
-      {/*  /!*    style={{ paddingTop: "10px", marginBottom: "5px", fontSize: "16px" }}*!/*/}
-      {/*  /!*  >*!/*/}
-      {/*  /!*    创建日期*!/*/}
-      {/*  /!*  </p>*!/*/}
-      {/*  /!*  <DatePicker style={{ width: "50%" }} onChange={createDate} />*!/*/}
-      {/*</Modal>*/}
+      <Modal
+        title="新增IR任务"
+        centered={true}
+        visible={isCreateModalVisible}
+        onOk={handleCreateOk}
+        onCancel={handleCreateCancel}
+        width={"70%"}
+      >
+        <p
+          style={{ paddingTop: "10px", marginBottom: "5px", fontSize: "16px" }}
+        >
+          项目名称
+        </p>
+        <Input
+          value=""
+          onChange={(e) => {
+            setTitle(e.target.value);
+          }}
+        />
+        <p
+          style={{ paddingTop: "10px", marginBottom: "5px", fontSize: "16px" }}
+        >
+          项目介绍
+        </p>
+        <TextArea
+          rows={4}
+          allowClear
+          value=""
+          onChange={(e) => {
+            setDesc(e.target.value);
+          }}
+        />
+        <p
+          style={{ paddingTop: "10px", marginBottom: "5px", fontSize: "16px" }}
+        >
+          项目重要性
+        </p>
+        <InputNumber
+          value={0}
+          onChange={(e: number) => {
+            setRank(e);
+          }}
+        />
+      </Modal>
       <Modal
         title="编辑IR项"
         centered={true}
@@ -277,6 +347,17 @@ const UIIRList = (props: UIIRListProps) => {
           value={desc}
           onChange={(e) => {
             setDesc(e.target.value);
+          }}
+        />
+        <p
+          style={{ paddingTop: "10px", marginBottom: "5px", fontSize: "16px" }}
+        >
+          项目重要性
+        </p>
+        <InputNumber
+          value={rank}
+          onChange={(e: number) => {
+            setRank(e);
           }}
         />
       </Modal>
