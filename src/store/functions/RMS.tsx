@@ -14,8 +14,9 @@ const getIRListInfo = async (
     project: project_id,
     type: "ir",
   };
+  console.log(JSON.stringify(myParams));
   const IRList_data = await request_json(API.GET_RMS, { getParams: myParams });
-  // console.log("IRList: " + JSON.stringify(IRList_data));
+  console.log("IRList: " + JSON.stringify(IRList_data));
   dispatcher(updateIRListStore(JSON.stringify(IRList_data)));
 };
 
@@ -57,6 +58,7 @@ const updateIRInfo = async (
     type: "ir",
     operation: "update",
     data: {
+      id: ir.id,
       updateData: {
         title: ir.title,
         description: ir.description,
@@ -64,6 +66,9 @@ const updateIRInfo = async (
       },
     },
   };
+  // request_json(API.POST_RMS, { body: myBody });
+  // getIRListInfo(dispatcher, project_id);
+  // console.log("test: " + JSON.stringify(myBody));
   return request_json(API.POST_RMS, { body: myBody }).then((data) => {
     console.log(data.code);
     if (data.code === 0) {
@@ -86,8 +91,13 @@ const deleteIRInfo = async (
       id: ir.id,
     },
   };
-  request_json(API.POST_RMS, { body: myBody });
-  getIRListInfo(dispatcher, project_id);
+  return request_json(API.POST_RMS, { body: myBody }).then((data) => {
+    console.log(data.code);
+    if (data.code === 0) {
+      getIRListInfo(dispatcher, project_id);
+    }
+    return data;
+  });
 };
 
 const updateServiceInfo = async (dispatcher: any, project_id: number) => {

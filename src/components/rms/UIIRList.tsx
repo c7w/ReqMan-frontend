@@ -34,7 +34,7 @@ const UIIRList = (props: UIIRListProps) => {
   // const userData = JSON.parse(props.userInfo);
   const dispatcher = useDispatch();
   // console.log(IRListData);
-
+  let project = -1;
   const dataIRList: IRCard[] = [];
   IRListData.forEach((value: IRCard) => {
     dataIRList.push({
@@ -47,6 +47,7 @@ const UIIRList = (props: UIIRListProps) => {
       createdAt: value.createdAt * 1000,
       disabled: value.disabled,
     });
+    project = value.project;
   });
   const [tableListDataSource] = useState<IRCard[]>(dataIRList);
   const [isEditModalVisible, setIsEditModalVisible] = useState<boolean>(false);
@@ -54,17 +55,12 @@ const UIIRList = (props: UIIRListProps) => {
     useState<boolean>(false);
 
   const [id, setId] = useState<number>(-1);
-  const [project, setProject] = useState<number>(-1);
   const [title, setTitle] = useState<string>("");
   const [desc, setDesc] = useState<string>("");
-  const [rank, setRank] = useState<number>(-1);
-
-  // const [modalIRKey, setModalIRKey] = useState<number>(0);
-  // const [modalSRKey, setModalSRKey] = useState<number[]>([]);
+  const [rank, setRank] = useState<number>(1);
 
   const showEditModal = (record: IRCard) => {
     setId(record.id);
-    setProject(record.project);
     setTitle(record.title);
     setDesc(record.description);
     setRank(record.rank);
@@ -82,15 +78,14 @@ const UIIRList = (props: UIIRListProps) => {
       createdAt: -1, // 未用到
       disabled: true, // 未用到
     };
-    updateIRInfo(dispatcher, id, newIR).then((data: any) => {
+    updateIRInfo(dispatcher, project, newIR).then((data: any) => {
       if (data.code === 0) {
         ToastMessage("success", "修改成功", "您的IR修改成功");
         setTimeout(() => window.location.reload(), 1000);
         setId(-1);
-        setProject(-1);
         setTitle("");
         setDesc("");
-        setRank(-1);
+        setRank(1);
         setIsEditModalVisible(false);
       } else {
         ToastMessage("error", "修改失败", "您的IR修改失败");
@@ -100,10 +95,9 @@ const UIIRList = (props: UIIRListProps) => {
 
   const handleEditCancel = () => {
     setId(-1);
-    setProject(-1);
     setTitle("");
     setDesc("");
-    setRank(-1);
+    setRank(1);
     setIsEditModalVisible(false);
   };
 
@@ -123,15 +117,14 @@ const UIIRList = (props: UIIRListProps) => {
       createdAt: -1, // 未用到
       disabled: true, // 未用到
     };
-    updateIRInfo(dispatcher, id, newIR).then((data: any) => {
+    createIRInfo(dispatcher, project, newIR).then((data: any) => {
       if (data.code === 0) {
         ToastMessage("success", "创建成功", "您的IR创建成功");
         setTimeout(() => window.location.reload(), 1000);
         setId(-1);
-        setProject(-1);
         setTitle("");
         setDesc("");
-        setRank(-1);
+        setRank(1);
         setIsCreateModalVisible(false);
       } else {
         ToastMessage("error", "创建失败", "您的IR创建失败");
@@ -141,10 +134,9 @@ const UIIRList = (props: UIIRListProps) => {
 
   const handleCreateCancel = () => {
     setId(-1);
-    setProject(-1);
     setTitle("");
     setDesc("");
-    setRank(-1);
+    setRank(1);
     setIsCreateModalVisible(false);
   };
 
@@ -287,7 +279,7 @@ const UIIRList = (props: UIIRListProps) => {
           项目名称
         </p>
         <Input
-          value=""
+          value={title}
           onChange={(e) => {
             setTitle(e.target.value);
           }}
@@ -300,7 +292,7 @@ const UIIRList = (props: UIIRListProps) => {
         <TextArea
           rows={4}
           allowClear
-          value=""
+          value={desc}
           onChange={(e) => {
             setDesc(e.target.value);
           }}
@@ -311,7 +303,7 @@ const UIIRList = (props: UIIRListProps) => {
           项目重要性
         </p>
         <InputNumber
-          value={0}
+          value={rank}
           onChange={(e: number) => {
             setRank(e);
           }}
