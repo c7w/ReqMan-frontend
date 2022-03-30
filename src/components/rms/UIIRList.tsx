@@ -13,13 +13,14 @@ import {
 import { IRCard } from "../../store/ConfigureStore";
 import "./UIIRList.css";
 import SRList from "./UISRList";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   createIRInfo,
   deleteIRInfo,
   updateIRInfo,
 } from "../../store/functions/RMS";
 import { ToastMessage } from "../../utils/Navigation";
+import { getSRListStore } from "../../store/slices/IRSRSlice";
 const { TextArea } = Input;
 
 interface UIIRListProps {
@@ -38,6 +39,7 @@ IRListData example:
 */
 
 const UIIRList = (props: UIIRListProps) => {
+  const SRListData = useSelector(getSRListStore);
   const IRListData = JSON.parse(props.IRListStr).data;
   const dispatcher = useDispatch();
   const project = props.project_id;
