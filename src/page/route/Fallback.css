@@ -118,45 +118,6 @@
   background-color: #0077b5;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-p,
-ul,
-li,
-button,
-a,
-i,
-input,
-body {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  border: 0;
-  -webkit-tap-highlight-color: transparent;
-  text-decoration: none;
-  color: inherit;
-}
-h1:focus,
-h2:focus,
-h3:focus,
-h4:focus,
-h5:focus,
-h6:focus,
-p:focus,
-ul:focus,
-li:focus,
-button:focus,
-a:focus,
-i:focus,
-input:focus,
-body:focus {
-  outline: 0;
-}
-
 body {
   margin: 0;
   padding: 0;
