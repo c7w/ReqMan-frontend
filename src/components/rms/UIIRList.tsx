@@ -69,10 +69,17 @@ const UIIRList = (props: UIIRListProps) => {
   const [rank, setRank] = useState<number>(1);
 
   const showSRModal = (record: IRCard) => {
+    setId(record.id);
     setIsSRModalVisible(true);
   };
 
   const handleSROk = () => {
+    setId(-1);
+    setIsSRModalVisible(false);
+  };
+
+  const handleSRCancel = () => {
+    setId(-1);
     setIsSRModalVisible(false);
   };
 
@@ -259,6 +266,7 @@ const UIIRList = (props: UIIRListProps) => {
         title="SR 任务关联列表"
         centered={true}
         visible={isSRModalVisible}
+        onCancel={handleSRCancel}
         footer={[
           <Button key="confirm" onClick={handleSROk}>
             确认
@@ -272,6 +280,7 @@ const UIIRList = (props: UIIRListProps) => {
           SRListStr={props.SRListStr}
           userInfo={props.userInfo}
           IRSRAssociation={props.IRSRAssociation}
+          IR_id={id}
         />
       </Modal>
 

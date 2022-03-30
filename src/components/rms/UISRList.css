@@ -5,6 +5,10 @@
   padding-top: 1rem;
 }
 
+.ChooseSRTable {
+  padding: 1rem;
+}
+
 .ant-pro-table-list-toolbar-container {
   text-align: right;
   margin: 20px;

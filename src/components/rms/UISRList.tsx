@@ -1,7 +1,16 @@
 import React, { useEffect, useState } from "react";
 import type { ProColumns } from "@ant-design/pro-table";
 import ProTable, { EditableProTable } from "@ant-design/pro-table";
-import { Button, Input, InputNumber, Modal, Popconfirm, Select } from "antd";
+import {
+  Button,
+  Input,
+  InputNumber,
+  Modal,
+  Popconfirm,
+  Select,
+  Space,
+  Table,
+} from "antd";
 import "./UISRList.css";
 import { useDispatch, useSelector } from "react-redux";
 import { IRCard, SRCard } from "../../store/ConfigureStore";
@@ -22,6 +31,7 @@ interface UISRListProps {
   readonly SRListStr: string;
   readonly userInfo: string;
   readonly IRSRAssociation: string;
+  readonly IR_id: number;
 }
 
 /*
@@ -45,6 +55,16 @@ const UISRList = (props: UISRListProps) => {
   console.log("test: " + props.IRSRAssociation);
   const dispatcher = useDispatch();
   const project = props.project_id;
+
+  const curSRKey: number[] = [];
+  if (props.IR_id != -1) {
+    IRSRAssociationData.forEach((value: any, index: number) => {
+      if (value.IR === props.IR_id) {
+        curSRKey.push(value.SR);
+      }
+    });
+  }
+
   // 总任务列表
   const dataSRList: SRCard[] = [];
   SRListData.forEach((value: any, index: number) => {
@@ -278,35 +298,36 @@ const UISRList = (props: UISRListProps) => {
     },
   ];
 
-  // const chooseColumn: ProColumns<SRCard>[] = [];
-  // for (let i = 0; i < 5; i += 1) {
-  //   columns[i].filters = false;
-  //   chooseColumn.push(columns[i]);
-  // }
-  //
-  // const rowSelection = {
-  //   onChange: (
-  //     selectedRowKeys: React.Key[],
-  //     selectedRows: ProColumns<SRCard>[]
-  //   ) => {
-  //     const selectedSR = [];
-  //     for (let i = 0; i < selectedRowKeys.length; i++) {
-  //       selectedSR.push(selectedRows[i].key);
-  //     }
-  //     for (let i = 0; i < props.curSRKey.length; i++) {
-  //       selectedSR.push(props.curSRKey[i]);
-  //     }
-  //   },
-  //   getCheckboxProps: (record: ProColumns<SRCard>) => {
-  //     console.log("=================");
-  //     for (let i = 0; i < props.curSRKey.length; i++) {
-  //       if (props.curSRKey[i] === record.key) {
-  //         return { disabled: true };
-  //       }
-  //     }
-  //     return { disabled: false };
-  //   },
-  // };
+  const chooseColumn: ProColumns<SRCard>[] = [];
+  for (let i = 0; i < 5; i += 1) {
+    columns[i].filters = false;
+    chooseColumn.push(columns[i]);
+  }
+
+  const rowSelection = {
+    onChange: (
+      selectedRowKeys: React.Key[],
+      selectedRows: ProColumns<SRCard>[]
+    ) => {
+      const selectedSR = [];
+      console.log("===========hey I change===========");
+      // for (let i = 0; i < selectedRowKeys.length; i++) {
+      //   selectedSR.push(selectedRows[i].key);
+      // }
+      // for (let i = 0; i < props.curSRKey.length; i++) {
+      //   selectedSR.push(props.curSRKey[i]);
+      // }
+    },
+    getCheckboxProps: (record: ProColumns<SRCard>) => {
+      console.log("=================");
+      // for (let i = 0; i < props.curSRKey.length; i++) {
+      //   if (props.curSRKey[i] === record.key) {
+      //     return { disabled: true };
+      //   }
+      // }
+      return { disabled: false };
+    },
+  };
 
   if (!props.showChoose) {
     return (
@@ -525,41 +546,41 @@ const UISRList = (props: UISRListProps) => {
     );
   } else {
     return (
-      <div className={"SRTable"}>
-        {/*<ProTable<SRCard>*/}
-        {/*  columns={chooseColumn}*/}
-        {/*  rowSelection={{*/}
-        {/*    selections: [Table.SELECTION_ALL, Table.SELECTION_INVERT],*/}
-        {/*    defaultSelectedRowKeys: [],*/}
-        {/*    ...rowSelection,*/}
-        {/*  }}*/}
-        {/*  tableAlertRender={({*/}
-        {/*    selectedRowKeys,*/}
-        {/*    selectedRows,*/}
-        {/*    onCleanSelected,*/}
-        {/*  }) => (*/}
-        {/*    <Space size={24}>*/}
-        {/*      <span>已选 {selectedRowKeys.length} 项</span>*/}
-        {/*      <span>{`关联 SR 任务: ${selectedRows.reduce(*/}
-        {/*        (pre, item) => pre + " " + item.title,*/}
-        {/*        ""*/}
-        {/*      )} `}</span>*/}
-        {/*    </Space>*/}
-        {/*  )}*/}
-        {/*  request={() => {*/}
-        {/*    return Promise.resolve({*/}
-        {/*      data: tableListDataSource,*/}
-        {/*      success: true,*/}
-        {/*    });*/}
-        {/*  }}*/}
-        {/*  pagination={{*/}
-        {/*    pageSize: 5,*/}
-        {/*  }}*/}
-        {/*  rowKey="key"*/}
-        {/*  search={false}*/}
-        {/*  dateFormatter="string"*/}
-        {/*  toolBarRender={false}*/}
-        {/*/>*/}
+      <div className={"ChooseSRTable"}>
+        <ProTable<SRCard>
+          columns={chooseColumn}
+          rowSelection={{
+            selections: [Table.SELECTION_ALL, Table.SELECTION_INVERT],
+            defaultSelectedRowKeys: curSRKey,
+            ...rowSelection,
+          }}
+          tableAlertRender={({
+            selectedRowKeys,
+            selectedRows,
+            onCleanSelected,
+          }) => (
+            <Space size={24}>
+              <span>已选 {selectedRowKeys.length} 项</span>
+              <span>{`关联 SR 任务: ${selectedRows.reduce(
+                (pre, item) => pre + " " + item.title,
+                ""
+              )} `}</span>
+            </Space>
+          )}
+          request={() => {
+            return Promise.resolve({
+              data: tableListDataSource,
+              success: true,
+            });
+          }}
+          pagination={{
+            pageSize: 5,
+          }}
+          rowKey="id"
+          search={false}
+          dateFormatter="string"
+          toolBarRender={false}
+        />
       </div>
     );
   }

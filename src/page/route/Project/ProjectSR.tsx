@@ -69,6 +69,7 @@ const ProjectSR = () => {
                     SRListStr={SRListInfo}
                     userInfo={userInfo}
                     IRSRAssociation={IRSRAssociation}
+                    IR_id={-1}
                   />
                 </div>
               </Home>
