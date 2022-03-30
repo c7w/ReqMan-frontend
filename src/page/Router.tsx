@@ -22,6 +22,7 @@ import PersonalSetting from "./route/Auth/Setting";
 import ProjectServiceReadonly from "./route/Project/ProjectServiceReadonly";
 import ProjectRequirementsReadonly from "./route/Project/ProjectRequirementsReadonly";
 import ProjectMember from "./route/Project/ProjectMember";
+import ProjectIteration from "./route/Project/ProjectIteration";
 
 const SiteRouter = () => {
   const testIR =
@@ -53,6 +54,7 @@ const SiteRouter = () => {
             element={<ProjectRequirementsReadonly />}
           />
           <Route path="project/:id/member" element={<ProjectMember />} />
+          <Route path="project/:id/iteration" element={<ProjectIteration />} />
           <Route path="project/:id/analyse" element={<ProjectAnalyse />} />
           <Route path="project/:id/settings" element={<ProjectSetting />} />
           <Route path="project/:id" element={<Project />} />

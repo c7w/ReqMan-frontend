@@ -131,7 +131,7 @@ const Sidebar = () => {
           key="analyse"
           className={"sidebar-item"}
           onClick={() =>
-            Redirect(dispatch, `/project/${project_id}/analyse`, 0)
+            Redirect(dispatch, `/project/${project_id}/iteration`, 0)
           }
           icon={<ClockCircleOutlined />}
         >

@@ -1,0 +1,7 @@
+.project-iteration-container {
+  display: flex;
+  min-height: 80vh;
+  max-width: 80vw;
+  background-color: white;
+  margin-top: 3rem;
+}

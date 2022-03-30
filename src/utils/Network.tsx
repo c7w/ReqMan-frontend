@@ -31,7 +31,6 @@ const request_json = async (config: APIConfig, settings: Settings = {}) => {
     ...settings.getParams,
     sessionId: getCookie("sessionId", ""),
   };
-  console.log(getParams_.sessionId);
   const getParams =
     "?" +
     Object.entries(getParams_)
@@ -64,7 +63,7 @@ const request_json = async (config: APIConfig, settings: Settings = {}) => {
   return await fetch(path, initRequest)
     .then((data) => data.json())
     .then((json) => {
-      console.log(`Fetched ${path} successfully: ` + JSON.stringify(json));
+      console.debug(`Fetched ${path} successfully: ` + JSON.stringify(json));
       return json;
     });
 };
