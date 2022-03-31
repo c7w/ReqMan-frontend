@@ -75,11 +75,14 @@ const UIIRList = (props: UIIRListProps) => {
 
   const handleSROk = () => {
     setId(-1);
+    setTimeout(() => window.location.reload(), 1000);
+    ToastMessage("success", "关联成功", "您的IR-SR关联成功");
     setIsSRModalVisible(false);
   };
 
   const handleSRCancel = () => {
     setId(-1);
+    setTimeout(() => window.location.reload(), 0);
     setIsSRModalVisible(false);
   };
 

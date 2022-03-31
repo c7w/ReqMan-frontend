@@ -47,17 +47,12 @@ userData: {"code":0,"data":{"user":{"id":17,"name":"hbx20","email":"hbx@hbx.boy"
 */
 
 const UISRList = (props: UISRListProps) => {
-  // console.log(props.SRListStr);
-  // console.log(props.userInfo); // 当前 user 的所有 project 信息
-
   const SRListData = JSON.parse(props.SRListStr).data;
   const userData = JSON.parse(props.userInfo).data;
   const IRSRAssociationData = JSON.parse(props.IRSRAssociation).data;
-
-  // console.log("test: " + props.IRSRAssociation);
   const dispatcher = useDispatch();
   const project = props.project_id;
-  // const [choosedSRKey, setchoosedSRKey] = useState<number[]>([]);
+
   const curSRKey: number[] = [];
   if (props.IR_id != -1) {
     IRSRAssociationData.forEach((value: any, index: number) => {
@@ -66,7 +61,9 @@ const UISRList = (props: UISRListProps) => {
       }
     });
   }
-
+  const [selectedSR, setSelectedSR] = useState<number[]>(curSRKey.slice());
+  console.log(curSRKey);
+  console.log(selectedSR);
   // 总任务列表
   const dataSRList: SRCard[] = [];
   SRListData.forEach((value: any, index: number) => {
@@ -329,11 +326,7 @@ const UISRList = (props: UISRListProps) => {
     //   // }
     //   return { disabled: false };
     // },
-    onSelect: (
-      record: SRCard,
-      selected: boolean,
-      selectedRows: ProColumns<SRCard>[]
-    ) => {
+    onSelect: (record: SRCard, selected: boolean) => {
       const IRSR: IRSRAssociation = {
         id: 0,
         IRId: props.IR_id,
@@ -348,6 +341,42 @@ const UISRList = (props: UISRListProps) => {
           console.log(data);
         });
       }
+      //setSelectedSR([]);
+    },
+    onSelectAll: (
+      selected: boolean,
+      selectedRows: ProColumns<SRCard>[],
+      changedRows: ProColumns<SRCard>[]
+    ) => {
+      changedRows.forEach((value: any, index: number) => {
+        const IRSR: IRSRAssociation = {
+          id: 0,
+          IRId: props.IR_id,
+          SRId: value.id,
+        };
+        if (selected) {
+          createIRSR(dispatcher, props.project_id, IRSR).then((data: any) => {
+            console.log(data);
+          });
+        } else if (!selected) {
+          deleteIRSR(dispatcher, props.project_id, IRSR).then((data: any) => {
+            console.log(data);
+          });
+        }
+      });
+      //setSelectedSR([]);
+    },
+    onSelectNone: () => {
+      SRListData.forEach((value: any, index: number) => {
+        const IRSR: IRSRAssociation = {
+          id: 0,
+          IRId: props.IR_id,
+          SRId: value.id,
+        };
+        deleteIRSR(dispatcher, props.project_id, IRSR).then((data: any) => {
+          console.log(data);
+        });
+      });
     },
   };
 
@@ -570,25 +599,26 @@ const UISRList = (props: UISRListProps) => {
     return (
       <div className={"ChooseSRTable"}>
         <ProTable<SRCard>
+          // onReset={() => {
+          //   setSelectedSR(curSRKey);
+          // }}
+          params={curSRKey}
           columns={chooseColumn}
           rowSelection={{
-            selections: [Table.SELECTION_ALL, Table.SELECTION_INVERT],
+            // hideSelectAll: false,
             defaultSelectedRowKeys: curSRKey,
             ...rowSelection,
           }}
-          tableAlertRender={({
-            selectedRowKeys,
-            selectedRows,
-            onCleanSelected,
-          }) => (
-            <Space size={24}>
-              <span>已选 {selectedRowKeys.length} 项</span>
-              <span>{`关联 SR 任务: ${selectedRows.reduce(
-                (pre, item) => pre + " " + item.title,
-                ""
-              )} `}</span>
-            </Space>
-          )}
+          // tableAlertRender={({ selectedRowKeys, selectedRows }) => (
+          //   <Space size={24}>
+          //     <span>已选 {selectedRowKeys.length} 项</span>
+          //     <span>{`关联 SR 任务: ${selectedRows.reduce(
+          //       (pre, item: SRCard) => pre + ", " + item.title,
+          //       ""
+          //     )} `}</span>
+          //   </Space>
+          // )}
+          tableAlertRender={false}
           request={() => {
             return Promise.resolve({
               data: tableListDataSource,
