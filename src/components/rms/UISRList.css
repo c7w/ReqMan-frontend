@@ -12,6 +12,14 @@
   background-color: #e1e9ff;
 }
 
+.markdown {
+  padding-top: 14px;
+}
+
+.ant-tag {
+  border-radius: 10px;
+}
+
 .ChooseSRTable {
   padding: 1rem;
 }

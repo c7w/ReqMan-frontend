@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import type { ProColumns } from "@ant-design/pro-table";
+import ReactMarkdown from "react-markdown";
 import ProTable from "@ant-design/pro-table";
 import {
   Button,
@@ -261,10 +262,10 @@ const UISRList = (props: UISRListProps) => {
     },
     {
       title: "状态",
-      width: "10%",
-      dataIndex: "currState",
       filters: true,
       onFilter: true,
+      width: "10%",
+      dataIndex: "currState",
       align: "center",
       render: (_, record) => (
         <Space>
@@ -278,6 +279,9 @@ const UISRList = (props: UISRListProps) => {
       dataIndex: "description",
       ellipsis: true,
       align: "center",
+      render: (_, record) => (
+        <ReactMarkdown className={"markdown"} children={record.description} />
+      ),
     },
     {
       title: "创建者",
@@ -317,7 +321,6 @@ const UISRList = (props: UISRListProps) => {
 
   const chooseColumn: ProColumns<SRCard>[] = [];
   for (let i = 0; i < 5; i += 1) {
-    columns[i].filters = false;
     chooseColumn.push(columns[i]);
   }
 
@@ -419,8 +422,7 @@ const UISRList = (props: UISRListProps) => {
             });
           }}
           pagination={{
-            pageSize: 10,
-            showSizeChanger: true,
+            pageSize: 6,
           }}
           search={false}
           dateFormatter="string"
@@ -644,7 +646,7 @@ const UISRList = (props: UISRListProps) => {
             });
           }}
           pagination={{
-            pageSize: 5,
+            pageSize: 6,
           }}
           rowKey="id"
           dateFormatter="string"

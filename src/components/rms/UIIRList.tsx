@@ -9,6 +9,7 @@ import {
   InputNumber,
   Popconfirm,
   message,
+  Space,
 } from "antd";
 import { IRCard, SRCard } from "../../store/ConfigureStore";
 import "./UIIRList.css";
@@ -21,6 +22,7 @@ import {
 } from "../../store/functions/RMS";
 import { ToastMessage } from "../../utils/Navigation";
 import { getSRListStore } from "../../store/slices/IRSRSlice";
+import ReactMarkdown from "react-markdown";
 const { TextArea } = Input;
 
 interface UIIRListProps {
@@ -186,31 +188,36 @@ const UIIRList = (props: UIIRListProps) => {
   const columns: ProColumns<IRCard>[] = [
     {
       title: "IR标题",
-      width: 100,
+      width: "15%",
       dataIndex: "title",
       align: "center",
     },
     {
       title: "任务描述",
-      width: 240,
+      width: "25%",
       dataIndex: "description",
       align: "center",
+      render: (_, record) => (
+        <ReactMarkdown className={"markdown"} children={record.description} />
+      ),
     },
     {
       title: "进度",
-      width: 80,
+      width: "13%",
       align: "center",
-      render: (_, record) => <Progress percent={50} />,
+      render: (_, record) => (
+        <Progress className={"prgressProp"} percent={50} />
+      ),
     },
     {
       title: "创建者",
-      width: 80,
+      width: "12%",
       dataIndex: "createdBy",
       align: "center",
     },
     {
       title: "创建时间",
-      width: 110,
+      width: "15%",
       dataIndex: "createdAt",
       valueType: "dateTime",
       align: "center",
@@ -218,7 +225,7 @@ const UIIRList = (props: UIIRListProps) => {
     },
     {
       title: "操作",
-      width: 100,
+      width: "20%",
       valueType: "option",
       align: "center",
       render: (text, record, _, action) => [
@@ -232,7 +239,7 @@ const UIIRList = (props: UIIRListProps) => {
         >
           <a href="#">删除</a>
         </Popconfirm>,
-        <a onClick={() => showSRModal(record)}>关联SR</a>,
+        <a onClick={() => showSRModal(record)}>关联功能需求</a>,
       ],
     },
   ];
@@ -244,7 +251,7 @@ const UIIRList = (props: UIIRListProps) => {
         toolBarRender={() => {
           return [
             <Button key="create" onClick={showCreateModal} type="primary">
-              新建IR
+              新建原始需求
             </Button>,
           ];
         }}
@@ -257,15 +264,14 @@ const UIIRList = (props: UIIRListProps) => {
         }}
         rowKey="id"
         pagination={{
-          pageSize: 10,
-          showSizeChanger: true,
+          pageSize: 6,
         }}
         dateFormatter="string"
         search={false}
       />
 
       <Modal
-        title="SR 任务关联列表"
+        title="功能需求关联列表"
         centered={true}
         visible={isSRModalVisible}
         onCancel={handleSRCancel}
@@ -287,7 +293,7 @@ const UIIRList = (props: UIIRListProps) => {
       </Modal>
 
       <Modal
-        title="新增IR任务"
+        title="新增原始需求"
         centered={true}
         visible={isCreateModalVisible}
         onOk={handleCreateOk}
@@ -318,21 +324,21 @@ const UIIRList = (props: UIIRListProps) => {
             setDesc(e.target.value);
           }}
         />
-        <p
-          style={{ paddingTop: "10px", marginBottom: "5px", fontSize: "16px" }}
-        >
-          项目重要性
-        </p>
-        <InputNumber
-          value={rank}
-          onChange={(e: number) => {
-            setRank(e);
-          }}
-        />
+        {/*<p*/}
+        {/*  style={{ paddingTop: "10px", marginBottom: "5px", fontSize: "16px" }}*/}
+        {/*>*/}
+        {/*  项目重要性*/}
+        {/*</p>*/}
+        {/*<InputNumber*/}
+        {/*  value={rank}*/}
+        {/*  onChange={(e: number) => {*/}
+        {/*    setRank(e);*/}
+        {/*  }}*/}
+        {/*/>*/}
       </Modal>
 
       <Modal
-        title="编辑IR项"
+        title="编辑原始需求"
         centered={true}
         visible={isEditModalVisible}
         onOk={handleEditOk}
@@ -363,17 +369,17 @@ const UIIRList = (props: UIIRListProps) => {
             setDesc(e.target.value);
           }}
         />
-        <p
-          style={{ paddingTop: "10px", marginBottom: "5px", fontSize: "16px" }}
-        >
-          项目重要性
-        </p>
-        <InputNumber
-          value={rank}
-          onChange={(e: number) => {
-            setRank(e);
-          }}
-        />
+        {/*<p*/}
+        {/*  style={{ paddingTop: "10px", marginBottom: "5px", fontSize: "16px" }}*/}
+        {/*>*/}
+        {/*  项目重要性*/}
+        {/*</p>*/}
+        {/*<InputNumber*/}
+        {/*  value={rank}*/}
+        {/*  onChange={(e: number) => {*/}
+        {/*    setRank(e);*/}
+        {/*  }}*/}
+        {/*/>*/}
       </Modal>
     </div>
   );
