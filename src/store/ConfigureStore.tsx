@@ -17,6 +17,7 @@ interface SRCard {
   readonly priority: number; // the priority which indicates the importance of the SR
   readonly rank: number;
   readonly currState: string; // "TODO", "WIP", "Reviewing", "Done"
+  readonly stateColor?: string;
   readonly createdBy: string; // somebody
   readonly createdAt: number; // sometime
   readonly disabled: boolean;

@@ -79,6 +79,7 @@ const ProjectIR = () => {
                     userInfo={userInfo}
                     SRListStr={SRListInfo}
                     IRSRAssociation={IRSRAssociation}
+                    onlyShow={false}
                   />
                 </div>
               </Home>

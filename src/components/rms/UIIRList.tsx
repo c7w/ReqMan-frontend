@@ -10,7 +10,7 @@ import {
   Popconfirm,
   message,
 } from "antd";
-import { IRCard } from "../../store/ConfigureStore";
+import { IRCard, SRCard } from "../../store/ConfigureStore";
 import "./UIIRList.css";
 import SRList from "./UISRList";
 import { useDispatch, useSelector } from "react-redux";
@@ -29,6 +29,7 @@ interface UIIRListProps {
   readonly userInfo: string;
   readonly SRListStr: string;
   readonly IRSRAssociation: string;
+  readonly onlyShow: boolean;
 }
 
 /*

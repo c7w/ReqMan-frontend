@@ -1,7 +1,16 @@
 import React, { useState } from "react";
 import type { ProColumns } from "@ant-design/pro-table";
 import ProTable from "@ant-design/pro-table";
-import { Button, Input, InputNumber, Modal, Popconfirm, Select } from "antd";
+import {
+  Button,
+  Input,
+  InputNumber,
+  Modal,
+  Popconfirm,
+  Select,
+  Space,
+  Tag,
+} from "antd";
 import "./UISRList.css";
 import { useDispatch } from "react-redux";
 import { IRSRAssociation, SRCard } from "../../store/ConfigureStore";
@@ -18,8 +27,6 @@ const { Option } = Select;
 
 interface UISRListProps {
   readonly showChoose: boolean;
-  // readonly myIRKey: number;
-  // readonly curSRKey: number[];
   readonly project_id: number;
   readonly SRListStr: string;
   readonly userInfo: string;
@@ -53,11 +60,28 @@ const UISRList = (props: UISRListProps) => {
     });
   }
   const [selectedSR, setSelectedSR] = useState<number[]>(curSRKey.slice());
-  console.log(curSRKey);
-  console.log(selectedSR);
   // 总任务列表
   const dataSRList: SRCard[] = [];
   SRListData.forEach((value: any) => {
+    let state = "";
+    let color = "";
+    if (value.state === "TODO") {
+      console.log("I am here");
+      state = "未开始";
+      color = "red";
+    }
+    if (value.state === "WIP") {
+      state = "开发中";
+      color = "blue";
+    }
+    if (value.state === "Reviewing") {
+      state = "测试中";
+      color = "yellow";
+    }
+    if (value.state === "Done") {
+      state = "已交付";
+      color = "green";
+    }
     dataSRList.push({
       id: value.id,
       project: value.project,
@@ -65,23 +89,13 @@ const UISRList = (props: UISRListProps) => {
       description: value.description,
       priority: value.priority,
       rank: value.rank,
-      currState: value.state,
+      currState: state,
+      stateColor: color,
       createdBy: value.createdBy,
       createdAt: value.createdAt * 1000,
       disabled: value.disabled,
     });
   });
-
-  // useEffect(() => {
-  //   const curSRList = [];
-  //   for (let i = 0; i < props.curSRKey.length; i += 1) {
-  //     curSRList.push(dataSRList[props.curSRKey[i]]);
-  //   }
-  //   // 如果是下拉表，则显示当前的关联任务
-  //   if (!props.showChoose) {
-  //     settableListDataSource(curSRList);
-  //   }
-  // }, [1]);
 
   const [tableListDataSource, settableListDataSource] =
     useState<SRCard[]>(dataSRList);
@@ -93,7 +107,7 @@ const UISRList = (props: UISRListProps) => {
   const [desc, setDesc] = useState<string>("");
   const [priority, setPriority] = useState<number>(1);
   const [rank, setRank] = useState<number>(1);
-  const [currState, setCurrState] = useState<string>("TODO");
+  const [currState, setCurrState] = useState<string>("未开始");
 
   const showEditModal = (record: SRCard) => {
     setId(record.id);
@@ -106,6 +120,19 @@ const UISRList = (props: UISRListProps) => {
   };
 
   const handleEditOk = () => {
+    let state = "";
+    if (currState === "未开始") {
+      state = "TODO";
+    }
+    if (currState === "开发中") {
+      state = "WIP";
+    }
+    if (currState === "测试中") {
+      state = "Reviewing";
+    }
+    if (currState === "已交付") {
+      state = "Done";
+    }
     const newSR: SRCard = {
       id: id,
       project: project,
@@ -113,24 +140,24 @@ const UISRList = (props: UISRListProps) => {
       description: desc,
       priority: priority,
       rank: rank,
-      currState: currState,
+      currState: state,
       createdBy: "", // 未用到
       createdAt: -1, // 未用到
       disabled: true, // 未用到
     };
     updateSRInfo(dispatcher, project, newSR).then((data: any) => {
       if (data.code === 0) {
-        ToastMessage("success", "创建成功", "您的SR修改成功");
+        ToastMessage("success", "修改成功", "您的SR修改成功");
         setTimeout(() => window.location.reload(), 1000);
         setId(-1);
         setTitle("");
         setDesc("");
         setPriority(1);
         setRank(1);
-        setCurrState("TODO");
+        setCurrState("未开始");
         setIsEditModalVisible(false);
       } else {
-        ToastMessage("error", "创建失败", "您的SR修改失败");
+        ToastMessage("error", "修改失败", "您的SR修改失败");
       }
     });
   };
@@ -141,7 +168,7 @@ const UISRList = (props: UISRListProps) => {
     setDesc("");
     setPriority(1);
     setRank(1);
-    setCurrState("TODO");
+    setCurrState("未开始");
     setIsEditModalVisible(false);
   };
 
@@ -150,6 +177,19 @@ const UISRList = (props: UISRListProps) => {
   };
 
   const handleCreateOk = () => {
+    let state = "";
+    if (currState === "未开始") {
+      state = "TODO";
+    }
+    if (currState === "开发中") {
+      state = "WIP";
+    }
+    if (currState === "测试中") {
+      state = "Reviewing";
+    }
+    if (currState === "已交付") {
+      state = "Done";
+    }
     const newSR: SRCard = {
       id: id,
       project: project,
@@ -157,7 +197,7 @@ const UISRList = (props: UISRListProps) => {
       description: desc,
       priority: priority,
       rank: rank,
-      currState: currState,
+      currState: state,
       createdBy: "", // 未用到
       createdAt: -1, // 未用到
       disabled: true, // 未用到
@@ -171,7 +211,7 @@ const UISRList = (props: UISRListProps) => {
         setDesc("");
         setPriority(1);
         setRank(1);
-        setCurrState("TODO");
+        setCurrState("未开始");
         setIsCreateModalVisible(false);
       } else {
         ToastMessage("error", "创建失败", "您的SR创建失败");
@@ -185,7 +225,7 @@ const UISRList = (props: UISRListProps) => {
     setDesc("");
     setPriority(1);
     setRank(1);
-    setCurrState("TODO");
+    setCurrState("未开始");
     setIsCreateModalVisible(false);
   };
 
@@ -214,62 +254,50 @@ const UISRList = (props: UISRListProps) => {
 
   const columns: ProColumns<SRCard>[] = [
     {
-      title: "SR标题",
-      width: 100,
+      title: "功能需求标题",
+      width: "15%",
       dataIndex: "title",
       align: "center",
     },
     {
       title: "状态",
-      width: 90,
+      width: "10%",
       dataIndex: "currState",
       filters: true,
       onFilter: true,
       align: "center",
-      valueType: "select",
-      valueEnum: {
-        TODO: {
-          text: "TODO",
-          status: "Default",
-        },
-        WIP: {
-          text: "WIP",
-          status: "Processing",
-        },
-        Done: {
-          text: "Done",
-          status: "Success",
-        },
-        Reviewing: {
-          text: "Reviewing",
-          status: "Warning",
-        },
-      },
-      // render: (_, record) => <Tag color={record.status.color}>{record.status.text}</Tag>,
+      render: (_, record) => (
+        <Space>
+          <Tag color={record.stateColor}>{record.currState}</Tag>
+        </Space>
+      ),
     },
     {
-      title: "任务描述",
-      width: 280,
+      search: false,
+      title: "功能需求描述",
       dataIndex: "description",
+      ellipsis: true,
       align: "center",
     },
     {
       title: "创建者",
-      width: 100,
+      width: "15%",
       dataIndex: "createdBy",
       align: "center",
     },
     {
+      search: false,
       title: "创建时间",
-      width: 120,
+      width: "20%",
       dataIndex: "createdAt",
       valueType: "dateTime",
       align: "center",
       sorter: (a, b) => a.createdAt - b.createdAt,
     },
     {
+      search: false,
       title: "操作",
-      width: 120,
+      width: "15%",
       valueType: "option",
       align: "center",
       render: (text, record, _, action) => [
@@ -378,7 +406,7 @@ const UISRList = (props: UISRListProps) => {
           toolBarRender={() => {
             return [
               <Button key="create" onClick={showCreateModal} type="primary">
-                新建SR
+                新建功能需求
               </Button>,
             ];
           }}
@@ -398,7 +426,7 @@ const UISRList = (props: UISRListProps) => {
           dateFormatter="string"
         />
         <Modal
-          title="新增SR任务"
+          title="新增功能需求"
           centered={true}
           visible={isCreateModalVisible}
           onOk={handleCreateOk}
@@ -451,15 +479,15 @@ const UISRList = (props: UISRListProps) => {
             style={{ width: 120 }}
             onChange={handleStateChange}
           >
-            <Option value="TODO">TODO</Option>
-            <Option value="WIP" disabled>
-              WIP
+            <Option value="未开始">未开始</Option>
+            <Option value="开发中" disabled>
+              开发中
             </Option>
-            <Option value="Reviewing" disabled>
-              Reviewing
+            <Option value="测试中" disabled>
+              测试中
             </Option>
-            <Option value="Done" disabled>
-              Done
+            <Option value="已交付" disabled>
+              已交付
             </Option>
           </Select>
           <p
@@ -477,24 +505,24 @@ const UISRList = (props: UISRListProps) => {
               setPriority(e);
             }}
           />
-          <p
-            style={{
-              paddingTop: "10px",
-              marginBottom: "5px",
-              fontSize: "16px",
-            }}
-          >
-            项目重要性
-          </p>
-          <InputNumber
-            value={rank}
-            onChange={(e: number) => {
-              setRank(e);
-            }}
-          />
+          {/*<p*/}
+          {/*  style={{*/}
+          {/*    paddingTop: "10px",*/}
+          {/*    marginBottom: "5px",*/}
+          {/*    fontSize: "16px",*/}
+          {/*  }}*/}
+          {/*>*/}
+          {/*  项目重要性*/}
+          {/*</p>*/}
+          {/*<InputNumber*/}
+          {/*  value={rank}*/}
+          {/*  onChange={(e: number) => {*/}
+          {/*    setRank(e);*/}
+          {/*  }}*/}
+          {/*/>*/}
         </Modal>
         <Modal
-          title="编辑SR任务"
+          title="编辑功能需求"
           centered={true}
           visible={isEditModalVisible}
           onOk={handleEditOk}
@@ -547,10 +575,10 @@ const UISRList = (props: UISRListProps) => {
             style={{ width: 120 }}
             onChange={handleStateChange}
           >
-            <Option value="TODO">TODO</Option>
-            <Option value="WIP">WIP</Option>
-            <Option value="Reviewing">Reviewing</Option>
-            <Option value="Done">Done</Option>
+            <Option value="未开始">未开始</Option>
+            <Option value="开发中">开发中</Option>
+            <Option value="测试中">测试中</Option>
+            <Option value="已交付">已交付</Option>
           </Select>
           <p
             style={{
@@ -567,21 +595,21 @@ const UISRList = (props: UISRListProps) => {
               setPriority(e);
             }}
           />
-          <p
-            style={{
-              paddingTop: "10px",
-              marginBottom: "5px",
-              fontSize: "16px",
-            }}
-          >
-            项目重要性
-          </p>
-          <InputNumber
-            value={rank}
-            onChange={(e: number) => {
-              setRank(e);
-            }}
-          />
+          {/*<p*/}
+          {/*  style={{*/}
+          {/*    paddingTop: "10px",*/}
+          {/*    marginBottom: "5px",*/}
+          {/*    fontSize: "16px",*/}
+          {/*  }}*/}
+          {/*>*/}
+          {/*  项目重要性*/}
+          {/*</p>*/}
+          {/*<InputNumber*/}
+          {/*  value={rank}*/}
+          {/*  onChange={(e: number) => {*/}
+          {/*    setRank(e);*/}
+          {/*  }}*/}
+          {/*/>*/}
         </Modal>
       </div>
     );
@@ -619,9 +647,11 @@ const UISRList = (props: UISRListProps) => {
             pageSize: 5,
           }}
           rowKey="id"
-          search={false}
           dateFormatter="string"
           toolBarRender={false}
+          search={{
+            labelWidth: "auto",
+          }}
         />
       </div>
     );
