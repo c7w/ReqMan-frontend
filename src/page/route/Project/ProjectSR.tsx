@@ -2,7 +2,7 @@ import Home from "../../../layout/Home";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserStore } from "../../../store/slices/UserSlice";
 import { getProjectStore } from "../../../store/slices/ProjectSlice";
-import { getSRListStore } from "../../../store/slices/IRSRSlice";
+import { getIRSRStore, getSRListStore } from "../../../store/slices/IRSRSlice";
 import { useParams } from "react-router-dom";
 import {
   updateProjectInfo,
@@ -10,7 +10,7 @@ import {
 } from "../../../store/functions/UMS";
 import { Redirect, ToastMessage } from "../../../utils/Navigation";
 import UISRList from "../../../components/rms/UISRList";
-import { getSRListInfo } from "../../../store/functions/RMS";
+import { getIRSRInfo, getSRListInfo } from "../../../store/functions/RMS";
 import Loading from "../../../layout/components/Loading";
 
 const ProjectSR = () => {
@@ -20,6 +20,7 @@ const ProjectSR = () => {
   const userInfo = useSelector(getUserStore);
   const projectInfo = useSelector(getProjectStore);
   const SRListInfo = useSelector(getSRListStore);
+  const IRSRAssociation = useSelector(getIRSRStore);
 
   const dispatcher = useDispatch();
   const params = useParams<"id">();
@@ -47,14 +48,14 @@ const ProjectSR = () => {
         updateProjectInfo(dispatcher, Number(project_id));
       } else {
         const projectData = JSON.parse(projectInfo);
-        console.log("===============================");
         console.log(projectInfo);
         // 如果得到的 project 信息跟用户键入的 url 中的 project_id 不符
         if (projectData.data.project.id !== Number(project_id)) {
           updateProjectInfo(dispatcher, Number(project_id));
         } else {
-          if (SRListInfo === "") {
+          if (SRListInfo === "" || IRSRAssociation === "") {
             getSRListInfo(dispatcher, Number(project_id));
+            getIRSRInfo(dispatcher, Number(project_id));
           } else {
             console.log("SRList:  " + SRListInfo);
             return (
@@ -67,6 +68,8 @@ const ProjectSR = () => {
                     project_id={Number(project_id)}
                     SRListStr={SRListInfo}
                     userInfo={userInfo}
+                    IRSRAssociation={IRSRAssociation}
+                    IR_id={-1}
                   />
                 </div>
               </Home>

@@ -27,6 +27,8 @@ interface UIIRListProps {
   readonly project_id: number;
   readonly IRListStr: string;
   readonly userInfo: string;
+  readonly SRListStr: string;
+  readonly IRSRAssociation: string;
 }
 
 /*
@@ -39,7 +41,6 @@ IRListData example:
 */
 
 const UIIRList = (props: UIIRListProps) => {
-  const SRListData = useSelector(getSRListStore);
   const IRListData = JSON.parse(props.IRListStr).data;
   const dispatcher = useDispatch();
   const project = props.project_id;
@@ -60,11 +61,30 @@ const UIIRList = (props: UIIRListProps) => {
   const [isEditModalVisible, setIsEditModalVisible] = useState<boolean>(false);
   const [isCreateModalVisible, setIsCreateModalVisible] =
     useState<boolean>(false);
+  const [isSRModalVisible, setIsSRModalVisible] = useState<boolean>(false);
 
   const [id, setId] = useState<number>(-1);
   const [title, setTitle] = useState<string>("");
   const [desc, setDesc] = useState<string>("");
   const [rank, setRank] = useState<number>(1);
+
+  const showSRModal = (record: IRCard) => {
+    setId(record.id);
+    setIsSRModalVisible(true);
+  };
+
+  const handleSROk = () => {
+    setId(-1);
+    setTimeout(() => window.location.reload(), 1000);
+    ToastMessage("success", "关联成功", "您的IR-SR关联成功");
+    setIsSRModalVisible(false);
+  };
+
+  const handleSRCancel = () => {
+    setId(-1);
+    setTimeout(() => window.location.reload(), 0);
+    setIsSRModalVisible(false);
+  };
 
   const showEditModal = (record: IRCard) => {
     setId(record.id);
@@ -168,7 +188,6 @@ const UIIRList = (props: UIIRListProps) => {
       width: 100,
       dataIndex: "title",
       align: "center",
-      render: (_) => <a>{_}</a>,
     },
     {
       title: "任务描述",
@@ -180,7 +199,6 @@ const UIIRList = (props: UIIRListProps) => {
       title: "进度",
       width: 80,
       align: "center",
-      // test
       render: (_, record) => <Progress percent={50} />,
     },
     {
@@ -213,6 +231,7 @@ const UIIRList = (props: UIIRListProps) => {
         >
           <a href="#">删除</a>
         </Popconfirm>,
+        <a onClick={() => showSRModal(record)}>关联SR</a>,
       ],
     },
   ];
@@ -244,23 +263,27 @@ const UIIRList = (props: UIIRListProps) => {
         search={false}
       />
 
-      {/*<Modal*/}
-      {/*  title="SR 任务关联列表"*/}
-      {/*  centered={true}*/}
-      {/*  visible={isSRModalVisible}*/}
-      {/*  onOk={handleSROk}*/}
-      {/*  onCancel={handleSRCancel}*/}
-      {/*  width={"70%"}*/}
-      {/*>*/}
-      {/*  <SRList*/}
-      {/*    showChoose={true}*/}
-      {/*    myIRKey={modalIRKey}*/}
-      {/*    curSRKey={modalSRKey}*/}
-      {/*    project_id={Number(props.project_id)}*/}
-      {/*    SRListStr={""}*/}
-      {/*    userInfo={props.userInfo}*/}
-      {/*  />*/}
-      {/*</Modal>*/}
+      <Modal
+        title="SR 任务关联列表"
+        centered={true}
+        visible={isSRModalVisible}
+        onCancel={handleSRCancel}
+        footer={[
+          <Button key="confirm" onClick={handleSROk}>
+            确认
+          </Button>,
+        ]}
+        width={"70%"}
+      >
+        <SRList
+          showChoose={true}
+          project_id={props.project_id}
+          SRListStr={props.SRListStr}
+          userInfo={props.userInfo}
+          IRSRAssociation={props.IRSRAssociation}
+          IR_id={id}
+        />
+      </Modal>
 
       <Modal
         title="新增IR任务"
@@ -306,6 +329,7 @@ const UIIRList = (props: UIIRListProps) => {
           }}
         />
       </Modal>
+
       <Modal
         title="编辑IR项"
         centered={true}

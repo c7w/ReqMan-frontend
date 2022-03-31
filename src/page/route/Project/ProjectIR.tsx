@@ -7,8 +7,16 @@ import {
 } from "../../../store/functions/UMS";
 import { Redirect, ToastMessage } from "../../../utils/Navigation";
 import UIIRList from "../../../components/rms/UIIRList";
-import { getIRListInfo } from "../../../store/functions/RMS";
-import { getIRListStore } from "../../../store/slices/IRSRSlice";
+import {
+  getIRListInfo,
+  getIRSRInfo,
+  getSRListInfo,
+} from "../../../store/functions/RMS";
+import {
+  getIRListStore,
+  getIRSRStore,
+  getSRListStore,
+} from "../../../store/slices/IRSRSlice";
 import { useParams } from "react-router-dom";
 import { getProjectStore } from "../../../store/slices/ProjectSlice";
 import Loading from "../../../layout/components/Loading";
@@ -20,6 +28,8 @@ const ProjectIR = () => {
   const userInfo = useSelector(getUserStore);
   const projectInfo = useSelector(getProjectStore);
   const IRListInfo = useSelector(getIRListStore);
+  const SRListInfo = useSelector(getSRListStore);
+  const IRSRAssociation = useSelector(getIRSRStore);
 
   const dispatcher = useDispatch();
 
@@ -49,9 +59,15 @@ const ProjectIR = () => {
         if (projectData.data.project.id !== Number(project_id)) {
           updateProjectInfo(dispatcher, Number(project_id));
         } else {
-          if (IRListInfo === "") {
+          if (
+            IRListInfo === "" ||
+            SRListInfo === "" ||
+            IRSRAssociation === ""
+          ) {
             // without IR, update from backend
             getIRListInfo(dispatcher, Number(project_id));
+            getSRListInfo(dispatcher, Number(project_id));
+            getIRSRInfo(dispatcher, Number(project_id));
           } else {
             console.log(JSON.parse(IRListInfo));
             return (
@@ -61,6 +77,8 @@ const ProjectIR = () => {
                     IRListStr={IRListInfo}
                     project_id={Number(project_id)}
                     userInfo={userInfo}
+                    SRListStr={SRListInfo}
+                    IRSRAssociation={IRSRAssociation}
                   />
                 </div>
               </Home>
