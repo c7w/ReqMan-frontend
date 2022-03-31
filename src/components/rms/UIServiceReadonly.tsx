@@ -106,6 +106,7 @@ const UIServiceReadonly = () => {
             setCached(raw);
             setModal(true);
           }}
+          key={rawData.id}
         />
       ))
       .forEach((val: any, ind: number) => {

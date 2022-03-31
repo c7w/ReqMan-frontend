@@ -261,10 +261,10 @@ const createIteration = async (
   dispatcher: any,
   project_id: number,
   iteration: Iteration
-): Promise<void> => {
+): Promise<any> => {
   console.log(iteration);
   const myBody = {
-    project: iteration.project,
+    project: project_id,
     type: "iteration",
     operation: "create",
     data: {
@@ -276,10 +276,12 @@ const createIteration = async (
       },
     },
   };
-  console.log("create Iteration: " + myBody.data.updateData.begin);
-  request_json(API.POST_RMS, { body: myBody });
-  // 更新 Iteration 的 store
-  getIterationInfo(dispatcher, project_id);
+  return request_json(API.POST_RMS, { body: myBody }).then((data) => {
+    if (data.code === 0) {
+      getIterationInfo(dispatcher, project_id);
+    }
+    return data;
+  });
 };
 
 const updateIterationInfo = async (
