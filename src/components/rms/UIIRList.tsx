@@ -199,7 +199,6 @@ const UIIRList = (props: UIIRListProps) => {
       title: "进度",
       width: 80,
       align: "center",
-      // test
       render: (_, record) => <Progress percent={50} />,
     },
     {
