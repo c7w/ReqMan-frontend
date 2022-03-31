@@ -1,19 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import type { ProColumns } from "@ant-design/pro-table";
-import ProTable, { EditableProTable } from "@ant-design/pro-table";
-import {
-  Button,
-  Input,
-  InputNumber,
-  Modal,
-  Popconfirm,
-  Select,
-  Space,
-  Table,
-} from "antd";
+import ProTable from "@ant-design/pro-table";
+import { Button, Input, InputNumber, Modal, Popconfirm, Select } from "antd";
 import "./UISRList.css";
-import { useDispatch, useSelector } from "react-redux";
-import { IRCard, IRSRAssociation, SRCard } from "../../store/ConfigureStore";
+import { useDispatch } from "react-redux";
+import { IRSRAssociation, SRCard } from "../../store/ConfigureStore";
 import {
   createIRSR,
   createSRInfo,
@@ -48,14 +39,14 @@ userData: {"code":0,"data":{"user":{"id":17,"name":"hbx20","email":"hbx@hbx.boy"
 
 const UISRList = (props: UISRListProps) => {
   const SRListData = JSON.parse(props.SRListStr).data;
-  const userData = JSON.parse(props.userInfo).data;
+  // const userData = JSON.parse(props.userInfo).data;
   const IRSRAssociationData = JSON.parse(props.IRSRAssociation).data;
   const dispatcher = useDispatch();
   const project = props.project_id;
 
   const curSRKey: number[] = [];
-  if (props.IR_id != -1) {
-    IRSRAssociationData.forEach((value: any, index: number) => {
+  if (props.IR_id !== -1) {
+    IRSRAssociationData.forEach((value: any) => {
       if (value.IR === props.IR_id) {
         curSRKey.push(value.SR);
       }
@@ -66,7 +57,7 @@ const UISRList = (props: UISRListProps) => {
   console.log(selectedSR);
   // 总任务列表
   const dataSRList: SRCard[] = [];
-  SRListData.forEach((value: any, index: number) => {
+  SRListData.forEach((value: any) => {
     dataSRList.push({
       id: value.id,
       project: value.project,
@@ -227,7 +218,6 @@ const UISRList = (props: UISRListProps) => {
       width: 100,
       dataIndex: "title",
       align: "center",
-      render: (_) => <a>{_}</a>,
     },
     {
       title: "状态",
@@ -602,7 +592,7 @@ const UISRList = (props: UISRListProps) => {
           // onReset={() => {
           //   setSelectedSR(curSRKey);
           // }}
-          params={curSRKey}
+          params={selectedSR}
           columns={chooseColumn}
           rowSelection={{
             // hideSelectAll: false,

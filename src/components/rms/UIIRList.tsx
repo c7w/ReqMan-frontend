@@ -188,7 +188,6 @@ const UIIRList = (props: UIIRListProps) => {
       width: 100,
       dataIndex: "title",
       align: "center",
-      render: (_) => <a>{_}</a>,
     },
     {
       title: "任务描述",
