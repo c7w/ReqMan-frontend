@@ -187,7 +187,7 @@ const UIIRList = (props: UIIRListProps) => {
 
   const columns: ProColumns<IRCard>[] = [
     {
-      title: "IR标题",
+      title: "原始需求标题",
       width: "15%",
       dataIndex: "title",
       align: "center",
@@ -196,8 +196,7 @@ const UIIRList = (props: UIIRListProps) => {
       ),
     },
     {
-      title: "任务描述",
-      width: "25%",
+      title: "原始需求描述",
       dataIndex: "description",
       align: "center",
       render: (_, record) => (
@@ -251,6 +250,7 @@ const UIIRList = (props: UIIRListProps) => {
     return (
       <SRList
         showChoose={false}
+        onlyShow={true}
         IR_id={record.id}
         project_id={props.project_id}
         SRListStr={props.SRListStr}
@@ -259,6 +259,11 @@ const UIIRList = (props: UIIRListProps) => {
       />
     );
   };
+
+  const onlyShowColumn: ProColumns<IRCard>[] = [];
+  for (let i = 0; i < 5; i += 1) {
+    onlyShowColumn.push(columns[i]);
+  }
 
   if (!props.onlyShow) {
     return (
@@ -306,6 +311,7 @@ const UIIRList = (props: UIIRListProps) => {
         >
           <SRList
             showChoose={true}
+            onlyShow={false}
             project_id={props.project_id}
             SRListStr={props.SRListStr}
             userInfo={props.userInfo}
@@ -415,17 +421,19 @@ const UIIRList = (props: UIIRListProps) => {
     );
   } else {
     return (
-      <div className={`IRTable`}>
+      <div className={`showIRTable`}>
         <ProTable<IRCard>
-          headerTitle="原始需求列表"
+          headerTitle="需求展示列表"
           toolBarRender={() => {
-            return [
-              <Button key="create" onClick={showCreateModal} type="primary">
-                新建原始需求
-              </Button>,
-            ];
+            return [];
           }}
-          columns={columns}
+          options={{
+            fullScreen: false,
+            reload: false,
+            setting: false,
+            density: false,
+          }}
+          columns={onlyShowColumn}
           expandable={{ expandedRowRender }}
           dataSource={dataIRList}
           rowKey="id"

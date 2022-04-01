@@ -68,7 +68,6 @@ const UISRList = (props: UISRListProps) => {
     let state = "";
     let color = "";
     if (value.state === "TODO") {
-      console.log("I am here");
       state = "未开始";
       color = "red";
     }
@@ -99,8 +98,45 @@ const UISRList = (props: UISRListProps) => {
     });
   });
 
-  // const [tableListDataSource, settableListDataSource] =
-  //   useState<SRCard[]>(dataSRList);
+  const showSRList: SRCard[] = [];
+  SRListData.forEach((value: any) => {
+    curSRKey.forEach((curValue: number) => {
+      if (curValue === value.id) {
+        let state = "";
+        let color = "";
+        if (value.state === "TODO") {
+          state = "未开始";
+          color = "red";
+        }
+        if (value.state === "WIP") {
+          state = "开发中";
+          color = "blue";
+        }
+        if (value.state === "Reviewing") {
+          state = "测试中";
+          color = "yellow";
+        }
+        if (value.state === "Done") {
+          state = "已交付";
+          color = "green";
+        }
+        showSRList.push({
+          id: value.id,
+          project: value.project,
+          title: value.title,
+          description: value.description,
+          priority: value.priority,
+          rank: value.rank,
+          currState: state,
+          stateColor: color,
+          createdBy: value.createdBy,
+          createdAt: value.createdAt * 1000,
+          disabled: value.disabled,
+        });
+      }
+    });
+  });
+
   const [isEditModalVisible, setIsEditModalVisible] = useState<boolean>(false);
   const [isCreateModalVisible, setIsCreateModalVisible] =
     useState<boolean>(false);
@@ -652,19 +688,13 @@ const UISRList = (props: UISRListProps) => {
     return <div className={"ChooseSRTable"}>{table}</div>;
   } else {
     return (
-      <div className={"SRTable"}>
+      <div className={"showSRTable"}>
         <ProTable<SRCard>
           headerTitle="功能需求列表"
-          toolBarRender={() => {
-            return [
-              <Button key="create" onClick={showCreateModal} type="primary">
-                新建功能需求
-              </Button>,
-            ];
-          }}
+          toolBarRender={false}
           rowKey="id"
-          columns={columns}
-          dataSource={dataSRList}
+          columns={chooseColumn}
+          dataSource={showSRList}
           pagination={false}
           options={{
             fullScreen: false,

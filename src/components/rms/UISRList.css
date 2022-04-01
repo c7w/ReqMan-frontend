@@ -12,6 +12,16 @@
   background-color: #e1e9ff;
 }
 
+.showSRTable {
+  width: 100%;
+  padding-top: 2rem;
+  margin-right: 1rem;
+  padding-bottom: 2rem;
+  padding-right: 2rem;
+  border-radius: 1rem;
+  background-color: #e1e9ff;
+}
+
 .markdown {
   padding-top: 14px;
 }
