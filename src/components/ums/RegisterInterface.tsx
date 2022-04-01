@@ -94,7 +94,7 @@ const RegisterInterface = (props: RegisterInterfaceProps) => {
   const mailCheck = (event: { target: { value: string } }) => {
     const mail = event.target.value;
     setMail(mail);
-    const reg = /^\w+([-+.]\w+)*@\w+([-.]\ w+)*\.\w+([-.]\ w+)*$/;
+    const reg = /^\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,14}$/;
     if (!reg.test(mail)) {
       setMailError("邮箱格式有误！");
     } else {
