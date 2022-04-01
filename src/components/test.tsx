@@ -13,6 +13,9 @@ import {
   getIRSRInfo,
   getSRIterationInfo,
   getIRIterationInfo,
+  getSRServiceInfo,
+  getIRListInfo,
+  getSRListInfo,
 } from "../store/functions/RMS";
 import {
   IRCard,
@@ -28,13 +31,19 @@ import {
   Iteration2SR,
   oneIR2AllSR,
   oneSR2AllIR,
+  Service2SR,
   SR2Iteration,
-  userId2Name,
+  SR2Service,
+  userId2UserInfo,
 } from "../utils/Association";
 import { getProjectStore } from "../store/slices/ProjectSlice";
 import { updateProjectInfo } from "../store/functions/UMS";
 import Loading from "../layout/components/Loading";
-import { getIRSRStore } from "../store/slices/IRSRSlice";
+import {
+  getIRListStore,
+  getIRSRStore,
+  getSRListStore,
+} from "../store/slices/IRSRSlice";
 import {
   getIRIterationStore,
   getSRIterationStore,
@@ -48,6 +57,8 @@ const Test = () => {
   const SRIterationAsso = useSelector(getSRIterationStore);
   const IRIterationAsso = useSelector(getIRIterationStore);
   const SRServiceAsso = useSelector(getSRServiceStore);
+  const SRListInfo = useSelector(getSRListStore);
+  const IRListInfo = useSelector(getIRListStore);
   const IR: IRCard = {
     id: 27,
     project: 2,
@@ -97,13 +108,15 @@ const Test = () => {
   };
   const handleOnClick = () => {
     console.log("click");
-    // console.log(userId2Name(17, projectInfo));
-    // console.log(oneIR2AllSR(26, IRSRAsso));
-    // console.log(oneSR2AllIR(10, IRSRAsso));
+    // console.log(userId2UserInfo(17, projectInfo));
+    // console.log(oneIR2AllSR(26, IRSRAsso, SRListInfo));
+    console.log(oneSR2AllIR(4, IRSRAsso, IRListInfo));
     // console.log(SR2Iteration(24, SRIterationAsso));
     // console.log(IR2Iteration(6, IRIterationAsso));
     // console.log(Iteration2IR(5, IRIterationAsso));
     // console.log(Iteration2SR(1, SRIterationAsso));
+    // console.log(SR2Service(24, SRServiceAsso));
+    // console.log(Service2SR(1, SRServiceAsso));
     // createIRInfo(dispatcher, 2, IR);
     // createSRInfo(dispatcher, 2, SR);
     // createIRSR(dispatcher, 2, IRSRAssociation);
@@ -119,13 +132,17 @@ const Test = () => {
     IRSRAsso === "" ||
     SRIterationAsso === "" ||
     IRIterationAsso === "" ||
-    SRServiceAsso === ""
+    SRServiceAsso === "" ||
+    SRListInfo === "" ||
+    IRListInfo === ""
   ) {
     updateProjectInfo(dispatcher, 2);
     getIRSRInfo(dispatcher, 2);
     getSRIterationInfo(dispatcher, 2);
     getIRIterationInfo(dispatcher, 2);
-    // getSRServiceIn(dispatcher, 2);
+    getSRServiceInfo(dispatcher, 2);
+    getIRListInfo(dispatcher, 2);
+    getSRListInfo(dispatcher, 2);
   } else {
     return (
       <>
