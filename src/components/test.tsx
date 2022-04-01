@@ -1,5 +1,5 @@
 import { Button } from "antd";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   createIRInfo,
   updateIRInfo,
@@ -10,6 +10,8 @@ import {
   createUserIteration,
   updateSRInfo,
   updateIterationInfo,
+  getIRSRInfo,
+  getSRIterationInfo,
 } from "../store/functions/RMS";
 import {
   IRCard,
@@ -19,9 +21,23 @@ import {
   SRIteration,
   UserIteration,
 } from "../store/ConfigureStore";
+import {
+  oneIR2AllSR,
+  oneSR2AllIR,
+  SR2Iteration,
+  userId2Name,
+} from "../utils/Association";
+import { getProjectStore } from "../store/slices/ProjectSlice";
+import { updateProjectInfo } from "../store/functions/UMS";
+import Loading from "../layout/components/Loading";
+import { getIRSRStore } from "../store/slices/IRSRSlice";
+import { getSRIterationStore } from "../store/slices/IterationSlice";
 
 const Test = () => {
   const dispatcher = useDispatch();
+  const projectInfo = useSelector(getProjectStore);
+  const IRSRAsso = useSelector(getIRSRStore);
+  const SRIterationAsso = useSelector(getSRIterationStore);
   const IR: IRCard = {
     id: 27,
     project: 2,
@@ -71,6 +87,10 @@ const Test = () => {
   };
   const handleOnClick = () => {
     console.log("click");
+    // console.log(userId2Name(17, projectInfo));
+    // console.log(oneIR2AllSR(26, IRSRAsso));
+    // console.log(oneSR2AllIR(10, IRSRAsso));
+    console.log(SR2Iteration(24, SRIterationAsso));
     // createIRInfo(dispatcher, 2, IR);
     // createSRInfo(dispatcher, 2, SR);
     // createIRSR(dispatcher, 2, IRSRAssociation);
@@ -81,12 +101,23 @@ const Test = () => {
     // updateSRInfo(dispatcher, 2, SR);
     // updateIterationInfo(dispatcher, 2, Iteration); 待解决 bug
   };
+  if (projectInfo === "" || IRSRAsso === "" || SRIterationAsso === "") {
+    updateProjectInfo(dispatcher, 2);
+    getIRSRInfo(dispatcher, 2);
+    getSRIterationInfo(dispatcher, 2);
+  } else {
+    return (
+      <>
+        <p>I am test page</p>
+        <Button type="primary" onClick={() => handleOnClick()}>
+          Primary Button
+        </Button>
+      </>
+    );
+  }
   return (
     <>
-      <p>I am test page</p>
-      <Button type="primary" onClick={() => handleOnClick()}>
-        Primary Button
-      </Button>
+      <Loading />
     </>
   );
 };
