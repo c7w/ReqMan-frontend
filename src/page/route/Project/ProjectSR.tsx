@@ -63,8 +63,7 @@ const ProjectSR = () => {
                 <div>
                   <UISRList
                     showChoose={false}
-                    //myIRKey={1}
-                    //curSRKey={[1]}
+                    onlyShow={false}
                     project_id={Number(project_id)}
                     SRListStr={SRListInfo}
                     userInfo={userInfo}

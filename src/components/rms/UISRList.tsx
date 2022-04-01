@@ -28,6 +28,7 @@ const { Option } = Select;
 
 interface UISRListProps {
   readonly showChoose: boolean;
+  readonly onlyShow: boolean;
   readonly project_id: number;
   readonly SRListStr: string;
   readonly userInfo: string;
@@ -248,6 +249,9 @@ const UISRList = (props: UISRListProps) => {
       width: "15%",
       dataIndex: "title",
       align: "center",
+      render: (_, record) => (
+        <div style={{ fontWeight: "bold" }}>{record.title}</div>
+      ),
     },
     {
       title: "状态",
@@ -256,6 +260,21 @@ const UISRList = (props: UISRListProps) => {
       search: false,
       width: "10%",
       dataIndex: "currState",
+      valueType: "select",
+      valueEnum: {
+        未开始: {
+          text: "未开始",
+        },
+        开发中: {
+          text: "开发中",
+        },
+        测试中: {
+          text: "测试中",
+        },
+        已交付: {
+          text: "已交付",
+        },
+      },
       align: "center",
       render: (_, record) => (
         <Space>
@@ -384,11 +403,10 @@ const UISRList = (props: UISRListProps) => {
             defaultSelectedRowKeys: curSRKey,
             ...rowSelection,
           }}
-          tableAlertRender={({ selectedRowKeys, selectedRows }) => (
+          tableAlertOptionRender={({ selectedRowKeys, selectedRows }) => (
             <Space size={24}>
-              <span>已选 {selectedRowKeys.length} 项</span>
-              <span>{`关联 SR 任务: ${selectedRows.reduce(
-                (pre, item: SRCard) => pre + ", " + item.title,
+              <span>{`关联功能需求: ${selectedRows.reduce(
+                (pre, item: SRCard) => pre + item.title + ", ",
                 ""
               )} `}</span>
             </Space>
@@ -403,7 +421,7 @@ const UISRList = (props: UISRListProps) => {
           dataSource={dataSRList}
           pagination={false}
           scroll={{ y: 300 }}
-          search={{ labelWidth: "auto" }}
+          search={false}
           rowKey="id"
           dateFormatter="string"
           toolBarRender={false}
@@ -412,7 +430,7 @@ const UISRList = (props: UISRListProps) => {
     );
   }, [props.SRListStr]);
 
-  if (!props.showChoose) {
+  if (!props.showChoose && !props.onlyShow) {
     return (
       <div className={"SRTable"}>
         <ProTable<SRCard>
@@ -434,8 +452,14 @@ const UISRList = (props: UISRListProps) => {
           // }}
           dataSource={dataSRList}
           pagination={false}
-          scroll={{ y: 350 }}
-          search={{ labelWidth: "auto" }}
+          options={{
+            fullScreen: false,
+            reload: false,
+            setting: true,
+            density: true,
+          }}
+          scroll={{ y: 400 }}
+          search={false}
           dateFormatter="string"
         />
         <Modal
@@ -448,7 +472,6 @@ const UISRList = (props: UISRListProps) => {
         >
           <p
             style={{
-              paddingTop: "10px",
               marginBottom: "5px",
               fontSize: "16px",
             }}
@@ -544,7 +567,6 @@ const UISRList = (props: UISRListProps) => {
         >
           <p
             style={{
-              paddingTop: "10px",
               marginBottom: "5px",
               fontSize: "16px",
             }}
@@ -626,8 +648,36 @@ const UISRList = (props: UISRListProps) => {
         </Modal>
       </div>
     );
-  } else {
+  } else if (props.showChoose) {
     return <div className={"ChooseSRTable"}>{table}</div>;
+  } else {
+    return (
+      <div className={"SRTable"}>
+        <ProTable<SRCard>
+          headerTitle="功能需求列表"
+          toolBarRender={() => {
+            return [
+              <Button key="create" onClick={showCreateModal} type="primary">
+                新建功能需求
+              </Button>,
+            ];
+          }}
+          rowKey="id"
+          columns={columns}
+          dataSource={dataSRList}
+          pagination={false}
+          options={{
+            fullScreen: false,
+            reload: false,
+            setting: true,
+            density: true,
+          }}
+          scroll={{ y: 400 }}
+          search={false}
+          dateFormatter="string"
+        />
+      </div>
+    );
   }
 };
 
