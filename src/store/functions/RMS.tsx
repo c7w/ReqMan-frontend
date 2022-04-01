@@ -292,8 +292,8 @@ const createIteration = async (
       updateData: {
         title: iteration.title,
         sid: iteration.sid,
-        begin: iteration.begin.toFixed(1),
-        end: iteration.end.toFixed(1),
+        begin: iteration.begin,
+        end: iteration.end,
       },
     },
   };

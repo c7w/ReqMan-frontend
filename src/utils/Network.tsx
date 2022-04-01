@@ -31,7 +31,7 @@ const request_json = async (config: APIConfig, settings: Settings = {}) => {
     ...settings.getParams,
     sessionId: getCookie("sessionId", ""),
   };
-  console.log(getParams_.sessionId);
+  // console.log(getParams_.sessionId);
   const getParams =
     "?" +
     Object.entries(getParams_)
@@ -59,12 +59,12 @@ const request_json = async (config: APIConfig, settings: Settings = {}) => {
       method: config.method,
     };
   }
-  console.warn("initRequest: " + JSON.stringify(initRequest));
+  // console.warn("initRequest: " + JSON.stringify(initRequest));
   // console.log("path: " + path);
   return fetch(path, initRequest)
     .then((data) => data.json())
     .then((json) => {
-      console.warn(`Fetched ${path} successfully: ` + JSON.stringify(json));
+      // console.warn(`Fetched ${path} successfully: ` + JSON.stringify(json));
       return json;
     });
 };
