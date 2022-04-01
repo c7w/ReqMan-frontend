@@ -12,6 +12,7 @@ import {
   updateIterationInfo,
   getIRSRInfo,
   getSRIterationInfo,
+  getIRIterationInfo,
 } from "../store/functions/RMS";
 import {
   IRCard,
@@ -22,6 +23,9 @@ import {
   UserIteration,
 } from "../store/ConfigureStore";
 import {
+  IR2Iteration,
+  Iteration2IR,
+  Iteration2SR,
   oneIR2AllSR,
   oneSR2AllIR,
   SR2Iteration,
@@ -31,13 +35,17 @@ import { getProjectStore } from "../store/slices/ProjectSlice";
 import { updateProjectInfo } from "../store/functions/UMS";
 import Loading from "../layout/components/Loading";
 import { getIRSRStore } from "../store/slices/IRSRSlice";
-import { getSRIterationStore } from "../store/slices/IterationSlice";
+import {
+  getIRIterationStore,
+  getSRIterationStore,
+} from "../store/slices/IterationSlice";
 
 const Test = () => {
   const dispatcher = useDispatch();
   const projectInfo = useSelector(getProjectStore);
   const IRSRAsso = useSelector(getIRSRStore);
   const SRIterationAsso = useSelector(getSRIterationStore);
+  const IRIterationAsso = useSelector(getIRIterationStore);
   const IR: IRCard = {
     id: 27,
     project: 2,
@@ -90,7 +98,10 @@ const Test = () => {
     // console.log(userId2Name(17, projectInfo));
     // console.log(oneIR2AllSR(26, IRSRAsso));
     // console.log(oneSR2AllIR(10, IRSRAsso));
-    console.log(SR2Iteration(24, SRIterationAsso));
+    // console.log(SR2Iteration(24, SRIterationAsso));
+    // console.log(IR2Iteration(6, IRIterationAsso));
+    console.log(Iteration2IR(5, IRIterationAsso));
+    console.log(Iteration2SR(1, SRIterationAsso));
     // createIRInfo(dispatcher, 2, IR);
     // createSRInfo(dispatcher, 2, SR);
     // createIRSR(dispatcher, 2, IRSRAssociation);
@@ -101,10 +112,16 @@ const Test = () => {
     // updateSRInfo(dispatcher, 2, SR);
     // updateIterationInfo(dispatcher, 2, Iteration); 待解决 bug
   };
-  if (projectInfo === "" || IRSRAsso === "" || SRIterationAsso === "") {
+  if (
+    projectInfo === "" ||
+    IRSRAsso === "" ||
+    SRIterationAsso === "" ||
+    IRIterationAsso === ""
+  ) {
     updateProjectInfo(dispatcher, 2);
     getIRSRInfo(dispatcher, 2);
     getSRIterationInfo(dispatcher, 2);
+    getIRIterationInfo(dispatcher, 2);
   } else {
     return (
       <>
