@@ -373,6 +373,45 @@ const UISRList = (props: UISRListProps) => {
 
   console.log(dataSRList);
 
+  const [table, setTable] = useState<ReactElement>();
+  useEffect(() => {
+    setTable(
+      <div>
+        <ProTable<SRCard>
+          columns={chooseColumn}
+          rowSelection={{
+            // hideSelectAll: false,
+            defaultSelectedRowKeys: curSRKey,
+            ...rowSelection,
+          }}
+          tableAlertRender={({ selectedRowKeys, selectedRows }) => (
+            <Space size={24}>
+              <span>已选 {selectedRowKeys.length} 项</span>
+              <span>{`关联 SR 任务: ${selectedRows.reduce(
+                (pre, item: SRCard) => pre + ", " + item.title,
+                ""
+              )} `}</span>
+            </Space>
+          )}
+          // tableAlertRender={false}
+          // request={() => {
+          //   return Promise.resolve({
+          //     data: tableListDataSource,
+          //     success: true,
+          //   });
+          // }}
+          dataSource={dataSRList}
+          pagination={false}
+          scroll={{ y: 300 }}
+          search={{ labelWidth: "auto" }}
+          rowKey="id"
+          dateFormatter="string"
+          toolBarRender={false}
+        />
+      </div>
+    );
+  }, [props.SRListStr]);
+
   if (!props.showChoose) {
     return (
       <div className={"SRTable"}>
@@ -588,41 +627,7 @@ const UISRList = (props: UISRListProps) => {
       </div>
     );
   } else {
-    return (
-      <div className={"ChooseSRTable"}>
-        <ProTable<SRCard>
-          columns={chooseColumn}
-          rowSelection={{
-            // hideSelectAll: false,
-            defaultSelectedRowKeys: curSRKey,
-            ...rowSelection,
-          }}
-          // tableAlertRender={({ selectedRowKeys, selectedRows }) => (
-          //   <Space size={24}>
-          //     <span>已选 {selectedRowKeys.length} 项</span>
-          //     <span>{`关联 SR 任务: ${selectedRows.reduce(
-          //       (pre, item: SRCard) => pre + ", " + item.title,
-          //       ""
-          //     )} `}</span>
-          //   </Space>
-          // )}
-          tableAlertRender={false}
-          // request={() => {
-          //   return Promise.resolve({
-          //     data: tableListDataSource,
-          //     success: true,
-          //   });
-          // }}
-          dataSource={dataSRList}
-          pagination={false}
-          scroll={{ y: 300 }}
-          search={{ labelWidth: "auto" }}
-          rowKey="id"
-          dateFormatter="string"
-          toolBarRender={false}
-        />
-      </div>
-    );
+    return <div className={"ChooseSRTable"}>{table}</div>;
   }
 };
 

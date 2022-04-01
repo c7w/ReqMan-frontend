@@ -244,13 +244,6 @@ const UIIRList = (props: UIIRListProps) => {
     },
   ];
 
-  console.log(dataIRList);
-
-  // const [table, setTable] = useState<ReactElement>();
-  // useEffect(() => {
-  //   setTable(<div></div>);
-  // }, [1]);
-
   return (
     <div className={`IRTable`}>
       <ProTable<IRCard>
