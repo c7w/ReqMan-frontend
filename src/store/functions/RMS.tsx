@@ -200,7 +200,7 @@ const createSRInfo = async (
   return request_json(API.POST_RMS, { body: myBody }).then((data) => {
     console.log(data.code);
     if (data.code === 0) {
-      getIRListInfo(dispatcher, project_id);
+      getSRListInfo(dispatcher, project_id);
     }
     return data;
   });
@@ -229,7 +229,7 @@ const updateSRInfo = async (
   return request_json(API.POST_RMS, { body: myBody }).then((data) => {
     console.log(data.code);
     if (data.code === 0) {
-      getIRListInfo(dispatcher, project_id);
+      getSRListInfo(dispatcher, project_id);
     }
     return data;
   });
@@ -251,7 +251,7 @@ const deleteSRInfo = async (
   return request_json(API.POST_RMS, { body: myBody }).then((data) => {
     console.log(data.code);
     if (data.code === 0) {
-      getIRListInfo(dispatcher, project_id);
+      getSRListInfo(dispatcher, project_id);
     }
     return data;
   });

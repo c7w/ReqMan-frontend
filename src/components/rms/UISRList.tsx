@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { ReactElement, useEffect, useState } from "react";
 import type { ProColumns } from "@ant-design/pro-table";
 import ReactMarkdown from "react-markdown";
 import ProTable from "@ant-design/pro-table";
@@ -178,19 +178,6 @@ const UISRList = (props: UISRListProps) => {
   };
 
   const handleCreateOk = () => {
-    let state = "";
-    if (currState === "未开始") {
-      state = "TODO";
-    }
-    if (currState === "开发中") {
-      state = "WIP";
-    }
-    if (currState === "测试中") {
-      state = "Reviewing";
-    }
-    if (currState === "已交付") {
-      state = "Done";
-    }
     const newSR: SRCard = {
       id: id,
       project: project,
@@ -198,7 +185,7 @@ const UISRList = (props: UISRListProps) => {
       description: desc,
       priority: priority,
       rank: rank,
-      currState: state,
+      currState: "TODO",
       createdBy: "", // 未用到
       createdAt: -1, // 未用到
       disabled: true, // 未用到
@@ -256,6 +243,8 @@ const UISRList = (props: UISRListProps) => {
   const columns: ProColumns<SRCard>[] = [
     {
       title: "功能需求标题",
+      filters: true,
+      onFilter: true,
       width: "15%",
       dataIndex: "title",
       align: "center",
@@ -286,6 +275,8 @@ const UISRList = (props: UISRListProps) => {
     },
     {
       title: "创建者",
+      filters: true,
+      onFilter: true,
       width: "15%",
       dataIndex: "createdBy",
       align: "center",
@@ -326,28 +317,6 @@ const UISRList = (props: UISRListProps) => {
   }
 
   const rowSelection = {
-    // onChange: (
-    //   selectedRowKeys: React.Key[],
-    //   selectedRows: ProColumns<SRCard>[]
-    // ) => {
-    //   const selectedSR = [];
-    //   console.log("===========hey I change===========");
-    //   // for (let i = 0; i < selectedRowKeys.length; i++) {
-    //   //   selectedSR.push(selectedRows[i].key);
-    //   // }
-    //   // for (let i = 0; i < props.curSRKey.length; i++) {
-    //   //   selectedSR.push(props.curSRKey[i]);
-    //   // }
-    // },
-    // getCheckboxProps: (record: ProColumns<SRCard>) => {
-    //   console.log("=================");
-    //   // for (let i = 0; i < props.curSRKey.length; i++) {
-    //   //   if (props.curSRKey[i] === record.key) {
-    //   //     return { disabled: true };
-    //   //   }
-    //   // }
-    //   return { disabled: false };
-    // },
     onSelect: (record: SRCard, selected: boolean) => {
       const IRSR: IRSRAssociation = {
         id: 0,
@@ -401,6 +370,8 @@ const UISRList = (props: UISRListProps) => {
       });
     },
   };
+
+  console.log(dataSRList);
 
   if (!props.showChoose) {
     return (

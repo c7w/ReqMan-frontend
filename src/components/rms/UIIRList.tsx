@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { ReactElement, useEffect, useState } from "react";
 import type { ProColumns } from "@ant-design/pro-table";
 import ProTable from "@ant-design/pro-table";
 import {
@@ -21,7 +21,6 @@ import {
   updateIRInfo,
 } from "../../store/functions/RMS";
 import { ToastMessage } from "../../utils/Navigation";
-import { getSRListStore } from "../../store/slices/IRSRSlice";
 import ReactMarkdown from "react-markdown";
 const { TextArea } = Input;
 
@@ -44,6 +43,7 @@ IRListData example:
 */
 
 const UIIRList = (props: UIIRListProps) => {
+  console.log("into it!");
   const IRListData = JSON.parse(props.IRListStr).data;
   const dispatcher = useDispatch();
   const project = props.project_id;
@@ -60,7 +60,7 @@ const UIIRList = (props: UIIRListProps) => {
       disabled: value.disabled,
     });
   });
-  const [tableListDataSource] = useState<IRCard[]>(dataIRList);
+  // const [tableListDataSource] = useState<IRCard[]>(dataIRList);
   const [isEditModalVisible, setIsEditModalVisible] = useState<boolean>(false);
   const [isCreateModalVisible, setIsCreateModalVisible] =
     useState<boolean>(false);
@@ -244,6 +244,13 @@ const UIIRList = (props: UIIRListProps) => {
     },
   ];
 
+  console.log(dataIRList);
+
+  // const [table, setTable] = useState<ReactElement>();
+  // useEffect(() => {
+  //   setTable(<div></div>);
+  // }, [1]);
+
   return (
     <div className={`IRTable`}>
       <ProTable<IRCard>
@@ -269,7 +276,6 @@ const UIIRList = (props: UIIRListProps) => {
         dateFormatter="string"
         search={false}
       />
-
       <Modal
         title="功能需求关联列表"
         centered={true}
