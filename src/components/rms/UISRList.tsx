@@ -60,7 +60,7 @@ const UISRList = (props: UISRListProps) => {
       }
     });
   }
-  const [selectedSR, setSelectedSR] = useState<number[]>(curSRKey.slice());
+
   // 总任务列表
   const dataSRList: SRCard[] = [];
   SRListData.forEach((value: any) => {
@@ -98,8 +98,8 @@ const UISRList = (props: UISRListProps) => {
     });
   });
 
-  const [tableListDataSource, settableListDataSource] =
-    useState<SRCard[]>(dataSRList);
+  // const [tableListDataSource, settableListDataSource] =
+  //   useState<SRCard[]>(dataSRList);
   const [isEditModalVisible, setIsEditModalVisible] = useState<boolean>(false);
   const [isCreateModalVisible, setIsCreateModalVisible] =
     useState<boolean>(false);
@@ -149,7 +149,7 @@ const UISRList = (props: UISRListProps) => {
     updateSRInfo(dispatcher, project, newSR).then((data: any) => {
       if (data.code === 0) {
         ToastMessage("success", "修改成功", "您的SR修改成功");
-        setTimeout(() => window.location.reload(), 1000);
+        // setTimeout(() => window.location.reload(), 1000);
         setId(-1);
         setTitle("");
         setDesc("");
@@ -206,7 +206,7 @@ const UISRList = (props: UISRListProps) => {
     createSRInfo(dispatcher, project, newSR).then((data: any) => {
       if (data.code === 0) {
         ToastMessage("success", "创建成功", "您的SR创建成功");
-        setTimeout(() => window.location.reload(), 1000);
+        // setTimeout(() => window.location.reload(), 1000);
         setId(-1);
         setTitle("");
         setDesc("");
@@ -234,7 +234,7 @@ const UISRList = (props: UISRListProps) => {
     deleteSRInfo(dispatcher, project, record).then((data: any) => {
       if (data.code === 0) {
         ToastMessage("success", "删除成功", "您的SR删除成功");
-        setTimeout(() => window.location.reload(), 1000);
+        // setTimeout(() => window.location.reload(), 1000);
         setId(-1);
         setTitle("");
         setDesc("");
@@ -264,6 +264,7 @@ const UISRList = (props: UISRListProps) => {
       title: "状态",
       filters: true,
       onFilter: true,
+      search: false,
       width: "10%",
       dataIndex: "currState",
       align: "center",
@@ -415,16 +416,16 @@ const UISRList = (props: UISRListProps) => {
           }}
           rowKey="id"
           columns={columns}
-          request={() => {
-            return Promise.resolve({
-              data: tableListDataSource,
-              success: true,
-            });
-          }}
-          pagination={{
-            pageSize: 6,
-          }}
-          search={false}
+          // request={() => {
+          //   return Promise.resolve({
+          //     data: tableListDataSource,
+          //     success: true,
+          //   });
+          // }}
+          dataSource={dataSRList}
+          pagination={false}
+          scroll={{ y: 350 }}
+          search={{ labelWidth: "auto" }}
           dateFormatter="string"
         />
         <Modal
@@ -619,10 +620,6 @@ const UISRList = (props: UISRListProps) => {
     return (
       <div className={"ChooseSRTable"}>
         <ProTable<SRCard>
-          // onReset={() => {
-          //   setSelectedSR(curSRKey);
-          // }}
-          params={selectedSR}
           columns={chooseColumn}
           rowSelection={{
             // hideSelectAll: false,
@@ -639,21 +636,19 @@ const UISRList = (props: UISRListProps) => {
           //   </Space>
           // )}
           tableAlertRender={false}
-          request={() => {
-            return Promise.resolve({
-              data: tableListDataSource,
-              success: true,
-            });
-          }}
-          pagination={{
-            pageSize: 6,
-          }}
+          // request={() => {
+          //   return Promise.resolve({
+          //     data: tableListDataSource,
+          //     success: true,
+          //   });
+          // }}
+          dataSource={dataSRList}
+          pagination={false}
+          scroll={{ y: 300 }}
+          search={{ labelWidth: "auto" }}
           rowKey="id"
           dateFormatter="string"
           toolBarRender={false}
-          search={{
-            labelWidth: "auto",
-          }}
         />
       </div>
     );

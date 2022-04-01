@@ -78,14 +78,14 @@ const UIIRList = (props: UIIRListProps) => {
 
   const handleSROk = () => {
     setId(-1);
-    setTimeout(() => window.location.reload(), 1000);
+    // setTimeout(() => window.location.reload(), 1000);
     ToastMessage("success", "关联成功", "您的IR-SR关联成功");
     setIsSRModalVisible(false);
   };
 
   const handleSRCancel = () => {
     setId(-1);
-    setTimeout(() => window.location.reload(), 0);
+    // setTimeout(() => window.location.reload(), 0);
     setIsSRModalVisible(false);
   };
 
@@ -111,7 +111,7 @@ const UIIRList = (props: UIIRListProps) => {
     updateIRInfo(dispatcher, project, newIR).then((data: any) => {
       if (data.code === 0) {
         ToastMessage("success", "修改成功", "您的IR修改成功");
-        setTimeout(() => window.location.reload(), 1000);
+        // setTimeout(() => window.location.reload(), 1000);
         setId(-1);
         setTitle("");
         setDesc("");
@@ -149,7 +149,7 @@ const UIIRList = (props: UIIRListProps) => {
     createIRInfo(dispatcher, project, newIR).then((data: any) => {
       if (data.code === 0) {
         ToastMessage("success", "创建成功", "您的IR创建成功");
-        setTimeout(() => window.location.reload(), 1000);
+        // setTimeout(() => window.location.reload(), 1000);
         setId(-1);
         setTitle("");
         setDesc("");
@@ -173,7 +173,7 @@ const UIIRList = (props: UIIRListProps) => {
     deleteIRInfo(dispatcher, project, record).then((data: any) => {
       if (data.code === 0) {
         ToastMessage("success", "删除成功", "您的IR删除成功");
-        setTimeout(() => window.location.reload(), 1000);
+        // setTimeout(() => window.location.reload(), 1000);
         setId(-1);
         setTitle("");
         setDesc("");
@@ -256,16 +256,16 @@ const UIIRList = (props: UIIRListProps) => {
           ];
         }}
         columns={columns}
-        request={() => {
-          return Promise.resolve({
-            data: tableListDataSource,
-            success: true,
-          });
-        }}
+        // request={() => {
+        //   return Promise.resolve({
+        //     data: tableListDataSource,
+        //     success: true,
+        //   });
+        // }}
+        dataSource={dataIRList}
         rowKey="id"
-        pagination={{
-          pageSize: 6,
-        }}
+        pagination={false}
+        scroll={{ y: 350 }}
         dateFormatter="string"
         search={false}
       />
