@@ -53,7 +53,6 @@ const Iteration2IR = (iterationId: number, IRIterationAsso: string) => {
     }
   }).filter((obj: any) => obj);
 };
-
 // 传入需要查询的 SRId，返回其对应的所有迭代，还需传入 SRIteration (getSRIterationStore 而来) 未解析
 const SR2Iteration = (SRId: number, SRIterationAsso: string) => {
   console.log("================ Get Iteration By SR ===============");
@@ -65,7 +64,6 @@ const SR2Iteration = (SRId: number, SRIterationAsso: string) => {
     }
   }).filter((obj: any) => obj);
 };
-
 // 传入需要查询的 IterationId，返回其对应的所有 SR，还需传入 SRIteration (getSRIterationStore 而来) 未解析
 const Iteration2SR = (iterationId: number, SRIterationAsso: string) => {
   console.log("================ Get SR By Iteration ===============");
@@ -73,6 +71,28 @@ const Iteration2SR = (iterationId: number, SRIterationAsso: string) => {
   console.log(SRItData);
   return SRItData.map((obj: any) => {
     if (obj.iteration === iterationId) {
+      return obj.SR;
+    }
+  }).filter((obj: any) => obj);
+};
+// 传入需要查询的 SRId，返回其对应的服务 service(unique)，还需传入 SRService (getServiceStore 而来) 不解析
+const SR2Service = (SRId: number, SRServiceAsso: string) => {
+  console.log("================ Get Service By SR ===============");
+  const SRServiceData = JSON.parse(SRServiceAsso).data;
+  console.log(SRServiceData);
+  return SRServiceData.map((obj: any) => {
+    if (obj.SR === SRId) {
+      return obj.service;
+    }
+  }).filter((obj: any) => obj);
+};
+// 传入需要查询的 serviceId，返回其对应的所有 SR，还需传入 SRService (getServiceStore 而来) 不解析
+const Service2SR = (serviceId: number, SRServiceAsso: string) => {
+  console.log("================ Get SR By Service ===============");
+  const SRServiceData = JSON.parse(SRServiceAsso).data;
+  console.log(SRServiceData);
+  return SRServiceData.map((obj: any) => {
+    if (obj.service === serviceId) {
       return obj.SR;
     }
   }).filter((obj: any) => obj);
@@ -86,4 +106,6 @@ export {
   Iteration2IR,
   SR2Iteration,
   Iteration2SR,
+  SR2Service,
+  Service2SR,
 };

@@ -1,6 +1,10 @@
 import request_json from "../../utils/Network";
 import API from "../../utils/APIList";
-import { getServiceStore, updateServiceStore } from "../slices/ServiceSlice";
+import {
+  getServiceStore,
+  updateServiceStore,
+  updateSRServiceStore,
+} from "../slices/ServiceSlice";
 import {
   updateIRListStore,
   updateSRListStore,
@@ -14,6 +18,7 @@ import {
   SRIteration,
   UserIteration,
   IRIteration,
+  SRService,
 } from "../ConfigureStore";
 import {
   updateIRIterationStore,
@@ -565,6 +570,60 @@ const deleteUserIteration = async (
   getUserIterationInfo(dispatcher, project_id);
 };
 
+const getSRServiceInfo = async (
+  dispatcher: any,
+  project_id: number
+): Promise<void> => {
+  const myParams = {
+    project: project_id,
+    type: "service-sr",
+  };
+  const SRService_data = await request_json(API.GET_RMS, {
+    getParams: myParams,
+  });
+  dispatcher(updateSRServiceStore(JSON.stringify(SRService_data)));
+};
+
+const createSRService = async (
+  dispatcher: any,
+  project_id: number,
+  SRService: SRService
+): Promise<void> => {
+  console.log(SRService);
+  const myBody = {
+    project: project_id,
+    type: "service-sr",
+    operation: "create",
+    data: {
+      updateData: {
+        serviceId: SRService.serviceId,
+        SRId: SRService.SRId,
+      },
+    },
+  };
+  request_json(API.POST_RMS, { body: myBody });
+  // 更新 Iteration 的 store
+  getSRServiceInfo(dispatcher, project_id);
+};
+
+const deleteSRService = async (
+  dispatcher: any,
+  project_id: number,
+  SRService: SRService
+): Promise<void> => {
+  const myBody = {
+    project: project_id,
+    type: "service-sr",
+    operation: "delete",
+    data: {
+      serviceId: SRService.serviceId,
+      SRId: SRService.SRId,
+    },
+  };
+  request_json(API.POST_RMS, { body: myBody });
+  getSRServiceInfo(dispatcher, project_id);
+};
+
 export {
   getIRListInfo,
   createIRInfo,
@@ -593,4 +652,7 @@ export {
   getSRIterationInfo,
   createSRIteration,
   deleteSRIteration,
+  getSRServiceInfo,
+  createSRService,
+  deleteSRService,
 };

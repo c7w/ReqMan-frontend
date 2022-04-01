@@ -57,6 +57,12 @@ interface UserIteration {
   readonly iterationId: number;
 }
 
+interface SRService {
+  readonly id: number;
+  readonly SRId: number;
+  readonly serviceId: number;
+}
+
 interface ProjectInfo {
   id: number;
   title: string;
@@ -111,4 +117,5 @@ export type {
   ProjectInfo,
   ManageUserInfo,
   Iteration,
+  SRService,
 };
