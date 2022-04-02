@@ -14,22 +14,24 @@ import {
   updateTodoSRList,
   updateWipSRList,
 } from "../../store/slices/CalendarSlice";
+import { getSRListStore } from "../../store/slices/IRSRSlice";
 
 interface CalendarProps {
   readonly userInfo: string;
 }
 
 const Calendar = (props: CalendarProps) => {
+  console.log("--------------------- calendar ===========================");
   const userData = JSON.parse(props.userInfo).data;
   console.log("Calendar: " + userData);
   const dispatcher = useDispatch();
   const todoSRList = useSelector(getTodoSRListStore); // string
   const wipSRList = useSelector(getWipSRListStore); // string
   const reviewSRList = useSelector(getReviewSRListStore); // string
+  const todoSRListData: any = [];
+  const wipSRListData: any = [];
+  const reviewSRListData: any = [];
   useEffect(() => {
-    const todoSRListData: any = [];
-    const wipSRListData: any = [];
-    const reviewSRListData: any = [];
     for (const project of userData.projects) {
       const project_id = Number(project.id);
       getSRListInfo(dispatcher, project_id).then((data: any) => {
@@ -58,8 +60,8 @@ const Calendar = (props: CalendarProps) => {
   return (
     <div className="calendar">
       <List name={"未开始"} stateSRList={JSON.stringify(todoSRList)} />
-      <List name={"进行中"} stateSRList={JSON.stringify(wipSRList)} />
-      <List name={"已完成"} stateSRList={JSON.stringify(reviewSRList)} />
+      <List name={"开发中"} stateSRList={JSON.stringify(wipSRList)} />
+      <List name={"测试中"} stateSRList={JSON.stringify(reviewSRList)} />
     </div>
   );
 };

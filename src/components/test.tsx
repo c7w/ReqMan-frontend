@@ -23,7 +23,7 @@ import {
   IRCard,
   IRSRAssociation,
   Iteration,
-  SRCard,
+  SRCardProps,
   SRIteration,
   UserIteration,
 } from "../store/ConfigureStore";
@@ -77,7 +77,7 @@ const Test = () => {
     createdAt: Date.now(),
     disabled: false,
   };
-  const SR: SRCard = {
+  const SR: SRCardProps = {
     id: 1,
     project: 2,
     title: "test_sfdafafar",

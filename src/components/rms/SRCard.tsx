@@ -1,22 +1,26 @@
 import React, { useState } from "react";
 import "./SRCard.css";
-import { Avatar, Typography, Menu, Dropdown } from "antd";
+import { Avatar, Typography, Menu, Dropdown, Space, Tag } from "antd";
 import { UserOutlined, DownOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
-import { getSR, updateSRListStore } from "../../store/slices/IRSRSlice";
+import { updateSRListStore } from "../../store/slices/IRSRSlice";
+import { SRCardProps } from "../../store/ConfigureStore";
 const { Text } = Typography;
 
-interface SRCardProps {
-  readonly id: number; // id
-}
-
 const SRCard = (props: SRCardProps) => {
-  const SRCardState = useSelector(getSR(props.id));
   const dispatch = useDispatch();
-
+  const state2Color = new Map();
+  const state2ChineseState = new Map();
+  console.log(props);
+  state2Color.set("TODO", "red");
+  state2Color.set("WIP", "blue");
+  state2Color.set("Reviewing", "yellow");
+  state2ChineseState.set("TODO", "未开始");
+  state2ChineseState.set("WIP", "开发中");
+  state2ChineseState.set("Reviewing", "测试中");
   const onClick = (e: any) => {
-    alert("click " + e.key);
-    dispatch(updateSRListStore(e.key));
+    // alert("click " + e.key);
+    // dispatch(updateSRListStore(e.key));
   };
   const menu = (
     <Menu onClick={onClick}>
@@ -35,12 +39,21 @@ const SRCard = (props: SRCardProps) => {
         }}
       >
         <div className="card-small-header">
-          <div className="card-small-header-left">{SRCardState.title}</div>
-          <div className="card-small-header-right">right</div>
+          <div className="card-small-header-left">{props.title}</div>
+          <div className="card-small-header-right">
+            <Space>
+              <Tag
+                color={state2Color.get(props.currState)}
+                style={{ borderRadius: "10px" }}
+              >
+                {state2ChineseState.get(props.currState)}
+              </Tag>
+            </Space>
+          </div>
         </div>
         <div className="card-small-description">
           <Typography>
-            <Text ellipsis={true}>{SRCardState.description}</Text>
+            <Text ellipsis={true}>{props.description}</Text>
           </Typography>
         </div>
         <div className="card-small-down">
@@ -75,37 +88,23 @@ const SRCard = (props: SRCardProps) => {
       <input className="card-input" id="button" type="checkbox" />
       <div className="modal">
         <div className="modal-header">
-          <div className="modal-header-left">{SRCardState.title}</div>
+          <div className="modal-header-left">{props.title}</div>
           <div className="modal-header-right">
             <Dropdown overlay={menu}>
               <a className="ant-dropdown-link">
-                {SRCardState.currState} <DownOutlined />
+                {props.currState} <DownOutlined />
               </a>
             </Dropdown>
           </div>
         </div>
         <div className="modal-content">
           <Typography>
-            <Text>{SRCardState.description}</Text>
+            <Text>{props.description}</Text>
           </Typography>
         </div>
       </div>
     </>
   );
-};
-
-// default props for SRCard
-SRCard.defaultProps = {
-  id: 0, // id
-  project: "test", // the project belongs to
-  title: "SR.002.103", // title
-  description:
-    " hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard !", // description
-  priority: 0, // the priority which indicates the importance of the SR
-  currState: "TODO", // "TODO", "WIP", "Reviewing", "Done"
-  createdBy: "hbx", // somebody
-  createdAt: new Date().getDate(), // sometime
-  disabled: false,
 };
 
 export default SRCard;

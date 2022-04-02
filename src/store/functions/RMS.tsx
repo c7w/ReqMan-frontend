@@ -13,7 +13,7 @@ import {
 import {
   IRCard,
   Iteration,
-  SRCard,
+  SRCardProps,
   IRSRAssociation,
   SRIteration,
   UserIteration,
@@ -179,16 +179,25 @@ const getSRListInfo = async (
     project: project_id,
     type: "sr",
   };
-  const SRList_data = await request_json(API.GET_RMS, { getParams: myParams });
-  // console.log("SRList: " + JSON.stringify(SRList_data));
-  dispatcher(updateSRListStore(JSON.stringify(SRList_data)));
-  return SRList_data;
+  // const SRList_data = await request_json(API.GET_RMS, { getParams: myParams });
+  // // console.log("SRList: " + JSON.stringify(SRList_data));
+  // dispatcher(updateSRListStore(JSON.stringify(SRList_data)));
+  // return SRList_data;
+  return request_json(API.GET_RMS, { getParams: myParams }).then(
+    (SRList_data) => {
+      console.log(SRList_data.code);
+      if (SRList_data.code === 0) {
+        dispatcher(updateSRListStore(JSON.stringify(SRList_data)));
+      }
+      return SRList_data;
+    }
+  );
 };
 
 const createSRInfo = async (
   dispatcher: any,
   project_id: number,
-  sr: SRCard
+  sr: SRCardProps
 ): Promise<void> => {
   console.log(sr);
   const myBody = {
@@ -217,7 +226,7 @@ const createSRInfo = async (
 const updateSRInfo = async (
   dispatcher: any,
   project_id: number,
-  sr: SRCard
+  sr: SRCardProps
 ): Promise<void> => {
   const myBody = {
     project: sr.project,
@@ -246,7 +255,7 @@ const updateSRInfo = async (
 const deleteSRInfo = async (
   dispatcher: any,
   project_id: number,
-  sr: SRCard
+  sr: SRCardProps
 ): Promise<void> => {
   const myBody = {
     project: sr.project,

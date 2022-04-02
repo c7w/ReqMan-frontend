@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { SRCard } from "../ConfigureStore";
 
 export const IRSRSlice = createSlice({
   name: "ir_sr_slice",
