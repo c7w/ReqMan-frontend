@@ -8,6 +8,7 @@ import IRSRReducer from "./slices/IRSRSlice";
 import ProjectSliceReducer from "./slices/ProjectSlice";
 import ProjectServiceReducer from "./slices/ServiceSlice";
 import IterationReducer from "./slices/IterationSlice";
+import CalendarReducer from "./slices/CalendarSlice";
 
 interface SRCard {
   readonly id: number; // id
@@ -101,6 +102,7 @@ export const store = configureStore({
     project_store: ProjectSliceReducer,
     service_store: ProjectServiceReducer,
     iteration_store: IterationReducer,
+    calendar_store: CalendarReducer,
     // rest of your reducers
   }),
   middleware: [routerMiddleware],
