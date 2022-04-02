@@ -180,8 +180,9 @@ const getSRListInfo = async (
     type: "sr",
   };
   const SRList_data = await request_json(API.GET_RMS, { getParams: myParams });
-  // console.log("IRList: " + JSON.stringify(IRList_data));
+  // console.log("SRList: " + JSON.stringify(SRList_data));
   dispatcher(updateSRListStore(JSON.stringify(SRList_data)));
+  return SRList_data;
 };
 
 const createSRInfo = async (

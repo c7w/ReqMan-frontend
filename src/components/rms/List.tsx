@@ -5,6 +5,7 @@ import { Divider } from "antd";
 
 interface ListProps {
   readonly name: string;
+  readonly stateSRList: string;
 }
 
 const List = (props: ListProps) => {

@@ -8,14 +8,6 @@ const { Text } = Typography;
 
 interface SRCardProps {
   readonly id: number; // id
-  // readonly project: string; // the project belongs to
-  // readonly title: string; // title
-  // readonly description: string; // description
-  // readonly priority: number; // the priority which indicates the importance of the SR
-  // readonly currState: string; // "TODO", "WIP", "Reviewing", "Done"
-  // readonly createdBy: string; // somebody
-  // readonly createdAt: number; // sometime
-  // readonly disabled: boolean;
 }
 
 const SRCard = (props: SRCardProps) => {

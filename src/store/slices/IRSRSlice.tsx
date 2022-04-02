@@ -11,17 +11,14 @@ export const IRSRSlice = createSlice({
   reducers: {
     // 增删性能待调整，是否允许换位显示？
     updateIRListStore: (state, action) => {
-      console.log(action.payload);
       state.IRList = action.payload;
     },
     // 修改 SR 需求 ( payload 为 SR 信息)
     updateSRListStore: (state, action) => {
-      console.log(action.payload);
       state.SRList = action.payload;
     },
     // 修改 IR-SR 联系
     updateIRSRStore: (state, action) => {
-      console.log(action.payload);
       state.IR_SR = action.payload;
     },
   },
