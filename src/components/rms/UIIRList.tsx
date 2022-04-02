@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { ReactElement, useEffect, useState } from "react";
 import type { ProColumns } from "@ant-design/pro-table";
 import ProTable from "@ant-design/pro-table";
 import {
@@ -9,8 +9,9 @@ import {
   InputNumber,
   Popconfirm,
   message,
+  Space,
 } from "antd";
-import { IRCard } from "../../store/ConfigureStore";
+import { IRCard, SRCard } from "../../store/ConfigureStore";
 import "./UIIRList.css";
 import SRList from "./UISRList";
 import { useDispatch, useSelector } from "react-redux";
@@ -20,7 +21,7 @@ import {
   updateIRInfo,
 } from "../../store/functions/RMS";
 import { ToastMessage } from "../../utils/Navigation";
-import { getSRListStore } from "../../store/slices/IRSRSlice";
+import ReactMarkdown from "react-markdown";
 const { TextArea } = Input;
 
 interface UIIRListProps {
@@ -29,6 +30,7 @@ interface UIIRListProps {
   readonly userInfo: string;
   readonly SRListStr: string;
   readonly IRSRAssociation: string;
+  readonly onlyShow: boolean;
 }
 
 /*
@@ -41,6 +43,7 @@ IRListData example:
 */
 
 const UIIRList = (props: UIIRListProps) => {
+  console.log("into it!");
   const IRListData = JSON.parse(props.IRListStr).data;
   const dispatcher = useDispatch();
   const project = props.project_id;
@@ -57,7 +60,7 @@ const UIIRList = (props: UIIRListProps) => {
       disabled: value.disabled,
     });
   });
-  const [tableListDataSource] = useState<IRCard[]>(dataIRList);
+  // const [tableListDataSource] = useState<IRCard[]>(dataIRList);
   const [isEditModalVisible, setIsEditModalVisible] = useState<boolean>(false);
   const [isCreateModalVisible, setIsCreateModalVisible] =
     useState<boolean>(false);
@@ -75,14 +78,14 @@ const UIIRList = (props: UIIRListProps) => {
 
   const handleSROk = () => {
     setId(-1);
-    setTimeout(() => window.location.reload(), 1000);
+    // setTimeout(() => window.location.reload(), 1000);
     ToastMessage("success", "关联成功", "您的IR-SR关联成功");
     setIsSRModalVisible(false);
   };
 
   const handleSRCancel = () => {
     setId(-1);
-    setTimeout(() => window.location.reload(), 0);
+    // setTimeout(() => window.location.reload(), 0);
     setIsSRModalVisible(false);
   };
 
@@ -108,7 +111,7 @@ const UIIRList = (props: UIIRListProps) => {
     updateIRInfo(dispatcher, project, newIR).then((data: any) => {
       if (data.code === 0) {
         ToastMessage("success", "修改成功", "您的IR修改成功");
-        setTimeout(() => window.location.reload(), 1000);
+        // setTimeout(() => window.location.reload(), 1000);
         setId(-1);
         setTitle("");
         setDesc("");
@@ -146,7 +149,7 @@ const UIIRList = (props: UIIRListProps) => {
     createIRInfo(dispatcher, project, newIR).then((data: any) => {
       if (data.code === 0) {
         ToastMessage("success", "创建成功", "您的IR创建成功");
-        setTimeout(() => window.location.reload(), 1000);
+        // setTimeout(() => window.location.reload(), 1000);
         setId(-1);
         setTitle("");
         setDesc("");
@@ -170,7 +173,7 @@ const UIIRList = (props: UIIRListProps) => {
     deleteIRInfo(dispatcher, project, record).then((data: any) => {
       if (data.code === 0) {
         ToastMessage("success", "删除成功", "您的IR删除成功");
-        setTimeout(() => window.location.reload(), 1000);
+        // setTimeout(() => window.location.reload(), 1000);
         setId(-1);
         setTitle("");
         setDesc("");
@@ -184,32 +187,39 @@ const UIIRList = (props: UIIRListProps) => {
 
   const columns: ProColumns<IRCard>[] = [
     {
-      title: "IR标题",
-      width: 100,
+      title: "原始需求标题",
+      width: "15%",
       dataIndex: "title",
       align: "center",
+      render: (_, record) => (
+        <div style={{ fontWeight: "bold" }}>{record.title}</div>
+      ),
     },
     {
-      title: "任务描述",
-      width: 240,
+      title: "原始需求描述",
       dataIndex: "description",
       align: "center",
+      render: (_, record) => (
+        <ReactMarkdown className={"markdown"} children={record.description} />
+      ),
     },
     {
       title: "进度",
-      width: 80,
+      width: "13%",
       align: "center",
-      render: (_, record) => <Progress percent={50} />,
+      render: (_, record) => (
+        <Progress className={"prgressProp"} percent={50} />
+      ),
     },
     {
       title: "创建者",
-      width: 80,
+      width: "12%",
       dataIndex: "createdBy",
       align: "center",
     },
     {
       title: "创建时间",
-      width: 110,
+      width: "15%",
       dataIndex: "createdAt",
       valueType: "dateTime",
       align: "center",
@@ -217,7 +227,7 @@ const UIIRList = (props: UIIRListProps) => {
     },
     {
       title: "操作",
-      width: 100,
+      width: "20%",
       valueType: "option",
       align: "center",
       render: (text, record, _, action) => [
@@ -231,151 +241,210 @@ const UIIRList = (props: UIIRListProps) => {
         >
           <a href="#">删除</a>
         </Popconfirm>,
-        <a onClick={() => showSRModal(record)}>关联SR</a>,
+        <a onClick={() => showSRModal(record)}>关联功能需求</a>,
       ],
     },
   ];
 
-  return (
-    <div className={`IRTable`}>
-      <ProTable<IRCard>
-        headerTitle="原始需求列表"
-        toolBarRender={() => {
-          return [
-            <Button key="create" onClick={showCreateModal} type="primary">
-              新建IR
-            </Button>,
-          ];
-        }}
-        columns={columns}
-        request={() => {
-          return Promise.resolve({
-            data: tableListDataSource,
-            success: true,
-          });
-        }}
-        rowKey="id"
-        pagination={{
-          pageSize: 10,
-          showSizeChanger: true,
-        }}
-        dateFormatter="string"
-        search={false}
+  const expandedRowRender = (record: IRCard) => {
+    return (
+      <SRList
+        showChoose={false}
+        onlyShow={true}
+        IR_id={record.id}
+        project_id={props.project_id}
+        SRListStr={props.SRListStr}
+        userInfo={props.userInfo}
+        IRSRAssociation={props.IRSRAssociation}
       />
+    );
+  };
 
-      <Modal
-        title="SR 任务关联列表"
-        centered={true}
-        visible={isSRModalVisible}
-        onCancel={handleSRCancel}
-        footer={[
-          <Button key="confirm" onClick={handleSROk}>
-            确认
-          </Button>,
-        ]}
-        width={"70%"}
-      >
-        <SRList
-          showChoose={true}
-          project_id={props.project_id}
-          SRListStr={props.SRListStr}
-          userInfo={props.userInfo}
-          IRSRAssociation={props.IRSRAssociation}
-          IR_id={id}
-        />
-      </Modal>
+  const onlyShowColumn: ProColumns<IRCard>[] = [];
+  for (let i = 0; i < 5; i += 1) {
+    onlyShowColumn.push(columns[i]);
+  }
 
-      <Modal
-        title="新增IR任务"
-        centered={true}
-        visible={isCreateModalVisible}
-        onOk={handleCreateOk}
-        onCancel={handleCreateCancel}
-        width={"70%"}
-      >
-        <p
-          style={{ paddingTop: "10px", marginBottom: "5px", fontSize: "16px" }}
-        >
-          项目名称
-        </p>
-        <Input
-          value={title}
-          onChange={(e) => {
-            setTitle(e.target.value);
+  if (!props.onlyShow) {
+    return (
+      <div className={`IRTable`}>
+        <ProTable<IRCard>
+          headerTitle="原始需求列表"
+          toolBarRender={() => {
+            return [
+              <Button key="create" onClick={showCreateModal} type="primary">
+                新建原始需求
+              </Button>,
+            ];
           }}
-        />
-        <p
-          style={{ paddingTop: "10px", marginBottom: "5px", fontSize: "16px" }}
-        >
-          项目介绍
-        </p>
-        <TextArea
-          rows={4}
-          allowClear
-          value={desc}
-          onChange={(e) => {
-            setDesc(e.target.value);
+          columns={columns}
+          options={{
+            fullScreen: false,
+            reload: false,
+            setting: true,
+            density: true,
           }}
+          // request={() => {
+          //   return Promise.resolve({
+          //     data: tableListDataSource,
+          //     success: true,
+          //   });
+          // }}
+          dataSource={dataIRList}
+          rowKey="id"
+          pagination={false}
+          scroll={{ y: 400 }}
+          dateFormatter="string"
+          search={false}
         />
-        <p
-          style={{ paddingTop: "10px", marginBottom: "5px", fontSize: "16px" }}
+        <Modal
+          title="功能需求关联列表"
+          centered={true}
+          visible={isSRModalVisible}
+          onCancel={handleSRCancel}
+          footer={[
+            <Button key="confirm" onClick={handleSROk}>
+              确认
+            </Button>,
+          ]}
+          width={"70%"}
         >
-          项目重要性
-        </p>
-        <InputNumber
-          value={rank}
-          onChange={(e: number) => {
-            setRank(e);
-          }}
-        />
-      </Modal>
+          <SRList
+            showChoose={true}
+            onlyShow={false}
+            project_id={props.project_id}
+            SRListStr={props.SRListStr}
+            userInfo={props.userInfo}
+            IRSRAssociation={props.IRSRAssociation}
+            IR_id={id}
+          />
+        </Modal>
 
-      <Modal
-        title="编辑IR项"
-        centered={true}
-        visible={isEditModalVisible}
-        onOk={handleEditOk}
-        onCancel={handleEditCancel}
-        width={"70%"}
-      >
-        <p
-          style={{ paddingTop: "10px", marginBottom: "5px", fontSize: "16px" }}
+        <Modal
+          title="新增原始需求"
+          centered={true}
+          visible={isCreateModalVisible}
+          onOk={handleCreateOk}
+          onCancel={handleCreateCancel}
+          width={"70%"}
         >
-          项目名称
-        </p>
-        <Input
-          value={title}
-          onChange={(e) => {
-            setTitle(e.target.value);
-          }}
-        />
-        <p
-          style={{ paddingTop: "10px", marginBottom: "5px", fontSize: "16px" }}
+          <p style={{ marginBottom: "5px", fontSize: "16px" }}>项目名称</p>
+          <Input
+            value={title}
+            onChange={(e) => {
+              setTitle(e.target.value);
+            }}
+          />
+          <p
+            style={{
+              paddingTop: "10px",
+              marginBottom: "5px",
+              fontSize: "16px",
+            }}
+          >
+            项目介绍
+          </p>
+          <TextArea
+            rows={4}
+            allowClear
+            value={desc}
+            onChange={(e) => {
+              setDesc(e.target.value);
+            }}
+          />
+          {/*<p*/}
+          {/*  style={{ paddingTop: "10px", marginBottom: "5px", fontSize: "16px" }}*/}
+          {/*>*/}
+          {/*  项目重要性*/}
+          {/*</p>*/}
+          {/*<InputNumber*/}
+          {/*  value={rank}*/}
+          {/*  onChange={(e: number) => {*/}
+          {/*    setRank(e);*/}
+          {/*  }}*/}
+          {/*/>*/}
+        </Modal>
+
+        <Modal
+          title="编辑原始需求"
+          centered={true}
+          visible={isEditModalVisible}
+          onOk={handleEditOk}
+          onCancel={handleEditCancel}
+          width={"70%"}
         >
-          项目介绍
-        </p>
-        <TextArea
-          rows={4}
-          allowClear
-          value={desc}
-          onChange={(e) => {
-            setDesc(e.target.value);
+          <p
+            style={{
+              paddingTop: "10px",
+              marginBottom: "5px",
+              fontSize: "16px",
+            }}
+          >
+            项目名称
+          </p>
+          <Input
+            value={title}
+            onChange={(e) => {
+              setTitle(e.target.value);
+            }}
+          />
+          <p
+            style={{
+              paddingTop: "10px",
+              marginBottom: "5px",
+              fontSize: "16px",
+            }}
+          >
+            项目介绍
+          </p>
+          <TextArea
+            rows={4}
+            allowClear
+            value={desc}
+            onChange={(e) => {
+              setDesc(e.target.value);
+            }}
+          />
+          {/*<p*/}
+          {/*  style={{ paddingTop: "10px", marginBottom: "5px", fontSize: "16px" }}*/}
+          {/*>*/}
+          {/*  项目重要性*/}
+          {/*</p>*/}
+          {/*<InputNumber*/}
+          {/*  value={rank}*/}
+          {/*  onChange={(e: number) => {*/}
+          {/*    setRank(e);*/}
+          {/*  }}*/}
+          {/*/>*/}
+        </Modal>
+      </div>
+    );
+  } else {
+    return (
+      <div className={`showIRTable`}>
+        <ProTable<IRCard>
+          headerTitle="需求展示列表"
+          toolBarRender={() => {
+            return [];
           }}
-        />
-        <p
-          style={{ paddingTop: "10px", marginBottom: "5px", fontSize: "16px" }}
-        >
-          项目重要性
-        </p>
-        <InputNumber
-          value={rank}
-          onChange={(e: number) => {
-            setRank(e);
+          options={{
+            fullScreen: false,
+            reload: false,
+            setting: false,
+            density: false,
           }}
+          columns={onlyShowColumn}
+          expandable={{ expandedRowRender }}
+          dataSource={dataIRList}
+          rowKey="id"
+          pagination={false}
+          scroll={{ y: 400 }}
+          dateFormatter="string"
+          search={false}
         />
-      </Modal>
-    </div>
-  );
+      </div>
+    );
+  }
 };
 
 export default UIIRList;

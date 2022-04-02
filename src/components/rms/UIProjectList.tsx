@@ -1,5 +1,14 @@
 import React, { ReactNode, useState } from "react";
-import { Input, Modal, Space, Tag, Button, DatePicker } from "antd";
+import {
+  Input,
+  Modal,
+  Space,
+  Tag,
+  Button,
+  DatePicker,
+  Divider,
+  Skeleton,
+} from "antd";
 import "./UIProjectList.css";
 import ProList from "@ant-design/pro-list";
 import ReactMarkdown from "react-markdown";
@@ -8,6 +17,8 @@ import { ProjectInfo } from "../../store/ConfigureStore";
 import moment from "moment";
 import { Redirect, ToastMessage } from "../../utils/Navigation";
 import { createProject } from "../../store/functions/UMS";
+import InfiniteScroll from "react-infinite-scroll-component";
+import { data } from "jquery";
 const { TextArea } = Input;
 
 interface ProjectListProps {
@@ -34,7 +45,7 @@ const UIProjectList = (props: ProjectListProps) => {
       avatar: img,
     });
   });
-  const [tableListDataSource] = useState<ProjectInfo[]>(dataProjectList);
+
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [newTitle, setNewTitle] = useState("");
   const [newDesc, setNewDesc] = useState("");
@@ -55,7 +66,7 @@ const UIProjectList = (props: ProjectListProps) => {
     createProject(dispatcher, newProject).then((data) => {
       if (data.code === 0) {
         ToastMessage("success", "创建成功", "您的项目创建成功");
-        setTimeout(() => window.location.reload(), 1000);
+        // setTimeout(() => window.location.reload(), 1000);
       } else {
         ToastMessage("error", "创建失败", "您的项目创建失败");
       }
@@ -68,93 +79,125 @@ const UIProjectList = (props: ProjectListProps) => {
   };
 
   return (
-    <div className={"prjlist"}>
-      <ProList<ProjectInfo>
-        toolBarRender={() => {
-          return [
-            <Button onClick={showModal} key="add" type="primary">
-              新建项目
-            </Button>,
-          ];
+    <div
+      className={"prjlist"}
+      id="scrollableDiv"
+      style={{
+        overflow: "auto",
+        padding: "0 16px",
+        border: "1px solid rgba(140, 140, 140, 0.35)",
+      }}
+    >
+      <InfiniteScroll
+        dataLength={dataProjectList.length}
+        next={() => {
+          return;
         }}
-        onRow={(record: ProjectInfo) => {
-          return {
-            onClick: () => {
-              const url = "/project/" + record.id;
-              Redirect(dispatcher, url, 0);
-            },
-          };
-        }}
-        rowKey="id"
-        headerTitle="项目列表"
-        split={true}
-        dataSource={tableListDataSource}
-        metas={{
-          title: {
-            render: (record: ReactNode, item: ProjectInfo) => (
-              <div
-                style={{
-                  color: "black",
-                  fontSize: "20px",
-                }}
-                onClick={() => {
-                  const url = "/project/" + item.id;
-                  Redirect(dispatcher, url, 0);
-                }}
-              >
-                {item.title}
-              </div>
-            ),
-          },
-          avatar: {
-            dataIndex: "avatar",
-          },
-          subTitle: {
-            render: (record: ReactNode, item: ProjectInfo) => {
-              return (
+        hasMore={false}
+        loader={<Skeleton avatar paragraph={{ rows: 1 }} active />}
+        endMessage={<Divider plain>It is all, nothing more 🤐</Divider>}
+        scrollableTarget="scrollableDiv"
+      >
+        <ProList<ProjectInfo>
+          toolBarRender={() => {
+            return [
+              <Button onClick={showModal} key="add" type="primary">
+                新建项目
+              </Button>,
+            ];
+          }}
+          onRow={(record: ProjectInfo) => {
+            return {
+              onClick: () => {
+                const url = "/project/" + record.id;
+                Redirect(dispatcher, url, 0);
+              },
+            };
+          }}
+          rowKey="id"
+          headerTitle="项目列表"
+          bordered={true}
+          split={true}
+          scroll={{ y: 350 }}
+          dataSource={dataProjectList}
+          metas={{
+            title: {
+              render: (record: ReactNode, item: ProjectInfo) => (
                 <div
                   style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    paddingTop: "5px",
+                    color: "black",
+                    fontSize: "20px",
+                  }}
+                  onClick={() => {
+                    const url = "/project/" + item.id;
+                    Redirect(dispatcher, url, 0);
                   }}
                 >
-                  <Space size={0}>
-                    <Tag color="green">
-                      创建时间：
-                      {moment(item.createdAt).format("YYYY-MM-DD HH:mm:ss")}
-                    </Tag>
-                  </Space>
+                  {item.title}
                 </div>
-              );
+              ),
             },
-          },
-          content: {
-            render: (record: ReactNode, item: ProjectInfo) => (
-              <div
-                style={{
-                  width: "100%",
-                  marginLeft: "200px",
-                  fontSize: "15px",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  display: "flex",
-                }}
-              >
-                <ReactMarkdown children={item.description} />
-              </div>
-            ),
-          },
-          actions: {
-            render: () => {
-              return [<a key="init">邀请</a>];
+            avatar: {
+              render: (record: ReactNode, item: ProjectInfo) => (
+                <div
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    display: "flex",
+                  }}
+                >
+                  <img src={item.avatar} />
+                </div>
+              ),
             },
-          },
-        }}
-      />
+            subTitle: {
+              render: (record: ReactNode, item: ProjectInfo) => {
+                return (
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      paddingTop: "5px",
+                    }}
+                  >
+                    <Space size={0}>
+                      <Tag color="green">
+                        创建时间：
+                        {moment(item.createdAt).format("YYYY-MM-DD HH:mm:ss")}
+                      </Tag>
+                    </Space>
+                  </div>
+                );
+              },
+            },
+            content: {
+              render: (record: ReactNode, item: ProjectInfo) => (
+                <div
+                  style={{
+                    width: "100%",
+                    marginLeft: "200px",
+                    fontSize: "15px",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    display: "flex",
+                  }}
+                >
+                  <ReactMarkdown children={item.description} />
+                </div>
+              ),
+            },
+            actions: {
+              render: () => {
+                return [<a key="init">邀请</a>];
+              },
+            },
+          }}
+        />
+      </InfiniteScroll>
       <Modal
         title="添加新项目"
         centered={true}
+        width={"70%"}
         visible={isModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}
