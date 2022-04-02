@@ -6,6 +6,14 @@ import { getProjectStore } from "../../store/slices/ProjectSlice";
 import { updateProjectInfo } from "../../store/functions/UMS";
 import { getSRListInfo } from "../../store/functions/RMS";
 import { reviewSR, todoSR, wipSR } from "../../utils/SRClassification";
+import {
+  getReviewSRListStore,
+  getTodoSRListStore,
+  getWipSRListStore,
+  updateReviewSRList,
+  updateTodoSRList,
+  updateWipSRList,
+} from "../../store/slices/CalendarSlice";
 
 interface CalendarProps {
   readonly userInfo: string;
@@ -15,13 +23,9 @@ const Calendar = (props: CalendarProps) => {
   const userData = JSON.parse(props.userInfo).data;
   console.log("Calendar: " + userData);
   const dispatcher = useDispatch();
-  const [todoSRList, setTodoSRList] = useState([]); // 所有 to do SR 的列表
-  const [wipSRList, setWipSRList] = useState([]); // 所有 to do SR 的列表
-  const [reviewSRList, setReviewSRList] = useState([]); // 所有 to do SR 的列表
-  // userData.projects.forEach((project: any) => {
-  //   const project_id = project.id;
-  //   const projectInfo = useSelector(getProjectStore);
-  // });
+  const todoSRList = useSelector(getTodoSRListStore); // string
+  const wipSRList = useSelector(getWipSRListStore); // string
+  const reviewSRList = useSelector(getReviewSRListStore); // string
   useEffect(() => {
     const todoSRListData: any = [];
     const wipSRListData: any = [];
@@ -42,9 +46,9 @@ const Calendar = (props: CalendarProps) => {
         review_arr.forEach((value: any) => {
           reviewSRListData.push(value);
         });
-        setTodoSRList(todoSRListData);
-        setWipSRList(wipSRListData);
-        setReviewSRList(reviewSRListData);
+        dispatcher(updateTodoSRList(JSON.stringify(todoSRListData)));
+        dispatcher(updateWipSRList(JSON.stringify(wipSRListData)));
+        dispatcher(updateReviewSRList(JSON.stringify(reviewSRListData)));
         // console.log(todoSRListData);
         // console.log(wipSRListData);
         // console.log(reviewSRListData);

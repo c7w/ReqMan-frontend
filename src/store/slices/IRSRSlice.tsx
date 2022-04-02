@@ -39,23 +39,4 @@ export const getIRSRStore = (state: { ir_sr_store: { IR_SR: string } }) => {
   return state.ir_sr_store.IR_SR;
 };
 
-// test SR
-export const getSR =
-  (id: number) => (state: { rms: { SRList: Array<SRCard> } }) => {
-    // test
-    return {
-      id: 0, // id
-      project: "test", // the project belongs to
-      title: "SR.002.103", // title
-      description:
-        " hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard !", // description
-      priority: 0, // the priority which indicates the importance of the SR
-      currState: "TODO", // "TODO", "WIP", "Reviewing", "Done"
-      createdBy: "hbx", // somebody
-      createdAt: new Date().getDate(), // sometime
-      disabled: false,
-    };
-    // return state.rms.SRList[id];
-  };
-
 export default IRSRSlice.reducer;
