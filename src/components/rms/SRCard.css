@@ -1,7 +1,7 @@
 .card-small {
   height: 100px;
   left: 0;
-  margin: 5px 5px 5px 5px;
+  margin: 20px 5px 5px 5px;
   padding: 12px;
   border-radius: 5px;
   cursor: pointer;
@@ -12,14 +12,14 @@
 }
 
 .modal {
-  background: dodgerblue;
+  background: white;
   height: 1px;
   overflow: hidden;
   position: fixed;
   top: 50%;
   left: 50%;
   z-index: 32;
-  border-radius: 10px;
+  border-radius: 20px;
   transform: translate(-50%, -50%);
   transition: width 0.5s ease 0.5s, height 0.5s;
   width: 0;
@@ -56,7 +56,7 @@
 }
 
 .modal-header {
-  background: dodgerblue;
+  background: white;
   padding: 10px;
   display: flex;
   flex-direction: row;
@@ -64,19 +64,15 @@
 }
 
 .modal-header-left {
-  background: #f1f1f1;
-  font-weight: bold;
-  font-size: 20px;
+  font-size: 1rem;
 }
 
 .modal-header-right {
-  background: #f2f2f2;
   padding-right: 100px;
 }
 
 .modal-content {
   padding: 20px;
-  background: #f3f3f3;
   height: 100%;
 }
 
