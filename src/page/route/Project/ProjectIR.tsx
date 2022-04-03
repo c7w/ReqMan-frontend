@@ -11,15 +11,19 @@ import {
   getIRListInfo,
   getIRSRInfo,
   getSRListInfo,
+  updateIRInfo,
+  updateSRInfo,
 } from "../../../store/functions/RMS";
 import {
   getIRListStore,
   getIRSRStore,
   getSRListStore,
+  updateIRSRStore,
 } from "../../../store/slices/IRSRSlice";
 import { useParams } from "react-router-dom";
 import { getProjectStore } from "../../../store/slices/ProjectSlice";
 import Loading from "../../../layout/components/Loading";
+import { useEffect } from "react";
 
 const ProjectIR = () => {
   // Judge if project list in user state
@@ -32,60 +36,51 @@ const ProjectIR = () => {
   const IRSRAssociation = useSelector(getIRSRStore);
 
   const dispatcher = useDispatch();
-
   const params = useParams<"id">();
-  const project_id = params.id;
+  const project_id = Number(params.id);
 
-  if (userInfo === "") {
+  useEffect(() => {
     updateUserInfo(dispatcher);
+    updateProjectInfo(dispatcher, project_id);
+    getIRListInfo(dispatcher, project_id);
+    getSRListInfo(dispatcher, project_id);
+    getIRSRInfo(dispatcher, project_id);
+  }, []);
+
+  if (
+    userInfo === "" ||
+    projectInfo === "" ||
+    IRListInfo === "" ||
+    SRListInfo === "" ||
+    IRSRAssociation === ""
+  ) {
+    // Just let useEffect to re-query!
   } else if (JSON.parse(userInfo).code !== 0) {
     ToastMessage("error", "未登录", "跳转回登录界面");
     Redirect(dispatcher, "/login");
   } else {
     const user_data = JSON.parse(userInfo); // user data, include all projects belonged to user
-    console.log("userInfo:  " + user_data);
     if (
-      user_data.data.projects.filter(
-        (obj: any) => obj.id.toString() === project_id
-      ).length > 0
+      user_data.data.projects.filter((obj: any) => obj.id === project_id)
+        .length > 0
     ) {
-      if (projectInfo === "") {
-        // without project, update from backend
-        updateProjectInfo(dispatcher, Number(project_id));
-      } else {
-        const projectData = JSON.parse(projectInfo);
-        console.log(projectData);
-        // the project id is false, update from backend
-        if (projectData.data.project.id !== Number(project_id)) {
-          updateProjectInfo(dispatcher, Number(project_id));
-        } else {
-          if (
-            IRListInfo === "" ||
-            SRListInfo === "" ||
-            IRSRAssociation === ""
-          ) {
-            // without IR, update from backend
-            getIRListInfo(dispatcher, Number(project_id));
-            getSRListInfo(dispatcher, Number(project_id));
-            getIRSRInfo(dispatcher, Number(project_id));
-          } else {
-            console.log(JSON.parse(IRListInfo));
-            return (
-              <Home sidebar={true}>
-                <div>
-                  <UIIRList
-                    IRListStr={IRListInfo}
-                    project_id={Number(project_id)}
-                    userInfo={userInfo}
-                    SRListStr={SRListInfo}
-                    IRSRAssociation={IRSRAssociation}
-                    onlyShow={true}
-                  />
-                </div>
-              </Home>
-            );
-          }
-        }
+      const projectData = JSON.parse(projectInfo);
+      // the project id is false, update from backend
+      if (projectData.data.project.id === Number(project_id)) {
+        return (
+          <Home sidebar={true}>
+            <div>
+              <UIIRList
+                IRListStr={IRListInfo}
+                project_id={Number(project_id)}
+                userInfo={userInfo}
+                SRListStr={SRListInfo}
+                IRSRAssociation={IRSRAssociation}
+                onlyShow={false}
+              />
+            </div>
+          </Home>
+        );
       }
     } else {
       // 该用户没有 project
