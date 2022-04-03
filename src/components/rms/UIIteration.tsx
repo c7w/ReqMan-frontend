@@ -35,7 +35,11 @@ import {
   getIRSRStore,
   getSRListStore,
 } from "../../store/slices/IRSRSlice";
-import { oneIR2AllSR, SR2Iteration } from "../../utils/Association";
+import {
+  oneIR2AllSR,
+  SR2Iteration,
+  SRId2SRInfo,
+} from "../../utils/Association";
 import moment, { Moment } from "moment";
 import { without } from "underscore";
 
@@ -380,6 +384,68 @@ const UIIteration = () => {
     }
   };
 
+  const getIRBlockClassName = (ir_id: number, data_id: number) => {
+    const key = { TODO: 0, WIP: 1, Reviewing: 2, Done: 3 };
+    let now = 4;
+    oneIR2AllSR(ir_id, IRSRAssociation, SRStore).forEach((sr: any) => {
+      const exists =
+        JSON.parse(SRIterStore).data.filter(
+          (asso: any) => asso.iteration === data_id && asso.SR === sr.id
+        ).length > 0;
+      if (exists) {
+        const curr = key[sr.state as "TODO" | "WIP" | "Reviewing" | "Done"];
+        now = curr < now ? curr : now;
+      }
+    });
+    const ans = [
+      "iteration-table-unit-todo",
+      "iteration-table-unit-wip",
+      "iteration-table-unit-reviewing",
+      "iteration-table-unit-done",
+      "iteration-table-unit-blank",
+    ];
+    return ans[now];
+  };
+
+  const getIRIterPercentage = (ir_id: number, data_id: number) => {
+    let now = 0;
+    let all = 0;
+
+    oneIR2AllSR(ir_id, IRSRAssociation, SRStore).forEach((sr: any) => {
+      const exists =
+        JSON.parse(SRIterStore).data.filter(
+          (asso: any) => asso.iteration === data_id && asso.SR === sr.id
+        ).length > 0;
+
+      if (exists) {
+        all += sr.priority;
+        const curr = sr.state === "Reviewing" || sr.state === "Done";
+        if (curr) {
+          now += sr.priority;
+        }
+      }
+    });
+    if (all != 0) return ((now / all) * 100).toFixed(2) + "%";
+    else return "";
+  };
+
+  const getSRState = (sr: any, iter_id: number | undefined) => {
+    const exists =
+      JSON.parse(SRIterStore).data.filter(
+        (asso: any) => asso.iteration === iter_id && asso.SR === sr.id
+      ).length > 0;
+    if (exists) {
+      const ans = {
+        TODO: "未开始",
+        WIP: "开发中",
+        Reviewing: "测试中",
+        Done: "已交付",
+      };
+      return ans[sr.state as "TODO" | "WIP" | "Reviewing" | "Done"];
+    }
+    return "";
+  };
+
   return (
     <div className={"project-iteration-container"}>
       <div className={"project-iteration-header"}>
@@ -402,35 +468,41 @@ const UIIteration = () => {
             className={"iteration-table"}
             style={{
               width:
-                iteration_show_length * window.innerWidth * 0.1 <
+                iteration_show_length * window.innerWidth * 0.05 <
                 window.innerWidth * 0.7
                   ? window.innerWidth * 0.7
-                  : iteration_show_length * window.innerWidth * 0.1,
+                  : iteration_show_length * window.innerWidth * 0.05,
             }}
           >
             <div style={{ display: "flex" }}>
               {/* IR List */}
               <div className={"iteration-table-side"}>
-                <div className={"iteration-table-iter-cell"}>&nbsp;</div>
+                <div
+                  className={"iteration-table-iter-cell"}
+                  style={{ backgroundColor: "#66cfcf" }}
+                >
+                  &nbsp;
+                </div>
                 {JSON.parse(IRStore).data.map((ir: IRCard) => {
                   return (
                     <div key={ir.id}>
-                      <div className={"iteration-table-ir-cell"}>
-                        <span
-                          id={`iteration-table-ir-control-${ir.id}`}
-                          onClick={() => {
-                            const det = JSON.parse(detail);
-                            if (det.includes(ir.id)) {
-                              setDetail(JSON.stringify(without(det, ir.id)));
-                            } else {
-                              det.push(ir.id);
-                              setDetail(JSON.stringify(det));
-                            }
-                          }}
-                        >
-                          {JSON.parse(detail).includes(ir.id) ? "-" : "+"}
+                      <div
+                        className={"iteration-table-ir-cell"}
+                        onClick={() => {
+                          const det = JSON.parse(detail);
+                          if (det.includes(ir.id)) {
+                            setDetail(JSON.stringify(without(det, ir.id)));
+                          } else {
+                            det.push(ir.id);
+                            setDetail(JSON.stringify(det));
+                          }
+                        }}
+                        style={{ cursor: "pointer", fontWeight: "bold" }}
+                      >
+                        <span id={`iteration-table-ir-control-${ir.id}`}>
+                          　　{JSON.parse(detail).includes(ir.id) ? "-" : "+"}
                         </span>
-                        <span> {ir.title}</span>
+                        <span>　{ir.title}</span>
                       </div>
                       {oneIR2AllSR(ir.id, IRSRAssociation, SRStore).map(
                         (sr: SRCard) => (
@@ -438,10 +510,10 @@ const UIIteration = () => {
                             className={`iteration-table-sr-cell iteration-table-ir-${ir.id}`}
                             style={{
                               height: JSON.parse(detail).includes(ir.id)
-                                ? "1.5rem"
+                                ? "2.0rem"
                                 : "0",
                               padding: JSON.parse(detail).includes(ir.id)
-                                ? "0.2rem"
+                                ? "0.4rem"
                                 : "0",
                             }}
                           >
@@ -459,7 +531,13 @@ const UIIteration = () => {
                   {JSON.parse(iterationStore)
                     .data.sort((a: Iteration, b: Iteration) => a.sid - b.sid)
                     .map((data: Iteration) => (
-                      <div className={"iteration-table-iter-cell"}>
+                      <div
+                        className={"iteration-table-iter-cell"}
+                        style={{
+                          backgroundColor: "#66cfcf",
+                          fontWeight: "bold",
+                        }}
+                      >
                         {data.title}
                       </div>
                     ))}
@@ -472,20 +550,27 @@ const UIIteration = () => {
                         {JSON.parse(IRStore).data.map((ir: IRCard) => {
                           return (
                             <div key={ir.id}>
-                              <div className={"iteration-table-ir-cell-unit"}>
-                                {ir.title}
+                              <div
+                                className={
+                                  "iteration-table-ir-cell-unit " +
+                                  getIRBlockClassName(ir.id, data.id as number)
+                                }
+                                style={{ fontWeight: "bold" }}
+                              >
+                                {getIRIterPercentage(ir.id, data.id as number)}
+                                &nbsp;
                               </div>
                               {oneIR2AllSR(ir.id, IRSRAssociation, SRStore).map(
                                 (sr: SRCard) => (
                                   <div
                                     style={{
                                       height: JSON.parse(detail).includes(ir.id)
-                                        ? "1.5rem"
+                                        ? "2.0rem"
                                         : "0",
                                       padding: JSON.parse(detail).includes(
                                         ir.id
                                       )
-                                        ? "0.2rem"
+                                        ? "0.4rem"
                                         : "0",
                                     }}
                                     className={
@@ -493,7 +578,7 @@ const UIIteration = () => {
                                       getBlockClassName(sr.id, data.id)
                                     }
                                   >
-                                    &nbsp;
+                                    {getSRState(sr, data.id)}
                                   </div>
                                 )
                               )}
