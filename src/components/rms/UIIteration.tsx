@@ -67,10 +67,6 @@ const UIIterationEditorModel = (props: EditorModelProps) => {
   const params = useParams<"id">();
   const project_id = Number(params.id);
 
-  console.debug("ppp");
-  console.debug(props);
-  console.debug(title);
-
   useEffect(() => {
     setId(props.id);
     setTitle(props.title);
@@ -78,7 +74,7 @@ const UIIterationEditorModel = (props: EditorModelProps) => {
     setDate(props.date);
   }, [JSON.stringify(props)]);
 
-  console.debug(date);
+  // console.debug(date);
   return (
     <Modal
       visible={props.visible}
@@ -262,7 +258,7 @@ const UIIterationManagerModel = (props: ManagerModelProps) => {
               <td className={"iter-manager-column"}>
                 <Typography.Link
                   onClick={() => {
-                    console.debug("==============================");
+                    // console.debug("==============================");
                     setCachedId(iter.id as number);
                     setCachedSid(iter.sid);
                     setCachedTitle(iter.title);
@@ -271,7 +267,7 @@ const UIIterationManagerModel = (props: ManagerModelProps) => {
                       moment(iter.end * 1000),
                     ]);
                     setEditor(true);
-                    console.debug("==============================");
+                    // console.debug("==============================");
                   }}
                 >
                   编辑

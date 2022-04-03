@@ -10,8 +10,13 @@ import {
 } from "../../../store/functions/UMS";
 import { Redirect, ToastMessage } from "../../../utils/Navigation";
 import UISRList from "../../../components/rms/UISRList";
-import { getIRSRInfo, getSRListInfo } from "../../../store/functions/RMS";
+import {
+  getIRListInfo,
+  getIRSRInfo,
+  getSRListInfo,
+} from "../../../store/functions/RMS";
 import Loading from "../../../layout/components/Loading";
+import { useEffect } from "react";
 
 const ProjectSR = () => {
   // Judge if project list in user state
@@ -24,11 +29,19 @@ const ProjectSR = () => {
 
   const dispatcher = useDispatch();
   const params = useParams<"id">();
-  const project_id = params.id;
+  const project_id = Number(params.id);
+
+  useEffect(() => {
+    updateUserInfo(dispatcher);
+    updateProjectInfo(dispatcher, project_id);
+    getIRListInfo(dispatcher, project_id);
+    getSRListInfo(dispatcher, project_id);
+    getIRSRInfo(dispatcher, project_id);
+  }, []);
 
   if (userInfo === "") {
     // 如果没有用户信息，就去 update
-    updateUserInfo(dispatcher);
+    // Just let useEffect to re-query!
   } else if (JSON.parse(userInfo).code !== 0) {
     // 如果有用户信息但没登录，就跑去登录
     ToastMessage("error", "未登录", "跳转回登录界面");
@@ -38,24 +51,22 @@ const ProjectSR = () => {
     const user_data = JSON.parse(userInfo);
     console.log("userInfo:  " + userInfo);
     if (
-      user_data.data.projects.filter(
-        (obj: any) => obj.id.toString() === project_id
-      ).length > 0
+      user_data.data.projects.filter((obj: any) => obj.id === project_id)
+        .length > 0
     ) {
       // 如果这个用户在这个 project 中
       if (projectInfo === "") {
         // store 没有信息，更新一下
-        updateProjectInfo(dispatcher, Number(project_id));
+        // Just let useEffect to re-query!
       } else {
         const projectData = JSON.parse(projectInfo);
         console.log(projectInfo);
         // 如果得到的 project 信息跟用户键入的 url 中的 project_id 不符
         if (projectData.data.project.id !== Number(project_id)) {
-          updateProjectInfo(dispatcher, Number(project_id));
+          // Just let useEffect to re-query!
         } else {
           if (SRListInfo === "" || IRSRAssociation === "") {
-            getSRListInfo(dispatcher, Number(project_id));
-            getIRSRInfo(dispatcher, Number(project_id));
+            // Just let useEffect to re-query!
           } else {
             console.log("SRList:  " + SRListInfo);
             return (

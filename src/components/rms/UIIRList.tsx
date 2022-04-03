@@ -33,17 +33,7 @@ interface UIIRListProps {
   readonly onlyShow: boolean;
 }
 
-/*
-IRListData example:
-[
-  {id: 1, project: 2, title: 'I am the first IR', description: 'hahahahahahah', rank: 1, ...}
-  {id: 1, project: 2, title: 'I am the first IR', description: 'hahahahahahah', rank: 1, ...}
-  {id: 1, project: 2, title: 'I am the first IR', description: 'hahahahahahah', rank: 1, ...}
-]
-*/
-
 const UIIRList = (props: UIIRListProps) => {
-  console.log("into it!");
   const IRListData = JSON.parse(props.IRListStr).data;
   const dispatcher = useDispatch();
   const project = props.project_id;
@@ -79,7 +69,7 @@ const UIIRList = (props: UIIRListProps) => {
   const handleSROk = () => {
     setId(-1);
     // setTimeout(() => window.location.reload(), 1000);
-    ToastMessage("success", "关联成功", "您的IR-SR关联成功");
+    ToastMessage("success", "关联成功", "您的需求关联成功");
     setIsSRModalVisible(false);
   };
 
@@ -110,7 +100,7 @@ const UIIRList = (props: UIIRListProps) => {
     };
     updateIRInfo(dispatcher, project, newIR).then((data: any) => {
       if (data.code === 0) {
-        ToastMessage("success", "修改成功", "您的IR修改成功");
+        ToastMessage("success", "修改成功", "您的原始需求修改成功");
         // setTimeout(() => window.location.reload(), 1000);
         setId(-1);
         setTitle("");
@@ -118,7 +108,7 @@ const UIIRList = (props: UIIRListProps) => {
         setRank(1);
         setIsEditModalVisible(false);
       } else {
-        ToastMessage("error", "修改失败", "您的IR修改失败");
+        ToastMessage("error", "修改失败", "您的原始需求修改失败");
       }
     });
   };
@@ -148,7 +138,7 @@ const UIIRList = (props: UIIRListProps) => {
     };
     createIRInfo(dispatcher, project, newIR).then((data: any) => {
       if (data.code === 0) {
-        ToastMessage("success", "创建成功", "您的IR创建成功");
+        ToastMessage("success", "创建成功", "您的原始需求创建成功");
         // setTimeout(() => window.location.reload(), 1000);
         setId(-1);
         setTitle("");
@@ -156,7 +146,7 @@ const UIIRList = (props: UIIRListProps) => {
         setRank(1);
         setIsCreateModalVisible(false);
       } else {
-        ToastMessage("error", "创建失败", "您的IR创建失败");
+        ToastMessage("error", "创建失败", "您的原始需求创建失败");
       }
     });
   };
@@ -172,7 +162,7 @@ const UIIRList = (props: UIIRListProps) => {
   function confirmDelete(record: IRCard) {
     deleteIRInfo(dispatcher, project, record).then((data: any) => {
       if (data.code === 0) {
-        ToastMessage("success", "删除成功", "您的IR删除成功");
+        ToastMessage("success", "删除成功", "您的原始需求删除成功");
         // setTimeout(() => window.location.reload(), 1000);
         setId(-1);
         setTitle("");
@@ -180,7 +170,7 @@ const UIIRList = (props: UIIRListProps) => {
         setRank(1);
         setIsCreateModalVisible(false);
       } else {
-        ToastMessage("error", "删除失败", "您的IR删除失败");
+        ToastMessage("error", "删除失败", "您的原始需求删除失败");
       }
     });
   }
@@ -290,10 +280,12 @@ const UIIRList = (props: UIIRListProps) => {
           //     success: true,
           //   });
           // }}
+          defaultSize={"small"}
           dataSource={dataIRList}
           rowKey="id"
           pagination={false}
-          scroll={{ y: 400 }}
+          // scroll={{ y: 600 }}
+          tableStyle={{ padding: "1rem 1rem 2rem" }}
           dateFormatter="string"
           search={false}
         />
@@ -326,9 +318,9 @@ const UIIRList = (props: UIIRListProps) => {
           visible={isCreateModalVisible}
           onOk={handleCreateOk}
           onCancel={handleCreateCancel}
-          width={"70%"}
+          width={"60vw"}
         >
-          <p style={{ marginBottom: "5px", fontSize: "16px" }}>项目名称</p>
+          <p style={{ marginBottom: "5px", fontSize: "16px" }}>原始需求名称</p>
           <Input
             value={title}
             onChange={(e) => {
@@ -342,7 +334,7 @@ const UIIRList = (props: UIIRListProps) => {
               fontSize: "16px",
             }}
           >
-            项目介绍
+            原始需求介绍
           </p>
           <TextArea
             rows={4}
@@ -405,17 +397,6 @@ const UIIRList = (props: UIIRListProps) => {
               setDesc(e.target.value);
             }}
           />
-          {/*<p*/}
-          {/*  style={{ paddingTop: "10px", marginBottom: "5px", fontSize: "16px" }}*/}
-          {/*>*/}
-          {/*  项目重要性*/}
-          {/*</p>*/}
-          {/*<InputNumber*/}
-          {/*  value={rank}*/}
-          {/*  onChange={(e: number) => {*/}
-          {/*    setRank(e);*/}
-          {/*  }}*/}
-          {/*/>*/}
         </Modal>
       </div>
     );
@@ -438,7 +419,8 @@ const UIIRList = (props: UIIRListProps) => {
           dataSource={dataIRList}
           rowKey="id"
           pagination={false}
-          scroll={{ y: 400 }}
+          // scroll={{ y: 400 }}
+          tableStyle={{ padding: "1rem 1rem 2rem" }}
           dateFormatter="string"
           search={false}
         />

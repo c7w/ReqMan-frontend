@@ -4,4 +4,6 @@
   display: flex;
   flex-direction: row;
   background: rgb(250, 250, 250);
+  justify-content: center;
+  min-height: 80vh;
 }

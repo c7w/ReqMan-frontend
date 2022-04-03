@@ -8,6 +8,7 @@ import {
   DatePicker,
   Divider,
   Skeleton,
+  Breadcrumb,
 } from "antd";
 import "./UIProjectList.css";
 import ProList from "@ant-design/pro-list";
@@ -16,9 +17,11 @@ import { useDispatch } from "react-redux";
 import { ProjectInfo } from "../../store/ConfigureStore";
 import moment from "moment";
 import { Redirect, ToastMessage } from "../../utils/Navigation";
-import { createProject } from "../../store/functions/UMS";
+import { createProject, updateUserInfo } from "../../store/functions/UMS";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { data } from "jquery";
+import request_json from "../../utils/Network";
+import API from "../../utils/APIList";
 const { TextArea } = Input;
 
 interface ProjectListProps {
@@ -27,7 +30,6 @@ interface ProjectListProps {
 
 const UIProjectList = (props: ProjectListProps) => {
   // 总任务列表
-  console.log(JSON.parse(props.userInfo).data);
   const ProjectList = JSON.parse(props.userInfo).data.projects;
   const dispatcher = useDispatch();
   const dataProjectList: ProjectInfo[] = [];
@@ -42,6 +44,7 @@ const UIProjectList = (props: ProjectListProps) => {
       description: value.description,
       invitation: value.invitation,
       createdAt: value.createdAt * 1000,
+      role: value.role,
       avatar: img,
     });
   });
@@ -49,6 +52,32 @@ const UIProjectList = (props: ProjectListProps) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [newTitle, setNewTitle] = useState("");
   const [newDesc, setNewDesc] = useState("");
+
+  const [joinModal, setJoinModal] = useState(false);
+  const [invitationCode, setInvitationCode] = useState("");
+  const onJoin = () => {
+    const reg = /^[A-Z0-9]{8}$/;
+    if (!reg.test(invitationCode)) {
+      ToastMessage("error", "加入失败", "项目邀请码不合法");
+    } else {
+      request_json(API.JOIN_PROJECT, {
+        body: { invitation: invitationCode },
+      }).then((data) => {
+        if (data.code === 0) {
+          ToastMessage("success", "加入成功", "加入项目成功");
+          updateUserInfo(dispatcher);
+        } else if (data.code === 1) {
+          ToastMessage("error", "加入失败", "您已经在项目中");
+        } else if (data.code === 2) {
+          ToastMessage("error", "加入失败", "项目邀请码不合法");
+        } else {
+          ToastMessage("error", "加入失败", "未知错误");
+        }
+      });
+    }
+    setInvitationCode("");
+    setJoinModal(false);
+  };
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -61,12 +90,14 @@ const UIProjectList = (props: ProjectListProps) => {
       description: newDesc,
       invitation: "",
       createdAt: 0,
+      role: "",
       avatar: "",
     };
     createProject(dispatcher, newProject).then((data) => {
       if (data.code === 0) {
         ToastMessage("success", "创建成功", "您的项目创建成功");
         // setTimeout(() => window.location.reload(), 1000);
+        updateUserInfo(dispatcher);
       } else {
         ToastMessage("error", "创建失败", "您的项目创建失败");
       }
@@ -78,29 +109,51 @@ const UIProjectList = (props: ProjectListProps) => {
     setIsModalVisible(false);
   };
 
+  const getRoleName = (role: string) => {
+    if (role === "member") {
+      return "项目成员";
+    }
+    if (role === "sys") {
+      return "系统工程师";
+    }
+    if (role === "dev") {
+      return "开发工程师";
+    }
+    if (role === "qa") {
+      return "质保工程师";
+    }
+    if (role === "supermaster") {
+      return "项目管理员";
+    }
+    return "";
+  };
+
   return (
-    <div
-      className={"prjlist"}
-      id="scrollableDiv"
-      style={{
-        overflow: "auto",
-        padding: "0 16px",
-        border: "1px solid rgba(140, 140, 140, 0.35)",
-      }}
-    >
-      <InfiniteScroll
-        dataLength={dataProjectList.length}
-        next={() => {
-          return;
+    <div>
+      <Breadcrumb style={{ margin: "1rem 0" }}>
+        <Breadcrumb.Item>Home</Breadcrumb.Item>
+        <Breadcrumb.Item>项目列表</Breadcrumb.Item>
+      </Breadcrumb>
+      <div
+        className={"prjlist"}
+        id="scrollableDiv"
+        style={{
+          overflow: "auto",
+          padding: "1rem 2rem 2rem",
+          border: "1px solid rgba(140, 140, 140, 0.35)",
         }}
-        hasMore={false}
-        loader={<Skeleton avatar paragraph={{ rows: 1 }} active />}
-        endMessage={<Divider plain>It is all, nothing more 🤐</Divider>}
-        scrollableTarget="scrollableDiv"
       >
         <ProList<ProjectInfo>
           toolBarRender={() => {
             return [
+              <Button
+                onClick={() => setJoinModal(true)}
+                key={"join"}
+                type={"primary"}
+              >
+                加入项目
+              </Button>,
+
               <Button onClick={showModal} key="add" type="primary">
                 新建项目
               </Button>,
@@ -127,6 +180,9 @@ const UIProjectList = (props: ProjectListProps) => {
                   style={{
                     color: "black",
                     fontSize: "20px",
+                    whiteSpace: "nowrap",
+                    textOverflow: "ellipsis",
+                    overflow: "hidden",
                   }}
                   onClick={() => {
                     const url = "/project/" + item.id;
@@ -179,7 +235,9 @@ const UIProjectList = (props: ProjectListProps) => {
                     fontSize: "15px",
                     overflow: "hidden",
                     textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
                     display: "flex",
+                    maxWidth: "30rem",
                   }}
                 >
                   <ReactMarkdown children={item.description} />
@@ -187,43 +245,78 @@ const UIProjectList = (props: ProjectListProps) => {
               ),
             },
             actions: {
-              render: () => {
-                return [<a key="init">邀请</a>];
+              render: (record: ReactNode, item: ProjectInfo) => {
+                return <div>{getRoleName(item.role)}</div>;
               },
             },
           }}
         />
-      </InfiniteScroll>
-      <Modal
-        title="添加新项目"
-        centered={true}
-        width={"70%"}
-        visible={isModalVisible}
-        onOk={handleOk}
-        onCancel={handleCancel}
-      >
-        <p
-          style={{ paddingTop: "10px", marginBottom: "5px", fontSize: "16px" }}
+        <Modal
+          title="添加新项目"
+          centered={true}
+          width={"60vw"}
+          visible={isModalVisible}
+          onOk={handleOk}
+          onCancel={handleCancel}
         >
-          项目名称
-        </p>
-        <Input
-          onChange={(e) => {
-            setNewTitle(e.target.value);
+          <p
+            style={{
+              paddingTop: "10px",
+              marginBottom: "5px",
+              fontSize: "16px",
+            }}
+          >
+            项目名称
+          </p>
+          <Input
+            onChange={(e) => {
+              setNewTitle(e.target.value);
+            }}
+          />
+          <p
+            style={{
+              paddingTop: "10px",
+              marginBottom: "5px",
+              fontSize: "16px",
+            }}
+          >
+            项目介绍
+          </p>
+          <TextArea
+            rows={4}
+            onChange={(e) => {
+              setNewDesc(e.target.value);
+            }}
+          />
+        </Modal>
+        <Modal
+          title="加入项目"
+          centered={true}
+          width={"30vw"}
+          visible={joinModal}
+          onOk={onJoin}
+          onCancel={() => {
+            setJoinModal(false);
+            setInvitationCode("");
           }}
-        />
-        <p
-          style={{ paddingTop: "10px", marginBottom: "5px", fontSize: "16px" }}
         >
-          项目介绍
-        </p>
-        <TextArea
-          rows={4}
-          onChange={(e) => {
-            setNewDesc(e.target.value);
-          }}
-        />
-      </Modal>
+          <p
+            style={{
+              paddingTop: "10px",
+              marginBottom: "5px",
+              fontSize: "16px",
+            }}
+          >
+            邀请码
+          </p>
+          <Input
+            value={invitationCode}
+            onChange={(e) => {
+              setInvitationCode(e.target.value);
+            }}
+          />
+        </Modal>
+      </div>
     </div>
   );
 };
