@@ -84,8 +84,7 @@
   left: 0;
   z-index: 2;
 
-  height: 1.5rem;
-  padding: 0.2rem;
+  transition-duration: 1s;
   background-color: rgb(241, 241, 241);
 }
 
@@ -95,8 +94,7 @@
 }
 
 .iteration-table-sr-cell-unit {
-  padding: 0.2rem;
-  height: 1.5rem;
+  transition-duration: 1s;
 }
 
 .iteration-table-unit-wip {

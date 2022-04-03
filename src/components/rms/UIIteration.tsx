@@ -6,11 +6,23 @@ import {
   getIterationStore,
   getSRIterationStore,
 } from "../../store/slices/IterationSlice";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import "./UIIteration.css";
-import { Button, DatePicker, Empty, Input, Modal, Typography } from "antd";
+import {
+  Button,
+  DatePicker,
+  Empty,
+  Input,
+  Modal,
+  Popconfirm,
+  Typography,
+} from "antd";
 import React, { useEffect, useState } from "react";
-import { createIteration } from "../../store/functions/RMS";
+import {
+  createIteration,
+  deleteIterationInfo,
+  updateIterationInfo,
+} from "../../store/functions/RMS";
 import {
   IRCard,
   Iteration,
@@ -24,18 +36,134 @@ import {
   getSRListStore,
 } from "../../store/slices/IRSRSlice";
 import { oneIR2AllSR, SR2Iteration } from "../../utils/Association";
+import moment, { Moment } from "moment";
+import { without } from "underscore";
+
+interface EditorModelProps {
+  visible: boolean;
+  close: () => void;
+  title: string;
+  sid: number;
+  date: any;
+  id: number;
+}
 
 interface ManagerModelProps {
   visible: boolean;
   close: () => void;
 }
 
+const UIIterationEditorModel = (props: EditorModelProps) => {
+  const [id, setId] = useState(props.id);
+  const [title, setTitle] = useState(props.title);
+  const [sid, setSid] = useState(props.sid);
+  const [date, setDate] = useState(props.date);
+
+  const dispatcher = useDispatch();
+  const params = useParams<"id">();
+  const project_id = Number(params.id);
+
+  console.debug("ppp");
+  console.debug(props);
+  console.debug(title);
+
+  useEffect(() => {
+    setId(props.id);
+    setTitle(props.title);
+    setSid(props.sid);
+    setDate(props.date);
+  }, [JSON.stringify(props)]);
+
+  console.debug(date);
+  return (
+    <Modal
+      visible={props.visible}
+      onCancel={props.close}
+      footer={
+        <div>
+          <Popconfirm
+            title="确认要删除该迭代周期的相关配置吗？"
+            onConfirm={() => {
+              deleteIterationInfo(dispatcher, project_id, {
+                begin: 0,
+                end: 0,
+                sid: 0,
+                title: "",
+                id,
+              }).then((data) => {
+                if (data.code === 0) {
+                  ToastMessage("success", "删除成功", "您的迭代周期删除成功");
+                  props.close();
+                } else {
+                  ToastMessage("error", "删除失败", "您的迭代周期删除失败");
+                }
+              });
+            }}
+            okText="删除"
+            okButtonProps={{ danger: true }}
+            cancelText="取消"
+          >
+            <Button danger={true}>删除迭代</Button>
+          </Popconfirm>
+
+          <Button
+            type={"primary"}
+            onClick={() => {
+              updateIterationInfo(dispatcher, project_id, {
+                begin: date[0].unix() + 0.01,
+                end: date[1].unix() + 0.01,
+                sid: sid,
+                title: title,
+                id,
+              }).then((data) => {
+                if (data.code === 0) {
+                  ToastMessage("success", "修改成功", "您的迭代周期修改成功");
+                  props.close();
+                } else {
+                  ToastMessage("error", "修改失败", "您的迭代周期修改失败");
+                }
+              });
+            }}
+          >
+            确认修改
+          </Button>
+        </div>
+      }
+      title={"迭代周期编辑"}
+      width={"45vw"}
+    >
+      <p style={{ marginTop: "1rem", marginBottom: "0.2rem" }}>
+        <span style={{ color: "red" }}>* </span>周期名称：
+      </p>
+      <Input
+        value={title}
+        onChange={(evt) => setTitle(evt.target.value)}
+        style={{ width: "50%" }}
+      />{" "}
+      <p style={{ marginTop: "1rem", marginBottom: "0.2rem" }}>
+        <span style={{ color: "red" }}>* </span>
+        周期展示编号（编号会从小到大展示）：
+      </p>
+      <Input
+        type={"number"}
+        value={sid}
+        onChange={(evt) => setSid(Number(evt.target.value))}
+        style={{ width: "50%" }}
+      />
+      <p style={{ marginTop: "1rem", marginBottom: "0.2rem" }}>
+        <span style={{ color: "red" }}>* </span>周期时间区间：
+      </p>
+      <DatePicker.RangePicker value={date} onChange={(date) => setDate(date)} />{" "}
+      <br />
+    </Modal>
+  );
+};
+
 const UIIterationManagerModel = (props: ManagerModelProps) => {
   // Select stores
   const userStore = useSelector(getUserStore);
   const projectStore = useSelector(getProjectStore);
   const iterationStore = useSelector(getIterationStore);
-  console.debug(iterationStore);
 
   // Dispatcher && get project ID
   const dispatcher = useDispatch();
@@ -49,12 +177,18 @@ const UIIterationManagerModel = (props: ManagerModelProps) => {
   const [sid, setSid] = useState(0);
 
   useEffect(() => {
-    let currMaxSid = -1;
+    let currMaxSid = 0;
     JSON.parse(iterationStore).data.forEach((d: Iteration) => {
       currMaxSid = d.sid > currMaxSid ? d.sid : currMaxSid;
     });
     setSid(currMaxSid + 1);
   }, [iterationStore]);
+
+  const [editor, setEditor] = useState(false);
+  const [cachedId, setCachedId] = useState(0);
+  const [cachedTitle, setCachedTitle] = useState("");
+  const [cachedSid, setCachedSid] = useState(0);
+  const [cachedDate, setCachedDate] = useState<any>();
 
   return (
     <Modal
@@ -64,8 +198,86 @@ const UIIterationManagerModel = (props: ManagerModelProps) => {
       title={"迭代周期管理"}
       width={"60vw"}
     >
+      <UIIterationEditorModel
+        visible={editor}
+        close={() => setEditor(false)}
+        title={cachedTitle}
+        sid={cachedSid}
+        date={cachedDate}
+        id={cachedId}
+      />
       {/*// List of current all iterations*/}
-      {iterationStore}
+      <table
+        width={"98%"}
+        style={{
+          margin: "0 auto 1rem",
+          textAlign: "center",
+        }}
+      >
+        <thead>
+          <tr
+            style={{
+              borderWidth: "1px",
+              padding: "8px",
+              borderStyle: "solid",
+              borderColor: "#666666",
+              backgroundColor: "#dedede",
+            }}
+          >
+            <td>迭代周期编号</td>
+            <td>周期名</td>
+            <td>起始时间</td>
+            <td>结束时间</td>
+            <td>操作</td>
+          </tr>
+        </thead>
+        <tbody>
+          {JSON.parse(iterationStore).data.map((iter: Iteration) => (
+            <tr
+              style={{
+                borderWidth: "1px",
+                padding: "8px",
+                borderStyle: "solid",
+                borderColor: "#666666",
+                backgroundColor: "#ffffff",
+              }}
+            >
+              <td className={"iter-manager-column"}>{iter.sid}</td>
+              <td
+                className={"iter-manager-column"}
+                style={{ maxWidth: "15rem", overflow: "hidden" }}
+              >
+                {iter.title}
+              </td>
+              <td className={"iter-manager-column"}>
+                {moment(iter.begin * 1000).format("LL")}
+              </td>
+              <td className={"iter-manager-column"}>
+                {moment(iter.end * 1000).format("LL")}
+              </td>
+              <td className={"iter-manager-column"}>
+                <Typography.Link
+                  onClick={() => {
+                    console.debug("==============================");
+                    setCachedId(iter.id as number);
+                    setCachedSid(iter.sid);
+                    setCachedTitle(iter.title);
+                    setCachedDate([
+                      moment(iter.begin * 1000),
+                      moment(iter.end * 1000),
+                    ]);
+                    setEditor(true);
+                    console.debug("==============================");
+                  }}
+                >
+                  编辑
+                </Typography.Link>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
       <hr style={{ width: "100%", margin: "0rem auto 1rem" }} />
       {/*// Create new iterations*/}
       <div>
@@ -133,6 +345,7 @@ const UIIteration = () => {
 
   // State
   const [manager, setManager] = useState(false);
+  const [detail, setDetail] = useState("[]");
 
   const iteration_show_length = JSON.parse(iterationStore).data.length + 1;
 
@@ -152,7 +365,6 @@ const UIIteration = () => {
         return "iteration-table-unit-exception";
       } else {
         const status = sr[0].state;
-        console.debug(status);
         if (status === "TODO") {
           return "iteration-table-unit-todo";
         } else if (status === "WIP") {
@@ -188,7 +400,13 @@ const UIIteration = () => {
         ) : (
           <div
             className={"iteration-table"}
-            style={{ width: iteration_show_length * window.innerWidth * 0.1 }}
+            style={{
+              width:
+                iteration_show_length * window.innerWidth * 0.1 <
+                window.innerWidth * 0.7
+                  ? window.innerWidth * 0.7
+                  : iteration_show_length * window.innerWidth * 0.1,
+            }}
           >
             <div style={{ display: "flex" }}>
               {/* IR List */}
@@ -198,11 +416,35 @@ const UIIteration = () => {
                   return (
                     <div key={ir.id}>
                       <div className={"iteration-table-ir-cell"}>
-                        {ir.title}
+                        <span
+                          id={`iteration-table-ir-control-${ir.id}`}
+                          onClick={() => {
+                            const det = JSON.parse(detail);
+                            if (det.includes(ir.id)) {
+                              setDetail(JSON.stringify(without(det, ir.id)));
+                            } else {
+                              det.push(ir.id);
+                              setDetail(JSON.stringify(det));
+                            }
+                          }}
+                        >
+                          {JSON.parse(detail).includes(ir.id) ? "-" : "+"}
+                        </span>
+                        <span> {ir.title}</span>
                       </div>
                       {oneIR2AllSR(ir.id, IRSRAssociation, SRStore).map(
                         (sr: SRCard) => (
-                          <div className={"iteration-table-sr-cell"}>
+                          <div
+                            className={`iteration-table-sr-cell iteration-table-ir-${ir.id}`}
+                            style={{
+                              height: JSON.parse(detail).includes(ir.id)
+                                ? "1.5rem"
+                                : "0",
+                              padding: JSON.parse(detail).includes(ir.id)
+                                ? "0.2rem"
+                                : "0",
+                            }}
+                          >
                             {sr.title}
                           </div>
                         )
@@ -236,6 +478,16 @@ const UIIteration = () => {
                               {oneIR2AllSR(ir.id, IRSRAssociation, SRStore).map(
                                 (sr: SRCard) => (
                                   <div
+                                    style={{
+                                      height: JSON.parse(detail).includes(ir.id)
+                                        ? "1.5rem"
+                                        : "0",
+                                      padding: JSON.parse(detail).includes(
+                                        ir.id
+                                      )
+                                        ? "0.2rem"
+                                        : "0",
+                                    }}
                                     className={
                                       "iteration-table-sr-cell-unit " +
                                       getBlockClassName(sr.id, data.id)
