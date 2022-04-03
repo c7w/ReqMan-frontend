@@ -90,7 +90,7 @@ const LoginInterface = (props: LoginInterfaceProps) => {
               prefix={<UserOutlined />}
               type="text"
               placeholder=""
-              autoComplete={"off"}
+              autoComplete={"c7w"}
               onChange={userCheck}
               bordered={false}
             />
@@ -105,7 +105,7 @@ const LoginInterface = (props: LoginInterfaceProps) => {
               size={"large"}
               prefix={<KeyOutlined />}
               type="text"
-              autoComplete={"off"}
+              autoComplete={"c7w"}
               placeholder=""
               onChange={passwordCheck}
               bordered={false}

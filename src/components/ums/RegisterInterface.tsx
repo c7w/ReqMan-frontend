@@ -189,7 +189,7 @@ const RegisterInterface = (props: RegisterInterfaceProps) => {
                 prefix={<UserOutlined />}
                 type="text"
                 placeholder=""
-                autoComplete={"off"}
+                autoComplete={"c7w"}
                 onChange={userCheck}
                 bordered={false}
               />
@@ -212,6 +212,7 @@ const RegisterInterface = (props: RegisterInterfaceProps) => {
                 prefix={<MailOutlined />}
                 type="text"
                 placeholder=""
+                autoComplete={"c7w"}
                 onChange={mailCheck}
                 bordered={false}
               />
@@ -233,6 +234,7 @@ const RegisterInterface = (props: RegisterInterfaceProps) => {
                 size={"large"}
                 prefix={<KeyOutlined />}
                 type="text"
+                autoComplete={"c7w"}
                 placeholder=""
                 onChange={passwordCheck}
                 bordered={false}
@@ -256,6 +258,7 @@ const RegisterInterface = (props: RegisterInterfaceProps) => {
                 size={"large"}
                 prefix={<KeyOutlined />}
                 type="text"
+                autoComplete={"c7w"}
                 placeholder=""
                 onChange={check}
                 bordered={false}
@@ -279,6 +282,7 @@ const RegisterInterface = (props: RegisterInterfaceProps) => {
                 prefix={<KeyOutlined />}
                 type="text"
                 placeholder=""
+                autoComplete={"c7w"}
                 onChange={invitationCheck}
                 bordered={false}
               />

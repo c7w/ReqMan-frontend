@@ -302,8 +302,8 @@ const createIteration = async (
       updateData: {
         title: iteration.title,
         sid: iteration.sid,
-        begin: iteration.begin.toFixed(1),
-        end: iteration.end.toFixed(1),
+        begin: iteration.begin,
+        end: iteration.end,
       },
     },
   };
@@ -319,9 +319,9 @@ const updateIterationInfo = async (
   dispatcher: any,
   project_id: number,
   iteration: Iteration
-): Promise<void> => {
+): Promise<any> => {
   const myBody = {
-    project: iteration.project,
+    project: project_id,
     type: "iteration",
     operation: "update",
     data: {
@@ -334,25 +334,33 @@ const updateIterationInfo = async (
       },
     },
   };
-  request_json(API.POST_RMS, { body: myBody });
-  getIterationInfo(dispatcher, project_id);
+  return request_json(API.POST_RMS, { body: myBody }).then((data) => {
+    if (data.code === 0) {
+      getIterationInfo(dispatcher, project_id);
+    }
+    return data;
+  });
 };
 
 const deleteIterationInfo = async (
   dispatcher: any,
   project_id: number,
   iteration: Iteration
-): Promise<void> => {
+): Promise<any> => {
   const myBody = {
-    project: iteration.project,
+    project: project_id,
     type: "iteration",
     operation: "delete",
     data: {
       id: iteration.id,
     },
   };
-  request_json(API.POST_RMS, { body: myBody });
-  getIterationInfo(dispatcher, project_id);
+  return request_json(API.POST_RMS, { body: myBody }).then((data) => {
+    if (data.code === 0) {
+      getIterationInfo(dispatcher, project_id);
+    }
+    return data;
+  });
 };
 
 const getIRSRInfo = async (

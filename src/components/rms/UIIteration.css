@@ -12,16 +12,123 @@
   min-height: 30vh;
   width: 72vw;
   overflow-x: scroll;
-  overflow-y: hidden;
+  overflow-y: scroll;
   margin: 0 auto;
 }
 
 .iteration-table {
+  user-select: none;
   text-align: center;
+  height: 60vh;
 }
 
 .project-iteration-header {
   display: flex;
   justify-content: flex-end;
   margin: 1rem;
+}
+
+.iteration-table-header {
+  flex-grow: 1;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.iteration-table-header div {
+  flex: 1;
+}
+
+.iteration-table-side {
+  position: sticky;
+  left: 0px;
+  z-index: 2;
+}
+
+.iteration-table-iters  {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+
+  display: flex;
+  flex-direction: row;
+}
+
+.iteration-table-units {
+  display: flex;
+  flex-direction: row;
+}
+
+.iteration-table-iter-cell {
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow:ellipsis;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  position: sticky;
+  top: 0;
+  z-index: 3;
+
+  height: 2rem;
+  background-color: rgb(241, 241, 241);
+
+}
+
+.iteration-table-ir-cell {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+
+  text-align: left;
+
+  width: 10rem;
+  height: 2.5rem;
+  padding: 0.4rem;
+  background-color: rgb(241, 241, 241);
+}
+
+.iteration-table-sr-cell {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+
+  transition-duration: 0.5s;
+  overflow: hidden;
+  background-color: rgb(245, 245, 245);
+}
+
+.iteration-table-ir-cell-unit {
+  padding: 0.4rem;
+  height: 2.5rem;
+  overflow: hidden;
+}
+
+.iteration-table-sr-cell-unit {
+  transition-duration: 0.5s;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+
+}
+
+.iteration-table-unit-wip {
+  background-color: #ea4238;
+}
+
+.iteration-table-unit-todo {
+  background-color: #ffa39e;
+}
+
+.iteration-table-unit-reviewing {
+  background-color: #99ff00;
+}
+
+.iteration-table-unit-done {
+  background-color: #4bac00;
 }

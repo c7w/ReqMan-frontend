@@ -1,4 +1,3 @@
-import { Service } from "./UIServiceReadonly";
 import { Button, Empty, Input, Modal, Progress, Typography } from "antd";
 import "./UIService.css";
 import { ReactElement, useEffect, useMemo, useState } from "react";
@@ -7,15 +6,10 @@ import request_json from "../../utils/Network";
 import { faAtom } from "@fortawesome/free-solid-svg-icons";
 import API from "../../utils/APIList";
 import { useParams } from "react-router-dom";
-import { Redirect, ToastMessage } from "../../utils/Navigation";
-import {
-  getServiceStore,
-  updateServiceStore,
-} from "../../store/slices/ServiceSlice";
+import { ToastMessage } from "../../utils/Navigation";
+import { getServiceStore } from "../../store/slices/ServiceSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { IconProp } from "@fortawesome/fontawesome-svg-core";
-import project from "../../page/route/Project/Project";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
@@ -221,7 +215,7 @@ const UIService = () => {
       return;
     }
     const serviceData = JSON.parse(serviceStore);
-    const cards = serviceData.data
+    serviceData.data
       .map((rawData: any) => (
         <ProjectServiceCard
           data={JSON.stringify(rawData)}
@@ -233,7 +227,7 @@ const UIService = () => {
         />
       ))
       .forEach((val: any, ind: number) => {
-        ind % 2 == 0 ? newLeft.push(val) : newRight.push(val);
+        ind % 2 === 0 ? newLeft.push(val) : newRight.push(val);
       });
     setLeftService(newLeft);
     setRightService(newRight);
