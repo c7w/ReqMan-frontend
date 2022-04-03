@@ -26,7 +26,7 @@ import {
 import {
   IRCard,
   Iteration,
-  SRCard,
+  SRCardProps,
   SRIteration,
 } from "../../store/ConfigureStore";
 import { ToastMessage } from "../../utils/Navigation";
@@ -363,7 +363,7 @@ const UIIteration = () => {
       ).length > 0;
     if (exists) {
       const sr = JSON.parse(SRStore).data.filter(
-        (sr: SRCard) => sr.id === sr_id
+        (sr: SRCardProps) => sr.id === sr_id
       );
       if (sr.length === 0) {
         return "iteration-table-unit-exception";
@@ -505,7 +505,7 @@ const UIIteration = () => {
                         <span>　{ir.title}</span>
                       </div>
                       {oneIR2AllSR(ir.id, IRSRAssociation, SRStore).map(
-                        (sr: SRCard) => (
+                        (sr: SRCardProps) => (
                           <div
                             className={`iteration-table-sr-cell iteration-table-ir-${ir.id}`}
                             style={{
@@ -561,7 +561,7 @@ const UIIteration = () => {
                                 &nbsp;
                               </div>
                               {oneIR2AllSR(ir.id, IRSRAssociation, SRStore).map(
-                                (sr: SRCard) => (
+                                (sr: SRCardProps) => (
                                   <div
                                     style={{
                                       height: JSON.parse(detail).includes(ir.id)
