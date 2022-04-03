@@ -11,7 +11,7 @@ import {
   message,
   Space,
 } from "antd";
-import { IRCard, SRCard } from "../../store/ConfigureStore";
+import { IRCard, SRCardProps } from "../../store/ConfigureStore";
 import "./UIIRList.css";
 import SRList from "./UISRList";
 import { useDispatch, useSelector } from "react-redux";

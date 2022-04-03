@@ -12,6 +12,7 @@ interface UIProjectProps {
   invitation: string;
   disabled: boolean;
   createdAt: string;
+  userInfo: string;
 }
 
 const UIProject = (props: UIProjectProps) => {
@@ -58,7 +59,7 @@ const UIProject = (props: UIProjectProps) => {
             icon={<UserOutlined />}
           />
         </Avatar.Group>
-        <Calendar />
+        <Calendar userInfo={props.userInfo} />
       </div>
     </>
   );

@@ -37,6 +37,7 @@ const updateProjectInfo = async (dispatcher: any, project_id: number) => {
     body: { project: project_id },
   });
   dispatcher(updateProjectStore(JSON.stringify(projectData)));
+  return projectData;
 };
 
 // Backend: [POST] /ums/create_project/

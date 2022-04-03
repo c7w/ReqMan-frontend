@@ -8,8 +8,9 @@ import IRSRReducer from "./slices/IRSRSlice";
 import ProjectSliceReducer from "./slices/ProjectSlice";
 import ProjectServiceReducer from "./slices/ServiceSlice";
 import IterationReducer from "./slices/IterationSlice";
+import CalendarReducer from "./slices/CalendarSlice";
 
-interface SRCard {
+interface SRCardProps {
   readonly id: number; // id
   readonly project: number; // the project belongs to
   readonly title: string; // title
@@ -102,6 +103,7 @@ export const store = configureStore({
     project_store: ProjectSliceReducer,
     service_store: ProjectServiceReducer,
     iteration_store: IterationReducer,
+    calendar_store: CalendarReducer,
     // rest of your reducers
   }),
   middleware: [routerMiddleware],
@@ -110,7 +112,7 @@ export const store = configureStore({
 export const history = createReduxHistory(store);
 export type {
   IRCard,
-  SRCard,
+  SRCardProps,
   IRSRAssociation,
   UserIteration,
   IRIteration,

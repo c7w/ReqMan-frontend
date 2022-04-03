@@ -1,37 +1,55 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import "./SRCard.css";
-import { Avatar, Typography, Menu, Dropdown } from "antd";
+import { Avatar, Typography, Menu, Dropdown, Space, Tag, Modal } from "antd";
 import { UserOutlined, DownOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
-import { getSR, updateSRListStore } from "../../store/slices/IRSRSlice";
+import { updateSRListStore } from "../../store/slices/IRSRSlice";
+import { SRCardProps } from "../../store/ConfigureStore";
+import { updateSRInfo } from "../../store/functions/RMS";
 const { Text } = Typography;
 
-interface SRCardProps {
-  readonly id: number; // id
-  // readonly project: string; // the project belongs to
-  // readonly title: string; // title
-  // readonly description: string; // description
-  // readonly priority: number; // the priority which indicates the importance of the SR
-  // readonly currState: string; // "TODO", "WIP", "Reviewing", "Done"
-  // readonly createdBy: string; // somebody
-  // readonly createdAt: number; // sometime
-  // readonly disabled: boolean;
-}
-
 const SRCard = (props: SRCardProps) => {
-  const SRCardState = useSelector(getSR(props.id));
-  const dispatch = useDispatch();
-
+  const dispatcher = useDispatch();
+  const state2Color = new Map();
+  const state2ChineseState = new Map();
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [bounds, setBounds] = useState({
+    left: 0,
+    top: 0,
+    bottom: 0,
+    right: 0,
+  });
+  const draggleRef = React.createRef();
+  console.log(props);
+  state2Color.set("TODO", "red");
+  state2Color.set("WIP", "blue");
+  state2Color.set("Reviewing", "yellow");
+  state2Color.set("Done", "orange");
+  state2ChineseState.set("TODO", "未开始");
+  state2ChineseState.set("WIP", "开发中");
+  state2ChineseState.set("Reviewing", "测试中");
+  state2ChineseState.set("Done", "已完成");
   const onClick = (e: any) => {
     alert("click " + e.key);
-    dispatch(updateSRListStore(e.key));
+    updateSRInfo(dispatcher, props.project, {
+      id: props.id,
+      project: props.project,
+      title: props.title,
+      description: props.description,
+      priority: props.priority,
+      rank: props.priority,
+      currState: e.key,
+      createdBy: props.createdBy,
+      createdAt: props.createdAt,
+      disabled: props.disabled,
+    });
   };
   const menu = (
-    <Menu onClick={onClick}>
-      <Menu.Item key="TODO">TODO</Menu.Item>
-      <Menu.Item key="WIP">WIP</Menu.Item>
-      <Menu.Item key="Reviewing">Reviewing</Menu.Item>
-      <Menu.Item key="Done">Done</Menu.Item>
+    <Menu onClick={onClick} defaultSelectedKeys={["未开始"]}>
+      <Menu.Item key="未开始">未开始</Menu.Item>
+      <Menu.Item key="开发中">开发中</Menu.Item>
+      <Menu.Item key="测试中">测试中</Menu.Item>
+      <Menu.Item key="已完成">已完成</Menu.Item>
     </Menu>
   );
   return (
@@ -39,16 +57,26 @@ const SRCard = (props: SRCardProps) => {
       <div
         className="card-small"
         onClick={() => {
-          document.getElementsByTagName("input")[0].checked = true;
+          // document.getElementsByTagName("input")[0].checked = true;
+          setModalVisible(true);
         }}
       >
         <div className="card-small-header">
-          <div className="card-small-header-left">{SRCardState.title}</div>
-          <div className="card-small-header-right">right</div>
+          <div className="card-small-header-left">{props.title}</div>
+          <div className="card-small-header-right">
+            <Space>
+              <Tag
+                color={state2Color.get(props.currState)}
+                style={{ borderRadius: "10px" }}
+              >
+                {state2ChineseState.get(props.currState)}
+              </Tag>
+            </Space>
+          </div>
         </div>
         <div className="card-small-description">
           <Typography>
-            <Text ellipsis={true}>{SRCardState.description}</Text>
+            <Text ellipsis={true}>{props.description}</Text>
           </Typography>
         </div>
         <div className="card-small-down">
@@ -80,40 +108,37 @@ const SRCard = (props: SRCardProps) => {
           </Avatar.Group>
         </div>
       </div>
-      <input className="card-input" id="button" type="checkbox" />
-      <div className="modal">
+      {/*<input className="card-input" id="button" type="checkbox" />*/}
+      <Modal
+        title={"功能需求：" + props.title}
+        centered={true}
+        visible={modalVisible}
+        onOk={() => setModalVisible(false)}
+        onCancel={() => setModalVisible(false)}
+        width={"70%"}
+      >
         <div className="modal-header">
-          <div className="modal-header-left">{SRCardState.title}</div>
-          <div className="modal-header-right">
-            <Dropdown overlay={menu}>
-              <a className="ant-dropdown-link">
-                {SRCardState.currState} <DownOutlined />
-              </a>
-            </Dropdown>
+          <div className="modal-header-left">
+            <p>{"需求描述： " + props.description}</p>
+            <Space style={{ paddingLeft: "1rem" }}>
+              <Tag
+                color={state2Color.get(props.currState)}
+                style={{ borderRadius: "10px" }}
+              >
+                {state2ChineseState.get(props.currState)}
+              </Tag>
+            </Space>
           </div>
+          <div className="modal-header-right"></div>
         </div>
         <div className="modal-content">
           <Typography>
-            <Text>{SRCardState.description}</Text>
+            <Text>{props.description}</Text>
           </Typography>
         </div>
-      </div>
+      </Modal>
     </>
   );
-};
-
-// default props for SRCard
-SRCard.defaultProps = {
-  id: 0, // id
-  project: "test", // the project belongs to
-  title: "SR.002.103", // title
-  description:
-    " hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard ! hbx is working hard !", // description
-  priority: 0, // the priority which indicates the importance of the SR
-  currState: "TODO", // "TODO", "WIP", "Reviewing", "Done"
-  createdBy: "hbx", // somebody
-  createdAt: new Date().getDate(), // sometime
-  disabled: false,
 };
 
 export default SRCard;

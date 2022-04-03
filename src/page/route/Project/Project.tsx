@@ -55,6 +55,7 @@ const Project = () => {
             <Home sidebar={true}>
               <div>
                 <UIProject
+                  userInfo={userInfo}
                   id={projectData.data.project.id}
                   title={projectData.data.project.title}
                   description={projectData.data.project.description}

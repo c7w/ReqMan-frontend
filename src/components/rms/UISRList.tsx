@@ -14,7 +14,7 @@ import {
 } from "antd";
 import "./UISRList.css";
 import { useDispatch } from "react-redux";
-import { IRSRAssociation, SRCard } from "../../store/ConfigureStore";
+import { IRSRAssociation, SRCardProps } from "../../store/ConfigureStore";
 import {
   createIRSR,
   createSRInfo,
@@ -63,7 +63,7 @@ const UISRList = (props: UISRListProps) => {
   }
 
   // 总任务列表
-  const dataSRList: SRCard[] = [];
+  const dataSRList: SRCardProps[] = [];
   SRListData.forEach((value: any) => {
     let state = "";
     let color = "";
@@ -98,7 +98,7 @@ const UISRList = (props: UISRListProps) => {
     });
   });
 
-  const showSRList: SRCard[] = [];
+  const showSRList: SRCardProps[] = [];
   SRListData.forEach((value: any) => {
     curSRKey.forEach((curValue: number) => {
       if (curValue === value.id) {
@@ -137,6 +137,8 @@ const UISRList = (props: UISRListProps) => {
     });
   });
 
+  const [tableListDataSource, settableListDataSource] =
+    useState<SRCardProps[]>(dataSRList);
   const [isEditModalVisible, setIsEditModalVisible] = useState<boolean>(false);
   const [isCreateModalVisible, setIsCreateModalVisible] =
     useState<boolean>(false);
@@ -147,7 +149,7 @@ const UISRList = (props: UISRListProps) => {
   const [rank, setRank] = useState<number>(1);
   const [currState, setCurrState] = useState<string>("未开始");
 
-  const showEditModal = (record: SRCard) => {
+  const showEditModal = (record: SRCardProps) => {
     setId(record.id);
     setTitle(record.title);
     setDesc(record.description);
@@ -171,7 +173,7 @@ const UISRList = (props: UISRListProps) => {
     if (currState === "已交付") {
       state = "Done";
     }
-    const newSR: SRCard = {
+    const newSR: SRCardProps = {
       id: id,
       project: project,
       title: title,
@@ -215,7 +217,7 @@ const UISRList = (props: UISRListProps) => {
   };
 
   const handleCreateOk = () => {
-    const newSR: SRCard = {
+    const newSR: SRCardProps = {
       id: id,
       project: project,
       title: title,
@@ -254,7 +256,7 @@ const UISRList = (props: UISRListProps) => {
     setIsCreateModalVisible(false);
   };
 
-  function confirmDelete(record: SRCard) {
+  function confirmDelete(record: SRCardProps) {
     deleteSRInfo(dispatcher, project, record).then((data: any) => {
       if (data.code === 0) {
         ToastMessage("success", "删除成功", "您的SR删除成功");
@@ -277,7 +279,7 @@ const UISRList = (props: UISRListProps) => {
     setCurrState(value);
   }
 
-  const columns: ProColumns<SRCard>[] = [
+  const columns: ProColumns<SRCardProps>[] = [
     {
       title: "功能需求标题",
       filters: true,
@@ -366,13 +368,35 @@ const UISRList = (props: UISRListProps) => {
     },
   ];
 
-  const chooseColumn: ProColumns<SRCard>[] = [];
+  const chooseColumn: ProColumns<SRCardProps>[] = [];
   for (let i = 0; i < 5; i += 1) {
     chooseColumn.push(columns[i]);
   }
 
   const rowSelection = {
-    onSelect: (record: SRCard, selected: boolean) => {
+    // onChange: (
+    //   selectedRowKeys: React.Key[],
+    //   selectedRows: ProColumns<SRCard>[]
+    // ) => {
+    //   const selectedSR = [];
+    //   console.log("===========hey I change===========");
+    //   // for (let i = 0; i < selectedRowKeys.length; i++) {
+    //   //   selectedSR.push(selectedRows[i].key);
+    //   // }
+    //   // for (let i = 0; i < props.curSRKey.length; i++) {
+    //   //   selectedSR.push(props.curSRKey[i]);
+    //   // }
+    // },
+    // getCheckboxProps: (record: ProColumns<SRCard>) => {
+    //   console.log("=================");
+    //   // for (let i = 0; i < props.curSRKey.length; i++) {
+    //   //   if (props.curSRKey[i] === record.key) {
+    //   //     return { disabled: true };
+    //   //   }
+    //   // }
+    //   return { disabled: false };
+    // },
+    onSelect: (record: SRCardProps, selected: boolean) => {
       const IRSR: IRSRAssociation = {
         id: 0,
         IRId: props.IR_id,
@@ -391,8 +415,8 @@ const UISRList = (props: UISRListProps) => {
     },
     onSelectAll: (
       selected: boolean,
-      selectedRows: ProColumns<SRCard>[],
-      changedRows: ProColumns<SRCard>[]
+      selectedRows: ProColumns<SRCardProps>[],
+      changedRows: ProColumns<SRCardProps>[]
     ) => {
       changedRows.forEach((value: any, index: number) => {
         const IRSR: IRSRAssociation = {
@@ -432,7 +456,7 @@ const UISRList = (props: UISRListProps) => {
   useEffect(() => {
     setTable(
       <div>
-        <ProTable<SRCard>
+        <ProTable<SRCardProps>
           columns={chooseColumn}
           rowSelection={{
             // hideSelectAll: false,
@@ -442,7 +466,7 @@ const UISRList = (props: UISRListProps) => {
           tableAlertOptionRender={({ selectedRowKeys, selectedRows }) => (
             <Space size={24}>
               <span>{`关联功能需求: ${selectedRows.reduce(
-                (pre, item: SRCard) => pre + item.title + ", ",
+                (pre, item: SRCardProps) => pre + item.title + ", ",
                 ""
               )} `}</span>
             </Space>
@@ -469,7 +493,7 @@ const UISRList = (props: UISRListProps) => {
   if (!props.showChoose && !props.onlyShow) {
     return (
       <div className={"SRTable"}>
-        <ProTable<SRCard>
+        <ProTable<SRCardProps>
           headerTitle="功能需求列表"
           toolBarRender={() => {
             return [
@@ -689,7 +713,7 @@ const UISRList = (props: UISRListProps) => {
   } else {
     return (
       <div className={"showSRTable"}>
-        <ProTable<SRCard>
+        <ProTable<SRCardProps>
           headerTitle="功能需求列表"
           toolBarRender={false}
           rowKey="id"
