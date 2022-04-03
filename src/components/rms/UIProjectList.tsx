@@ -44,6 +44,7 @@ const UIProjectList = (props: ProjectListProps) => {
       description: value.description,
       invitation: value.invitation,
       createdAt: value.createdAt * 1000,
+      role: value.role,
       avatar: img,
     });
   });
@@ -89,6 +90,7 @@ const UIProjectList = (props: ProjectListProps) => {
       description: newDesc,
       invitation: "",
       createdAt: 0,
+      role: "",
       avatar: "",
     };
     createProject(dispatcher, newProject).then((data) => {
@@ -105,6 +107,25 @@ const UIProjectList = (props: ProjectListProps) => {
 
   const handleCancel = () => {
     setIsModalVisible(false);
+  };
+
+  const getRoleName = (role: string) => {
+    if (role === "member") {
+      return "项目成员";
+    }
+    if (role === "sys") {
+      return "系统工程师";
+    }
+    if (role === "dev") {
+      return "开发工程师";
+    }
+    if (role === "qa") {
+      return "质保工程师";
+    }
+    if (role === "supermaster") {
+      return "项目管理员";
+    }
+    return "";
   };
 
   return (
@@ -159,6 +180,9 @@ const UIProjectList = (props: ProjectListProps) => {
                   style={{
                     color: "black",
                     fontSize: "20px",
+                    whiteSpace: "nowrap",
+                    textOverflow: "ellipsis",
+                    overflow: "hidden",
                   }}
                   onClick={() => {
                     const url = "/project/" + item.id;
@@ -211,7 +235,9 @@ const UIProjectList = (props: ProjectListProps) => {
                     fontSize: "15px",
                     overflow: "hidden",
                     textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
                     display: "flex",
+                    maxWidth: "30rem",
                   }}
                 >
                   <ReactMarkdown children={item.description} />
@@ -219,8 +245,8 @@ const UIProjectList = (props: ProjectListProps) => {
               ),
             },
             actions: {
-              render: () => {
-                return [<a key="init">邀请</a>];
+              render: (record: ReactNode, item: ProjectInfo) => {
+                return <div>{getRoleName(item.role)}</div>;
               },
             },
           }}

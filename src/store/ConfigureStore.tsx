@@ -70,6 +70,7 @@ interface ProjectInfo {
   title: string;
   description: string;
   invitation: string;
+  role: string;
   createdAt: number;
   avatar: string;
 }
