@@ -480,7 +480,7 @@ const UISRList = (props: UISRListProps) => {
           // }}
           dataSource={dataSRList}
           pagination={false}
-          scroll={{ y: 300 }}
+          // scroll={{ y: 300 }}
           search={false}
           rowKey="id"
           dateFormatter="string"
@@ -518,7 +518,7 @@ const UISRList = (props: UISRListProps) => {
             setting: true,
             density: true,
           }}
-          scroll={{ y: 400 }}
+          // scroll={{ y: 400 }}
           search={false}
           dateFormatter="string"
         />
@@ -726,7 +726,7 @@ const UISRList = (props: UISRListProps) => {
             setting: true,
             density: true,
           }}
-          scroll={{ y: 400 }}
+          // scroll={{ y: 400 }}
           search={false}
           dateFormatter="string"
         />
