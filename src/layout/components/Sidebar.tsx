@@ -100,32 +100,32 @@ const Sidebar = () => {
         >
           服务查看
         </Menu.Item>
-        <Menu.Item
-          key="issues"
-          className={"sidebar-item"}
-          onClick={() => Redirect(dispatch, `/project/${project_id}/issues`, 0)}
-          icon={<BugOutlined />}
-        >
-          缺陷查看
-        </Menu.Item>
-        <Menu.Item
-          key="commits"
-          className={"sidebar-item"}
-          onClick={() =>
-            Redirect(dispatch, `/project/${project_id}/commits`, 0)
-          }
-          icon={<RiseOutlined />}
-        >
-          贡献查看
-        </Menu.Item>
-        <Menu.Item
-          key="merges"
-          className={"sidebar-item"}
-          onClick={() => Redirect(dispatch, `/project/${project_id}/merges`, 0)}
-          icon={<PullRequestOutlined />}
-        >
-          合并情况查看
-        </Menu.Item>
+        {/*<Menu.Item*/}
+        {/*  key="issues"*/}
+        {/*  className={"sidebar-item"}*/}
+        {/*  onClick={() => Redirect(dispatch, `/project/${project_id}/issues`, 0)}*/}
+        {/*  icon={<BugOutlined />}*/}
+        {/*>*/}
+        {/*  缺陷查看*/}
+        {/*</Menu.Item>*/}
+        {/*<Menu.Item*/}
+        {/*  key="commits"*/}
+        {/*  className={"sidebar-item"}*/}
+        {/*  onClick={() =>*/}
+        {/*    Redirect(dispatch, `/project/${project_id}/commits`, 0)*/}
+        {/*  }*/}
+        {/*  icon={<RiseOutlined />}*/}
+        {/*>*/}
+        {/*  贡献查看*/}
+        {/*</Menu.Item>*/}
+        {/*<Menu.Item*/}
+        {/*  key="merges"*/}
+        {/*  className={"sidebar-item"}*/}
+        {/*  onClick={() => Redirect(dispatch, `/project/${project_id}/merges`, 0)}*/}
+        {/*  icon={<PullRequestOutlined />}*/}
+        {/*>*/}
+        {/*  合并情况查看*/}
+        {/*</Menu.Item>*/}
 
         <Menu.Item
           key="analyse"

@@ -77,7 +77,7 @@ const UISRList = (props: UISRListProps) => {
     }
     if (value.state === "Reviewing") {
       state = "测试中";
-      color = "yellow";
+      color = "lime";
     }
     if (value.state === "Done") {
       state = "已交付";
@@ -114,7 +114,7 @@ const UISRList = (props: UISRListProps) => {
         }
         if (value.state === "Reviewing") {
           state = "测试中";
-          color = "yellow";
+          color = "lime";
         }
         if (value.state === "Done") {
           state = "已交付";
