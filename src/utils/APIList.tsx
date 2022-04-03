@@ -75,6 +75,10 @@ const API = {
     path: "/rms/project/",
     method: "post",
   },
+  JOIN_PROJECT: {
+    path: "/ums/user_join_project_invitation/",
+    method: "post",
+  },
 };
 
 export default API;

@@ -14,7 +14,6 @@ import Project from "./route/Project/Project";
 import ProjectService from "./route/Project/ProjectService";
 import ProjectSR from "./route/Project/ProjectSR";
 import ProjectIR from "./route/Project/ProjectIR";
-import About from "./route/About";
 import ProjectAnalyse from "./route/Project/ProjectAnalyse";
 import ProjectSetting from "./route/Project/ProjectSetting";
 import Loading from "../layout/components/Loading";
@@ -35,7 +34,6 @@ const SiteRouter = () => {
         <Routes>
           <Route path="/" element={<Root />}></Route>
           <Route path="dashboard" element={<Dashboard />} />
-          <Route path="about" element={<About />} />
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
           <Route path="settings" element={<PersonalSetting />} />

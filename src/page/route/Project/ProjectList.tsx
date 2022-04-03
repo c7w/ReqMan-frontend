@@ -23,7 +23,7 @@ const ProjectList = () => {
   } else {
     // Render Page
     const user_data = JSON.parse(userInfo);
-    console.log(user_data.data.projects);
+    // console.log(user_data.data.projects);
     return (
       <Home sidebar={false}>
         <div>
