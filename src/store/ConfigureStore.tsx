@@ -37,8 +37,8 @@ interface IRCard {
 
 interface IRSRAssociation {
   readonly id: number;
-  readonly IRId: number;
-  readonly SRId: number;
+  readonly IR: number;
+  readonly SR: number;
 }
 
 interface IRIteration {

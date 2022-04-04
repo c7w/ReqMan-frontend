@@ -13,7 +13,7 @@ import {
   Tag,
 } from "antd";
 import "./UISRList.css";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { IRSRAssociation, SRCardProps } from "../../store/ConfigureStore";
 import {
   createIRSR,
@@ -23,6 +23,8 @@ import {
   updateSRInfo,
 } from "../../store/functions/RMS";
 import { ToastMessage } from "../../utils/Navigation";
+import { getProjectStore } from "../../store/slices/ProjectSlice";
+import { userId2UserInfo } from "../../utils/Association";
 const { TextArea } = Input;
 const { Option } = Select;
 
@@ -48,14 +50,14 @@ userData: {"code":0,"data":{"user":{"id":17,"name":"hbx20","email":"hbx@hbx.boy"
 
 const UISRList = (props: UISRListProps) => {
   const SRListData = JSON.parse(props.SRListStr).data;
-  // const userData = JSON.parse(props.userInfo).data;
+  console.log(SRListData);
   const IRSRAssociationData = JSON.parse(props.IRSRAssociation).data;
   const dispatcher = useDispatch();
   const project = props.project_id;
-
+  const projectInfo = useSelector(getProjectStore);
   const curSRKey: number[] = [];
   if (props.IR_id !== -1) {
-    IRSRAssociationData.forEach((value: any) => {
+    IRSRAssociationData.forEach((value: IRSRAssociation) => {
       if (value.IR === props.IR_id) {
         curSRKey.push(value.SR);
       }
@@ -83,6 +85,7 @@ const UISRList = (props: UISRListProps) => {
       state = "已交付";
       color = "green";
     }
+    const user = userId2UserInfo(Number(value.createdBy), projectInfo);
     dataSRList.push({
       id: value.id,
       project: value.project,
@@ -92,7 +95,7 @@ const UISRList = (props: UISRListProps) => {
       rank: value.rank,
       currState: state,
       stateColor: color,
-      createdBy: value.createdBy,
+      createdBy: user.name,
       createdAt: value.createdAt * 1000,
       disabled: value.disabled,
     });
@@ -120,6 +123,7 @@ const UISRList = (props: UISRListProps) => {
           state = "已交付";
           color = "green";
         }
+        const user = userId2UserInfo(Number(value.createdBy), projectInfo);
         showSRList.push({
           id: value.id,
           project: value.project,
@@ -129,7 +133,7 @@ const UISRList = (props: UISRListProps) => {
           rank: value.rank,
           currState: state,
           stateColor: color,
-          createdBy: value.createdBy,
+          createdBy: user.name,
           createdAt: value.createdAt * 1000,
           disabled: value.disabled,
         });
@@ -288,7 +292,16 @@ const UISRList = (props: UISRListProps) => {
       dataIndex: "title",
       align: "center",
       render: (_, record) => (
-        <div style={{ fontWeight: "bold" }}>{record.title}</div>
+        <div
+          style={{
+            fontWeight: "bold",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {record.title}
+        </div>
       ),
     },
     {
@@ -399,8 +412,8 @@ const UISRList = (props: UISRListProps) => {
     onSelect: (record: SRCardProps, selected: boolean) => {
       const IRSR: IRSRAssociation = {
         id: 0,
-        IRId: props.IR_id,
-        SRId: record.id,
+        IR: props.IR_id,
+        SR: record.id,
       };
       if (selected) {
         createIRSR(dispatcher, props.project_id, IRSR).then((data: any) => {
@@ -421,8 +434,8 @@ const UISRList = (props: UISRListProps) => {
       changedRows.forEach((value: any, index: number) => {
         const IRSR: IRSRAssociation = {
           id: 0,
-          IRId: props.IR_id,
-          SRId: value.id,
+          IR: props.IR_id,
+          SR: value.id,
         };
         if (selected) {
           createIRSR(dispatcher, props.project_id, IRSR).then((data: any) => {
@@ -440,8 +453,8 @@ const UISRList = (props: UISRListProps) => {
       SRListData.forEach((value: any, index: number) => {
         const IRSR: IRSRAssociation = {
           id: 0,
-          IRId: props.IR_id,
-          SRId: value.id,
+          IR: props.IR_id,
+          SR: value.id,
         };
         deleteIRSR(dispatcher, props.project_id, IRSR).then((data: any) => {
           console.log(data);
@@ -449,8 +462,6 @@ const UISRList = (props: UISRListProps) => {
       });
     },
   };
-
-  console.log(dataSRList);
 
   const [table, setTable] = useState<ReactElement>();
   useEffect(() => {
@@ -480,7 +491,7 @@ const UISRList = (props: UISRListProps) => {
           // }}
           dataSource={dataSRList}
           pagination={false}
-          scroll={{ y: "70vh" }}
+          // scroll={{ y: 300 }}
           search={false}
           rowKey="id"
           dateFormatter="string"
