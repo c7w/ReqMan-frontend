@@ -51,13 +51,11 @@ userData: {"code":0,"data":{"user":{"id":17,"name":"hbx20","email":"hbx@hbx.boy"
 
 const UISRList = (props: UISRListProps) => {
   const SRListData = JSON.parse(props.SRListStr).data;
-  console.log(SRListData);
   const IRSRAssociationData = JSON.parse(props.IRSRAssociation).data;
   const dispatcher = useDispatch();
   const project = props.project_id;
   const projectInfo = useSelector(getProjectStore);
   const iterInfo = useSelector(getIterationStore);
-  console.log(iterInfo);
   const curSRKey: number[] = [];
   if (props.IR_id !== -1) {
     IRSRAssociationData.forEach((value: IRSRAssociation) => {
@@ -104,7 +102,7 @@ const UISRList = (props: UISRListProps) => {
       stateColor: color,
       createdBy: user.name,
       createdAt: value.createdAt * 1000,
-      iter: "迭代1",
+      iter: ["迭代1"],
       chargedBy: "某某某",
       service: "服务1",
     });
@@ -148,7 +146,7 @@ const UISRList = (props: UISRListProps) => {
           stateColor: color,
           createdBy: user.name,
           createdAt: value.createdAt * 1000,
-          iter: "迭代1",
+          iter: ["迭代1"],
           chargedBy: "某某某",
           service: "服务1",
         });
@@ -166,7 +164,7 @@ const UISRList = (props: UISRListProps) => {
   const [desc, setDesc] = useState<string>("");
   const [priority, setPriority] = useState<number>(1);
   const [currState, setCurrState] = useState<string>("未开始");
-  const [iter, setIter] = useState<string>("迭代1");
+  const [iter, setIter] = useState<string[]>(["迭代1"]);
   const [chargedBy, setChargedBy] = useState<string>("某某某");
   const [service, setService] = useState<string>("服务1");
 
@@ -203,9 +201,9 @@ const UISRList = (props: UISRListProps) => {
       description: desc,
       priority: priority,
       currState: state,
-      iter: "迭代1",
-      chargedBy: "某某某",
-      service: "服务1",
+      iter: iter,
+      chargedBy: chargedBy,
+      service: service,
     };
     updateSRInfo(dispatcher, project, newSR).then((data: any) => {
       if (data.code === 0) {
@@ -216,6 +214,9 @@ const UISRList = (props: UISRListProps) => {
         setDesc("");
         setPriority(1);
         setCurrState("未开始");
+        setIter(["迭代1"]);
+        setChargedBy("某某某");
+        setService("服务1");
         setIsEditModalVisible(false);
       } else {
         ToastMessage("error", "修改失败", "您的SR修改失败");
@@ -230,6 +231,9 @@ const UISRList = (props: UISRListProps) => {
     setPriority(1);
     setCurrState("未开始");
     setIsEditModalVisible(false);
+    setIter(["迭代1"]);
+    setChargedBy("某某某");
+    setService("服务1");
   };
 
   const showCreateModal = () => {
@@ -244,9 +248,9 @@ const UISRList = (props: UISRListProps) => {
       description: desc,
       priority: priority,
       currState: "TODO",
-      iter: "迭代1",
-      chargedBy: "某某某",
-      service: "服务1",
+      iter: iter,
+      chargedBy: chargedBy,
+      service: service,
     };
     createSRInfo(dispatcher, project, newSR).then((data: any) => {
       if (data.code === 0) {
@@ -258,6 +262,9 @@ const UISRList = (props: UISRListProps) => {
         setPriority(1);
         setCurrState("未开始");
         setIsCreateModalVisible(false);
+        setIter(["迭代1"]);
+        setChargedBy("某某某");
+        setService("服务1");
       } else {
         ToastMessage("error", "创建失败", "您的SR创建失败");
       }
@@ -271,6 +278,9 @@ const UISRList = (props: UISRListProps) => {
     setPriority(1);
     setCurrState("未开始");
     setIsCreateModalVisible(false);
+    setIter(["迭代1"]);
+    setChargedBy("某某某");
+    setService("服务1");
   };
 
   function confirmDelete(record: SRCardProps) {
@@ -291,8 +301,44 @@ const UISRList = (props: UISRListProps) => {
   }
 
   function handleStateChange(value: string) {
-    console.log(`selected ${value}`);
     setCurrState(value);
+  }
+
+  function handleIterChange(value: any) {
+    console.log(value);
+    setIter(value);
+  }
+
+  const iterChildren = [];
+  const allIter = ["迭代1", "迭代2", "迭代3", "迭代4"];
+  for (let i = 0; i < allIter.length; i++) {
+    iterChildren.push(<Option value={allIter[i]}>{allIter[i]}</Option>);
+  }
+
+  function handleServiceChange(value: string) {
+    console.log(value);
+    setService(value);
+  }
+
+  const serviceChildren: any = [];
+  const allService = ["服务1", "服务2", "服务3", "服务4"];
+  for (let i = 0; i < allService.length; i++) {
+    serviceChildren.push(
+      <Option value={allService[i]}>{allService[i]}</Option>
+    );
+  }
+
+  function handleChargedByChange(value: string) {
+    console.log(value);
+    setChargedBy(value);
+  }
+
+  const chargedByChildren: any = [];
+  const allChargedBy = ["某人1", "某人2", "某人3", "某人4"];
+  for (let i = 0; i < allChargedBy.length; i++) {
+    chargedByChildren.push(
+      <Option value={allChargedBy[i]}>{allChargedBy[i]}</Option>
+    );
   }
 
   const columnTitle1: ProColumns<SRCardProps> = {
@@ -455,7 +501,6 @@ const UISRList = (props: UISRListProps) => {
           console.log(data);
         });
       }
-      //setSelectedSR([]);
     },
     onSelectAll: (
       selected: boolean,
@@ -478,7 +523,6 @@ const UISRList = (props: UISRListProps) => {
           });
         }
       });
-      //setSelectedSR([]);
     },
     onSelectNone: () => {
       SRListData.forEach((value: any, index: number) => {
@@ -592,30 +636,57 @@ const UISRList = (props: UISRListProps) => {
               fontSize: "16px",
             }}
           >
+            迭代选择
+          </p>
+          <Select
+            mode="multiple"
+            style={{ width: "100%" }}
+            onChange={handleIterChange}
+          >
+            {iterChildren}
+          </Select>
+          <p
+            style={{
+              paddingTop: "10px",
+              marginBottom: "5px",
+              fontSize: "16px",
+            }}
+          >
+            服务选择
+          </p>
+          <Select style={{ width: 120 }} onChange={handleServiceChange}>
+            {serviceChildren}
+          </Select>
+          <p
+            style={{
+              paddingTop: "10px",
+              marginBottom: "5px",
+              fontSize: "16px",
+            }}
+          >
+            指定负责人
+          </p>
+          <Select style={{ width: 120 }} onChange={handleChargedByChange}>
+            {chargedByChildren}
+          </Select>
+          <p
+            style={{
+              paddingTop: "10px",
+              marginBottom: "5px",
+              fontSize: "16px",
+            }}
+          >
             项目优先级
           </p>
           <InputNumber
+            style={{ width: 120 }}
             value={priority}
             onChange={(e: number) => {
               setPriority(e);
             }}
           />
-          {/*<p*/}
-          {/*  style={{*/}
-          {/*    paddingTop: "10px",*/}
-          {/*    marginBottom: "5px",*/}
-          {/*    fontSize: "16px",*/}
-          {/*  }}*/}
-          {/*>*/}
-          {/*  项目重要性*/}
-          {/*</p>*/}
-          {/*<InputNumber*/}
-          {/*  value={rank}*/}
-          {/*  onChange={(e: number) => {*/}
-          {/*    setRank(e);*/}
-          {/*  }}*/}
-          {/*/>*/}
         </Modal>
+
         <Modal
           title="编辑功能需求"
           centered={true}
@@ -682,6 +753,39 @@ const UISRList = (props: UISRListProps) => {
               fontSize: "16px",
             }}
           >
+            迭代选择
+          </p>
+          <Select
+            mode="multiple"
+            style={{ width: "100%" }}
+            defaultValue={iter}
+            onChange={handleIterChange}
+          >
+            {iterChildren}
+          </Select>
+          <p
+            style={{
+              paddingTop: "10px",
+              marginBottom: "5px",
+              fontSize: "16px",
+            }}
+          >
+            服务选择
+          </p>
+          <Select
+            defaultValue={service}
+            style={{ width: 120 }}
+            onChange={handleServiceChange}
+          >
+            {serviceChildren}
+          </Select>
+          <p
+            style={{
+              paddingTop: "10px",
+              marginBottom: "5px",
+              fontSize: "16px",
+            }}
+          >
             项目优先级
           </p>
           <InputNumber
@@ -690,21 +794,6 @@ const UISRList = (props: UISRListProps) => {
               setPriority(e);
             }}
           />
-          {/*<p*/}
-          {/*  style={{*/}
-          {/*    paddingTop: "10px",*/}
-          {/*    marginBottom: "5px",*/}
-          {/*    fontSize: "16px",*/}
-          {/*  }}*/}
-          {/*>*/}
-          {/*  项目重要性*/}
-          {/*</p>*/}
-          {/*<InputNumber*/}
-          {/*  value={rank}*/}
-          {/*  onChange={(e: number) => {*/}
-          {/*    setRank(e);*/}
-          {/*  }}*/}
-          {/*/>*/}
         </Modal>
       </div>
     );

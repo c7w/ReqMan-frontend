@@ -22,7 +22,7 @@ interface SRCardProps {
   readonly createdBy?: string; // somebody
   readonly createdAt?: number; // sometime
   readonly disabled?: boolean;
-  readonly iter: string;
+  readonly iter: string[];
   readonly chargedBy: string;
   readonly service: string;
 }
