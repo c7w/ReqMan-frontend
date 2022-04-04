@@ -119,7 +119,9 @@ const SRCard = (props: SRCardProps) => {
       >
         <div className="modal-header">
           <div className="modal-header-left">
-            <p>{"需求描述： " + props.description}</p>
+            <div className="modal-header-desc">
+              {"需求描述： " + props.description}
+            </div>
             <Space style={{ paddingLeft: "1rem" }}>
               <Tag
                 color={state2Color.get(props.currState)}
@@ -131,11 +133,7 @@ const SRCard = (props: SRCardProps) => {
           </div>
           <div className="modal-header-right"></div>
         </div>
-        <div className="modal-content">
-          <Typography>
-            <Text>{props.description}</Text>
-          </Typography>
-        </div>
+        <div className="modal-content">{props.description}</div>
       </Modal>
     </>
   );
