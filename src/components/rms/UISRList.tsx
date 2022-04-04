@@ -493,44 +493,6 @@ const UISRList = (props: UISRListProps) => {
     },
   };
 
-  const [table, setTable] = useState<ReactElement>();
-  useEffect(() => {
-    setTable(
-      <div>
-        <ProTable<SRCardProps>
-          columns={chooseColumn}
-          rowSelection={{
-            // hideSelectAll: false,
-            defaultSelectedRowKeys: curSRKey,
-            ...rowSelection,
-          }}
-          tableAlertOptionRender={({ selectedRowKeys, selectedRows }) => (
-            <Space size={24}>
-              <span>{`关联功能需求: ${selectedRows.reduce(
-                (pre, item: SRCardProps) => pre + item.title + ", ",
-                ""
-              )} `}</span>
-            </Space>
-          )}
-          // tableAlertRender={false}
-          // request={() => {
-          //   return Promise.resolve({
-          //     data: tableListDataSource,
-          //     success: true,
-          //   });
-          // }}
-          dataSource={dataSRList}
-          pagination={false}
-          // scroll={{ y: 300 }}
-          search={false}
-          rowKey="id"
-          dateFormatter="string"
-          toolBarRender={false}
-        />
-      </div>
-    );
-  }, [props.SRListStr]);
-
   if (!props.showChoose && !props.onlyShow) {
     return (
       <div className={"SRTable"}>
@@ -744,7 +706,33 @@ const UISRList = (props: UISRListProps) => {
       </div>
     );
   } else if (props.showChoose) {
-    return <div className={"ChooseSRTable"}>{table}</div>;
+    return (
+      <div className={"ChooseSRTable"}>
+        <ProTable<SRCardProps>
+          columns={chooseColumn}
+          rowSelection={{
+            // hideSelectAll: false,
+            defaultSelectedRowKeys: curSRKey,
+            ...rowSelection,
+          }}
+          tableAlertOptionRender={({ selectedRowKeys, selectedRows }) => (
+            <Space size={24}>
+              <span>{`关联功能需求: ${selectedRows.reduce(
+                (pre, item: SRCardProps) => pre + item.title + ", ",
+                ""
+              )} `}</span>
+            </Space>
+          )}
+          dataSource={dataSRList}
+          pagination={false}
+          // scroll={{ y: 300 }}
+          search={false}
+          rowKey="id"
+          dateFormatter="string"
+          toolBarRender={false}
+        />
+      </div>
+    );
   } else {
     return (
       <div className={"showSRTable"}>
