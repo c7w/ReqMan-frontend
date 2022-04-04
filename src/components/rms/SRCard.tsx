@@ -42,6 +42,9 @@ const SRCard = (props: SRCardProps) => {
       createdBy: props.createdBy,
       createdAt: props.createdAt,
       disabled: props.disabled,
+      iter: "迭代1",
+      chargedBy: "某某某",
+      service: "服务1",
     });
   };
   const menu = (

@@ -30,6 +30,9 @@ const List = (props: ListProps) => {
           rank={value.rank}
           createdBy={value.createdBy}
           createdAt={value.createdAt}
+          iter="迭代1"
+          chargedBy="某某某"
+          service="服务1"
         />
       );
     });

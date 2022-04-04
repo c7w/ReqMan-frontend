@@ -12,7 +12,7 @@ import { Redirect, ToastMessage } from "../../../utils/Navigation";
 import UISRList from "../../../components/rms/UISRList";
 import {
   getIRListInfo,
-  getIRSRInfo,
+  getIRSRInfo, getIterationInfo, getSRIterationInfo,
   getSRListInfo,
 } from "../../../store/functions/RMS";
 import Loading from "../../../layout/components/Loading";
@@ -37,6 +37,8 @@ const ProjectSR = () => {
     getIRListInfo(dispatcher, project_id);
     getSRListInfo(dispatcher, project_id);
     getIRSRInfo(dispatcher, project_id);
+    getSRIterationInfo(dispatcher, project_id);
+    getIterationInfo(dispatcher, project_id);
   }, []);
 
   if (userInfo === "") {

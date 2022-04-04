@@ -25,6 +25,7 @@ import {
 import { ToastMessage } from "../../utils/Navigation";
 import { getProjectStore } from "../../store/slices/ProjectSlice";
 import { userId2UserInfo } from "../../utils/Association";
+import { getIterationStore } from "../../store/slices/IterationSlice";
 const { TextArea } = Input;
 const { Option } = Select;
 
@@ -55,6 +56,8 @@ const UISRList = (props: UISRListProps) => {
   const dispatcher = useDispatch();
   const project = props.project_id;
   const projectInfo = useSelector(getProjectStore);
+  const iterInfo = useSelector(getIterationStore);
+  console.log(iterInfo);
   const curSRKey: number[] = [];
   if (props.IR_id !== -1) {
     IRSRAssociationData.forEach((value: IRSRAssociation) => {
@@ -173,6 +176,9 @@ const UISRList = (props: UISRListProps) => {
     setDesc(record.description);
     setPriority(record.priority);
     setCurrState(record.currState);
+    setIter(record.iter);
+    setChargedBy(record.chargedBy);
+    setService(record.service);
     setIsEditModalVisible(true);
   };
 
@@ -197,6 +203,9 @@ const UISRList = (props: UISRListProps) => {
       description: desc,
       priority: priority,
       currState: state,
+      iter: "迭代1",
+      chargedBy: "某某某",
+      service: "服务1",
     };
     updateSRInfo(dispatcher, project, newSR).then((data: any) => {
       if (data.code === 0) {
@@ -235,6 +244,9 @@ const UISRList = (props: UISRListProps) => {
       description: desc,
       priority: priority,
       currState: "TODO",
+      iter: "迭代1",
+      chargedBy: "某某某",
+      service: "服务1",
     };
     createSRInfo(dispatcher, project, newSR).then((data: any) => {
       if (data.code === 0) {
@@ -515,6 +527,7 @@ const UISRList = (props: UISRListProps) => {
           onOk={handleCreateOk}
           onCancel={handleCreateCancel}
           width={"70%"}
+          destroyOnClose={true}
         >
           <p
             style={{
@@ -610,6 +623,7 @@ const UISRList = (props: UISRListProps) => {
           onOk={handleEditOk}
           onCancel={handleEditCancel}
           width={"70%"}
+          destroyOnClose={true}
         >
           <p
             style={{
