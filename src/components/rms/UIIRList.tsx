@@ -11,7 +11,11 @@ import {
   message,
   Space,
 } from "antd";
-import { IRCard, SRCardProps } from "../../store/ConfigureStore";
+import {
+  IRCard,
+  IRSRAssociation,
+  SRCardProps,
+} from "../../store/ConfigureStore";
 import "./UIIRList.css";
 import SRList from "./UISRList";
 import { useDispatch, useSelector } from "react-redux";
@@ -22,9 +26,15 @@ import {
 } from "../../store/functions/RMS";
 import { ToastMessage } from "../../utils/Navigation";
 import ReactMarkdown from "react-markdown";
-import { Iteration2SR, oneIR2AllSR } from "../../utils/Association";
+import {
+  Iteration2SR,
+  oneIR2AllSR,
+  SRId2SRInfo,
+  userId2UserInfo,
+} from "../../utils/Association";
 import { getSRIterationStore } from "../../store/slices/IterationSlice";
 import { getSRListStore } from "../../store/slices/IRSRSlice";
+import { getProjectStore } from "../../store/slices/ProjectSlice";
 const { TextArea } = Input;
 
 interface UIIRListProps {
@@ -38,19 +48,41 @@ interface UIIRListProps {
 
 const UIIRList = (props: UIIRListProps) => {
   const IRListData = JSON.parse(props.IRListStr).data;
+  const IRSRAssociationData = JSON.parse(props.IRSRAssociation).data;
   const dispatcher = useDispatch();
   const project = props.project_id;
   const dataIRList: IRCard[] = [];
+  const projectInfo = useSelector(getProjectStore);
+
   IRListData.forEach((value: IRCard) => {
+    const user = userId2UserInfo(Number(value.createdBy), projectInfo);
+    // calculate the IR Progress
+    const curSRKey: number[] = [];
+    IRSRAssociationData.forEach((value0: IRSRAssociation) => {
+      if (value0.IR === value.id) {
+        curSRKey.push(value0.SR);
+      }
+    });
+    let totalWeight = 0;
+    let curWeight = 0;
+    curSRKey.forEach((value1: number) => {
+      const SRInfo = SRId2SRInfo(value1, props.SRListStr);
+      totalWeight += SRInfo.priority;
+      if (SRInfo.state === "Done") {
+        curWeight += SRInfo.priority;
+      }
+    });
+    const curProgress = (curWeight * 100) / totalWeight;
     dataIRList.push({
       id: value.id,
       project: value.project,
       title: value.title,
       description: value.description,
       rank: value.rank,
-      createdBy: value.createdBy,
+      createdBy: user.name,
       createdAt: value.createdAt * 1000,
       disabled: value.disabled,
+      progress: curProgress,
     });
   });
   // const [tableListDataSource] = useState<IRCard[]>(dataIRList);
@@ -100,6 +132,7 @@ const UIIRList = (props: UIIRListProps) => {
       createdBy: "", // 未用到
       createdAt: -1, // 未用到
       disabled: true, // 未用到
+      progress: 0,
     };
     updateIRInfo(dispatcher, project, newIR).then((data: any) => {
       if (data.code === 0) {
@@ -138,6 +171,7 @@ const UIIRList = (props: UIIRListProps) => {
       createdBy: "", // 未用到
       createdAt: -1, // 未用到
       disabled: true, // 未用到
+      progress: 0,
     };
     createIRInfo(dispatcher, project, newIR).then((data: any) => {
       if (data.code === 0) {
@@ -178,32 +212,29 @@ const UIIRList = (props: UIIRListProps) => {
     });
   }
 
-  const getPercentage = (ir_id: number) => {
-    let now = 0;
-    let all = 0;
-    oneIR2AllSR(ir_id, props.IRSRAssociation, props.SRListStr).forEach(
-      (sr: any) => {
-        all += sr.priority;
-        if (sr.state === "Reviewing" || sr.state === "Done") {
-          now += sr.priority;
-        }
-      }
-    );
-    return all === 0 ? 0 : Number(((now / all) * 100).toFixed(1));
-  };
-
   const columns: ProColumns<IRCard>[] = [
     {
       title: "原始需求标题",
       width: "15%",
       dataIndex: "title",
+      ellipsis: true,
       align: "center",
       render: (_, record) => (
-        <div style={{ fontWeight: "bold" }}>{record.title}</div>
+        <div
+          style={{
+            fontWeight: "bold",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {record.title}
+        </div>
       ),
     },
     {
       title: "原始需求描述",
+      ellipsis: true,
       dataIndex: "description",
       align: "center",
       render: (_, record) => (
@@ -215,21 +246,20 @@ const UIIRList = (props: UIIRListProps) => {
       width: "13%",
       align: "center",
       render: (_, record) => (
-        <Progress
-          className={"prgressProp"}
-          percent={getPercentage(record.id)}
-        />
+        <Progress className={"prgressProp"} percent={record.progress} />
       ),
     },
     {
       title: "创建者",
       width: "12%",
+      ellipsis: true,
       dataIndex: "createdBy",
       align: "center",
     },
     {
       title: "创建时间",
       width: "15%",
+      ellipsis: true,
       dataIndex: "createdAt",
       valueType: "dateTime",
       align: "center",
@@ -287,6 +317,7 @@ const UIIRList = (props: UIIRListProps) => {
               </Button>,
             ];
           }}
+          cardBordered={true}
           columns={columns}
           options={{
             fullScreen: false,
@@ -311,7 +342,6 @@ const UIIRList = (props: UIIRListProps) => {
         />
         <Modal
           title="功能需求关联列表"
-          destroyOnClose={true}
           centered={true}
           visible={isSRModalVisible}
           onCancel={handleSRCancel}
@@ -435,6 +465,7 @@ const UIIRList = (props: UIIRListProps) => {
             setting: false,
             density: false,
           }}
+          cardBordered={true}
           columns={onlyShowColumn}
           expandable={{ expandedRowRender }}
           dataSource={dataIRList}
