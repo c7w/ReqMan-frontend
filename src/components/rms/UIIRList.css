@@ -1,0 +1,43 @@
+@import "~antd/dist/antd.css";
+
+.IRTable {
+  width: 100%;
+  padding-top: 8px;
+  padding-bottom: 1rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  margin-top: 1rem;
+  min-height: 80vh;
+  border-radius: 2rem;
+  background-color: #ffffff;
+}
+
+.showIRTable {
+  width: 100%;
+  padding-top: 8px;
+  padding-bottom: 1rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  margin-top: 1rem;
+  min-height: 80vh;
+  border-radius: 2rem;
+  background-color: #ffffff;
+}
+
+.markdown {
+  padding-top: 14px;
+}
+
+.progressProp {
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+.ant-pro-table-list-toolbar-container {
+  text-align: right;
+  margin: 20px;
+}
+
+.ant-modal-content {
+  width: 100%;
+}

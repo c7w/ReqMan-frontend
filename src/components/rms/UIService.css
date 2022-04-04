@@ -1,0 +1,56 @@
+.ServiceHeader {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: flex-end;
+  width: 90%;
+}
+
+.ServiceShowcase {
+  display: flex;
+  flex-direction: row;
+  width: 90%;
+}
+
+.ServiceShowcaseLeft {
+  flex-grow: 1;
+  max-width: 50%;
+  border-right: 1px grey solid;
+}
+
+.ServiceShowcaseRight {
+  flex-grow: 1;
+  max-width: 50%;
+}
+
+.service-card {
+  margin: 2rem 1rem;
+  border: 1px rgba(0, 0, 0, 0.4) solid;
+  border-radius: 1rem;
+  border-top: 1px #0074d9 solid;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  max-width: 100%;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.service-label {
+  display: inline-block;
+  line-height: 1;
+  vertical-align: baseline;
+  margin: 0 0.14285714em;
+  background-color: #e8e8e8;
+  background-image: none;
+  padding: 0.5833em 0.833em;
+  color: rgba(0, 0, 0, 0.6);
+  text-transform: none;
+  font-weight: 700;
+  border: 0 solid transparent;
+  border-radius: 0.28571429rem;
+}
+
+.service-modal {
+  width: 100%;
+}

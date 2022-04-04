@@ -1,0 +1,44 @@
+@import "~antd/dist/antd.css";
+
+.SRTable {
+  width: 100%;
+  padding-top: 8px;
+  padding-bottom: 1rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  margin-top: 1rem;
+  min-height: 80vh;
+  border-radius: 2rem;
+  background-color: #ffffff;
+}
+
+.showSRTable {
+  width: 100%;
+  padding-top: 2rem;
+  margin-right: 1rem;
+  padding-bottom: 2rem;
+  padding-right: 2rem;
+  border-radius: 1rem;
+  background-color: #ffffff;
+}
+
+.markdown {
+  padding-top: 14px;
+}
+
+.ant-tag {
+  border-radius: 10px;
+}
+
+.ChooseSRTable {
+  padding: 1rem;
+}
+
+.ant-pro-table-list-toolbar-container {
+  text-align: right;
+  margin: 20px;
+}
+
+.ant-modal-content {
+  width: 100%;
+}

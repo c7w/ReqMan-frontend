@@ -1,0 +1,18 @@
+@import "~antd/dist/antd.css";
+
+.prjuser {
+  background-color: #ffffff;
+  padding: 20px 100px;
+}
+
+.ant-pro-card-hoverable:hover {
+  background-color: #e7f0ff;
+}
+
+.ant-pro-card-hoverable {
+}
+
+.avatarimg {
+  width: 200px;
+  height: 200px;
+}

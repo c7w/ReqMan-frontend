@@ -22,3 +22,11 @@
 .ant-layout-sider-trigger {
   background: rgb(36, 41, 47);
 }
+
+#sidebar-column .sidebar-item {
+  height: 3.5rem;
+}
+
+#sidebar-column .sidebar-item-header {
+  height: 4.5rem;
+}

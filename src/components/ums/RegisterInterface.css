@@ -32,7 +32,6 @@
 
   display: flex;
   flex-direction: column;
-
 }
 
 .register-title {
@@ -48,10 +47,10 @@
   user-select: none;
 }
 
-.register-tooltip {
-  width: 300px;
-  text-align: center;
-}
+/*#register-board .register-tooltip {*/
+/*  width: 300px;*/
+/*  text-align: center;*/
+/*}*/
 
 .register-forget {
   display: flex;

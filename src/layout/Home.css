@@ -14,11 +14,13 @@
   /*width: 100%;*/
   /*min-height: 90vh;*/
   /*background: rgb(248, 248, 248);*/
-  display: grid;
-  grid-template-rows: 1fr auto;
+  /*display: grid;*/
+  /*grid-template-rows: 1fr auto;*/
+  width: 80vw;
+  margin: 0 auto;
 }
 
-.content {
+.layout-content {
   margin: 0 16px;
 }
 
@@ -53,7 +55,7 @@
 .layout-footer {
   position: relative;
   text-align: center;
-  width: 100vw;
+  width: auto;
   color: #000;
   font-family: "Consolas";
   font-size: 20px;

@@ -2,14 +2,16 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
-import Router from "./router/Router";
-import iziToast from "izitoast";
+import Router from "./page/Router";
+import "moment/locale/zh-cn";
+import zhCN from "antd/lib/locale/zh_CN";
+import { ConfigProvider } from "antd";
 
 // Entrance
 ReactDOM.render(
-  <React.StrictMode>
+  <ConfigProvider locale={zhCN}>
     <Router />
-  </React.StrictMode>,
+  </ConfigProvider>,
   document.getElementById("root")
 );
 

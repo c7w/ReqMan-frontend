@@ -14,11 +14,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import { faCircleCheck } from "@fortawesome/free-regular-svg-icons";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
-import { NaiveResponse } from "../../utils/Network";
+import request_json, { NaiveResponse } from "../../utils/Network";
 import { NavLink } from "react-router-dom";
 import CryptoJS from "crypto-js";
 import { push } from "redux-first-history";
 import { useDispatch } from "react-redux";
+import API from "../../utils/APIList";
 
 export interface RegisterInterfaceProps {
   // Async function, call at submission
@@ -50,51 +51,75 @@ const RegisterInterface = (props: RegisterInterfaceProps) => {
   // 用户名判断
   const userCheck = (event: { target: { value: string } }) => {
     const usr = event.target.value;
+    setUserName(usr);
     const reg = /^([a-zA-Z0-9_]){3,16}$/;
     if (!reg.test(usr)) {
       setUserError("用户名应为 3-16 位数字/字母/下划线！");
     } else {
-      setUserError(" ");
-      setUserName(usr);
+      setUserError("");
+      request_json(API.CHECK_USERNAME_AVAILABLE, {
+        body: { name: usr },
+      })
+        .then((data) => {
+          if (data.code === 0) {
+            setUserError(" ");
+          } else {
+            setUserError("该用户名已被注册");
+          }
+        })
+        .catch(() => {
+          setUserError("无法获取用户名可用状态");
+        });
     }
   };
 
   // 邀请码检查
   const invitationCheck = (event: { target: { value: string } }) => {
+    setInvitation(event.target.value);
     const invitation = event.target.value;
     if (invitation === "") {
       setInvitationError("");
       setInvitation("");
       return;
     }
-    const reg = /^[a-zA-Z0-9]{16}$/;
+    const reg = /^[A-Z0-9]{8}$/;
     if (!reg.test(invitation)) {
       setInvitationError("邀请码格式有误");
     } else {
       setInvitationError(" ");
-      setInvitation(invitation);
     }
   };
 
   // 邮箱检查
   const mailCheck = (event: { target: { value: string } }) => {
     const mail = event.target.value;
-    const reg = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
+    setMail(mail);
+    const reg = /^\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,14}$/;
     if (!reg.test(mail)) {
       setMailError("邮箱格式有误！");
-    } /*else if (false) {
-      // 检查邮箱是否已被注册
-      setMailError("该邮箱已被注册");
-    } */ else {
-      setMailError(" ");
-      setMail(mail);
+    } else {
+      setMailError("");
+      request_json(API.CHECK_EMAIL_AVAILABLE, {
+        body: { email: mail },
+      })
+        .then((data) => {
+          if (data.code === 0) {
+            setMailError(" ");
+          } else {
+            setMailError("该邮箱已被注册");
+          }
+        })
+        .catch(() => {
+          setMailError("无法获取邮箱可用状态");
+        });
     }
   };
 
   // 密码判断
   const passwordCheck = (event: { target: { value: string } }) => {
+    setPassword(event.target.value);
     const password = event.target.value;
-    const reg1 = /^\w{6,20}$/;
+    const reg1 = /^.{6,20}$/;
     const reg2 = /^[0-9]+$/;
     const reg3 = /^[a-z]+$/;
     const reg4 = /^[A-Z]+$/;
@@ -102,7 +127,7 @@ const RegisterInterface = (props: RegisterInterfaceProps) => {
     const reg6 = /^[0-9A-Z]+$/;
     const reg7 = /^[a-zA-Z]+$/;
     if (!reg1.test(password)) {
-      setPasswordError("密码为 6-20 位数字或字母");
+      setPasswordError("密码为 6-20 位数字、字母或特殊字符");
     } else if (
       reg2.test(password) ||
       reg3.test(password) ||
@@ -111,10 +136,9 @@ const RegisterInterface = (props: RegisterInterfaceProps) => {
       reg6.test(password) ||
       reg7.test(password)
     ) {
-      setPasswordError("密码需包含数字和大、小写字母");
+      setPasswordError("密码需包含数字、大小写字母或包含特殊字符");
     } else {
       setPasswordError(" ");
-      setPassword(password);
     }
   };
 
@@ -147,7 +171,7 @@ const RegisterInterface = (props: RegisterInterfaceProps) => {
   return (
     <div className={"root-screen"}>
       <div className={"register-board-container"}>
-        <div className={"register-board"}>
+        <div className={"register-board"} id={"register-board"}>
           <p className={"register-title"}>注册</p>
           <p className={"register-prompt"}>
             <span style={{ color: "red" }}>* </span>
@@ -157,7 +181,7 @@ const RegisterInterface = (props: RegisterInterfaceProps) => {
             title={userError}
             visible={userError !== "" && userError !== " "}
             placement={"right"}
-            className={"register-tooltip"}
+            overlayInnerStyle={{ width: "20rem", textAlign: "center" }}
           >
             <div className={getInputClassName(userError)}>
               <Input
@@ -165,6 +189,7 @@ const RegisterInterface = (props: RegisterInterfaceProps) => {
                 prefix={<UserOutlined />}
                 type="text"
                 placeholder=""
+                autoComplete={"c7w"}
                 onChange={userCheck}
                 bordered={false}
               />
@@ -179,6 +204,7 @@ const RegisterInterface = (props: RegisterInterfaceProps) => {
             visible={mailError !== "" && mailError !== " "}
             placement={"right"}
             className={"register-tooltip"}
+            overlayInnerStyle={{ width: "20rem", textAlign: "center" }}
           >
             <div className={getInputClassName(mailError)}>
               <Input
@@ -186,6 +212,7 @@ const RegisterInterface = (props: RegisterInterfaceProps) => {
                 prefix={<MailOutlined />}
                 type="text"
                 placeholder=""
+                autoComplete={"c7w"}
                 onChange={mailCheck}
                 bordered={false}
               />
@@ -200,12 +227,14 @@ const RegisterInterface = (props: RegisterInterfaceProps) => {
             visible={passwordError !== "" && passwordError !== " "}
             placement={"right"}
             className={"register-tooltip"}
+            overlayInnerStyle={{ width: "20rem", textAlign: "center" }}
           >
             <div className={getInputClassName(passwordError)}>
               <Input.Password
                 size={"large"}
                 prefix={<KeyOutlined />}
                 type="text"
+                autoComplete={"c7w"}
                 placeholder=""
                 onChange={passwordCheck}
                 bordered={false}
@@ -222,12 +251,14 @@ const RegisterInterface = (props: RegisterInterfaceProps) => {
             visible={doubleCheckError !== "" && doubleCheckError !== " "}
             placement={"right"}
             className={"register-tooltip"}
+            overlayInnerStyle={{ width: "20rem", textAlign: "center" }}
           >
             <div className={getInputClassName(doubleCheckError)}>
               <Input.Password
                 size={"large"}
                 prefix={<KeyOutlined />}
                 type="text"
+                autoComplete={"c7w"}
                 placeholder=""
                 onChange={check}
                 bordered={false}
@@ -243,6 +274,7 @@ const RegisterInterface = (props: RegisterInterfaceProps) => {
             visible={invitationError !== "" && invitationError !== " "}
             placement={"right"}
             className={"register-tooltip"}
+            overlayInnerStyle={{ width: "20rem", textAlign: "center" }}
           >
             <div className={getInputClassName(invitationError)}>
               <Input
@@ -250,6 +282,7 @@ const RegisterInterface = (props: RegisterInterfaceProps) => {
                 prefix={<KeyOutlined />}
                 type="text"
                 placeholder=""
+                autoComplete={"c7w"}
                 onChange={invitationCheck}
                 bordered={false}
               />
