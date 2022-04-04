@@ -1,6 +1,7 @@
 @import "~antd/dist/antd.css";
 
 .prjuser {
+  margin-top: 2rem;
   background-color: #ffffff;
   padding: 20px 100px;
 }

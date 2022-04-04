@@ -1,9 +1,17 @@
-import React, { ReactNode, useState } from "react";
+import React, { ReactNode, useEffect, useRef, useState } from "react";
 import "./UIUserManage.css";
 import ProList from "@ant-design/pro-list";
 import { ManageUserInfo } from "../../store/ConfigureStore";
 import CryptoJS from "crypto-js";
-import { Modal, Typography } from "antd";
+import { Input, Modal, Select, Typography } from "antd";
+import Loading from "../../layout/components/Loading";
+import request_json from "../../utils/Network";
+import API from "../../utils/APIList";
+import { useParams } from "react-router-dom";
+import { ToastMessage } from "../../utils/Navigation";
+import { updateProjectInfo, updateUserInfo } from "../../store/functions/UMS";
+import { useDispatch, useSelector } from "react-redux";
+import { getProjectStore } from "../../store/slices/ProjectSlice";
 
 interface UserManageProps {
   readonly userInfo: string;
@@ -32,24 +40,146 @@ interface UserModelProps {
   visible: boolean;
   close: () => void;
   userInfo: string;
+  editable: boolean;
 }
 
 const UserModel = (props: UserModelProps) => {
-  return (
-    <Modal
-      title="编辑项目成员"
-      destroyOnClose={true}
-      centered={true}
-      visible={props.visible}
-      onCancel={() => props.close()}
-      width={"60%"}
-    >
-      {props.userInfo}
-    </Modal>
-  );
+  const dispatcher = useDispatch();
+  const params = useParams<"id">();
+  const project_id = Number(params.id);
+
+  const [role, setRole] = useState("");
+  useEffect(() => {
+    if (props.userInfo !== "") setRole(JSON.parse(props.userInfo).role);
+  }, [props.userInfo]);
+
+  const switchUserRole = (new_role: string) => {
+    const data = JSON.parse(props.userInfo);
+    request_json(API.MODIFY_USER_ROLE, {
+      body: { project: project_id, user: data.id, role: new_role },
+    }).then((data) => {
+      if (data.code === 0) {
+        ToastMessage("success", "修改成功", "用户身份修改成功");
+        updateProjectInfo(dispatcher, project_id);
+      } else {
+        ToastMessage("error", "修改失败", "用户身份修改失败");
+      }
+      console.debug(data);
+    });
+  };
+
+  if (props.userInfo !== "") {
+    return (
+      <Modal
+        title="编辑项目成员"
+        destroyOnClose={true}
+        centered={true}
+        visible={props.visible}
+        onCancel={() => props.close()}
+        width={"60%"}
+        footer={null}
+      >
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <div style={{ display: "flex" }}>
+            <img
+              src={
+                JSON.parse(props.userInfo).avatar.length > 5
+                  ? JSON.parse(props.userInfo).avatar
+                  : `https://www.gravatar.com/avatar/${CryptoJS.MD5(
+                      JSON.parse(props.userInfo).email
+                    )}`
+              }
+              width={200}
+              height={200}
+              style={{ marginBottom: "1rem" }}
+            />
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                marginLeft: "2rem",
+                marginBottom: "1rem",
+              }}
+            >
+              <div
+                style={{
+                  color: "black",
+                  fontSize: "40px",
+                  whiteSpace: "nowrap",
+                  textOverflow: "ellipsis",
+                  overflow: "hidden",
+                }}
+              >
+                {JSON.parse(props.userInfo).name}
+                <span
+                  style={{
+                    color: "grey",
+                    fontSize: "16px",
+                    whiteSpace: "nowrap",
+                    textOverflow: "ellipsis",
+                    overflow: "hidden",
+                  }}
+                >
+                  （{JSON.parse(props.userInfo).role}）
+                </span>
+              </div>
+              <div
+                style={{
+                  color: "grey",
+                  fontSize: "18px",
+                  whiteSpace: "nowrap",
+                  textOverflow: "ellipsis",
+                  overflow: "hidden",
+                }}
+              >
+                {JSON.parse(props.userInfo).email}
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr />
+        <div>
+          <p style={{ marginTop: "1rem", marginBottom: "0.4rem" }}>
+            用户身份：
+          </p>
+          <Select
+            disabled={JSON.parse(props.userInfo).role === "项目管理员"}
+            defaultValue={JSON.parse(props.userInfo).role}
+            style={{ width: "20rem" }}
+            onChange={(value) => {
+              setRole(value);
+              switchUserRole(value);
+            }}
+          >
+            <Select.Option value="sys">系统工程师</Select.Option>
+            <Select.Option value="dev">开发工程师</Select.Option>
+            <Select.Option value="qa">质保工程师</Select.Option>
+            <Select.Option value="member">项目成员</Select.Option>
+          </Select>
+        </div>
+        <div
+          style={{
+            display: role === "dev" || role === "开发工程师" ? "block" : "none",
+          }}
+        >
+          <p style={{ marginTop: "1rem", marginBottom: "0.4rem" }}>
+            关联迭代周期：
+          </p>
+        </div>
+      </Modal>
+    );
+  } else {
+    return (
+      <Modal destroyOnClose={true}>
+        <Loading />
+      </Modal>
+    );
+  }
 };
 
 const UserManage = (props: UserManageProps) => {
+  console.debug("Updating");
+  console.debug(JSON.parse(props.userInfo).data.users);
   const [cachedUserInfo, setCachedUserInfo] = useState("");
   const [userModalVisibility, setUserModalVisibility] = useState(false);
 
@@ -68,15 +198,6 @@ const UserManage = (props: UserManageProps) => {
           : `https://www.gravatar.com/avatar/${CryptoJS.MD5(value.email)}`,
     });
   });
-  // for (let i = 0; i <= 30; i++) {
-  //   dataProjectList.push({
-  //     id: ProjectList.id,
-  //     name: ProjectList.name,
-  //     email: ProjectList.email,
-  //     avatar: ProjectList.avatar,
-  //   });
-  // }
-  const [tableListDataSource] = useState<ManageUserInfo[]>(dataProjectList);
 
   return (
     <div className={"prjuser"}>
@@ -84,6 +205,7 @@ const UserManage = (props: UserManageProps) => {
         visible={userModalVisibility}
         close={() => setUserModalVisibility(false)}
         userInfo={cachedUserInfo}
+        editable={true}
       />
       <ProList<ManageUserInfo>
         pagination={{
@@ -156,7 +278,7 @@ const UserManage = (props: UserManageProps) => {
           },
         }}
         headerTitle="项目成员列表"
-        dataSource={tableListDataSource}
+        dataSource={dataProjectList}
       />
     </div>
   );
