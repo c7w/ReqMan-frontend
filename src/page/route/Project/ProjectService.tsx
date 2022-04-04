@@ -9,11 +9,17 @@ import {
   updateUserInfo,
 } from "../../../store/functions/UMS";
 import { Redirect, ToastMessage } from "../../../utils/Navigation";
-import { updateServiceInfo } from "../../../store/functions/RMS";
+import {
+  getSRIterationInfo,
+  getSRListInfo,
+  updateServiceInfo,
+} from "../../../store/functions/RMS";
 import UIServiceReadonly from "../../../components/rms/UIServiceReadonly";
 import Loading from "../../../layout/components/Loading";
 import UIService from "../../../components/rms/UIService";
 import { useEffect } from "react";
+import { getSRIterationStore } from "../../../store/slices/IterationSlice";
+import { getSRListStore } from "../../../store/slices/IRSRSlice";
 
 const ProjectService = () => {
   // 1. Judge if user logged in, if not send to `/login`
@@ -23,19 +29,30 @@ const ProjectService = () => {
   const userInfo = useSelector(getUserStore);
   const projectInfo = useSelector(getProjectStore);
   const serviceStore = useSelector(getServiceStore);
-  const dispatcher = useDispatch();
+  const SRIterationAssociationStore = useSelector(getSRIterationStore);
+  const SRListStore = useSelector(getSRListStore);
 
+  const dispatcher = useDispatch();
   const params = useParams<"id">();
   const project_id = params.id;
 
   useEffect(() => {
+    updateUserInfo(dispatcher);
+    updateProjectInfo(dispatcher, Number(project_id));
     updateServiceInfo(dispatcher, Number(project_id));
+    getSRIterationInfo(dispatcher, Number(project_id));
+    getSRListInfo(dispatcher, Number(project_id));
   }, []);
 
   // 1. User State Judge
-  if (userInfo === "") {
+  if (
+    userInfo === "" ||
+    projectInfo === "" ||
+    serviceStore === "" ||
+    SRIterationAssociationStore === "" ||
+    SRListStore === ""
+  ) {
     // Re-Query...
-    updateUserInfo(dispatcher);
   } else if (JSON.parse(userInfo).code !== 0) {
     // Redirect to `Root`
     ToastMessage("error", "未确认登录态", "即将跳转回登录界面");
@@ -50,23 +67,15 @@ const ProjectService = () => {
       // 3. Continue, lookup projectInfo in cache.
       // If cached projectInfo not exists or cached ID not equal to project_id, then re-request, render Loading.
       // Else render page.
-      if (projectInfo === "" || serviceStore === "") {
-        // Re-request
-        updateProjectInfo(dispatcher, Number(project_id));
-        updateServiceInfo(dispatcher, Number(project_id));
-      } else {
-        const projectData = JSON.parse(projectInfo);
-        const serviceData = JSON.parse(serviceStore);
-        console.debug(serviceData);
-        if (projectData.data.project.id !== Number(project_id)) {
-          updateProjectInfo(dispatcher, Number(project_id));
-        } else {
-          return (
-            <Home sidebar={true}>
-              <UIService />
-            </Home>
-          );
-        }
+
+      const projectData = JSON.parse(projectInfo);
+      const serviceData = JSON.parse(serviceStore);
+      if (projectData.data.project.id === Number(project_id)) {
+        return (
+          <Home sidebar={true}>
+            <UIService />
+          </Home>
+        );
       }
     } else {
       // 2. Redirect to notfound

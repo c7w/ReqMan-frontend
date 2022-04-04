@@ -22,6 +22,9 @@ import {
 } from "../../store/functions/RMS";
 import { ToastMessage } from "../../utils/Navigation";
 import ReactMarkdown from "react-markdown";
+import { Iteration2SR, oneIR2AllSR } from "../../utils/Association";
+import { getSRIterationStore } from "../../store/slices/IterationSlice";
+import { getSRListStore } from "../../store/slices/IRSRSlice";
 const { TextArea } = Input;
 
 interface UIIRListProps {
@@ -175,6 +178,20 @@ const UIIRList = (props: UIIRListProps) => {
     });
   }
 
+  const getPercentage = (ir_id: number) => {
+    let now = 0;
+    let all = 0;
+    oneIR2AllSR(ir_id, props.IRSRAssociation, props.SRListStr).forEach(
+      (sr: any) => {
+        all += sr.priority;
+        if (sr.state === "Reviewing" || sr.state === "Done") {
+          now += sr.priority;
+        }
+      }
+    );
+    return all === 0 ? 0 : Number(((now / all) * 100).toFixed(1));
+  };
+
   const columns: ProColumns<IRCard>[] = [
     {
       title: "原始需求标题",
@@ -198,7 +215,10 @@ const UIIRList = (props: UIIRListProps) => {
       width: "13%",
       align: "center",
       render: (_, record) => (
-        <Progress className={"prgressProp"} percent={50} />
+        <Progress
+          className={"prgressProp"}
+          percent={getPercentage(record.id)}
+        />
       ),
     },
     {
