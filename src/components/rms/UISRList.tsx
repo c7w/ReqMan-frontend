@@ -1,7 +1,7 @@
 import React, { ReactElement, useEffect, useState } from "react";
 import type { ProColumns } from "@ant-design/pro-table";
 import ReactMarkdown from "react-markdown";
-import ProTable from "@ant-design/pro-table";
+import ProTable, { ProColumnType } from "@ant-design/pro-table";
 import {
   Button,
   Input,
@@ -66,6 +66,7 @@ const UISRList = (props: UISRListProps) => {
 
   // 总任务列表
   const dataSRList: SRCardProps[] = [];
+  const titleFilter: any = {};
   SRListData.forEach((value: any) => {
     let state = "";
     let color = "";
@@ -85,6 +86,10 @@ const UISRList = (props: UISRListProps) => {
       state = "已交付";
       color = "green";
     }
+    if (titleFilter[value.title] === undefined) {
+      const curtitle = { text: value.title };
+      titleFilter[value.title] = curtitle;
+    }
     const user = userId2UserInfo(Number(value.createdBy), projectInfo);
     dataSRList.push({
       id: value.id,
@@ -102,6 +107,7 @@ const UISRList = (props: UISRListProps) => {
   });
 
   const showSRList: SRCardProps[] = [];
+  const showTitleFilter: any = {};
   SRListData.forEach((value: any) => {
     curSRKey.forEach((curValue: number) => {
       if (curValue === value.id) {
@@ -124,6 +130,10 @@ const UISRList = (props: UISRListProps) => {
           color = "green";
         }
         const user = userId2UserInfo(Number(value.createdBy), projectInfo);
+        if (showTitleFilter[value.title] === undefined) {
+          const curtitle = { text: value.title };
+          showTitleFilter[value.title] = curtitle;
+        }
         showSRList.push({
           id: value.id,
           project: value.project,
@@ -288,9 +298,11 @@ const UISRList = (props: UISRListProps) => {
       title: "功能需求标题",
       filters: true,
       onFilter: true,
+      filterSearch: true,
       width: "15%",
       dataIndex: "title",
       align: "center",
+      valueEnum: titleFilter,
       render: (_, record) => (
         <div
           style={{
@@ -308,6 +320,7 @@ const UISRList = (props: UISRListProps) => {
       title: "状态",
       filters: true,
       onFilter: true,
+      filterSearch: true,
       search: false,
       width: "10%",
       dataIndex: "currState",
@@ -386,29 +399,18 @@ const UISRList = (props: UISRListProps) => {
     chooseColumn.push(columns[i]);
   }
 
+  const showColumn: ProColumns<SRCardProps>[] = [];
+  for (let i = 0; i < 5; i += 1) {
+    if (i === 0) {
+      const oneCol: ProColumns<SRCardProps> = columns[0];
+      oneCol.valueEnum = showTitleFilter;
+      showColumn.push(oneCol);
+    } else {
+      showColumn.push(columns[i]);
+    }
+  }
+
   const rowSelection = {
-    // onChange: (
-    //   selectedRowKeys: React.Key[],
-    //   selectedRows: ProColumns<SRCard>[]
-    // ) => {
-    //   const selectedSR = [];
-    //   console.log("===========hey I change===========");
-    //   // for (let i = 0; i < selectedRowKeys.length; i++) {
-    //   //   selectedSR.push(selectedRows[i].key);
-    //   // }
-    //   // for (let i = 0; i < props.curSRKey.length; i++) {
-    //   //   selectedSR.push(props.curSRKey[i]);
-    //   // }
-    // },
-    // getCheckboxProps: (record: ProColumns<SRCard>) => {
-    //   console.log("=================");
-    //   // for (let i = 0; i < props.curSRKey.length; i++) {
-    //   //   if (props.curSRKey[i] === record.key) {
-    //   //     return { disabled: true };
-    //   //   }
-    //   // }
-    //   return { disabled: false };
-    // },
     onSelect: (record: SRCardProps, selected: boolean) => {
       const IRSR: IRSRAssociation = {
         id: 0,
@@ -515,12 +517,6 @@ const UISRList = (props: UISRListProps) => {
           }}
           rowKey="id"
           columns={columns}
-          // request={() => {
-          //   return Promise.resolve({
-          //     data: tableListDataSource,
-          //     success: true,
-          //   });
-          // }}
           dataSource={dataSRList}
           pagination={false}
           options={{
@@ -728,7 +724,7 @@ const UISRList = (props: UISRListProps) => {
           headerTitle="功能需求列表"
           toolBarRender={false}
           rowKey="id"
-          columns={chooseColumn}
+          columns={showColumn}
           dataSource={showSRList}
           pagination={false}
           options={{
