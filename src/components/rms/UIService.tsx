@@ -19,6 +19,10 @@ import {
   doUpdateServiceInfo,
   updateServiceInfo,
 } from "../../store/functions/RMS";
+import { Iteration2SR } from "../../utils/Association";
+import { getSRIterationStore } from "../../store/slices/IterationSlice";
+import { getSRListStore } from "../../store/slices/IRSRSlice";
+import { SRCardProps } from "../../store/ConfigureStore";
 
 interface ProjectServiceCardProps {
   data: string;
@@ -27,6 +31,42 @@ interface ProjectServiceCardProps {
 
 export const ProjectServiceCard = (props: ProjectServiceCardProps) => {
   const data = JSON.parse(props.data);
+
+  const SRIterationAssociationStore = useSelector(getSRIterationStore);
+  const SRListStore = useSelector(getSRListStore);
+
+  const getPercentage = (iteration_id: number) => {
+    let now = 0;
+    let all = 0;
+    Iteration2SR(
+      iteration_id,
+      SRIterationAssociationStore,
+      SRListStore
+    ).forEach((sr: any) => {
+      all += sr.priority;
+      if (sr.state === "Reviewing" || sr.state === "Done") {
+        now += sr.priority;
+      }
+    });
+    return all === 0 ? 0 : Number(((now / all) * 100).toFixed(1));
+  };
+
+  const getSuccessPercentage = (iteration_id: number) => {
+    let now = 0;
+    let all = 0;
+    Iteration2SR(
+      iteration_id,
+      SRIterationAssociationStore,
+      SRListStore
+    ).forEach((sr: any) => {
+      all += sr.priority;
+      if (sr.state === "Done") {
+        now += sr.priority;
+      }
+    });
+    return all === 0 ? 0 : Number(((now / all) * 100).toFixed(1));
+  };
+
   return (
     <div className={"service-card"} onClick={() => props.modal(props.data)}>
       <div
@@ -52,8 +92,8 @@ export const ProjectServiceCard = (props: ProjectServiceCardProps) => {
       <div className={"service-row"}>
         <span className={"service-label"}>开发进度</span>&nbsp;&nbsp;
         <Progress
-          percent={60}
-          success={{ percent: 30 }}
+          percent={getPercentage(data.id)}
+          success={{ percent: getSuccessPercentage(data.id) }}
           style={{ width: "70%" }}
         />
       </div>
@@ -63,6 +103,41 @@ export const ProjectServiceCard = (props: ProjectServiceCardProps) => {
 
 const ServiceModal = (props: { data: string; close: () => void }) => {
   const data = JSON.parse(props.data);
+
+  const SRIterationAssociationStore = useSelector(getSRIterationStore);
+  const SRListStore = useSelector(getSRListStore);
+
+  const getPercentage = (iteration_id: number) => {
+    let now = 0;
+    let all = 0;
+    Iteration2SR(
+      iteration_id,
+      SRIterationAssociationStore,
+      SRListStore
+    ).forEach((sr: any) => {
+      all += sr.priority;
+      if (sr.state === "Reviewing" || sr.state === "Done") {
+        now += sr.priority;
+      }
+    });
+    return all === 0 ? 0 : Number(((now / all) * 100).toFixed(1));
+  };
+
+  const getSuccessPercentage = (iteration_id: number) => {
+    let now = 0;
+    let all = 0;
+    Iteration2SR(
+      iteration_id,
+      SRIterationAssociationStore,
+      SRListStore
+    ).forEach((sr: any) => {
+      all += sr.priority;
+      if (sr.state === "Done") {
+        now += sr.priority;
+      }
+    });
+    return all === 0 ? 0 : Number(((now / all) * 100).toFixed(1));
+  };
 
   const [title, setTitle] = useState(data.title);
   const [desp, setDesp] = useState(data.description);
@@ -98,8 +173,8 @@ const ServiceModal = (props: { data: string; close: () => void }) => {
       <div style={{ margin: "0.5rem 0" }}>
         <span className={"service-label"}>开发进度</span>&nbsp;&nbsp;
         <Progress
-          percent={60}
-          success={{ percent: 30 }}
+          percent={getPercentage(data.id)}
+          success={{ percent: getSuccessPercentage(data.id) }}
           style={{ width: "40%" }}
         />
       </div>
