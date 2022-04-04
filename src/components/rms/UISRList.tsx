@@ -97,12 +97,13 @@ const UISRList = (props: UISRListProps) => {
       title: value.title,
       description: value.description,
       priority: value.priority,
-      rank: value.rank,
       currState: state,
       stateColor: color,
       createdBy: user.name,
       createdAt: value.createdAt * 1000,
-      disabled: value.disabled,
+      iter: "迭代1",
+      chargedBy: "某某某",
+      service: "服务1",
     });
   });
 
@@ -140,12 +141,13 @@ const UISRList = (props: UISRListProps) => {
           title: value.title,
           description: value.description,
           priority: value.priority,
-          rank: value.rank,
           currState: state,
           stateColor: color,
           createdBy: user.name,
           createdAt: value.createdAt * 1000,
-          disabled: value.disabled,
+          iter: "迭代1",
+          chargedBy: "某某某",
+          service: "服务1",
         });
       }
     });
@@ -160,15 +162,16 @@ const UISRList = (props: UISRListProps) => {
   const [title, setTitle] = useState<string>("");
   const [desc, setDesc] = useState<string>("");
   const [priority, setPriority] = useState<number>(1);
-  const [rank, setRank] = useState<number>(1);
   const [currState, setCurrState] = useState<string>("未开始");
+  const [iter, setIter] = useState<string>("迭代1");
+  const [chargedBy, setChargedBy] = useState<string>("某某某");
+  const [service, setService] = useState<string>("服务1");
 
   const showEditModal = (record: SRCardProps) => {
     setId(record.id);
     setTitle(record.title);
     setDesc(record.description);
     setPriority(record.priority);
-    setRank(record.rank);
     setCurrState(record.currState);
     setIsEditModalVisible(true);
   };
@@ -193,11 +196,7 @@ const UISRList = (props: UISRListProps) => {
       title: title,
       description: desc,
       priority: priority,
-      rank: rank,
       currState: state,
-      createdBy: "", // 未用到
-      createdAt: -1, // 未用到
-      disabled: true, // 未用到
     };
     updateSRInfo(dispatcher, project, newSR).then((data: any) => {
       if (data.code === 0) {
@@ -207,7 +206,6 @@ const UISRList = (props: UISRListProps) => {
         setTitle("");
         setDesc("");
         setPriority(1);
-        setRank(1);
         setCurrState("未开始");
         setIsEditModalVisible(false);
       } else {
@@ -221,7 +219,6 @@ const UISRList = (props: UISRListProps) => {
     setTitle("");
     setDesc("");
     setPriority(1);
-    setRank(1);
     setCurrState("未开始");
     setIsEditModalVisible(false);
   };
@@ -237,11 +234,7 @@ const UISRList = (props: UISRListProps) => {
       title: title,
       description: desc,
       priority: priority,
-      rank: rank,
       currState: "TODO",
-      createdBy: "", // 未用到
-      createdAt: -1, // 未用到
-      disabled: true, // 未用到
     };
     createSRInfo(dispatcher, project, newSR).then((data: any) => {
       if (data.code === 0) {
@@ -251,7 +244,6 @@ const UISRList = (props: UISRListProps) => {
         setTitle("");
         setDesc("");
         setPriority(1);
-        setRank(1);
         setCurrState("未开始");
         setIsCreateModalVisible(false);
       } else {
@@ -265,7 +257,6 @@ const UISRList = (props: UISRListProps) => {
     setTitle("");
     setDesc("");
     setPriority(1);
-    setRank(1);
     setCurrState("未开始");
     setIsCreateModalVisible(false);
   };
@@ -279,7 +270,6 @@ const UISRList = (props: UISRListProps) => {
         setTitle("");
         setDesc("");
         setPriority(1);
-        setRank(1);
         setCurrState("TODO");
         setIsCreateModalVisible(false);
       } else {
@@ -392,7 +382,6 @@ const UISRList = (props: UISRListProps) => {
     dataIndex: "createdAt",
     valueType: "dateTime",
     align: "center",
-    sorter: (a, b) => a.createdAt - b.createdAt,
   };
   const columnOpration: ProColumns<SRCardProps> = {
     search: false,
