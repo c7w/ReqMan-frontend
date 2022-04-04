@@ -480,7 +480,7 @@ const UISRList = (props: UISRListProps) => {
           // }}
           dataSource={dataSRList}
           pagination={false}
-          // scroll={{ y: 300 }}
+          scroll={{ y: "70vh" }}
           search={false}
           rowKey="id"
           dateFormatter="string"

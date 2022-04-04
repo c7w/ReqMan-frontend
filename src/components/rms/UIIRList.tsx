@@ -291,6 +291,7 @@ const UIIRList = (props: UIIRListProps) => {
         />
         <Modal
           title="功能需求关联列表"
+          destroyOnClose={true}
           centered={true}
           visible={isSRModalVisible}
           onCancel={handleSRCancel}

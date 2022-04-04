@@ -95,7 +95,7 @@
   position: sticky;
   left: 0;
   z-index: 2;
-
+  width: 10rem;
   transition-duration: 0.5s;
   overflow: hidden;
   background-color: rgb(245, 245, 245);
