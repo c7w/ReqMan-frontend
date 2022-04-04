@@ -24,7 +24,12 @@ import {
 } from "../../store/functions/RMS";
 import { ToastMessage } from "../../utils/Navigation";
 import { getProjectStore } from "../../store/slices/ProjectSlice";
-import { userId2UserInfo } from "../../utils/Association";
+import { SR2Iteration, userId2UserInfo } from "../../utils/Association";
+import {
+  getIterationStore,
+  getSRIterationStore,
+} from "../../store/slices/IterationSlice";
+import ProjectList from "../../page/route/Project/ProjectList";
 const { TextArea } = Input;
 const { Option } = Select;
 
@@ -50,11 +55,14 @@ userData: {"code":0,"data":{"user":{"id":17,"name":"hbx20","email":"hbx@hbx.boy"
 
 const UISRList = (props: UISRListProps) => {
   const SRListData = JSON.parse(props.SRListStr).data;
-  console.log(SRListData);
   const IRSRAssociationData = JSON.parse(props.IRSRAssociation).data;
   const dispatcher = useDispatch();
   const project = props.project_id;
   const projectInfo = useSelector(getProjectStore);
+  const SRIterInfo = useSelector(getSRIterationStore);
+  const IterationInfo = useSelector(getIterationStore);
+  // const output = SR2Iteration(props.project_id, SRIterInfo, IterationInfo);
+  console.log(JSON.parse(projectInfo));
   const curSRKey: number[] = [];
   if (props.IR_id !== -1) {
     IRSRAssociationData.forEach((value: IRSRAssociation) => {
@@ -98,6 +106,9 @@ const UISRList = (props: UISRListProps) => {
       createdBy: user.name,
       createdAt: value.createdAt * 1000,
       disabled: value.disabled,
+      iter: "迭代1",
+      chargedBy: "某某某",
+      service: "服务1",
     });
   });
 
@@ -136,6 +147,9 @@ const UISRList = (props: UISRListProps) => {
           createdBy: user.name,
           createdAt: value.createdAt * 1000,
           disabled: value.disabled,
+          iter: "迭代1",
+          chargedBy: "某某某",
+          service: "服务1",
         });
       }
     });
@@ -150,15 +164,16 @@ const UISRList = (props: UISRListProps) => {
   const [title, setTitle] = useState<string>("");
   const [desc, setDesc] = useState<string>("");
   const [priority, setPriority] = useState<number>(1);
-  const [rank, setRank] = useState<number>(1);
   const [currState, setCurrState] = useState<string>("未开始");
+  const [iter, setIter] = useState<string>("未开始");
+  const [chargedBy, setChargedBy] = useState<string>("某某某");
+  const [service, setService] = useState<string>("服务");
 
   const showEditModal = (record: SRCardProps) => {
     setId(record.id);
     setTitle(record.title);
     setDesc(record.description);
     setPriority(record.priority);
-    setRank(record.rank);
     setCurrState(record.currState);
     setIsEditModalVisible(true);
   };
@@ -183,11 +198,8 @@ const UISRList = (props: UISRListProps) => {
       title: title,
       description: desc,
       priority: priority,
-      rank: rank,
+      rank: 1, //未用到
       currState: state,
-      createdBy: "", // 未用到
-      createdAt: -1, // 未用到
-      disabled: true, // 未用到
     };
     updateSRInfo(dispatcher, project, newSR).then((data: any) => {
       if (data.code === 0) {
@@ -197,7 +209,6 @@ const UISRList = (props: UISRListProps) => {
         setTitle("");
         setDesc("");
         setPriority(1);
-        setRank(1);
         setCurrState("未开始");
         setIsEditModalVisible(false);
       } else {
@@ -211,7 +222,6 @@ const UISRList = (props: UISRListProps) => {
     setTitle("");
     setDesc("");
     setPriority(1);
-    setRank(1);
     setCurrState("未开始");
     setIsEditModalVisible(false);
   };
@@ -227,11 +237,7 @@ const UISRList = (props: UISRListProps) => {
       title: title,
       description: desc,
       priority: priority,
-      rank: rank,
       currState: "TODO",
-      createdBy: "", // 未用到
-      createdAt: -1, // 未用到
-      disabled: true, // 未用到
     };
     createSRInfo(dispatcher, project, newSR).then((data: any) => {
       if (data.code === 0) {
@@ -241,7 +247,6 @@ const UISRList = (props: UISRListProps) => {
         setTitle("");
         setDesc("");
         setPriority(1);
-        setRank(1);
         setCurrState("未开始");
         setIsCreateModalVisible(false);
       } else {
@@ -255,7 +260,6 @@ const UISRList = (props: UISRListProps) => {
     setTitle("");
     setDesc("");
     setPriority(1);
-    setRank(1);
     setCurrState("未开始");
     setIsCreateModalVisible(false);
   };
@@ -269,7 +273,6 @@ const UISRList = (props: UISRListProps) => {
         setTitle("");
         setDesc("");
         setPriority(1);
-        setRank(1);
         setCurrState("TODO");
         setIsCreateModalVisible(false);
       } else {
@@ -358,7 +361,6 @@ const UISRList = (props: UISRListProps) => {
       dataIndex: "createdAt",
       valueType: "dateTime",
       align: "center",
-      sorter: (a, b) => a.createdAt - b.createdAt,
     },
     {
       search: false,
@@ -387,28 +389,6 @@ const UISRList = (props: UISRListProps) => {
   }
 
   const rowSelection = {
-    // onChange: (
-    //   selectedRowKeys: React.Key[],
-    //   selectedRows: ProColumns<SRCard>[]
-    // ) => {
-    //   const selectedSR = [];
-    //   console.log("===========hey I change===========");
-    //   // for (let i = 0; i < selectedRowKeys.length; i++) {
-    //   //   selectedSR.push(selectedRows[i].key);
-    //   // }
-    //   // for (let i = 0; i < props.curSRKey.length; i++) {
-    //   //   selectedSR.push(props.curSRKey[i]);
-    //   // }
-    // },
-    // getCheckboxProps: (record: ProColumns<SRCard>) => {
-    //   console.log("=================");
-    //   // for (let i = 0; i < props.curSRKey.length; i++) {
-    //   //   if (props.curSRKey[i] === record.key) {
-    //   //     return { disabled: true };
-    //   //   }
-    //   // }
-    //   return { disabled: false };
-    // },
     onSelect: (record: SRCardProps, selected: boolean) => {
       const IRSR: IRSRAssociation = {
         id: 0,
