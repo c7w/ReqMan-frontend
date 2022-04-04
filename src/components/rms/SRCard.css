@@ -7,7 +7,6 @@
   cursor: pointer;
   background: #fff;
   box-shadow: 1px 1px 2px #aaaaaa;
-
   transition: color 0.5s ease 0.5s;
 }
 
@@ -36,8 +35,12 @@
 }
 
 .card-small-header-left {
+  width: 70%;
   font-weight: bold;
   font-size: 18px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  overflow-wrap: normal;
 }
 
 .card-small-header-right {
@@ -55,25 +58,43 @@
   margin-right: 5px;
 }
 
+.ant-modal-title {
+  width: 90%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .modal-header {
   background: white;
-  padding: 10px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  white-space: nowrap;
 }
 
 .modal-header-left {
+  width: 60%;
+  display: flex;
+  flex-direction: row;
+}
+
+.modal-header-desc {
+  width: 70%;
+  max-width: 70%;
+  overflow: auto;
   font-size: 1rem;
 }
 
 .modal-header-right {
-  padding-right: 100px;
+  width: 50%;
 }
 
 .modal-content {
-  padding: 20px;
-  height: 100%;
+  width: 100%;
+  max-width: 100%;
+  overflow: auto;
+  padding-top: 20px;
 }
 
 .card-input {
