@@ -80,6 +80,7 @@ interface ManageUserInfo {
   name: string;
   email: string;
   avatar: string;
+  role: string;
 }
 interface Iteration {
   readonly id?: number;

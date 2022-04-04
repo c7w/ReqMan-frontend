@@ -3,12 +3,56 @@ import "./UIUserManage.css";
 import ProList from "@ant-design/pro-list";
 import { ManageUserInfo } from "../../store/ConfigureStore";
 import CryptoJS from "crypto-js";
+import { Modal, Typography } from "antd";
 
 interface UserManageProps {
   readonly userInfo: string;
 }
 
+const getRoleName = (role: string) => {
+  if (role === "member") {
+    return "项目成员";
+  }
+  if (role === "sys") {
+    return "系统工程师";
+  }
+  if (role === "dev") {
+    return "开发工程师";
+  }
+  if (role === "qa") {
+    return "质保工程师";
+  }
+  if (role === "supermaster") {
+    return "项目管理员";
+  }
+  return "";
+};
+
+interface UserModelProps {
+  visible: boolean;
+  close: () => void;
+  userInfo: string;
+}
+
+const UserModel = (props: UserModelProps) => {
+  return (
+    <Modal
+      title="编辑项目成员"
+      destroyOnClose={true}
+      centered={true}
+      visible={props.visible}
+      onCancel={() => props.close()}
+      width={"60%"}
+    >
+      {props.userInfo}
+    </Modal>
+  );
+};
+
 const UserManage = (props: UserManageProps) => {
+  const [cachedUserInfo, setCachedUserInfo] = useState("");
+  const [userModalVisibility, setUserModalVisibility] = useState(false);
+
   // 总任务列表
   const ProjectList = JSON.parse(props.userInfo).data.users;
   const dataProjectList: ManageUserInfo[] = [];
@@ -17,6 +61,7 @@ const UserManage = (props: UserManageProps) => {
       id: value.id,
       name: value.name,
       email: value.email,
+      role: getRoleName(value.role),
       avatar:
         value.avatar.length > 5
           ? value.avatar
@@ -35,9 +80,14 @@ const UserManage = (props: UserManageProps) => {
 
   return (
     <div className={"prjuser"}>
+      <UserModel
+        visible={userModalVisibility}
+        close={() => setUserModalVisibility(false)}
+        userInfo={cachedUserInfo}
+      />
       <ProList<ManageUserInfo>
         pagination={{
-          defaultPageSize: 8,
+          defaultPageSize: 24,
           showSizeChanger: false,
         }}
         grid={{ gutter: 16, column: 4 }}
@@ -87,11 +137,25 @@ const UserManage = (props: UserManageProps) => {
                 }}
               >
                 {item.email}
+                <br />
+                {item.role}
+                <br />
+                {
+                  <Typography.Link
+                    onClick={() => {
+                      setCachedUserInfo(JSON.stringify(item));
+                      setUserModalVisibility(true);
+                    }}
+                  >
+                    {" "}
+                    编辑{" "}
+                  </Typography.Link>
+                }
               </div>
             ),
           },
         }}
-        headerTitle="项目成员展示"
+        headerTitle="项目成员列表"
         dataSource={tableListDataSource}
       />
     </div>
