@@ -425,26 +425,42 @@ const UISRList = (props: UISRListProps) => {
       <ReactMarkdown className={"markdown"} children={record.description} />
     ),
   };
-  const columnCreator: ProColumns<SRCardProps> = {
-    title: "创建者",
+  const columnChargedBy: ProColumns<SRCardProps> = {
+    title: "负责人",
+    filters: true,
+    onFilter: true,
+    width: "12%",
+    dataIndex: "chargedBy",
+    align: "center",
+  };
+  const columnIter: ProColumns<SRCardProps> = {
+    title: "关联迭代",
     filters: true,
     onFilter: true,
     width: "15%",
-    dataIndex: "createdBy",
+    dataIndex: "iter",
     align: "center",
+    render: (_, record) => {
+      const iter = record.iter;
+      let iterStr = "";
+      iter.forEach((value: string) => {
+        iterStr += value;
+      });
+      return <div>{iterStr}</div>;
+    },
   };
-  const columnTime: ProColumns<SRCardProps> = {
-    search: false,
-    title: "创建时间",
-    width: "20%",
-    dataIndex: "createdAt",
-    valueType: "dateTime",
+  const columnService: ProColumns<SRCardProps> = {
+    title: "关联服务",
+    filters: true,
+    onFilter: true,
+    width: "10%",
+    dataIndex: "service",
     align: "center",
   };
   const columnOpration: ProColumns<SRCardProps> = {
     search: false,
     title: "操作",
-    width: "15%",
+    width: "10%",
     valueType: "option",
     align: "center",
     render: (text, record, _, action) => [
@@ -465,24 +481,27 @@ const UISRList = (props: UISRListProps) => {
   columns.push(columnTitle1);
   columns.push(columnState);
   columns.push(columnDesc);
-  columns.push(columnCreator);
-  columns.push(columnTime);
+  columns.push(columnChargedBy);
+  columns.push(columnIter);
+  columns.push(columnService);
   columns.push(columnOpration);
 
   const showColumn: ProColumns<SRCardProps>[] = [];
   showColumn.push(columnTitle2);
   showColumn.push(columnState);
   showColumn.push(columnDesc);
-  showColumn.push(columnCreator);
-  showColumn.push(columnTime);
+  showColumn.push(columnChargedBy);
+  showColumn.push(columnIter);
+  showColumn.push(columnService);
   showColumn.push(columnOpration);
 
   const chooseColumn: ProColumns<SRCardProps>[] = [];
   chooseColumn.push(columnTitle1);
   chooseColumn.push(columnState);
   chooseColumn.push(columnDesc);
-  chooseColumn.push(columnCreator);
-  chooseColumn.push(columnTime);
+  chooseColumn.push(columnChargedBy);
+  chooseColumn.push(columnIter);
+  chooseColumn.push(columnService);
   chooseColumn.push(columnOpration);
 
   const rowSelection = {
@@ -778,6 +797,22 @@ const UISRList = (props: UISRListProps) => {
             onChange={handleServiceChange}
           >
             {serviceChildren}
+          </Select>
+          <p
+            style={{
+              paddingTop: "10px",
+              marginBottom: "5px",
+              fontSize: "16px",
+            }}
+          >
+            指定负责人
+          </p>
+          <Select
+            defaultValue={chargedBy}
+            style={{ width: 120 }}
+            onChange={handleChargedByChange}
+          >
+            {chargedByChildren}
           </Select>
           <p
             style={{
