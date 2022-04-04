@@ -54,7 +54,7 @@ interface SRIteration {
 }
 
 interface UserIteration {
-  readonly id: number;
+  readonly id?: number;
   readonly userId: number;
   readonly iterationId: number;
 }

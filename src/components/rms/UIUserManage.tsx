@@ -1,9 +1,9 @@
 import React, { ReactNode, useEffect, useRef, useState } from "react";
 import "./UIUserManage.css";
 import ProList from "@ant-design/pro-list";
-import { ManageUserInfo } from "../../store/ConfigureStore";
+import { Iteration, ManageUserInfo } from "../../store/ConfigureStore";
 import CryptoJS from "crypto-js";
-import { Input, Modal, Select, Typography } from "antd";
+import { Checkbox, Empty, Input, Modal, Select, Typography } from "antd";
 import Loading from "../../layout/components/Loading";
 import request_json from "../../utils/Network";
 import API from "../../utils/APIList";
@@ -12,6 +12,16 @@ import { ToastMessage } from "../../utils/Navigation";
 import { updateProjectInfo, updateUserInfo } from "../../store/functions/UMS";
 import { useDispatch, useSelector } from "react-redux";
 import { getProjectStore } from "../../store/slices/ProjectSlice";
+import {
+  getIRIterationStore,
+  getIterationStore,
+  getUserIterationStore,
+} from "../../store/slices/IterationSlice";
+import moment from "moment";
+import {
+  createUserIteration,
+  deleteUserIteration,
+} from "../../store/functions/RMS";
 
 interface UserManageProps {
   readonly userInfo: string;
@@ -48,6 +58,9 @@ const UserModel = (props: UserModelProps) => {
   const params = useParams<"id">();
   const project_id = Number(params.id);
 
+  const iterationStore = useSelector(getIterationStore);
+  const userIterStore = useSelector(getUserIterationStore);
+
   const [role, setRole] = useState("");
   useEffect(() => {
     if (props.userInfo !== "") setRole(JSON.parse(props.userInfo).role);
@@ -64,11 +77,10 @@ const UserModel = (props: UserModelProps) => {
       } else {
         ToastMessage("error", "修改失败", "用户身份修改失败");
       }
-      console.debug(data);
     });
   };
 
-  if (props.userInfo !== "") {
+  if (props.userInfo !== "" && iterationStore !== "" && userIterStore !== "") {
     return (
       <Modal
         title="编辑项目成员"
@@ -165,6 +177,84 @@ const UserModel = (props: UserModelProps) => {
           <p style={{ marginTop: "1rem", marginBottom: "0.4rem" }}>
             关联迭代周期：
           </p>
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            {JSON.parse(iterationStore).data.length === 0 ? (
+              <Empty />
+            ) : (
+              <table
+                width={"50%"}
+                style={{
+                  margin: "0.5rem",
+                  textAlign: "center",
+                }}
+              >
+                <thead>
+                  <tr
+                    style={{
+                      borderWidth: "1px",
+                      padding: "8px",
+                      borderStyle: "solid",
+                      borderColor: "#666666",
+                      backgroundColor: "#dedede",
+                    }}
+                  >
+                    <td>主管</td>
+                    <td>迭代周期编号</td>
+                    <td>周期名</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  {JSON.parse(iterationStore).data.map((iter: Iteration) => (
+                    <tr
+                      key={iter.id}
+                      style={{
+                        borderWidth: "1px",
+                        padding: "8px",
+                        borderStyle: "solid",
+                        borderColor: "#666666",
+                        backgroundColor: "#ffffff",
+                      }}
+                    >
+                      <td>
+                        <Checkbox
+                          defaultChecked={
+                            JSON.parse(userIterStore).data.filter(
+                              (asso: {
+                                user: any;
+                                iteration: number | undefined;
+                              }) =>
+                                asso.user === JSON.parse(props.userInfo).id &&
+                                asso.iteration === iter.id
+                            ).length > 0
+                          }
+                          onChange={(evt) => {
+                            if (evt.target.checked) {
+                              createUserIteration(dispatcher, project_id, {
+                                iterationId: iter.id as number,
+                                userId: JSON.parse(props.userInfo).id as number,
+                              });
+                            } else {
+                              deleteUserIteration(dispatcher, project_id, {
+                                iterationId: iter.id as number,
+                                userId: JSON.parse(props.userInfo).id as number,
+                              });
+                            }
+                          }}
+                        />
+                      </td>
+                      <td className={"iter-manager-column"}>{iter.sid}</td>
+                      <td
+                        className={"iter-manager-column"}
+                        style={{ maxWidth: "15rem", overflow: "hidden" }}
+                      >
+                        {iter.title}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
         </div>
       </Modal>
     );
@@ -178,8 +268,6 @@ const UserModel = (props: UserModelProps) => {
 };
 
 const UserManage = (props: UserManageProps) => {
-  console.debug("Updating");
-  console.debug(JSON.parse(props.userInfo).data.users);
   const [cachedUserInfo, setCachedUserInfo] = useState("");
   const [userModalVisibility, setUserModalVisibility] = useState(false);
 
