@@ -293,122 +293,150 @@ const UISRList = (props: UISRListProps) => {
     setCurrState(value);
   }
 
-  const columns: ProColumns<SRCardProps>[] = [
-    {
-      title: "功能需求标题",
-      filters: true,
-      onFilter: true,
-      filterSearch: true,
-      width: "15%",
-      dataIndex: "title",
-      align: "center",
-      valueEnum: titleFilter,
-      render: (_, record) => (
-        <div
-          style={{
-            fontWeight: "bold",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-          }}
-        >
-          {record.title}
-        </div>
-      ),
-    },
-    {
-      title: "状态",
-      filters: true,
-      onFilter: true,
-      filterSearch: true,
-      search: false,
-      width: "10%",
-      dataIndex: "currState",
-      valueType: "select",
-      valueEnum: {
-        未开始: {
-          text: "未开始",
-        },
-        开发中: {
-          text: "开发中",
-        },
-        测试中: {
-          text: "测试中",
-        },
-        已交付: {
-          text: "已交付",
-        },
+  const columnTitle1: ProColumns<SRCardProps> = {
+    title: "功能需求标题",
+    filters: true,
+    onFilter: true,
+    filterSearch: true,
+    width: "15%",
+    dataIndex: "title",
+    align: "center",
+    valueEnum: titleFilter,
+    render: (_, record) => (
+      <div
+        style={{
+          fontWeight: "bold",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
+        }}
+      >
+        {record.title}
+      </div>
+    ),
+  };
+  const columnTitle2: ProColumns<SRCardProps> = {
+    title: "功能需求标题",
+    filters: true,
+    onFilter: true,
+    filterSearch: true,
+    width: "15%",
+    dataIndex: "title",
+    align: "center",
+    valueEnum: showTitleFilter,
+    render: (_, record) => (
+      <div
+        style={{
+          fontWeight: "bold",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
+        }}
+      >
+        {record.title}
+      </div>
+    ),
+  };
+  const columnState: ProColumns<SRCardProps> = {
+    title: "状态",
+    filters: true,
+    onFilter: true,
+    filterSearch: true,
+    search: false,
+    width: "10%",
+    dataIndex: "currState",
+    valueType: "select",
+    valueEnum: {
+      未开始: {
+        text: "未开始",
       },
-      align: "center",
-      render: (_, record) => (
-        <Space>
-          <Tag color={record.stateColor}>{record.currState}</Tag>
-        </Space>
-      ),
+      开发中: {
+        text: "开发中",
+      },
+      测试中: {
+        text: "测试中",
+      },
+      已交付: {
+        text: "已交付",
+      },
     },
-    {
-      search: false,
-      title: "功能需求描述",
-      dataIndex: "description",
-      ellipsis: true,
-      align: "center",
-      render: (_, record) => (
-        <ReactMarkdown className={"markdown"} children={record.description} />
-      ),
-    },
-    {
-      title: "创建者",
-      filters: true,
-      onFilter: true,
-      width: "15%",
-      dataIndex: "createdBy",
-      align: "center",
-    },
-    {
-      search: false,
-      title: "创建时间",
-      width: "20%",
-      dataIndex: "createdAt",
-      valueType: "dateTime",
-      align: "center",
-      sorter: (a, b) => a.createdAt - b.createdAt,
-    },
-    {
-      search: false,
-      title: "操作",
-      width: "15%",
-      valueType: "option",
-      align: "center",
-      render: (text, record, _, action) => [
-        // 编辑内含修改删除等，须继续与后端接口适配
-        <a onClick={() => showEditModal(record)}>编辑</a>,
-        <Popconfirm
-          title="你确定要删除该功能需求吗？"
-          onConfirm={() => confirmDelete(record)}
-          okText="是"
-          cancelText="否"
-        >
-          <a href="#">删除</a>
-        </Popconfirm>,
-      ],
-    },
-  ];
+    align: "center",
+    render: (_, record) => (
+      <Space>
+        <Tag color={record.stateColor}>{record.currState}</Tag>
+      </Space>
+    ),
+  };
+  const columnDesc: ProColumns<SRCardProps> = {
+    search: false,
+    title: "功能需求描述",
+    dataIndex: "description",
+    ellipsis: true,
+    align: "center",
+    render: (_, record) => (
+      <ReactMarkdown className={"markdown"} children={record.description} />
+    ),
+  };
+  const columnCreator: ProColumns<SRCardProps> = {
+    title: "创建者",
+    filters: true,
+    onFilter: true,
+    width: "15%",
+    dataIndex: "createdBy",
+    align: "center",
+  };
+  const columnTime: ProColumns<SRCardProps> = {
+    search: false,
+    title: "创建时间",
+    width: "20%",
+    dataIndex: "createdAt",
+    valueType: "dateTime",
+    align: "center",
+    sorter: (a, b) => a.createdAt - b.createdAt,
+  };
+  const columnOpration: ProColumns<SRCardProps> = {
+    search: false,
+    title: "操作",
+    width: "15%",
+    valueType: "option",
+    align: "center",
+    render: (text, record, _, action) => [
+      // 编辑内含修改删除等，须继续与后端接口适配
+      <a onClick={() => showEditModal(record)}>编辑</a>,
+      <Popconfirm
+        title="你确定要删除该功能需求吗？"
+        onConfirm={() => confirmDelete(record)}
+        okText="是"
+        cancelText="否"
+      >
+        <a href="#">删除</a>
+      </Popconfirm>,
+    ],
+  };
 
-  const chooseColumn: ProColumns<SRCardProps>[] = [];
-  for (let i = 0; i < 5; i += 1) {
-    chooseColumn.push(columns[i]);
-  }
+  const columns: ProColumns<SRCardProps>[] = [];
+  columns.push(columnTitle1);
+  columns.push(columnState);
+  columns.push(columnDesc);
+  columns.push(columnCreator);
+  columns.push(columnTime);
+  columns.push(columnOpration);
 
   const showColumn: ProColumns<SRCardProps>[] = [];
-  for (let i = 0; i < 5; i += 1) {
-    if (i === 0) {
-      const oneCol: ProColumns<SRCardProps> = columns[0];
-      oneCol.valueEnum = showTitleFilter;
-      showColumn.push(oneCol);
-    } else {
-      showColumn.push(columns[i]);
-    }
-  }
+  showColumn.push(columnTitle2);
+  showColumn.push(columnState);
+  showColumn.push(columnDesc);
+  showColumn.push(columnCreator);
+  showColumn.push(columnTime);
+  showColumn.push(columnOpration);
+
+  const chooseColumn: ProColumns<SRCardProps>[] = [];
+  chooseColumn.push(columnTitle1);
+  chooseColumn.push(columnState);
+  chooseColumn.push(columnDesc);
+  chooseColumn.push(columnCreator);
+  chooseColumn.push(columnTime);
+  chooseColumn.push(columnOpration);
 
   const rowSelection = {
     onSelect: (record: SRCardProps, selected: boolean) => {
