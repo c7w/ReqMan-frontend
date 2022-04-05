@@ -16,12 +16,15 @@ interface SRCardProps {
   readonly title: string; // title
   readonly description: string; // description
   readonly priority: number; // the priority which indicates the importance of the SR
-  readonly rank: number;
+  readonly rank?: number;
   readonly currState: string; // "TODO", "WIP", "Reviewing", "Done"
   readonly stateColor?: string;
-  readonly createdBy: string; // somebody
-  readonly createdAt: number; // sometime
-  readonly disabled: boolean;
+  readonly createdBy?: string; // somebody
+  readonly createdAt?: number; // sometime
+  readonly disabled?: boolean;
+  readonly iter: string[];
+  readonly chargedBy: string;
+  readonly service: string;
 }
 
 interface IRCard {

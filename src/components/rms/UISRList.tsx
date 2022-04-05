@@ -1,7 +1,7 @@
 import React, { ReactElement, useEffect, useState } from "react";
 import type { ProColumns } from "@ant-design/pro-table";
 import ReactMarkdown from "react-markdown";
-import ProTable from "@ant-design/pro-table";
+import ProTable, { ProColumnType } from "@ant-design/pro-table";
 import {
   Button,
   Input,
@@ -25,6 +25,7 @@ import {
 import { ToastMessage } from "../../utils/Navigation";
 import { getProjectStore } from "../../store/slices/ProjectSlice";
 import { userId2UserInfo } from "../../utils/Association";
+import { getIterationStore } from "../../store/slices/IterationSlice";
 const { TextArea } = Input;
 const { Option } = Select;
 
@@ -50,11 +51,11 @@ userData: {"code":0,"data":{"user":{"id":17,"name":"hbx20","email":"hbx@hbx.boy"
 
 const UISRList = (props: UISRListProps) => {
   const SRListData = JSON.parse(props.SRListStr).data;
-  console.log(SRListData);
   const IRSRAssociationData = JSON.parse(props.IRSRAssociation).data;
   const dispatcher = useDispatch();
   const project = props.project_id;
   const projectInfo = useSelector(getProjectStore);
+  const iterInfo = useSelector(getIterationStore);
   const curSRKey: number[] = [];
   if (props.IR_id !== -1) {
     IRSRAssociationData.forEach((value: IRSRAssociation) => {
@@ -66,6 +67,7 @@ const UISRList = (props: UISRListProps) => {
 
   // 总任务列表
   const dataSRList: SRCardProps[] = [];
+  const titleFilter: any = {};
   SRListData.forEach((value: any) => {
     let state = "";
     let color = "";
@@ -85,6 +87,10 @@ const UISRList = (props: UISRListProps) => {
       state = "已交付";
       color = "green";
     }
+    if (titleFilter[value.title] === undefined) {
+      const curtitle = { text: value.title };
+      titleFilter[value.title] = curtitle;
+    }
     const user = userId2UserInfo(Number(value.createdBy), projectInfo);
     dataSRList.push({
       id: value.id,
@@ -92,16 +98,18 @@ const UISRList = (props: UISRListProps) => {
       title: value.title,
       description: value.description,
       priority: value.priority,
-      rank: value.rank,
       currState: state,
       stateColor: color,
       createdBy: user.name,
       createdAt: value.createdAt * 1000,
-      disabled: value.disabled,
+      iter: ["迭代1"],
+      chargedBy: "某某某",
+      service: "服务1",
     });
   });
 
   const showSRList: SRCardProps[] = [];
+  const showTitleFilter: any = {};
   SRListData.forEach((value: any) => {
     curSRKey.forEach((curValue: number) => {
       if (curValue === value.id) {
@@ -124,18 +132,23 @@ const UISRList = (props: UISRListProps) => {
           color = "green";
         }
         const user = userId2UserInfo(Number(value.createdBy), projectInfo);
+        if (showTitleFilter[value.title] === undefined) {
+          const curtitle = { text: value.title };
+          showTitleFilter[value.title] = curtitle;
+        }
         showSRList.push({
           id: value.id,
           project: value.project,
           title: value.title,
           description: value.description,
           priority: value.priority,
-          rank: value.rank,
           currState: state,
           stateColor: color,
           createdBy: user.name,
           createdAt: value.createdAt * 1000,
-          disabled: value.disabled,
+          iter: ["迭代1"],
+          chargedBy: "某某某",
+          service: "服务1",
         });
       }
     });
@@ -150,16 +163,20 @@ const UISRList = (props: UISRListProps) => {
   const [title, setTitle] = useState<string>("");
   const [desc, setDesc] = useState<string>("");
   const [priority, setPriority] = useState<number>(1);
-  const [rank, setRank] = useState<number>(1);
   const [currState, setCurrState] = useState<string>("未开始");
+  const [iter, setIter] = useState<string[]>(["迭代1"]);
+  const [chargedBy, setChargedBy] = useState<string>("某某某");
+  const [service, setService] = useState<string>("服务1");
 
   const showEditModal = (record: SRCardProps) => {
     setId(record.id);
     setTitle(record.title);
     setDesc(record.description);
     setPriority(record.priority);
-    setRank(record.rank);
     setCurrState(record.currState);
+    setIter(record.iter);
+    setChargedBy(record.chargedBy);
+    setService(record.service);
     setIsEditModalVisible(true);
   };
 
@@ -183,11 +200,10 @@ const UISRList = (props: UISRListProps) => {
       title: title,
       description: desc,
       priority: priority,
-      rank: rank,
       currState: state,
-      createdBy: "", // 未用到
-      createdAt: -1, // 未用到
-      disabled: true, // 未用到
+      iter: iter,
+      chargedBy: chargedBy,
+      service: service,
     };
     updateSRInfo(dispatcher, project, newSR).then((data: any) => {
       if (data.code === 0) {
@@ -197,8 +213,10 @@ const UISRList = (props: UISRListProps) => {
         setTitle("");
         setDesc("");
         setPriority(1);
-        setRank(1);
         setCurrState("未开始");
+        setIter(["迭代1"]);
+        setChargedBy("某某某");
+        setService("服务1");
         setIsEditModalVisible(false);
       } else {
         ToastMessage("error", "修改失败", "您的SR修改失败");
@@ -211,9 +229,11 @@ const UISRList = (props: UISRListProps) => {
     setTitle("");
     setDesc("");
     setPriority(1);
-    setRank(1);
     setCurrState("未开始");
     setIsEditModalVisible(false);
+    setIter(["迭代1"]);
+    setChargedBy("某某某");
+    setService("服务1");
   };
 
   const showCreateModal = () => {
@@ -227,11 +247,10 @@ const UISRList = (props: UISRListProps) => {
       title: title,
       description: desc,
       priority: priority,
-      rank: rank,
       currState: "TODO",
-      createdBy: "", // 未用到
-      createdAt: -1, // 未用到
-      disabled: true, // 未用到
+      iter: iter,
+      chargedBy: chargedBy,
+      service: service,
     };
     createSRInfo(dispatcher, project, newSR).then((data: any) => {
       if (data.code === 0) {
@@ -241,9 +260,11 @@ const UISRList = (props: UISRListProps) => {
         setTitle("");
         setDesc("");
         setPriority(1);
-        setRank(1);
         setCurrState("未开始");
         setIsCreateModalVisible(false);
+        setIter(["迭代1"]);
+        setChargedBy("某某某");
+        setService("服务1");
       } else {
         ToastMessage("error", "创建失败", "您的SR创建失败");
       }
@@ -255,9 +276,11 @@ const UISRList = (props: UISRListProps) => {
     setTitle("");
     setDesc("");
     setPriority(1);
-    setRank(1);
     setCurrState("未开始");
     setIsCreateModalVisible(false);
+    setIter(["迭代1"]);
+    setChargedBy("某某某");
+    setService("服务1");
   };
 
   function confirmDelete(record: SRCardProps) {
@@ -269,7 +292,6 @@ const UISRList = (props: UISRListProps) => {
         setTitle("");
         setDesc("");
         setPriority(1);
-        setRank(1);
         setCurrState("TODO");
         setIsCreateModalVisible(false);
       } else {
@@ -279,136 +301,210 @@ const UISRList = (props: UISRListProps) => {
   }
 
   function handleStateChange(value: string) {
-    console.log(`selected ${value}`);
     setCurrState(value);
   }
 
-  const columns: ProColumns<SRCardProps>[] = [
-    {
-      title: "功能需求标题",
-      filters: true,
-      onFilter: true,
-      width: "15%",
-      dataIndex: "title",
-      align: "center",
-      render: (_, record) => (
-        <div
-          style={{
-            fontWeight: "bold",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-          }}
-        >
-          {record.title}
-        </div>
-      ),
-    },
-    {
-      title: "状态",
-      filters: true,
-      onFilter: true,
-      search: false,
-      width: "10%",
-      dataIndex: "currState",
-      valueType: "select",
-      valueEnum: {
-        未开始: {
-          text: "未开始",
-        },
-        开发中: {
-          text: "开发中",
-        },
-        测试中: {
-          text: "测试中",
-        },
-        已交付: {
-          text: "已交付",
-        },
-      },
-      align: "center",
-      render: (_, record) => (
-        <Space>
-          <Tag color={record.stateColor}>{record.currState}</Tag>
-        </Space>
-      ),
-    },
-    {
-      search: false,
-      title: "功能需求描述",
-      dataIndex: "description",
-      ellipsis: true,
-      align: "center",
-      render: (_, record) => (
-        <ReactMarkdown className={"markdown"} children={record.description} />
-      ),
-    },
-    {
-      title: "创建者",
-      filters: true,
-      onFilter: true,
-      width: "15%",
-      dataIndex: "createdBy",
-      align: "center",
-    },
-    {
-      search: false,
-      title: "创建时间",
-      width: "20%",
-      dataIndex: "createdAt",
-      valueType: "dateTime",
-      align: "center",
-      sorter: (a, b) => a.createdAt - b.createdAt,
-    },
-    {
-      search: false,
-      title: "操作",
-      width: "15%",
-      valueType: "option",
-      align: "center",
-      render: (text, record, _, action) => [
-        // 编辑内含修改删除等，须继续与后端接口适配
-        <a onClick={() => showEditModal(record)}>编辑</a>,
-        <Popconfirm
-          title="你确定要删除该功能需求吗？"
-          onConfirm={() => confirmDelete(record)}
-          okText="是"
-          cancelText="否"
-        >
-          <a href="#">删除</a>
-        </Popconfirm>,
-      ],
-    },
-  ];
-
-  const chooseColumn: ProColumns<SRCardProps>[] = [];
-  for (let i = 0; i < 5; i += 1) {
-    chooseColumn.push(columns[i]);
+  function handleIterChange(value: any) {
+    console.log(value);
+    setIter(value);
   }
 
+  const iterChildren = [];
+  const allIter = ["迭代1", "迭代2", "迭代3", "迭代4"];
+  for (let i = 0; i < allIter.length; i++) {
+    iterChildren.push(<Option value={allIter[i]}>{allIter[i]}</Option>);
+  }
+
+  function handleServiceChange(value: string) {
+    console.log(value);
+    setService(value);
+  }
+
+  const serviceChildren: any = [];
+  const allService = ["服务1", "服务2", "服务3", "服务4"];
+  for (let i = 0; i < allService.length; i++) {
+    serviceChildren.push(
+      <Option value={allService[i]}>{allService[i]}</Option>
+    );
+  }
+
+  function handleChargedByChange(value: string) {
+    console.log(value);
+    setChargedBy(value);
+  }
+
+  const chargedByChildren: any = [];
+  const allChargedBy = ["某人1", "某人2", "某人3", "某人4"];
+  for (let i = 0; i < allChargedBy.length; i++) {
+    chargedByChildren.push(
+      <Option value={allChargedBy[i]}>{allChargedBy[i]}</Option>
+    );
+  }
+
+  const columnTitle1: ProColumns<SRCardProps> = {
+    title: "功能需求标题",
+    filters: true,
+    onFilter: true,
+    filterSearch: true,
+    width: "15%",
+    dataIndex: "title",
+    align: "center",
+    valueEnum: titleFilter,
+    render: (_, record) => (
+      <div
+        style={{
+          fontWeight: "bold",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
+        }}
+      >
+        {record.title}
+      </div>
+    ),
+  };
+  const columnTitle2: ProColumns<SRCardProps> = {
+    title: "功能需求标题",
+    filters: true,
+    onFilter: true,
+    filterSearch: true,
+    width: "15%",
+    dataIndex: "title",
+    align: "center",
+    valueEnum: showTitleFilter,
+    render: (_, record) => (
+      <div
+        style={{
+          fontWeight: "bold",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
+        }}
+      >
+        {record.title}
+      </div>
+    ),
+  };
+  const columnState: ProColumns<SRCardProps> = {
+    title: "状态",
+    filters: true,
+    onFilter: true,
+    filterSearch: true,
+    search: false,
+    width: "10%",
+    dataIndex: "currState",
+    valueType: "select",
+    valueEnum: {
+      未开始: {
+        text: "未开始",
+      },
+      开发中: {
+        text: "开发中",
+      },
+      测试中: {
+        text: "测试中",
+      },
+      已交付: {
+        text: "已交付",
+      },
+    },
+    align: "center",
+    render: (_, record) => (
+      <Space>
+        <Tag color={record.stateColor}>{record.currState}</Tag>
+      </Space>
+    ),
+  };
+  const columnDesc: ProColumns<SRCardProps> = {
+    search: false,
+    title: "功能需求描述",
+    dataIndex: "description",
+    ellipsis: true,
+    align: "center",
+    render: (_, record) => (
+      <ReactMarkdown className={"markdown"} children={record.description} />
+    ),
+  };
+  const columnChargedBy: ProColumns<SRCardProps> = {
+    title: "负责人",
+    filters: true,
+    onFilter: true,
+    width: "12%",
+    dataIndex: "chargedBy",
+    align: "center",
+  };
+  const columnIter: ProColumns<SRCardProps> = {
+    title: "关联迭代",
+    filters: true,
+    onFilter: true,
+    width: "15%",
+    dataIndex: "iter",
+    align: "center",
+    render: (_, record) => {
+      const iter = record.iter;
+      let iterStr = "";
+      iter.forEach((value: string) => {
+        iterStr += value;
+      });
+      return <div>{iterStr}</div>;
+    },
+  };
+  const columnService: ProColumns<SRCardProps> = {
+    title: "关联服务",
+    filters: true,
+    onFilter: true,
+    width: "10%",
+    dataIndex: "service",
+    align: "center",
+  };
+  const columnOpration: ProColumns<SRCardProps> = {
+    search: false,
+    title: "操作",
+    width: "10%",
+    valueType: "option",
+    align: "center",
+    render: (text, record, _, action) => [
+      // 编辑内含修改删除等，须继续与后端接口适配
+      <a onClick={() => showEditModal(record)}>编辑</a>,
+      <Popconfirm
+        title="你确定要删除该功能需求吗？"
+        onConfirm={() => confirmDelete(record)}
+        okText="是"
+        cancelText="否"
+      >
+        <a href="#">删除</a>
+      </Popconfirm>,
+    ],
+  };
+
+  const columns: ProColumns<SRCardProps>[] = [];
+  columns.push(columnTitle1);
+  columns.push(columnState);
+  columns.push(columnDesc);
+  columns.push(columnChargedBy);
+  columns.push(columnIter);
+  columns.push(columnService);
+  columns.push(columnOpration);
+
+  const showColumn: ProColumns<SRCardProps>[] = [];
+  showColumn.push(columnTitle2);
+  showColumn.push(columnState);
+  showColumn.push(columnDesc);
+  showColumn.push(columnChargedBy);
+  showColumn.push(columnIter);
+  showColumn.push(columnService);
+  showColumn.push(columnOpration);
+
+  const chooseColumn: ProColumns<SRCardProps>[] = [];
+  chooseColumn.push(columnTitle1);
+  chooseColumn.push(columnState);
+  chooseColumn.push(columnDesc);
+  chooseColumn.push(columnChargedBy);
+  chooseColumn.push(columnIter);
+  chooseColumn.push(columnService);
+  chooseColumn.push(columnOpration);
+
   const rowSelection = {
-    // onChange: (
-    //   selectedRowKeys: React.Key[],
-    //   selectedRows: ProColumns<SRCard>[]
-    // ) => {
-    //   const selectedSR = [];
-    //   console.log("===========hey I change===========");
-    //   // for (let i = 0; i < selectedRowKeys.length; i++) {
-    //   //   selectedSR.push(selectedRows[i].key);
-    //   // }
-    //   // for (let i = 0; i < props.curSRKey.length; i++) {
-    //   //   selectedSR.push(props.curSRKey[i]);
-    //   // }
-    // },
-    // getCheckboxProps: (record: ProColumns<SRCard>) => {
-    //   console.log("=================");
-    //   // for (let i = 0; i < props.curSRKey.length; i++) {
-    //   //   if (props.curSRKey[i] === record.key) {
-    //   //     return { disabled: true };
-    //   //   }
-    //   // }
-    //   return { disabled: false };
-    // },
     onSelect: (record: SRCardProps, selected: boolean) => {
       const IRSR: IRSRAssociation = {
         id: 0,
@@ -424,7 +520,6 @@ const UISRList = (props: UISRListProps) => {
           console.log(data);
         });
       }
-      //setSelectedSR([]);
     },
     onSelectAll: (
       selected: boolean,
@@ -447,7 +542,6 @@ const UISRList = (props: UISRListProps) => {
           });
         }
       });
-      //setSelectedSR([]);
     },
     onSelectNone: () => {
       SRListData.forEach((value: any, index: number) => {
@@ -463,44 +557,6 @@ const UISRList = (props: UISRListProps) => {
     },
   };
 
-  const [table, setTable] = useState<ReactElement>();
-  useEffect(() => {
-    setTable(
-      <div>
-        <ProTable<SRCardProps>
-          columns={chooseColumn}
-          rowSelection={{
-            // hideSelectAll: false,
-            defaultSelectedRowKeys: curSRKey,
-            ...rowSelection,
-          }}
-          tableAlertOptionRender={({ selectedRowKeys, selectedRows }) => (
-            <Space size={24}>
-              <span>{`关联功能需求: ${selectedRows.reduce(
-                (pre, item: SRCardProps) => pre + item.title + ", ",
-                ""
-              )} `}</span>
-            </Space>
-          )}
-          // tableAlertRender={false}
-          // request={() => {
-          //   return Promise.resolve({
-          //     data: tableListDataSource,
-          //     success: true,
-          //   });
-          // }}
-          dataSource={dataSRList}
-          pagination={false}
-          // scroll={{ y: 300 }}
-          search={false}
-          rowKey="id"
-          dateFormatter="string"
-          toolBarRender={false}
-        />
-      </div>
-    );
-  }, [props.SRListStr]);
-
   if (!props.showChoose && !props.onlyShow) {
     return (
       <div className={"SRTable"}>
@@ -515,12 +571,6 @@ const UISRList = (props: UISRListProps) => {
           }}
           rowKey="id"
           columns={columns}
-          // request={() => {
-          //   return Promise.resolve({
-          //     data: tableListDataSource,
-          //     success: true,
-          //   });
-          // }}
           dataSource={dataSRList}
           pagination={false}
           options={{
@@ -540,6 +590,7 @@ const UISRList = (props: UISRListProps) => {
           onOk={handleCreateOk}
           onCancel={handleCreateCancel}
           width={"70%"}
+          destroyOnClose={true}
         >
           <p
             style={{
@@ -604,30 +655,57 @@ const UISRList = (props: UISRListProps) => {
               fontSize: "16px",
             }}
           >
+            迭代选择
+          </p>
+          <Select
+            mode="multiple"
+            style={{ width: "100%" }}
+            onChange={handleIterChange}
+          >
+            {iterChildren}
+          </Select>
+          <p
+            style={{
+              paddingTop: "10px",
+              marginBottom: "5px",
+              fontSize: "16px",
+            }}
+          >
+            服务选择
+          </p>
+          <Select style={{ width: 120 }} onChange={handleServiceChange}>
+            {serviceChildren}
+          </Select>
+          <p
+            style={{
+              paddingTop: "10px",
+              marginBottom: "5px",
+              fontSize: "16px",
+            }}
+          >
+            指定负责人
+          </p>
+          <Select style={{ width: 120 }} onChange={handleChargedByChange}>
+            {chargedByChildren}
+          </Select>
+          <p
+            style={{
+              paddingTop: "10px",
+              marginBottom: "5px",
+              fontSize: "16px",
+            }}
+          >
             项目优先级
           </p>
           <InputNumber
+            style={{ width: 120 }}
             value={priority}
             onChange={(e: number) => {
               setPriority(e);
             }}
           />
-          {/*<p*/}
-          {/*  style={{*/}
-          {/*    paddingTop: "10px",*/}
-          {/*    marginBottom: "5px",*/}
-          {/*    fontSize: "16px",*/}
-          {/*  }}*/}
-          {/*>*/}
-          {/*  项目重要性*/}
-          {/*</p>*/}
-          {/*<InputNumber*/}
-          {/*  value={rank}*/}
-          {/*  onChange={(e: number) => {*/}
-          {/*    setRank(e);*/}
-          {/*  }}*/}
-          {/*/>*/}
         </Modal>
+
         <Modal
           title="编辑功能需求"
           centered={true}
@@ -635,6 +713,7 @@ const UISRList = (props: UISRListProps) => {
           onOk={handleEditOk}
           onCancel={handleEditCancel}
           width={"70%"}
+          destroyOnClose={true}
         >
           <p
             style={{
@@ -693,6 +772,55 @@ const UISRList = (props: UISRListProps) => {
               fontSize: "16px",
             }}
           >
+            迭代选择
+          </p>
+          <Select
+            mode="multiple"
+            style={{ width: "100%" }}
+            defaultValue={iter}
+            onChange={handleIterChange}
+          >
+            {iterChildren}
+          </Select>
+          <p
+            style={{
+              paddingTop: "10px",
+              marginBottom: "5px",
+              fontSize: "16px",
+            }}
+          >
+            服务选择
+          </p>
+          <Select
+            defaultValue={service}
+            style={{ width: 120 }}
+            onChange={handleServiceChange}
+          >
+            {serviceChildren}
+          </Select>
+          <p
+            style={{
+              paddingTop: "10px",
+              marginBottom: "5px",
+              fontSize: "16px",
+            }}
+          >
+            指定负责人
+          </p>
+          <Select
+            defaultValue={chargedBy}
+            style={{ width: 120 }}
+            onChange={handleChargedByChange}
+          >
+            {chargedByChildren}
+          </Select>
+          <p
+            style={{
+              paddingTop: "10px",
+              marginBottom: "5px",
+              fontSize: "16px",
+            }}
+          >
             项目优先级
           </p>
           <InputNumber
@@ -701,26 +829,37 @@ const UISRList = (props: UISRListProps) => {
               setPriority(e);
             }}
           />
-          {/*<p*/}
-          {/*  style={{*/}
-          {/*    paddingTop: "10px",*/}
-          {/*    marginBottom: "5px",*/}
-          {/*    fontSize: "16px",*/}
-          {/*  }}*/}
-          {/*>*/}
-          {/*  项目重要性*/}
-          {/*</p>*/}
-          {/*<InputNumber*/}
-          {/*  value={rank}*/}
-          {/*  onChange={(e: number) => {*/}
-          {/*    setRank(e);*/}
-          {/*  }}*/}
-          {/*/>*/}
         </Modal>
       </div>
     );
   } else if (props.showChoose) {
-    return <div className={"ChooseSRTable"}>{table}</div>;
+    return (
+      <div className={"ChooseSRTable"}>
+        <ProTable<SRCardProps>
+          columns={chooseColumn}
+          rowSelection={{
+            // hideSelectAll: false,
+            defaultSelectedRowKeys: curSRKey,
+            ...rowSelection,
+          }}
+          tableAlertOptionRender={({ selectedRowKeys, selectedRows }) => (
+            <Space size={24}>
+              <span>{`关联功能需求: ${selectedRows.reduce(
+                (pre, item: SRCardProps) => pre + item.title + ", ",
+                ""
+              )} `}</span>
+            </Space>
+          )}
+          dataSource={dataSRList}
+          pagination={false}
+          // scroll={{ y: 300 }}
+          search={false}
+          rowKey="id"
+          dateFormatter="string"
+          toolBarRender={false}
+        />
+      </div>
+    );
   } else {
     return (
       <div className={"showSRTable"}>
@@ -728,7 +867,7 @@ const UISRList = (props: UISRListProps) => {
           headerTitle="功能需求列表"
           toolBarRender={false}
           rowKey="id"
-          columns={chooseColumn}
+          columns={showColumn}
           dataSource={showSRList}
           pagination={false}
           options={{
