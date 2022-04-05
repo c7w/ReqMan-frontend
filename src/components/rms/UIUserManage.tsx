@@ -327,9 +327,9 @@ const UserManage = (props: UserManageProps) => {
                     fontSize: "30px",
                     padding: "10px",
                     textAlign: "center",
-                  }}
-                  onClick={() => {
-                    console.log("title clicked");
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
                   }}
                 >
                   {item.name}
@@ -344,6 +344,9 @@ const UserManage = (props: UserManageProps) => {
                   flexDirection: "row",
                   fontSize: "16px",
                   textAlign: "center",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
                 }}
               >
                 {item.email}

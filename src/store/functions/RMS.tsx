@@ -389,8 +389,8 @@ const createIRSR = async (
     operation: "create",
     data: {
       updateData: {
-        IRId: IRSRAssociation.IRId,
-        SRId: IRSRAssociation.SRId,
+        IRId: IRSRAssociation.IR,
+        SRId: IRSRAssociation.SR,
       },
     },
   };
@@ -413,8 +413,8 @@ const deleteIRSR = async (
     type: "ir-sr",
     operation: "delete",
     data: {
-      IRId: IRSRAssociation.IRId,
-      SRId: IRSRAssociation.SRId,
+      IRId: IRSRAssociation.IR,
+      SRId: IRSRAssociation.SR,
     },
   };
   return request_json(API.POST_RMS, { body: myBody }).then((data) => {
