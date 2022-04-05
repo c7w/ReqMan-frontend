@@ -90,7 +90,7 @@ const Test = () => {
     createdAt: Date.now(),
     disabled: false,
     iter: [],
-    chargedBy: "某某某",
+    chargedBy: -1,
     service: -1,
   };
   const Iteration: Iteration = {

@@ -27,6 +27,7 @@ import {
   updateSRIterationStore,
   updateUserIterationStore,
 } from "../slices/IterationSlice";
+import { updateUserSRStore } from "../slices/UserSRSlice";
 
 const getIRListInfo = async (
   dispatcher: any,
@@ -663,12 +664,12 @@ const getUserSRInfo = async (
 ): Promise<void> => {
   const myParams = {
     project: project_id,
-    type: "sr-user",
+    type: "user-sr",
   };
   const SRService_data = await request_json(API.GET_RMS, {
     getParams: myParams,
   });
-  dispatcher(updateSRServiceStore(JSON.stringify(SRService_data)));
+  dispatcher(updateUserSRStore(JSON.stringify(SRService_data)));
 };
 
 const createUserSRInfo = async (
@@ -679,7 +680,7 @@ const createUserSRInfo = async (
   // console.log(SRService);
   const myBody = {
     project: project_id,
-    type: "sr-user",
+    type: "user-sr",
     operation: "create",
     data: {
       updateData: {
@@ -690,7 +691,7 @@ const createUserSRInfo = async (
   };
   return request_json(API.POST_RMS, { body: myBody }).then((data) => {
     if (data.code === 0) {
-      getSRServiceInfo(dispatcher, project_id);
+      getUserSRInfo(dispatcher, project_id);
     }
     return data;
   });
@@ -704,7 +705,7 @@ const deleteUserSRInfo = async (
   // console.log(SRService);
   const myBody = {
     project: project_id,
-    type: "sr-user",
+    type: "user-sr",
     operation: "delete",
     data: {
       userId: UserSR.user,
@@ -713,7 +714,7 @@ const deleteUserSRInfo = async (
   };
   return request_json(API.POST_RMS, { body: myBody }).then((data) => {
     if (data.code === 0) {
-      getSRServiceInfo(dispatcher, project_id);
+      getUserSRInfo(dispatcher, project_id);
     }
     return data;
   });
@@ -750,4 +751,7 @@ export {
   getSRServiceInfo,
   createSRService,
   deleteSRService,
+  createUserSRInfo,
+  deleteUserSRInfo,
+  getUserSRInfo,
 };

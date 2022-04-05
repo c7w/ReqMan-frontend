@@ -43,7 +43,7 @@ const SRCard = (props: SRCardProps) => {
       createdAt: props.createdAt,
       disabled: props.disabled,
       iter: [],
-      chargedBy: "某某某",
+      chargedBy: -1,
       service: -1,
     });
   };

@@ -1,4 +1,7 @@
 // 传入需要查询的 userId 以及所有的 projectInfo (getProjectStore 而来) 字符串（未解析）
+import { SRCardProps, UserSRAssociationProps } from "../store/ConfigureStore";
+import { indexOf } from "underscore";
+
 const userId2UserInfo = (userId: number, projectInfo: string) => {
   // console.log("===================== userId to name ======================= ");
   const userData = JSON.parse(projectInfo).data.users;
@@ -197,6 +200,36 @@ const Service2SR = (
   return matchedSRId.map((id: any) => SRId2SRInfo(id, SRList));
 };
 
+const SR2ChargedUser = (
+  SRId: number,
+  SRUserAssociation: string,
+  projectInfo: string
+) => {
+  const asso_data = JSON.parse(SRUserAssociation).data.filter(
+    (asso: UserSRAssociationProps) => asso.sr === SRId
+  );
+  return JSON.parse(projectInfo).data.users.filter(
+    (user: any) =>
+      asso_data.filter((asso: UserSRAssociationProps) => asso.user === user.id)
+        .length > 0
+  );
+};
+
+const ChargedUser2SR = (
+  userId: number,
+  SRUserAssociation: string,
+  SRInfo: string
+) => {
+  const asso_data = JSON.parse(SRUserAssociation).data.filter(
+    (asso: UserSRAssociationProps) => asso.user === userId
+  );
+  return JSON.parse(SRInfo).data.filter(
+    (SR: SRCardProps) => (user: any) =>
+      asso_data.filter((asso: UserSRAssociationProps) => asso.sr === SR.id)
+        .length > 0
+  );
+};
+
 export {
   userId2UserInfo,
   IRId2IRInfo,
@@ -211,4 +244,6 @@ export {
   Iteration2SR,
   SR2Service,
   Service2SR,
+  SR2ChargedUser,
+  ChargedUser2SR,
 };

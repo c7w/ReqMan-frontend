@@ -17,6 +17,7 @@ import {
   getSRIterationInfo,
   getSRListInfo,
   getSRServiceInfo,
+  getUserSRInfo,
   updateServiceInfo,
 } from "../../../store/functions/RMS";
 import Loading from "../../../layout/components/Loading";
@@ -29,6 +30,7 @@ import {
   getServiceStore,
   getSRServiceStore,
 } from "../../../store/slices/ServiceSlice";
+import { getUserSRStore } from "../../../store/slices/UserSRSlice";
 
 const ProjectSR = () => {
   // Judge if project list in user state
@@ -43,6 +45,7 @@ const ProjectSR = () => {
   const SRIterationStore = useSelector(getSRIterationStore);
   const serviceStore = useSelector(getServiceStore);
   const SRServiceStore = useSelector(getSRServiceStore);
+  const UserSRStore = useSelector(getUserSRStore);
 
   const dispatcher = useDispatch();
   const params = useParams<"id">();
@@ -57,6 +60,7 @@ const ProjectSR = () => {
     getIterationInfo(dispatcher, project_id);
     getSRIterationInfo(dispatcher, project_id);
     getSRServiceInfo(dispatcher, project_id);
+    getUserSRInfo(dispatcher, project_id);
   }, []);
 
   if (
@@ -67,7 +71,8 @@ const ProjectSR = () => {
     iterationStore === "" ||
     SRIterationStore === "" ||
     serviceStore === "" ||
-    SRServiceStore === ""
+    SRServiceStore === "" ||
+    UserSRStore === ""
   ) {
     // Just let useEffect to re-query!
   } else if (JSON.parse(userInfo).code !== 0) {
