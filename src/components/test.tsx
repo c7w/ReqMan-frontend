@@ -89,9 +89,9 @@ const Test = () => {
     createdBy: "17",
     createdAt: Date.now(),
     disabled: false,
-    iter: ["迭代1"],
-    chargedBy: "某某某",
-    service: "服务1",
+    iter: [],
+    chargedBy: -1,
+    service: -1,
   };
   const Iteration: Iteration = {
     id: 1,
