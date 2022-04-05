@@ -44,7 +44,7 @@ const SRCard = (props: SRCardProps) => {
       disabled: props.disabled,
       iter: [],
       chargedBy: "某某某",
-      service: "服务1",
+      service: -1,
     });
   };
   const menu = (

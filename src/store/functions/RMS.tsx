@@ -35,9 +35,9 @@ const getIRListInfo = async (
     project: project_id,
     type: "ir",
   };
-  console.log(JSON.stringify(myParams));
+  // console.log(JSON.stringify(myParams));
   const IRList_data = await request_json(API.GET_RMS, { getParams: myParams });
-  console.log("IRList: " + JSON.stringify(IRList_data));
+  // console.log("IRList: " + JSON.stringify(IRList_data));
   dispatcher(updateIRListStore(JSON.stringify(IRList_data)));
 };
 
@@ -46,7 +46,7 @@ const createIRInfo = async (
   project_id: number,
   ir: IRCard
 ): Promise<void> => {
-  console.log(ir);
+  // console.log(ir);
   const myBody = {
     project: ir.project,
     type: "ir",
@@ -60,7 +60,7 @@ const createIRInfo = async (
     },
   };
   return request_json(API.POST_RMS, { body: myBody }).then((data) => {
-    console.log(data.code);
+    // console.log(data.code);
     if (data.code === 0) {
       getIRListInfo(dispatcher, project_id);
     }
@@ -73,7 +73,7 @@ const updateIRInfo = async (
   project_id: number,
   ir: IRCard
 ): Promise<void> => {
-  console.log(ir);
+  // console.log(ir);
   const myBody = {
     project: ir.project,
     type: "ir",
@@ -89,9 +89,9 @@ const updateIRInfo = async (
   };
   // request_json(API.POST_RMS, { body: myBody });
   // getIRListInfo(dispatcher, project_id);
-  // console.log("test: " + JSON.stringify(myBody));
+  // // console.log("test: " + JSON.stringify(myBody));
   return request_json(API.POST_RMS, { body: myBody }).then((data) => {
-    console.log(data.code);
+    // console.log(data.code);
     if (data.code === 0) {
       getIRListInfo(dispatcher, project_id);
     }
@@ -113,7 +113,7 @@ const deleteIRInfo = async (
     },
   };
   return request_json(API.POST_RMS, { body: myBody }).then((data) => {
-    console.log(data.code);
+    // console.log(data.code);
     if (data.code === 0) {
       getIRListInfo(dispatcher, project_id);
     }
@@ -180,12 +180,12 @@ const getSRListInfo = async (
     type: "sr",
   };
   // const SRList_data = await request_json(API.GET_RMS, { getParams: myParams });
-  // // console.log("SRList: " + JSON.stringify(SRList_data));
+  // // // console.log("SRList: " + JSON.stringify(SRList_data));
   // dispatcher(updateSRListStore(JSON.stringify(SRList_data)));
   // return SRList_data;
   return request_json(API.GET_RMS, { getParams: myParams }).then(
     (SRList_data) => {
-      console.log(SRList_data.code);
+      // console.log(SRList_data.code);
       if (SRList_data.code === 0) {
         dispatcher(updateSRListStore(JSON.stringify(SRList_data)));
       }
@@ -199,7 +199,7 @@ const createSRInfo = async (
   project_id: number,
   sr: SRCardProps
 ): Promise<void> => {
-  console.log(sr);
+  // console.log(sr);
   const myBody = {
     project: sr.project,
     type: "sr",
@@ -215,7 +215,7 @@ const createSRInfo = async (
     },
   };
   return request_json(API.POST_RMS, { body: myBody }).then((data) => {
-    console.log(data.code);
+    // console.log(data.code);
     if (data.code === 0) {
       getSRListInfo(dispatcher, project_id);
     }
@@ -244,7 +244,7 @@ const updateSRInfo = async (
     },
   };
   return request_json(API.POST_RMS, { body: myBody }).then((data) => {
-    console.log(data.code);
+    // console.log(data.code);
     if (data.code === 0) {
       getSRListInfo(dispatcher, project_id);
     }
@@ -266,7 +266,7 @@ const deleteSRInfo = async (
     },
   };
   return request_json(API.POST_RMS, { body: myBody }).then((data) => {
-    console.log(data.code);
+    // console.log(data.code);
     if (data.code === 0) {
       getSRListInfo(dispatcher, project_id);
     }
@@ -293,7 +293,7 @@ const createIteration = async (
   project_id: number,
   iteration: Iteration
 ): Promise<any> => {
-  console.log(iteration);
+  // console.log(iteration);
   const myBody = {
     project: project_id,
     type: "iteration",
@@ -382,7 +382,7 @@ const createIRSR = async (
   project_id: number,
   IRSRAssociation: IRSRAssociation
 ): Promise<void> => {
-  console.log(IRSRAssociation);
+  // console.log(IRSRAssociation);
   const myBody = {
     project: project_id,
     type: "ir-sr",
@@ -395,7 +395,7 @@ const createIRSR = async (
     },
   };
   return request_json(API.POST_RMS, { body: myBody }).then((data) => {
-    console.log(data.code);
+    // console.log(data.code);
     if (data.code === 0) {
       getIRSRInfo(dispatcher, project_id);
     }
@@ -418,7 +418,7 @@ const deleteIRSR = async (
     },
   };
   return request_json(API.POST_RMS, { body: myBody }).then((data) => {
-    console.log(data.code);
+    // console.log(data.code);
     if (data.code === 0) {
       getIRSRInfo(dispatcher, project_id);
     }
@@ -445,7 +445,7 @@ const createIRIteration = async (
   project_id: number,
   IRIteration: IRIteration
 ): Promise<void> => {
-  console.log(IRIteration);
+  // console.log(IRIteration);
   const myBody = {
     project: project_id,
     type: "ir-iteration",
@@ -499,7 +499,7 @@ const createSRIteration = async (
   project_id: number,
   SRIteration: SRIteration
 ): Promise<void> => {
-  console.log(SRIteration);
+  // console.log(SRIteration);
   const myBody = {
     project: project_id,
     type: "sr-iteration",
@@ -614,7 +614,7 @@ const createSRService = async (
   project_id: number,
   SRService: SRService
 ): Promise<void> => {
-  console.log(SRService);
+  // console.log(SRService);
   const myBody = {
     project: project_id,
     type: "service-sr",
@@ -626,16 +626,19 @@ const createSRService = async (
       },
     },
   };
-  request_json(API.POST_RMS, { body: myBody });
-  // 更新 Iteration 的 store
-  getSRServiceInfo(dispatcher, project_id);
+  return request_json(API.POST_RMS, { body: myBody }).then((data) => {
+    if (data.code === 0) {
+      getSRServiceInfo(dispatcher, project_id);
+    }
+    return data;
+  });
 };
 
 const deleteSRService = async (
   dispatcher: any,
   project_id: number,
   SRService: SRService
-): Promise<void> => {
+): Promise<any> => {
   const myBody = {
     project: project_id,
     type: "service-sr",
@@ -645,8 +648,12 @@ const deleteSRService = async (
       SRId: SRService.SRId,
     },
   };
-  request_json(API.POST_RMS, { body: myBody });
-  getSRServiceInfo(dispatcher, project_id);
+  return request_json(API.POST_RMS, { body: myBody }).then((data) => {
+    if (data.code === 0) {
+      getSRServiceInfo(dispatcher, project_id);
+    }
+    return data;
+  });
 };
 
 // const getUserSRInfo = async (

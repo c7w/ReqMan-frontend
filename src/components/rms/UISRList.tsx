@@ -24,9 +24,11 @@ import {
   createIRSR,
   createSRInfo,
   createSRIteration,
+  createSRService,
   deleteIRSR,
   deleteSRInfo,
   deleteSRIteration,
+  deleteSRService,
   updateSRInfo,
 } from "../../store/functions/RMS";
 import { ToastMessage } from "../../utils/Navigation";
@@ -45,6 +47,7 @@ import {
   getSRServiceStore,
 } from "../../store/slices/ServiceSlice";
 import { difference } from "underscore";
+import { Service } from "./UIServiceReadonly";
 const { TextArea } = Input;
 const { Option } = Select;
 
@@ -121,7 +124,10 @@ const UISRList = (props: UISRListProps) => {
       createdAt: value.createdAt * 1000,
       iter: SR2Iteration(value.id, iterSRAssoStore, iterationStore),
       chargedBy: "某某某",
-      service: SR2Service(value.id, SRServiceStore, serviceStore),
+      service:
+        SR2Service(value.id, SRServiceStore, serviceStore).length > 0
+          ? SR2Service(value.id, SRServiceStore, serviceStore)[0].id
+          : -1,
     });
   });
 
@@ -165,7 +171,10 @@ const UISRList = (props: UISRListProps) => {
           createdAt: value.createdAt * 1000,
           iter: SR2Iteration(value.id, iterSRAssoStore, iterationStore),
           chargedBy: "某某某",
-          service: SR2Service(value.id, SRServiceStore, serviceStore),
+          service:
+            SR2Service(value.id, SRServiceStore, serviceStore).length > 0
+              ? SR2Service(value.id, SRServiceStore, serviceStore)[0].id
+              : -1,
         });
       }
     });
@@ -183,7 +192,7 @@ const UISRList = (props: UISRListProps) => {
   const [currState, setCurrState] = useState<string>("未开始");
   const [iter, setIter] = useState<number[]>([]);
   const [chargedBy, setChargedBy] = useState<string>("某某某");
-  const [service, setService] = useState<string>("服务1");
+  const [service, setService] = useState<number>(-1);
 
   const showEditModal = (record: SRCardProps) => {
     setId(record.id);
@@ -193,7 +202,7 @@ const UISRList = (props: UISRListProps) => {
     setCurrState(record.currState);
     setIter(record.iter?.map((iter: Iteration) => iter.id as number));
     setChargedBy(record.chargedBy);
-    setService(record.service);
+    setService(record.service as number);
     setIsEditModalVisible(true);
   };
 
@@ -224,6 +233,7 @@ const UISRList = (props: UISRListProps) => {
     };
 
     // Update associations
+    // Iteration association
     const lastIteration = SR2Iteration(id, iterSRAssoStore, iterationStore).map(
       (iter: Iteration) => iter.id
     );
@@ -245,6 +255,34 @@ const UISRList = (props: UISRListProps) => {
       });
     });
 
+    // Service association
+    const lastService = SR2Service(id, SRServiceStore, serviceStore).map(
+      (service: any) => service.id
+    );
+    const currService = service;
+
+    const delete_promises: Promise<any>[] = [];
+    lastService.forEach((service: number) => {
+      delete_promises.push(
+        deleteSRService(dispatcher, project, {
+          SRId: id,
+          serviceId: service,
+          id: -1,
+        })
+      );
+    });
+
+    Promise.all(delete_promises).then(() => {
+      if (currService !== -1) {
+        createSRService(dispatcher, project, {
+          SRId: id,
+          serviceId: currService,
+          id: -1,
+        });
+      }
+    });
+
+    // Main SR Info
     updateSRInfo(dispatcher, project, newSR).then((data: any) => {
       if (data.code === 0) {
         ToastMessage("success", "修改成功", "您的功能需求修改成功");
@@ -256,7 +294,7 @@ const UISRList = (props: UISRListProps) => {
         setCurrState("未开始");
         setIter([]);
         setChargedBy("某某某");
-        setService("服务1");
+        setService(-1);
         setIsEditModalVisible(false);
       } else {
         ToastMessage("error", "修改失败", "您的功能需求修改失败");
@@ -273,7 +311,7 @@ const UISRList = (props: UISRListProps) => {
     setIsEditModalVisible(false);
     setIter([]);
     setChargedBy("某某某");
-    setService("服务1");
+    setService(-1);
   };
 
   const showCreateModal = () => {
@@ -306,7 +344,7 @@ const UISRList = (props: UISRListProps) => {
         setIsCreateModalVisible(false);
         setIter([]);
         setChargedBy("某某某");
-        setService("");
+        setService(-1);
       } else {
         ToastMessage("error", "创建失败", "您的功能需求创建失败");
       }
@@ -323,7 +361,7 @@ const UISRList = (props: UISRListProps) => {
     setIsCreateModalVisible(false);
     setIter([]);
     setChargedBy("某某某");
-    setService("");
+    setService(-1);
   };
 
   // Handle delete
@@ -350,7 +388,6 @@ const UISRList = (props: UISRListProps) => {
   }
 
   // Handle iteration change
-  // Immediate update...
   function handleIterChange(value: Array<any>) {
     setIter(value);
   }
@@ -360,14 +397,16 @@ const UISRList = (props: UISRListProps) => {
   );
 
   // Handle service change
-  // Immediate Update...
-  function handleServiceChange(value: string) {
+  function handleServiceChange(value: number) {
+    console.debug(service);
+    console.debug(value);
     setService(value);
   }
 
-  const serviceChildren = JSON.parse(serviceStore).data.map((service: any) => (
-    <Option value={service.id}>{service.title}</Option>
-  ));
+  const serviceChildren = [<Option value={-1}>　</Option>];
+  JSON.parse(serviceStore).data.forEach((service: any) =>
+    serviceChildren.push(<Option value={service.id}>{service.title}</Option>)
+  );
 
   function handleChargedByChange(value: string) {
     console.log(value);
@@ -494,6 +533,19 @@ const UISRList = (props: UISRListProps) => {
     width: "10%",
     dataIndex: "service",
     align: "center",
+    render: (text, record, _, action) => [
+      <div>
+        {record.service === -1
+          ? "-"
+          : JSON.parse(serviceStore).data.filter(
+              (data: Service) => data.id === record.service
+            ).length > 0
+          ? JSON.parse(serviceStore).data.filter(
+              (data: Service) => data.id === record.service
+            )[0].title
+          : "-"}
+      </div>,
+    ],
   };
   const columnOpration: ProColumns<SRCardProps> = {
     search: false,

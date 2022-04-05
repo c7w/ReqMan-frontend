@@ -31,7 +31,7 @@ const List = (props: ListProps) => {
           createdBy={value.createdBy}
           createdAt={value.createdAt}
           chargedBy="某某某"
-          service="服务1"
+          service={-1}
           iter={[]}
         />
       );

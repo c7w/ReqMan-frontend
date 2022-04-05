@@ -10,6 +10,7 @@ import ProjectSliceReducer from "./slices/ProjectSlice";
 import ProjectServiceReducer from "./slices/ServiceSlice";
 import IterationReducer from "./slices/IterationSlice";
 import CalendarReducer from "./slices/CalendarSlice";
+import { Service } from "../components/rms/UIServiceReadonly";
 
 interface SRCardProps {
   readonly id: number; // id
@@ -25,7 +26,7 @@ interface SRCardProps {
   readonly disabled?: boolean;
   readonly iter: Iteration[];
   readonly chargedBy: string;
-  readonly service: string;
+  readonly service: Service | number;
 }
 
 interface IRCard {

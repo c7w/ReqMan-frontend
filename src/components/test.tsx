@@ -91,7 +91,7 @@ const Test = () => {
     disabled: false,
     iter: [],
     chargedBy: "某某某",
-    service: "服务1",
+    service: -1,
   };
   const Iteration: Iteration = {
     id: 1,
