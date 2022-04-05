@@ -19,6 +19,7 @@ import {
   UserIteration,
   IRIteration,
   SRService,
+  UserSRAssociationProps,
 } from "../ConfigureStore";
 import {
   updateIRIterationStore,
@@ -656,19 +657,67 @@ const deleteSRService = async (
   });
 };
 
-// const getUserSRInfo = async (
-//   dispatcher: any,
-//   project_id: number
-// ): Promise<void> => {
-//   const myParams = {
-//     project: project_id,
-//     type: "sr-user",
-//   };
-//   const SRService_data = await request_json(API.GET_RMS, {
-//     getParams: myParams,
-//   });
-//   dispatcher(updateSRServiceStore(JSON.stringify(SRService_data)));
-// };
+const getUserSRInfo = async (
+  dispatcher: any,
+  project_id: number
+): Promise<void> => {
+  const myParams = {
+    project: project_id,
+    type: "sr-user",
+  };
+  const SRService_data = await request_json(API.GET_RMS, {
+    getParams: myParams,
+  });
+  dispatcher(updateSRServiceStore(JSON.stringify(SRService_data)));
+};
+
+const createUserSRInfo = async (
+  dispatcher: any,
+  project_id: number,
+  UserSR: UserSRAssociationProps
+): Promise<void> => {
+  // console.log(SRService);
+  const myBody = {
+    project: project_id,
+    type: "sr-user",
+    operation: "create",
+    data: {
+      updateData: {
+        userId: UserSR.user,
+        SRId: UserSR.sr,
+      },
+    },
+  };
+  return request_json(API.POST_RMS, { body: myBody }).then((data) => {
+    if (data.code === 0) {
+      getSRServiceInfo(dispatcher, project_id);
+    }
+    return data;
+  });
+};
+
+const deleteUserSRInfo = async (
+  dispatcher: any,
+  project_id: number,
+  UserSR: UserSRAssociationProps
+): Promise<void> => {
+  // console.log(SRService);
+  const myBody = {
+    project: project_id,
+    type: "sr-user",
+    operation: "delete",
+    data: {
+      userId: UserSR.user,
+      SRId: UserSR.sr,
+    },
+  };
+  return request_json(API.POST_RMS, { body: myBody }).then((data) => {
+    if (data.code === 0) {
+      getSRServiceInfo(dispatcher, project_id);
+    }
+    return data;
+  });
+};
 
 export {
   getIRListInfo,

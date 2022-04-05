@@ -101,6 +101,8 @@ interface Iteration {
 
 interface UserSRAssociationProps {
   readonly id?: number;
+  readonly user: number;
+  readonly sr: number;
 }
 
 const { createReduxHistory, routerMiddleware, routerReducer } =
@@ -134,4 +136,5 @@ export type {
   ManageUserInfo,
   Iteration,
   SRService,
+  UserSRAssociationProps,
 };
