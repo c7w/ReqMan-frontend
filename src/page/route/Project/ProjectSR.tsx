@@ -19,6 +19,7 @@ import {
 } from "../../../store/functions/RMS";
 import Loading from "../../../layout/components/Loading";
 import { useEffect } from "react";
+import { getSRIterationStore } from "../../../store/slices/IterationSlice";
 
 const ProjectSR = () => {
   // Judge if project list in user state
@@ -28,6 +29,9 @@ const ProjectSR = () => {
   const projectInfo = useSelector(getProjectStore);
   const SRListInfo = useSelector(getSRListStore);
   const IRSRAssociation = useSelector(getIRSRStore);
+
+  const SRIterationStore = useSelector(getSRIterationStore);
+  const userSRStore = useSelector();
 
   const dispatcher = useDispatch();
   const params = useParams<"id">();

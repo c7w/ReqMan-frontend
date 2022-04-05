@@ -5,6 +5,7 @@ import { createBrowserHistory } from "history";
 import sidebarReducer from "./slices/SidebarSlice";
 import UserSliceReducer from "./slices/UserSlice";
 import IRSRReducer from "./slices/IRSRSlice";
+import UserSRReducer from "./slices/UserSRSlice";
 import ProjectSliceReducer from "./slices/ProjectSlice";
 import ProjectServiceReducer from "./slices/ServiceSlice";
 import IterationReducer from "./slices/IterationSlice";
@@ -97,6 +98,10 @@ interface Iteration {
   readonly createdAt?: number;
 }
 
+interface UserSRAssociationProps {
+  readonly id?: number;
+}
+
 const { createReduxHistory, routerMiddleware, routerReducer } =
   createReduxHistoryContext({ history: createBrowserHistory() });
 
@@ -110,6 +115,7 @@ export const store = configureStore({
     service_store: ProjectServiceReducer,
     iteration_store: IterationReducer,
     calendar_store: CalendarReducer,
+    user_sr_store: UserSRReducer,
     // rest of your reducers
   }),
   middleware: [routerMiddleware],

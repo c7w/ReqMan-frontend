@@ -649,6 +649,20 @@ const deleteSRService = async (
   getSRServiceInfo(dispatcher, project_id);
 };
 
+// const getUserSRInfo = async (
+//   dispatcher: any,
+//   project_id: number
+// ): Promise<void> => {
+//   const myParams = {
+//     project: project_id,
+//     type: "sr-user",
+//   };
+//   const SRService_data = await request_json(API.GET_RMS, {
+//     getParams: myParams,
+//   });
+//   dispatcher(updateSRServiceStore(JSON.stringify(SRService_data)));
+// };
+
 export {
   getIRListInfo,
   createIRInfo,
