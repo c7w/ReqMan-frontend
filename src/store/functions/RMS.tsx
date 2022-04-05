@@ -552,8 +552,7 @@ const createUserIteration = async (
   dispatcher: any,
   project_id: number,
   UserIteration: UserIteration
-): Promise<void> => {
-  console.log(UserIteration);
+): Promise<any> => {
   const myBody = {
     project: project_id,
     type: "user-iteration",
@@ -565,16 +564,20 @@ const createUserIteration = async (
       },
     },
   };
-  request_json(API.POST_RMS, { body: myBody });
+  return request_json(API.POST_RMS, { body: myBody }).then((data) => {
+    if (data.code === 0) {
+      getUserIterationInfo(dispatcher, project_id);
+    }
+    return data;
+  });
   // 更新 Iteration 的 store
-  getUserIterationInfo(dispatcher, project_id);
 };
 
 const deleteUserIteration = async (
   dispatcher: any,
   project_id: number,
   UserIteration: UserIteration
-): Promise<void> => {
+): Promise<any> => {
   const myBody = {
     project: project_id,
     type: "user-iteration",
@@ -584,8 +587,12 @@ const deleteUserIteration = async (
       userId: UserIteration.userId,
     },
   };
-  request_json(API.POST_RMS, { body: myBody });
-  getUserIterationInfo(dispatcher, project_id);
+  return request_json(API.POST_RMS, { body: myBody }).then((data) => {
+    if (data.code === 0) {
+      getUserIterationInfo(dispatcher, project_id);
+    }
+    return data;
+  });
 };
 
 const getSRServiceInfo = async (

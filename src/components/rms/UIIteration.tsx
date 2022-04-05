@@ -234,6 +234,7 @@ const UIIterationManagerModel = (props: ManagerModelProps) => {
         <tbody>
           {JSON.parse(iterationStore).data.map((iter: Iteration) => (
             <tr
+              key={iter.id}
               style={{
                 borderWidth: "1px",
                 padding: "8px",
@@ -494,6 +495,7 @@ const UIIteration = () => {
                           }
                         }}
                         style={{ cursor: "pointer", fontWeight: "bold" }}
+                        key={ir.id}
                       >
                         <span id={`iteration-table-ir-control-${ir.id}`}>
                           　　{JSON.parse(detail).includes(ir.id) ? "-" : "+"}
@@ -503,6 +505,7 @@ const UIIteration = () => {
                       {oneIR2AllSR(ir.id, IRSRAssociation, SRStore).map(
                         (sr: SRCardProps) => (
                           <div
+                            key={sr.id}
                             className={`iteration-table-sr-cell iteration-table-ir-${ir.id}`}
                             style={{
                               height: JSON.parse(detail).includes(ir.id)
@@ -528,6 +531,7 @@ const UIIteration = () => {
                     .data.sort((a: Iteration, b: Iteration) => a.sid - b.sid)
                     .map((data: Iteration) => (
                       <div
+                        key={data.id}
                         className={"iteration-table-iter-cell"}
                         style={{
                           backgroundColor: "#66cfcf",
