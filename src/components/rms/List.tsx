@@ -32,7 +32,7 @@ const List = (props: ListProps) => {
           createdAt={value.createdAt}
           chargedBy="某某某"
           service="服务1"
-          iter={["迭代1"]}
+          iter={[]}
         />
       );
     });
