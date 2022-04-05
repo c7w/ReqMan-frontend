@@ -12,7 +12,9 @@ import { Redirect, ToastMessage } from "../../../utils/Navigation";
 import UISRList from "../../../components/rms/UISRList";
 import {
   getIRListInfo,
-  getIRSRInfo, getIterationInfo, getSRIterationInfo,
+  getIRSRInfo,
+  getIterationInfo,
+  getSRIterationInfo,
   getSRListInfo,
 } from "../../../store/functions/RMS";
 import Loading from "../../../layout/components/Loading";
