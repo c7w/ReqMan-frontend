@@ -24,6 +24,7 @@ import { getProjectStore } from "../../store/slices/ProjectSlice";
 import { updateProjectInfo } from "../../store/functions/UMS";
 import Loading from "../../layout/components/Loading";
 import { Option } from "antd/es/mentions";
+import Paragraph from "antd/es/typography/Paragraph";
 const { Text } = Typography;
 
 const SRCard = (props: SRCardProps) => {
@@ -33,6 +34,7 @@ const SRCard = (props: SRCardProps) => {
   const state2Color = new Map();
   const state2ChineseState = new Map();
   const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [SRDesc, setSRDesc] = useState(props.description);
   const [bounds, setBounds] = useState({
     left: 0,
     top: 0,
@@ -141,7 +143,13 @@ const SRCard = (props: SRCardProps) => {
             className="modal-header-left"
             style={{ fontWeight: "bold", fontSize: "1.5rem" }}
           >
-            <Breadcrumb style={{ margin: "1rem 0", fontSize: "1.5rem" }}>
+            <Breadcrumb
+              style={{
+                margin: "1rem 0",
+                fontSize: "1.5rem",
+                paddingRight: "1rem",
+              }}
+            >
               <Breadcrumb.Item>{props.title}</Breadcrumb.Item>
             </Breadcrumb>
             <Select
@@ -155,12 +163,49 @@ const SRCard = (props: SRCardProps) => {
               <Option value="已完成">已完成</Option>
             </Select>
           </div>
-          <Divider />
-          <div className="modal-header-right"></div>
+          <div className="modal-header-right">I am right</div>
         </div>
+        <Divider />
         <div className="modal-content">
-          <div className="modal-content-up"></div>
-          <div className="modal-content-middle"></div>
+          <div className="modal-content-up">
+            <Typography
+              style={{
+                overflowWrap: "normal",
+                paddingLeft: "1rem",
+                paddingRight: "1rem",
+                fontSize: "1rem",
+              }}
+            >
+              <Paragraph
+                editable={{
+                  onChange: setSRDesc,
+                  autoSize: { maxRows: 5 },
+                }}
+              >
+                {SRDesc}
+              </Paragraph>
+            </Typography>
+          </div>
+          <Divider />
+          <div className="modal-content-middle">
+            <div style={{ display: "flex", flexDirection: "row" }}>
+              <p>负责人：</p>
+              <Avatar.Group>
+                <Avatar
+                  className="card-small-avatar"
+                  size="small"
+                  src={getUserAvatar(userInfo)}
+                />
+              </Avatar.Group>
+            </div>
+            <div>
+              <b>创建时间:</b>
+              {"   " +
+                (props.createdAt
+                  ? new Date(props.createdAt).toLocaleString()
+                  : "无创建时间记录")}
+            </div>
+          </div>
           <div className="modal-content-bottom"></div>
         </div>
       </Modal>
