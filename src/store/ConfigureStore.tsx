@@ -5,10 +5,12 @@ import { createBrowserHistory } from "history";
 import sidebarReducer from "./slices/SidebarSlice";
 import UserSliceReducer from "./slices/UserSlice";
 import IRSRReducer from "./slices/IRSRSlice";
+import UserSRReducer from "./slices/UserSRSlice";
 import ProjectSliceReducer from "./slices/ProjectSlice";
 import ProjectServiceReducer from "./slices/ServiceSlice";
 import IterationReducer from "./slices/IterationSlice";
 import CalendarReducer from "./slices/CalendarSlice";
+import { Service } from "../components/rms/UIServiceReadonly";
 
 interface SRCardProps {
   readonly id: number; // id
@@ -16,12 +18,15 @@ interface SRCardProps {
   readonly title: string; // title
   readonly description: string; // description
   readonly priority: number; // the priority which indicates the importance of the SR
-  readonly rank: number;
+  readonly rank?: number;
   readonly currState: string; // "TODO", "WIP", "Reviewing", "Done"
   readonly stateColor?: string;
-  readonly createdBy: string; // somebody
-  readonly createdAt: number; // sometime
-  readonly disabled: boolean;
+  readonly createdBy?: string; // somebody
+  readonly createdAt?: number; // sometime
+  readonly disabled?: boolean;
+  readonly iter: Iteration[];
+  readonly chargedBy: number;
+  readonly service: Service | number;
 }
 
 interface IRCard {
@@ -33,12 +38,13 @@ interface IRCard {
   readonly createdBy: string; // somebody
   readonly createdAt: number; // sometime
   readonly disabled: boolean;
+  readonly progress: number;
 }
 
 interface IRSRAssociation {
   readonly id: number;
-  readonly IRId: number;
-  readonly SRId: number;
+  readonly IR: number;
+  readonly SR: number;
 }
 
 interface IRIteration {
@@ -54,7 +60,7 @@ interface SRIteration {
 }
 
 interface UserIteration {
-  readonly id: number;
+  readonly id?: number;
   readonly userId: number;
   readonly iterationId: number;
 }
@@ -80,6 +86,7 @@ interface ManageUserInfo {
   name: string;
   email: string;
   avatar: string;
+  role: string;
 }
 interface Iteration {
   readonly id?: number;
@@ -90,6 +97,12 @@ interface Iteration {
   readonly end: number; // 创建必填
   readonly disabled?: boolean;
   readonly createdAt?: number;
+}
+
+interface UserSRAssociationProps {
+  readonly id?: number;
+  readonly user: number;
+  readonly sr: number;
 }
 
 const { createReduxHistory, routerMiddleware, routerReducer } =
@@ -105,6 +118,7 @@ export const store = configureStore({
     service_store: ProjectServiceReducer,
     iteration_store: IterationReducer,
     calendar_store: CalendarReducer,
+    user_sr_store: UserSRReducer,
     // rest of your reducers
   }),
   middleware: [routerMiddleware],
@@ -122,4 +136,5 @@ export type {
   ManageUserInfo,
   Iteration,
   SRService,
+  UserSRAssociationProps,
 };

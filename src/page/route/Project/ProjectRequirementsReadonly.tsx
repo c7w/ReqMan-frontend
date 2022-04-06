@@ -17,10 +17,24 @@ import {
 import {
   getIRListInfo,
   getIRSRInfo,
+  getIterationInfo,
+  getSRIterationInfo,
   getSRListInfo,
+  getSRServiceInfo,
+  getUserSRInfo,
+  updateServiceInfo,
 } from "../../../store/functions/RMS";
 import { Redirect, ToastMessage } from "../../../utils/Navigation";
 import UIIRList from "../../../components/rms/UIIRList";
+import {
+  getIterationStore,
+  getSRIterationStore,
+} from "../../../store/slices/IterationSlice";
+import {
+  getServiceStore,
+  getSRServiceStore,
+} from "../../../store/slices/ServiceSlice";
+import { getUserSRStore } from "../../../store/slices/UserSRSlice";
 
 const ProjectRequirementsReadonly = () => {
   const userInfo = useSelector(getUserStore);
@@ -28,6 +42,11 @@ const ProjectRequirementsReadonly = () => {
   const IRListInfo = useSelector(getIRListStore);
   const SRListInfo = useSelector(getSRListStore);
   const IRSRAssociation = useSelector(getIRSRStore);
+  const iterationStore = useSelector(getIterationStore);
+  const SRIterationStore = useSelector(getSRIterationStore);
+  const serviceStore = useSelector(getServiceStore);
+  const SRServiceStore = useSelector(getSRServiceStore);
+  const UserSRStore = useSelector(getUserSRStore);
 
   const dispatcher = useDispatch();
   const params = useParams<"id">();
@@ -39,6 +58,11 @@ const ProjectRequirementsReadonly = () => {
     getIRListInfo(dispatcher, project_id);
     getSRListInfo(dispatcher, project_id);
     getIRSRInfo(dispatcher, project_id);
+    updateServiceInfo(dispatcher, project_id);
+    getIterationInfo(dispatcher, project_id);
+    getSRIterationInfo(dispatcher, project_id);
+    getSRServiceInfo(dispatcher, project_id);
+    getUserSRInfo(dispatcher, project_id);
   }, []);
 
   if (
@@ -46,7 +70,12 @@ const ProjectRequirementsReadonly = () => {
     projectInfo === "" ||
     IRListInfo === "" ||
     SRListInfo === "" ||
-    IRSRAssociation === ""
+    IRSRAssociation === "" ||
+    iterationStore === "" ||
+    SRIterationStore === "" ||
+    serviceStore === "" ||
+    SRServiceStore === "" ||
+    UserSRStore === ""
   ) {
     // Just let useEffect to re-query!
   } else if (JSON.parse(userInfo).code !== 0) {

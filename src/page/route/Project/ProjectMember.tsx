@@ -12,49 +12,71 @@ import { useParams } from "react-router-dom";
 import UIProject from "../../../components/rms/UIProject";
 import { getProjectStore } from "../../../store/slices/ProjectSlice";
 import Loading from "../../../layout/components/Loading";
+import {
+  getIRIterationStore,
+  getIterationStore,
+  getUserIterationStore,
+} from "../../../store/slices/IterationSlice";
+import { useEffect } from "react";
+import {
+  getIterationInfo,
+  getUserIterationInfo,
+} from "../../../store/functions/RMS";
 
 const ProjectMember = () => {
-  // Judge if project list in user state
-  // If not re-query the user state from the backend
-  // Render the project list
+  // Store subscription
   const userInfo = useSelector(getUserStore);
   const projectInfo = useSelector(getProjectStore);
+  const iterationStore = useSelector(getIterationStore);
+  const userIterStore = useSelector(getUserIterationStore);
+
   const dispatcher = useDispatch();
   const params = useParams<"id">();
   const project_id = params.id;
 
-  if (userInfo === "") {
-    // Re-Query...
+  useEffect(() => {
     updateUserInfo(dispatcher);
+    updateProjectInfo(dispatcher, Number(project_id));
+    getIterationInfo(dispatcher, Number(project_id));
+    getUserIterationInfo(dispatcher, Number(project_id));
+  }, []);
+
+  if (
+    userInfo === "" ||
+    projectInfo === "" ||
+    iterationStore === "" ||
+    userIterStore === ""
+  ) {
+    // Waiting for Query...
   } else if (JSON.parse(userInfo).code !== 0) {
     // Redirect to `Root`
     ToastMessage("error", "未确认登录态", "即将跳转回登录界面");
     Redirect(dispatcher, "/login");
   } else {
-    console.debug(JSON.parse(userInfo));
     if (
       JSON.parse(userInfo).data.projects.filter(
         (obj: any) => obj.id.toString() === project_id
       ).length > 0
     ) {
-      if (projectInfo === "") {
-        // Re-request
-        updateProjectInfo(dispatcher, Number(project_id));
-      } else {
-        const projectData = JSON.parse(projectInfo);
-        if (projectData.data.project.id !== Number(project_id)) {
-          updateProjectInfo(dispatcher, Number(project_id));
-        } else {
-          // Render Page
-          console.log(projectData);
-          return (
-            <Home sidebar={true}>
-              <div>
-                <UIUserManage userInfo={projectInfo} />
-              </div>
-            </Home>
-          );
-        }
+      const projectData = JSON.parse(projectInfo);
+
+      if (
+        JSON.parse(userInfo).data.projects.filter(
+          (project: any) => project.id === Number(project_id)
+        )[0].role === "member"
+      ) {
+        Redirect(dispatcher, "/error", 0);
+      }
+
+      if (projectData.data.project.id === Number(project_id)) {
+        // Render Page
+        return (
+          <Home sidebar={true}>
+            <div>
+              <UIUserManage userInfo={projectInfo} />
+            </div>
+          </Home>
+        );
       }
     } else {
       // 2. Redirect to notfound

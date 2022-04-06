@@ -1,7 +1,7 @@
 import React, { ReactElement, useEffect, useState } from "react";
 import type { ProColumns } from "@ant-design/pro-table";
 import ReactMarkdown from "react-markdown";
-import ProTable from "@ant-design/pro-table";
+import ProTable, { ProColumnType } from "@ant-design/pro-table";
 import {
   Button,
   Input,
@@ -13,16 +13,45 @@ import {
   Tag,
 } from "antd";
 import "./UISRList.css";
-import { useDispatch } from "react-redux";
-import { IRSRAssociation, SRCardProps } from "../../store/ConfigureStore";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  IRSRAssociation,
+  Iteration,
+  SRCardProps,
+  SRService,
+} from "../../store/ConfigureStore";
 import {
   createIRSR,
   createSRInfo,
+  createSRIteration,
+  createSRService,
+  createUserSRInfo,
   deleteIRSR,
   deleteSRInfo,
+  deleteSRIteration,
+  deleteSRService,
+  deleteUserSRInfo,
   updateSRInfo,
 } from "../../store/functions/RMS";
 import { ToastMessage } from "../../utils/Navigation";
+import { getProjectStore } from "../../store/slices/ProjectSlice";
+import {
+  SR2ChargedUser,
+  SR2Iteration,
+  SR2Service,
+  userId2UserInfo,
+} from "../../utils/Association";
+import {
+  getIterationStore,
+  getSRIterationStore,
+} from "../../store/slices/IterationSlice";
+import {
+  getServiceStore,
+  getSRServiceStore,
+} from "../../store/slices/ServiceSlice";
+import { difference } from "underscore";
+import { Service } from "./UIServiceReadonly";
+import { getUserSRStore } from "../../store/slices/UserSRSlice";
 const { TextArea } = Input;
 const { Option } = Select;
 
@@ -36,26 +65,25 @@ interface UISRListProps {
   readonly IR_id: number;
 }
 
-/*
-SRListStr:  {"code":0,"data":[{"id":1,"project":2,"title":"sr","description":"sr","priority":1000,"rank":1000,"state":"TODO","createdBy":17,"createdAt":1648475583.008951,"disabled":false}]}
- */
-/*
-IRSRAssociation: {"code":0,"data":[{"id":6,"IR":19,"SR":5}]}
-*/
-/*
-userData: {"code":0,"data":{"user":{"id":17,"name":"hbx20","email":"hbx@hbx.boy","avatar":"","createdAt":1648273276.15087},"projects":[{"id":2,"title":"addIR","description":"test addIR","createdAt":1648384603.824133,"avatar":""},{"id":3,"title":"project QC","description":"df","createdAt":1648569673.895546,"avatar":"X"},{"id":8,"title":"aaaa","description":"aaaaaaaaaaaaaaaaaaaaaa","createdAt":1648609511.781126,"avatar":"X"}],"schedule":{"done":[],"wip":[],"todo":[]}},"avatar":""}
-*/
-
 const UISRList = (props: UISRListProps) => {
   const SRListData = JSON.parse(props.SRListStr).data;
-  // const userData = JSON.parse(props.userInfo).data;
   const IRSRAssociationData = JSON.parse(props.IRSRAssociation).data;
+
   const dispatcher = useDispatch();
   const project = props.project_id;
+  const projectInfo = useSelector(getProjectStore);
+
+  const iterationStore = useSelector(getIterationStore);
+  const iterSRAssoStore = useSelector(getSRIterationStore);
+
+  const serviceStore = useSelector(getServiceStore);
+  const SRServiceStore = useSelector(getSRServiceStore);
+
+  const userSRStore = useSelector(getUserSRStore);
 
   const curSRKey: number[] = [];
   if (props.IR_id !== -1) {
-    IRSRAssociationData.forEach((value: any) => {
+    IRSRAssociationData.forEach((value: IRSRAssociation) => {
       if (value.IR === props.IR_id) {
         curSRKey.push(value.SR);
       }
@@ -64,6 +92,7 @@ const UISRList = (props: UISRListProps) => {
 
   // 总任务列表
   const dataSRList: SRCardProps[] = [];
+  const titleFilter: any = {};
   SRListData.forEach((value: any) => {
     let state = "";
     let color = "";
@@ -83,22 +112,36 @@ const UISRList = (props: UISRListProps) => {
       state = "已交付";
       color = "green";
     }
+    if (titleFilter[value.title] === undefined) {
+      const curtitle = { text: value.title };
+      titleFilter[value.title] = curtitle;
+    }
+
+    const user = userId2UserInfo(Number(value.createdBy), projectInfo);
     dataSRList.push({
       id: value.id,
       project: value.project,
       title: value.title,
       description: value.description,
       priority: value.priority,
-      rank: value.rank,
       currState: state,
       stateColor: color,
-      createdBy: value.createdBy,
+      createdBy: user.name,
       createdAt: value.createdAt * 1000,
-      disabled: value.disabled,
+      iter: SR2Iteration(value.id, iterSRAssoStore, iterationStore),
+      chargedBy:
+        SR2ChargedUser(value.id, userSRStore, projectInfo).length > 0
+          ? SR2ChargedUser(value.id, userSRStore, projectInfo)[0].id
+          : -1,
+      service:
+        SR2Service(value.id, SRServiceStore, serviceStore).length > 0
+          ? SR2Service(value.id, SRServiceStore, serviceStore)[0].id
+          : -1,
     });
   });
 
   const showSRList: SRCardProps[] = [];
+  const showTitleFilter: any = {};
   SRListData.forEach((value: any) => {
     curSRKey.forEach((curValue: number) => {
       if (curValue === value.id) {
@@ -120,18 +163,27 @@ const UISRList = (props: UISRListProps) => {
           state = "已交付";
           color = "green";
         }
+        const user = userId2UserInfo(Number(value.createdBy), projectInfo);
+        if (showTitleFilter[value.title] === undefined) {
+          const curtitle = { text: value.title };
+          showTitleFilter[value.title] = curtitle;
+        }
         showSRList.push({
           id: value.id,
           project: value.project,
           title: value.title,
           description: value.description,
           priority: value.priority,
-          rank: value.rank,
           currState: state,
           stateColor: color,
-          createdBy: value.createdBy,
+          createdBy: user.name,
           createdAt: value.createdAt * 1000,
-          disabled: value.disabled,
+          iter: SR2Iteration(value.id, iterSRAssoStore, iterationStore),
+          chargedBy: SR2ChargedUser(value.id, userSRStore, projectInfo),
+          service:
+            SR2Service(value.id, SRServiceStore, serviceStore).length > 0
+              ? SR2Service(value.id, SRServiceStore, serviceStore)[0].id
+              : -1,
         });
       }
     });
@@ -146,16 +198,20 @@ const UISRList = (props: UISRListProps) => {
   const [title, setTitle] = useState<string>("");
   const [desc, setDesc] = useState<string>("");
   const [priority, setPriority] = useState<number>(1);
-  const [rank, setRank] = useState<number>(1);
   const [currState, setCurrState] = useState<string>("未开始");
+  const [iter, setIter] = useState<number[]>([]);
+  const [chargedBy, setChargedBy] = useState<number>(-1);
+  const [service, setService] = useState<number>(-1);
 
   const showEditModal = (record: SRCardProps) => {
     setId(record.id);
     setTitle(record.title);
     setDesc(record.description);
     setPriority(record.priority);
-    setRank(record.rank);
     setCurrState(record.currState);
+    setIter(record.iter?.map((iter: Iteration) => iter.id as number));
+    setChargedBy(record.chargedBy);
+    setService(record.service as number);
     setIsEditModalVisible(true);
   };
 
@@ -179,25 +235,102 @@ const UISRList = (props: UISRListProps) => {
       title: title,
       description: desc,
       priority: priority,
-      rank: rank,
       currState: state,
-      createdBy: "", // 未用到
-      createdAt: -1, // 未用到
-      disabled: true, // 未用到
+      iter: [],
+      chargedBy: chargedBy,
+      service: service,
     };
+
+    // Update associations
+    // Iteration association
+    const lastIteration = SR2Iteration(id, iterSRAssoStore, iterationStore).map(
+      (iter: Iteration) => iter.id
+    );
+    const currIteration = iter;
+    const deletedIteration = difference(lastIteration, currIteration);
+    const associatedIteration = difference(currIteration, lastIteration);
+    deletedIteration.forEach((iter_id: number) => {
+      deleteSRIteration(dispatcher, project, {
+        SRId: id,
+        iterationId: iter_id,
+        id: -1,
+      });
+    });
+    associatedIteration.forEach((iter_id: number) => {
+      createSRIteration(dispatcher, project, {
+        SRId: id,
+        iterationId: iter_id,
+        id: -1,
+      });
+    });
+
+    // Service association
+    const lastService = SR2Service(id, SRServiceStore, serviceStore).map(
+      (service: any) => service.id
+    );
+    const currService = service;
+
+    const delete_promises: Promise<any>[] = [];
+    lastService.forEach((service: number) => {
+      delete_promises.push(
+        deleteSRService(dispatcher, project, {
+          SRId: id,
+          serviceId: service,
+          id: -1,
+        })
+      );
+    });
+    Promise.all(delete_promises).then(() => {
+      if (currService !== -1) {
+        createSRService(dispatcher, project, {
+          SRId: id,
+          serviceId: currService,
+          id: -1,
+        });
+      }
+    });
+
+    // ChargedBy Association
+    const lastChargedBy = SR2ChargedUser(id, userSRStore, projectInfo).map(
+      (user: any) => user.id
+    );
+    const currChargedBy = chargedBy;
+    const delete_promises_: Promise<any>[] = [];
+    lastChargedBy.forEach((user: number) => {
+      delete_promises_.push(
+        deleteUserSRInfo(dispatcher, project, {
+          sr: id,
+          user: user,
+          id: -1,
+        })
+      );
+    });
+    Promise.all(delete_promises_).then(() => {
+      if (currChargedBy !== -1) {
+        createUserSRInfo(dispatcher, project, {
+          sr: id,
+          user: currChargedBy,
+          id: -1,
+        });
+      }
+    });
+
+    // Main SR Info
     updateSRInfo(dispatcher, project, newSR).then((data: any) => {
       if (data.code === 0) {
-        ToastMessage("success", "修改成功", "您的SR修改成功");
+        ToastMessage("success", "修改成功", "您的功能需求修改成功");
         // setTimeout(() => window.location.reload(), 1000);
         setId(-1);
         setTitle("");
         setDesc("");
         setPriority(1);
-        setRank(1);
         setCurrState("未开始");
+        setIter([]);
+        setChargedBy(-1);
+        setService(-1);
         setIsEditModalVisible(false);
       } else {
-        ToastMessage("error", "修改失败", "您的SR修改失败");
+        ToastMessage("error", "修改失败", "您的功能需求修改失败");
       }
     });
   };
@@ -207,15 +340,18 @@ const UISRList = (props: UISRListProps) => {
     setTitle("");
     setDesc("");
     setPriority(1);
-    setRank(1);
     setCurrState("未开始");
     setIsEditModalVisible(false);
+    setIter([]);
+    setChargedBy(-1);
+    setService(-1);
   };
 
   const showCreateModal = () => {
     setIsCreateModalVisible(true);
   };
 
+  // Handle create
   const handleCreateOk = () => {
     const newSR: SRCardProps = {
       id: id,
@@ -223,184 +359,289 @@ const UISRList = (props: UISRListProps) => {
       title: title,
       description: desc,
       priority: priority,
-      rank: rank,
       currState: "TODO",
-      createdBy: "", // 未用到
-      createdAt: -1, // 未用到
-      disabled: true, // 未用到
+      iter: [],
+      chargedBy: -1,
+      service: service,
     };
+
     createSRInfo(dispatcher, project, newSR).then((data: any) => {
       if (data.code === 0) {
-        ToastMessage("success", "创建成功", "您的SR创建成功");
+        ToastMessage("success", "创建成功", "您的功能需求创建成功");
         // setTimeout(() => window.location.reload(), 1000);
         setId(-1);
         setTitle("");
         setDesc("");
         setPriority(1);
-        setRank(1);
         setCurrState("未开始");
         setIsCreateModalVisible(false);
+        setIter([]);
+        setChargedBy(-1);
+        setService(-1);
       } else {
-        ToastMessage("error", "创建失败", "您的SR创建失败");
+        ToastMessage("error", "创建失败", "您的功能需求创建失败");
       }
     });
   };
 
+  // Handle create cancel
   const handleCreateCancel = () => {
     setId(-1);
     setTitle("");
     setDesc("");
     setPriority(1);
-    setRank(1);
     setCurrState("未开始");
     setIsCreateModalVisible(false);
+    setIter([]);
+    setChargedBy(-1);
+    setService(-1);
   };
 
+  // Handle delete
   function confirmDelete(record: SRCardProps) {
     deleteSRInfo(dispatcher, project, record).then((data: any) => {
       if (data.code === 0) {
-        ToastMessage("success", "删除成功", "您的SR删除成功");
+        ToastMessage("success", "删除成功", "您的功能需求删除成功");
         // setTimeout(() => window.location.reload(), 1000);
         setId(-1);
         setTitle("");
         setDesc("");
         setPriority(1);
-        setRank(1);
         setCurrState("TODO");
         setIsCreateModalVisible(false);
       } else {
-        ToastMessage("error", "删除失败", "您的SR删除失败");
+        ToastMessage("error", "删除失败", "您的功能需求删除失败");
       }
     });
   }
 
+  // Handle state change
   function handleStateChange(value: string) {
-    console.log(`selected ${value}`);
     setCurrState(value);
   }
 
-  const columns: ProColumns<SRCardProps>[] = [
-    {
-      title: "功能需求标题",
-      filters: true,
-      onFilter: true,
-      width: "15%",
-      dataIndex: "title",
-      align: "center",
-      render: (_, record) => (
-        <div style={{ fontWeight: "bold" }}>{record.title}</div>
-      ),
-    },
-    {
-      title: "状态",
-      filters: true,
-      onFilter: true,
-      search: false,
-      width: "10%",
-      dataIndex: "currState",
-      valueType: "select",
-      valueEnum: {
-        未开始: {
-          text: "未开始",
-        },
-        开发中: {
-          text: "开发中",
-        },
-        测试中: {
-          text: "测试中",
-        },
-        已交付: {
-          text: "已交付",
-        },
-      },
-      align: "center",
-      render: (_, record) => (
-        <Space>
-          <Tag color={record.stateColor}>{record.currState}</Tag>
-        </Space>
-      ),
-    },
-    {
-      search: false,
-      title: "功能需求描述",
-      dataIndex: "description",
-      ellipsis: true,
-      align: "center",
-      render: (_, record) => (
-        <ReactMarkdown className={"markdown"} children={record.description} />
-      ),
-    },
-    {
-      title: "创建者",
-      filters: true,
-      onFilter: true,
-      width: "15%",
-      dataIndex: "createdBy",
-      align: "center",
-    },
-    {
-      search: false,
-      title: "创建时间",
-      width: "20%",
-      dataIndex: "createdAt",
-      valueType: "dateTime",
-      align: "center",
-      sorter: (a, b) => a.createdAt - b.createdAt,
-    },
-    {
-      search: false,
-      title: "操作",
-      width: "15%",
-      valueType: "option",
-      align: "center",
-      render: (text, record, _, action) => [
-        // 编辑内含修改删除等，须继续与后端接口适配
-        <a onClick={() => showEditModal(record)}>编辑</a>,
-        <Popconfirm
-          title="你确定要删除该功能需求吗？"
-          onConfirm={() => confirmDelete(record)}
-          okText="是"
-          cancelText="否"
-        >
-          <a href="#">删除</a>
-        </Popconfirm>,
-      ],
-    },
-  ];
-
-  const chooseColumn: ProColumns<SRCardProps>[] = [];
-  for (let i = 0; i < 5; i += 1) {
-    chooseColumn.push(columns[i]);
+  // Handle iteration change
+  function handleIterChange(value: Array<any>) {
+    setIter(value);
   }
 
+  const iterChildren = JSON.parse(iterationStore).data.map(
+    (iter: Iteration) => <Option value={iter.id}>{iter.title}</Option>
+  );
+
+  // Handle service change
+  function handleServiceChange(value: number) {
+    console.debug(service);
+    console.debug(value);
+    setService(value);
+  }
+
+  const serviceChildren = [<Option value={-1}>　</Option>];
+  JSON.parse(serviceStore).data.forEach((service: any) =>
+    serviceChildren.push(<Option value={service.id}>{service.title}</Option>)
+  );
+
+  const chargedByChildren = [<Option value={-1}>　</Option>];
+  JSON.parse(projectInfo).data.users.forEach((user: any) =>
+    chargedByChildren.push(<Option value={user.id}>{user.name}</Option>)
+  );
+
+  function handleChargedByChange(value: number) {
+    console.log(value);
+    setChargedBy(value);
+  }
+
+  const columnTitle1: ProColumns<SRCardProps> = {
+    title: "功能需求标题",
+    filters: true,
+    onFilter: true,
+    filterSearch: true,
+    width: "15%",
+    dataIndex: "title",
+    align: "center",
+    valueEnum: titleFilter,
+    render: (_, record) => (
+      <div
+        style={{
+          fontWeight: "bold",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
+        }}
+      >
+        {record.title}
+      </div>
+    ),
+  };
+  const columnTitle2: ProColumns<SRCardProps> = {
+    title: "功能需求标题",
+    filters: true,
+    onFilter: true,
+    filterSearch: true,
+    width: "15%",
+    dataIndex: "title",
+    align: "center",
+    valueEnum: showTitleFilter,
+    render: (_, record) => (
+      <div
+        style={{
+          fontWeight: "bold",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
+        }}
+      >
+        {record.title}
+      </div>
+    ),
+  };
+  const columnState: ProColumns<SRCardProps> = {
+    title: "状态",
+    filters: true,
+    onFilter: true,
+    filterSearch: true,
+    search: false,
+    width: "10%",
+    dataIndex: "currState",
+    valueType: "select",
+    valueEnum: {
+      未开始: {
+        text: "未开始",
+      },
+      开发中: {
+        text: "开发中",
+      },
+      测试中: {
+        text: "测试中",
+      },
+      已交付: {
+        text: "已交付",
+      },
+    },
+    align: "center",
+    render: (_, record) => (
+      <Space>
+        <Tag color={record.stateColor}>{record.currState}</Tag>
+      </Space>
+    ),
+  };
+  const columnDesc: ProColumns<SRCardProps> = {
+    search: false,
+    title: "功能需求描述",
+    dataIndex: "description",
+    ellipsis: true,
+    align: "center",
+    render: (_, record) => (
+      <ReactMarkdown className={"markdown"} children={record.description} />
+    ),
+  };
+  const columnChargedBy: ProColumns<SRCardProps> = {
+    title: "负责人",
+    filters: true,
+    onFilter: true,
+    width: "12%",
+    dataIndex: "chargedBy",
+    align: "center",
+    render: (text, record, _, action) => [
+      <div>
+        {record.chargedBy === -1
+          ? "-"
+          : JSON.parse(projectInfo).data.users.filter(
+              (user: any) => user.id === record.chargedBy
+            ).length > 0
+          ? JSON.parse(projectInfo).data.users.filter(
+              (user: any) => user.id === record.chargedBy
+            )[0].name
+          : "-"}
+      </div>,
+    ],
+  };
+  const columnIter: ProColumns<SRCardProps> = {
+    title: "关联迭代",
+    filters: true,
+    onFilter: true,
+    width: "15%",
+    dataIndex: "iter",
+    align: "center",
+    render: (_, record) => {
+      const iter = record.iter.map((iter: Iteration) => iter.title);
+      return iter.length === 0 ? <div></div> : <div>{iter.join(", ")}</div>;
+    },
+  };
+  const columnService: ProColumns<SRCardProps> = {
+    title: "关联服务",
+    filters: true,
+    onFilter: true,
+    width: "10%",
+    dataIndex: "service",
+    align: "center",
+    render: (text, record, _, action) => [
+      <div>
+        {record.service === -1
+          ? "-"
+          : JSON.parse(serviceStore).data.filter(
+              (data: Service) => data.id === record.service
+            ).length > 0
+          ? JSON.parse(serviceStore).data.filter(
+              (data: Service) => data.id === record.service
+            )[0].title
+          : "-"}
+      </div>,
+    ],
+  };
+  const columnOpration: ProColumns<SRCardProps> = {
+    search: false,
+    title: "操作",
+    width: "10%",
+    valueType: "option",
+    align: "center",
+    render: (text, record, _, action) => [
+      // 编辑内含修改删除等，须继续与后端接口适配
+      <a onClick={() => showEditModal(record)}>编辑</a>,
+      <Popconfirm
+        title="你确定要删除该功能需求吗？"
+        onConfirm={() => confirmDelete(record)}
+        okText="是"
+        cancelText="否"
+      >
+        <a href="#">删除</a>
+      </Popconfirm>,
+    ],
+  };
+
+  const columns: ProColumns<SRCardProps>[] = [];
+  columns.push(columnTitle1);
+  columns.push(columnState);
+  columns.push(columnDesc);
+  columns.push(columnChargedBy);
+  columns.push(columnIter);
+  columns.push(columnService);
+  columns.push(columnOpration);
+
+  const showColumn: ProColumns<SRCardProps>[] = [];
+  showColumn.push(columnTitle2);
+  showColumn.push(columnState);
+  showColumn.push(columnDesc);
+  showColumn.push(columnChargedBy);
+  showColumn.push(columnIter);
+  showColumn.push(columnService);
+  // showColumn.push(columnOpration);
+
+  const chooseColumn: ProColumns<SRCardProps>[] = [];
+  chooseColumn.push(columnTitle1);
+  chooseColumn.push(columnState);
+  chooseColumn.push(columnDesc);
+  chooseColumn.push(columnChargedBy);
+  chooseColumn.push(columnIter);
+  chooseColumn.push(columnService);
+  // chooseColumn.push(columnOpration);
+
   const rowSelection = {
-    // onChange: (
-    //   selectedRowKeys: React.Key[],
-    //   selectedRows: ProColumns<SRCard>[]
-    // ) => {
-    //   const selectedSR = [];
-    //   console.log("===========hey I change===========");
-    //   // for (let i = 0; i < selectedRowKeys.length; i++) {
-    //   //   selectedSR.push(selectedRows[i].key);
-    //   // }
-    //   // for (let i = 0; i < props.curSRKey.length; i++) {
-    //   //   selectedSR.push(props.curSRKey[i]);
-    //   // }
-    // },
-    // getCheckboxProps: (record: ProColumns<SRCard>) => {
-    //   console.log("=================");
-    //   // for (let i = 0; i < props.curSRKey.length; i++) {
-    //   //   if (props.curSRKey[i] === record.key) {
-    //   //     return { disabled: true };
-    //   //   }
-    //   // }
-    //   return { disabled: false };
-    // },
     onSelect: (record: SRCardProps, selected: boolean) => {
       const IRSR: IRSRAssociation = {
         id: 0,
-        IRId: props.IR_id,
-        SRId: record.id,
+        IR: props.IR_id,
+        SR: record.id,
       };
       if (selected) {
         createIRSR(dispatcher, props.project_id, IRSR).then((data: any) => {
@@ -411,7 +652,6 @@ const UISRList = (props: UISRListProps) => {
           console.log(data);
         });
       }
-      //setSelectedSR([]);
     },
     onSelectAll: (
       selected: boolean,
@@ -421,8 +661,8 @@ const UISRList = (props: UISRListProps) => {
       changedRows.forEach((value: any, index: number) => {
         const IRSR: IRSRAssociation = {
           id: 0,
-          IRId: props.IR_id,
-          SRId: value.id,
+          IR: props.IR_id,
+          SR: value.id,
         };
         if (selected) {
           createIRSR(dispatcher, props.project_id, IRSR).then((data: any) => {
@@ -434,14 +674,13 @@ const UISRList = (props: UISRListProps) => {
           });
         }
       });
-      //setSelectedSR([]);
     },
     onSelectNone: () => {
       SRListData.forEach((value: any, index: number) => {
         const IRSR: IRSRAssociation = {
           id: 0,
-          IRId: props.IR_id,
-          SRId: value.id,
+          IR: props.IR_id,
+          SR: value.id,
         };
         deleteIRSR(dispatcher, props.project_id, IRSR).then((data: any) => {
           console.log(data);
@@ -449,46 +688,6 @@ const UISRList = (props: UISRListProps) => {
       });
     },
   };
-
-  console.log(dataSRList);
-
-  const [table, setTable] = useState<ReactElement>();
-  useEffect(() => {
-    setTable(
-      <div>
-        <ProTable<SRCardProps>
-          columns={chooseColumn}
-          rowSelection={{
-            // hideSelectAll: false,
-            defaultSelectedRowKeys: curSRKey,
-            ...rowSelection,
-          }}
-          tableAlertOptionRender={({ selectedRowKeys, selectedRows }) => (
-            <Space size={24}>
-              <span>{`关联功能需求: ${selectedRows.reduce(
-                (pre, item: SRCardProps) => pre + item.title + ", ",
-                ""
-              )} `}</span>
-            </Space>
-          )}
-          // tableAlertRender={false}
-          // request={() => {
-          //   return Promise.resolve({
-          //     data: tableListDataSource,
-          //     success: true,
-          //   });
-          // }}
-          dataSource={dataSRList}
-          pagination={false}
-          // scroll={{ y: 300 }}
-          search={false}
-          rowKey="id"
-          dateFormatter="string"
-          toolBarRender={false}
-        />
-      </div>
-    );
-  }, [props.SRListStr]);
 
   if (!props.showChoose && !props.onlyShow) {
     return (
@@ -504,12 +703,6 @@ const UISRList = (props: UISRListProps) => {
           }}
           rowKey="id"
           columns={columns}
-          // request={() => {
-          //   return Promise.resolve({
-          //     data: tableListDataSource,
-          //     success: true,
-          //   });
-          // }}
           dataSource={dataSRList}
           pagination={false}
           options={{
@@ -529,6 +722,7 @@ const UISRList = (props: UISRListProps) => {
           onOk={handleCreateOk}
           onCancel={handleCreateCancel}
           width={"70%"}
+          destroyOnClose={true}
         >
           <p
             style={{
@@ -536,7 +730,7 @@ const UISRList = (props: UISRListProps) => {
               fontSize: "16px",
             }}
           >
-            项目名称
+            功能需求名称
           </p>
           <Input
             value={title}
@@ -551,7 +745,7 @@ const UISRList = (props: UISRListProps) => {
               fontSize: "16px",
             }}
           >
-            项目介绍
+            功能需求介绍
           </p>
           <TextArea
             rows={4}
@@ -593,30 +787,20 @@ const UISRList = (props: UISRListProps) => {
               fontSize: "16px",
             }}
           >
-            项目优先级
+            功能需求权重
+            <span style={{ color: "grey", fontSize: "0.6rem" }}>
+              （用于计算需求完成进度）
+            </span>
           </p>
           <InputNumber
+            style={{ width: 120 }}
             value={priority}
             onChange={(e: number) => {
               setPriority(e);
             }}
           />
-          {/*<p*/}
-          {/*  style={{*/}
-          {/*    paddingTop: "10px",*/}
-          {/*    marginBottom: "5px",*/}
-          {/*    fontSize: "16px",*/}
-          {/*  }}*/}
-          {/*>*/}
-          {/*  项目重要性*/}
-          {/*</p>*/}
-          {/*<InputNumber*/}
-          {/*  value={rank}*/}
-          {/*  onChange={(e: number) => {*/}
-          {/*    setRank(e);*/}
-          {/*  }}*/}
-          {/*/>*/}
         </Modal>
+
         <Modal
           title="编辑功能需求"
           centered={true}
@@ -624,6 +808,7 @@ const UISRList = (props: UISRListProps) => {
           onOk={handleEditOk}
           onCancel={handleEditCancel}
           width={"70%"}
+          destroyOnClose={true}
         >
           <p
             style={{
@@ -682,6 +867,55 @@ const UISRList = (props: UISRListProps) => {
               fontSize: "16px",
             }}
           >
+            迭代选择
+          </p>
+          <Select
+            mode="multiple"
+            style={{ width: "100%" }}
+            defaultValue={iter}
+            onChange={handleIterChange}
+          >
+            {iterChildren}
+          </Select>
+          <p
+            style={{
+              paddingTop: "10px",
+              marginBottom: "5px",
+              fontSize: "16px",
+            }}
+          >
+            服务选择
+          </p>
+          <Select
+            defaultValue={service}
+            style={{ width: 120 }}
+            onChange={handleServiceChange}
+          >
+            {serviceChildren}
+          </Select>
+          <p
+            style={{
+              paddingTop: "10px",
+              marginBottom: "5px",
+              fontSize: "16px",
+            }}
+          >
+            指定负责人
+          </p>
+          <Select
+            defaultValue={chargedBy}
+            style={{ width: 120 }}
+            onChange={handleChargedByChange}
+          >
+            {chargedByChildren}
+          </Select>
+          <p
+            style={{
+              paddingTop: "10px",
+              marginBottom: "5px",
+              fontSize: "16px",
+            }}
+          >
             项目优先级
           </p>
           <InputNumber
@@ -690,26 +924,37 @@ const UISRList = (props: UISRListProps) => {
               setPriority(e);
             }}
           />
-          {/*<p*/}
-          {/*  style={{*/}
-          {/*    paddingTop: "10px",*/}
-          {/*    marginBottom: "5px",*/}
-          {/*    fontSize: "16px",*/}
-          {/*  }}*/}
-          {/*>*/}
-          {/*  项目重要性*/}
-          {/*</p>*/}
-          {/*<InputNumber*/}
-          {/*  value={rank}*/}
-          {/*  onChange={(e: number) => {*/}
-          {/*    setRank(e);*/}
-          {/*  }}*/}
-          {/*/>*/}
         </Modal>
       </div>
     );
   } else if (props.showChoose) {
-    return <div className={"ChooseSRTable"}>{table}</div>;
+    return (
+      <div className={"ChooseSRTable"}>
+        <ProTable<SRCardProps>
+          columns={chooseColumn}
+          rowSelection={{
+            // hideSelectAll: false,
+            defaultSelectedRowKeys: curSRKey,
+            ...rowSelection,
+          }}
+          tableAlertOptionRender={({ selectedRowKeys, selectedRows }) => (
+            <Space size={24}>
+              <span>{`关联功能需求: ${selectedRows.reduce(
+                (pre, item: SRCardProps) => pre + item.title + ", ",
+                ""
+              )} `}</span>
+            </Space>
+          )}
+          dataSource={dataSRList}
+          pagination={false}
+          // scroll={{ y: 300 }}
+          search={false}
+          rowKey="id"
+          dateFormatter="string"
+          toolBarRender={false}
+        />
+      </div>
+    );
   } else {
     return (
       <div className={"showSRTable"}>
@@ -717,7 +962,7 @@ const UISRList = (props: UISRListProps) => {
           headerTitle="功能需求列表"
           toolBarRender={false}
           rowKey="id"
-          columns={chooseColumn}
+          columns={showColumn}
           dataSource={showSRList}
           pagination={false}
           options={{

@@ -234,6 +234,7 @@ const UIIterationManagerModel = (props: ManagerModelProps) => {
         <tbody>
           {JSON.parse(iterationStore).data.map((iter: Iteration) => (
             <tr
+              key={iter.id}
               style={{
                 borderWidth: "1px",
                 padding: "8px",
@@ -332,6 +333,7 @@ const UIIterationManagerModel = (props: ManagerModelProps) => {
 
 const UIIteration = () => {
   // Select stores
+  const userStore = useSelector(getUserStore);
   const iterationStore = useSelector(getIterationStore);
   const IRStore = useSelector(getIRListStore);
   const SRStore = useSelector(getSRListStore);
@@ -445,9 +447,15 @@ const UIIteration = () => {
   return (
     <div className={"project-iteration-container"}>
       <div className={"project-iteration-header"}>
-        <Button type={"primary"} onClick={() => setManager(true)}>
-          迭代周期管理
-        </Button>
+        {["supermaster", "sys"].indexOf(
+          JSON.parse(userStore).data.projects.filter(
+            (project: any) => project.id === Number(project_id)
+          )[0].role
+        ) < 0 ? null : (
+          <Button type={"primary"} onClick={() => setManager(true)}>
+            迭代周期管理
+          </Button>
+        )}
         <UIIterationManagerModel
           visible={manager}
           close={() => {
@@ -494,6 +502,7 @@ const UIIteration = () => {
                           }
                         }}
                         style={{ cursor: "pointer", fontWeight: "bold" }}
+                        key={ir.id}
                       >
                         <span id={`iteration-table-ir-control-${ir.id}`}>
                           　　{JSON.parse(detail).includes(ir.id) ? "-" : "+"}
@@ -503,6 +512,7 @@ const UIIteration = () => {
                       {oneIR2AllSR(ir.id, IRSRAssociation, SRStore).map(
                         (sr: SRCardProps) => (
                           <div
+                            key={sr.id}
                             className={`iteration-table-sr-cell iteration-table-ir-${ir.id}`}
                             style={{
                               height: JSON.parse(detail).includes(ir.id)
@@ -528,6 +538,7 @@ const UIIteration = () => {
                     .data.sort((a: Iteration, b: Iteration) => a.sid - b.sid)
                     .map((data: Iteration) => (
                       <div
+                        key={data.id}
                         className={"iteration-table-iter-cell"}
                         style={{
                           backgroundColor: "#66cfcf",

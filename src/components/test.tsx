@@ -76,6 +76,7 @@ const Test = () => {
     createdBy: "17",
     createdAt: Date.now(),
     disabled: false,
+    progress: 10,
   };
   const SR: SRCardProps = {
     id: 1,
@@ -88,6 +89,9 @@ const Test = () => {
     createdBy: "17",
     createdAt: Date.now(),
     disabled: false,
+    iter: [],
+    chargedBy: -1,
+    service: -1,
   };
   const Iteration: Iteration = {
     id: 1,
@@ -101,8 +105,8 @@ const Test = () => {
   };
   const IRSRAssociation: IRSRAssociation = {
     id: 1,
-    IRId: 19,
-    SRId: 5,
+    IR: 19,
+    SR: 5,
   };
   const SRIteration: SRIteration = {
     id: 1,

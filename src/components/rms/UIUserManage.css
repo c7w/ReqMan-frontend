@@ -1,8 +1,15 @@
 @import "~antd/dist/antd.css";
 
 .prjuser {
+  width: 100%;
+  padding-top: 8px;
+  padding-bottom: 1rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  margin-top: 1rem;
+  min-height: 80vh;
+  border-radius: 2rem;
   background-color: #ffffff;
-  padding: 20px 100px;
 }
 
 .ant-pro-card-hoverable:hover {

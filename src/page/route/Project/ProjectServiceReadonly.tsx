@@ -11,8 +11,19 @@ import {
 import { Redirect, ToastMessage } from "../../../utils/Navigation";
 import UIProjectSetting from "../../../components/rms/UIProjectSetting";
 import Loading from "../../../layout/components/Loading";
-import { updateServiceInfo } from "../../../store/functions/RMS";
-import { getServiceStore } from "../../../store/slices/ServiceSlice";
+import {
+  getSRIterationInfo,
+  getSRListInfo,
+  getSRServiceInfo,
+  updateServiceInfo,
+} from "../../../store/functions/RMS";
+import {
+  getServiceStore,
+  getSRServiceStore,
+} from "../../../store/slices/ServiceSlice";
+import { getSRIterationStore } from "../../../store/slices/IterationSlice";
+import { getSRListStore } from "../../../store/slices/IRSRSlice";
+import { useEffect } from "react";
 
 const ProjectServiceReadonly = () => {
   // 1. Judge if user logged in, if not send to `/login`
@@ -22,15 +33,34 @@ const ProjectServiceReadonly = () => {
   const userInfo = useSelector(getUserStore);
   const projectInfo = useSelector(getProjectStore);
   const serviceStore = useSelector(getServiceStore);
+  const SRIterationAssociationStore = useSelector(getSRIterationStore);
+  const SRServiceAssociationStore = useSelector(getSRServiceStore);
+  const SRListStore = useSelector(getSRListStore);
+
   const dispatcher = useDispatch();
 
   const params = useParams<"id">();
   const project_id = params.id;
 
-  // 1. User State Judge
-  if (userInfo === "") {
-    // Re-Query...
+  useEffect(() => {
     updateUserInfo(dispatcher);
+    updateProjectInfo(dispatcher, Number(project_id));
+    updateServiceInfo(dispatcher, Number(project_id));
+    getSRIterationInfo(dispatcher, Number(project_id));
+    getSRServiceInfo(dispatcher, Number(project_id));
+    getSRListInfo(dispatcher, Number(project_id));
+  }, []);
+
+  // 1. User State Judge
+  if (
+    userInfo === "" ||
+    projectInfo === "" ||
+    serviceStore === "" ||
+    SRIterationAssociationStore === "" ||
+    SRListStore === "" ||
+    SRServiceAssociationStore === ""
+  ) {
+    // Re-Query...
   } else if (JSON.parse(userInfo).code !== 0) {
     // Redirect to `Root`
     ToastMessage("error", "未确认登录态", "即将跳转回登录界面");
@@ -45,22 +75,14 @@ const ProjectServiceReadonly = () => {
       // 3. Continue, lookup projectInfo in cache.
       // If cached projectInfo not exists or cached ID not equal to project_id, then re-request, render Loading.
       // Else render page.
-      if (projectInfo === "") {
-        // Re-request
-        updateProjectInfo(dispatcher, Number(project_id));
-        updateServiceInfo(dispatcher, Number(project_id));
-      } else {
-        const projectData = JSON.parse(projectInfo);
-        if (projectData.data.project.id !== Number(project_id)) {
-          updateProjectInfo(dispatcher, Number(project_id));
-          updateServiceInfo(dispatcher, Number(project_id));
-        } else {
-          return (
-            <Home sidebar={true}>
-              <UIServiceReadonly />
-            </Home>
-          );
-        }
+
+      const projectData = JSON.parse(projectInfo);
+      if (projectData.data.project.id === Number(project_id)) {
+        return (
+          <Home sidebar={true}>
+            <UIServiceReadonly />
+          </Home>
+        );
       }
     } else {
       // 2. Redirect to notfound
