@@ -72,7 +72,7 @@ const UIIRList = (props: UIIRListProps) => {
         curWeight += SRInfo.priority;
       }
     });
-    const curProgress = (curWeight * 100) / totalWeight;
+    const curProgress = 0 | ((curWeight * 100) / totalWeight);
     dataIRList.push({
       id: value.id,
       project: value.project,
@@ -351,6 +351,7 @@ const UIIRList = (props: UIIRListProps) => {
             </Button>,
           ]}
           width={"70%"}
+          destroyOnClose={true}
         >
           <SRList
             showChoose={true}

@@ -2,7 +2,10 @@ import Home from "../../../layout/Home";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserStore } from "../../../store/slices/UserSlice";
 import { getProjectStore } from "../../../store/slices/ProjectSlice";
-import { getServiceStore } from "../../../store/slices/ServiceSlice";
+import {
+  getServiceStore,
+  getSRServiceStore,
+} from "../../../store/slices/ServiceSlice";
 import { useParams } from "react-router-dom";
 import {
   updateProjectInfo,
@@ -12,6 +15,7 @@ import { Redirect, ToastMessage } from "../../../utils/Navigation";
 import {
   getSRIterationInfo,
   getSRListInfo,
+  getSRServiceInfo,
   updateServiceInfo,
 } from "../../../store/functions/RMS";
 import UIServiceReadonly from "../../../components/rms/UIServiceReadonly";
@@ -30,6 +34,7 @@ const ProjectService = () => {
   const projectInfo = useSelector(getProjectStore);
   const serviceStore = useSelector(getServiceStore);
   const SRIterationAssociationStore = useSelector(getSRIterationStore);
+  const SRServiceAssociationStore = useSelector(getSRServiceStore);
   const SRListStore = useSelector(getSRListStore);
 
   const dispatcher = useDispatch();
@@ -41,6 +46,7 @@ const ProjectService = () => {
     updateProjectInfo(dispatcher, Number(project_id));
     updateServiceInfo(dispatcher, Number(project_id));
     getSRIterationInfo(dispatcher, Number(project_id));
+    getSRServiceInfo(dispatcher, Number(project_id));
     getSRListInfo(dispatcher, Number(project_id));
   }, []);
 
@@ -50,6 +56,7 @@ const ProjectService = () => {
     projectInfo === "" ||
     serviceStore === "" ||
     SRIterationAssociationStore === "" ||
+    SRServiceAssociationStore === "" ||
     SRListStore === ""
   ) {
     // Re-Query...

@@ -45,3 +45,10 @@
 .ant-modal-content {
   width: 100%;
 }
+
+.ant-dropdown-menu-title-content {
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

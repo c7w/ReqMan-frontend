@@ -89,6 +89,9 @@ const Test = () => {
     createdBy: "17",
     createdAt: Date.now(),
     disabled: false,
+    iter: [],
+    chargedBy: -1,
+    service: -1,
   };
   const Iteration: Iteration = {
     id: 1,

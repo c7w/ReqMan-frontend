@@ -2,7 +2,10 @@ import { Button, Empty, Input, Modal, Progress, Typography } from "antd";
 import MDEditor from "@uiw/react-md-editor";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { getServiceStore } from "../../store/slices/ServiceSlice";
+import {
+  getServiceStore,
+  getSRServiceStore,
+} from "../../store/slices/ServiceSlice";
 import { ReactElement, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAtom } from "@fortawesome/free-solid-svg-icons";
@@ -19,7 +22,7 @@ import {
 import { ToastMessage } from "../../utils/Navigation";
 import { getSRIterationStore } from "../../store/slices/IterationSlice";
 import { getSRListStore } from "../../store/slices/IRSRSlice";
-import { Iteration2SR } from "../../utils/Association";
+import { Iteration2SR, Service2SR } from "../../utils/Association";
 
 export interface Service {
   id: number;
@@ -34,17 +37,13 @@ export interface Service {
 const ServiceReadonlyModal = (props: { data: string; close: () => void }) => {
   const data = JSON.parse(props.data);
 
-  const SRIterationAssociationStore = useSelector(getSRIterationStore);
+  const serviceSRStore = useSelector(getSRServiceStore);
   const SRListStore = useSelector(getSRListStore);
 
-  const getPercentage = (iteration_id: number) => {
+  const getPercentage = (service_id: number) => {
     let now = 0;
     let all = 0;
-    Iteration2SR(
-      iteration_id,
-      SRIterationAssociationStore,
-      SRListStore
-    ).forEach((sr: any) => {
+    Service2SR(service_id, serviceSRStore, SRListStore).forEach((sr: any) => {
       all += sr.priority;
       if (sr.state === "Reviewing" || sr.state === "Done") {
         now += sr.priority;
@@ -53,14 +52,10 @@ const ServiceReadonlyModal = (props: { data: string; close: () => void }) => {
     return all === 0 ? 0 : Number(((now / all) * 100).toFixed(1));
   };
 
-  const getSuccessPercentage = (iteration_id: number) => {
+  const getSuccessPercentage = (service_id: number) => {
     let now = 0;
     let all = 0;
-    Iteration2SR(
-      iteration_id,
-      SRIterationAssociationStore,
-      SRListStore
-    ).forEach((sr: any) => {
+    Service2SR(service_id, serviceSRStore, SRListStore).forEach((sr: any) => {
       all += sr.priority;
       if (sr.state === "Done") {
         now += sr.priority;

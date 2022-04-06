@@ -42,6 +42,9 @@ const SRCard = (props: SRCardProps) => {
       createdBy: props.createdBy,
       createdAt: props.createdAt,
       disabled: props.disabled,
+      iter: [],
+      chargedBy: -1,
+      service: -1,
     });
   };
   const menu = (
