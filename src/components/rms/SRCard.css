@@ -65,29 +65,16 @@
   white-space: nowrap;
 }
 
-.modal-header {
-  background: white;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  white-space: nowrap;
+.modal-content-up {
+
 }
 
-.modal-header-left {
-  width: 60%;
-  display: flex;
-  flex-direction: row;
+.modal-content-middle {
+
 }
 
-.modal-header-desc {
-  width: 70%;
-  max-width: 70%;
-  overflow: auto;
-  font-size: 1rem;
-}
+.modal-content-bottom {
 
-.modal-header-right {
-  width: 50%;
 }
 
 .modal-content {

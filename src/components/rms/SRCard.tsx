@@ -1,15 +1,35 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./SRCard.css";
-import { Avatar, Typography, Menu, Dropdown, Space, Tag, Modal } from "antd";
+import {
+  Avatar,
+  Typography,
+  Menu,
+  Dropdown,
+  Space,
+  Tag,
+  Modal,
+  Divider,
+  Breadcrumb,
+  Select,
+} from "antd";
 import { UserOutlined, DownOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { updateSRListStore } from "../../store/slices/IRSRSlice";
 import { SRCardProps } from "../../store/ConfigureStore";
 import { updateSRInfo } from "../../store/functions/RMS";
+import { projId2ProjInfo, SRId2SRInfo } from "../../utils/Association";
+import CryptoJS from "crypto-js";
+import { getUserStore } from "../../store/slices/UserSlice";
+import { getProjectStore } from "../../store/slices/ProjectSlice";
+import { updateProjectInfo } from "../../store/functions/UMS";
+import Loading from "../../layout/components/Loading";
+import { Option } from "antd/es/mentions";
 const { Text } = Typography;
 
 const SRCard = (props: SRCardProps) => {
   const dispatcher = useDispatch();
+  const userInfo = useSelector(getUserStore);
+  const projectInfo = useSelector(getProjectStore);
   const state2Color = new Map();
   const state2ChineseState = new Map();
   const [modalVisible, setModalVisible] = useState<boolean>(false);
@@ -19,8 +39,7 @@ const SRCard = (props: SRCardProps) => {
     bottom: 0,
     right: 0,
   });
-  const draggleRef = React.createRef();
-  console.log(props);
+
   state2Color.set("TODO", "red");
   state2Color.set("WIP", "blue");
   state2Color.set("Reviewing", "yellow");
@@ -29,6 +48,20 @@ const SRCard = (props: SRCardProps) => {
   state2ChineseState.set("WIP", "开发中");
   state2ChineseState.set("Reviewing", "测试中");
   state2ChineseState.set("Done", "已完成");
+  // 获取用户头像
+  const getUserAvatar = (userStore: string): string => {
+    if (userStore === "" || JSON.parse(userStore).code !== 0) {
+      return "";
+    }
+    const userInfo = JSON.parse(userStore);
+    if (userInfo.data.user.avatar.length < 5) {
+      return `https://www.gravatar.com/avatar/${CryptoJS.MD5(
+        userInfo.data.user.email
+      )}`;
+    } else {
+      return userInfo.data.user.avatar;
+    }
+  };
   const onClick = (e: any) => {
     alert("click " + e.key);
     updateSRInfo(dispatcher, props.project, {
@@ -46,6 +79,9 @@ const SRCard = (props: SRCardProps) => {
       chargedBy: -1,
       service: -1,
     });
+  };
+  const handleChange = (value: string) => {
+    alert(value + "selected");
   };
   const menu = (
     <Menu onClick={onClick} defaultSelectedKeys={["未开始"]}>
@@ -87,33 +123,13 @@ const SRCard = (props: SRCardProps) => {
             <Avatar
               className="card-small-avatar"
               size="small"
-              src="https://joeschmoe.io/api/v1/random"
-            />
-            <Avatar
-              className="card-small-avatar"
-              size="small"
-              style={{ backgroundColor: "#f56a00" }}
-            >
-              K
-            </Avatar>
-            <Avatar
-              className="card-small-avatar"
-              size="small"
-              style={{ backgroundColor: "#87d068" }}
-              icon={<UserOutlined />}
-            />
-            <Avatar
-              className="card-small-avatar"
-              size="small"
-              style={{ backgroundColor: "#1890ff" }}
-              icon={<UserOutlined />}
+              src={getUserAvatar(userInfo)}
             />
           </Avatar.Group>
         </div>
       </div>
       {/*<input className="card-input" id="button" type="checkbox" />*/}
       <Modal
-        title={"功能需求：" + props.title}
         centered={true}
         visible={modalVisible}
         onOk={() => setModalVisible(false)}
@@ -121,22 +137,32 @@ const SRCard = (props: SRCardProps) => {
         width={"70%"}
       >
         <div className="modal-header">
-          <div className="modal-header-left">
-            <div className="modal-header-desc">
-              {"需求描述： " + props.description}
-            </div>
-            <Space style={{ paddingLeft: "1rem" }}>
-              <Tag
-                color={state2Color.get(props.currState)}
-                style={{ borderRadius: "10px" }}
-              >
-                {state2ChineseState.get(props.currState)}
-              </Tag>
-            </Space>
+          <div
+            className="modal-header-left"
+            style={{ fontWeight: "bold", fontSize: "1.5rem" }}
+          >
+            <Breadcrumb style={{ margin: "1rem 0", fontSize: "1.5rem" }}>
+              <Breadcrumb.Item>{props.title}</Breadcrumb.Item>
+            </Breadcrumb>
+            <Select
+              defaultValue={state2ChineseState.get(props.currState)}
+              style={{ width: 120 }}
+              onChange={handleChange}
+            >
+              <Option value="未开始">未开始</Option>
+              <Option value="开发中">开发中</Option>
+              <Option value="测试中">测试中</Option>
+              <Option value="已完成">已完成</Option>
+            </Select>
           </div>
+          <Divider />
           <div className="modal-header-right"></div>
         </div>
-        <div className="modal-content">{props.description}</div>
+        <div className="modal-content">
+          <div className="modal-content-up"></div>
+          <div className="modal-content-middle"></div>
+          <div className="modal-content-bottom"></div>
+        </div>
       </Modal>
     </>
   );

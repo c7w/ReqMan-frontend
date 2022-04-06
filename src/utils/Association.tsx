@@ -1,7 +1,7 @@
-// 传入需要查询的 userId 以及所有的 projectInfo (getProjectStore 而来) 字符串（未解析）
 import { SRCardProps, UserSRAssociationProps } from "../store/ConfigureStore";
 import { indexOf } from "underscore";
 
+// 传入需要查询的 userId 以及所有的 projectInfo (getProjectStore 而来) 字符串（未解析）
 const userId2UserInfo = (userId: number, projectInfo: string) => {
   // console.log("===================== userId to name ======================= ");
   const userData = JSON.parse(projectInfo).data.users;
@@ -36,6 +36,12 @@ const servId2ServInfo = (serviceId: number, serviceInfo: string) => {
   const serviceData = JSON.parse(serviceInfo).data;
   const service = serviceData.filter((obj: any) => obj.id === serviceId);
   return service.length > 0 ? service[0] : "not found";
+};
+// 传入 project 的 Id，返回其详细信息，同时需传入该项目的 projectInfo (getProjectStore 而来) 字符串（未解析）
+const projId2ProjInfo = (projectId: number, projectInfo: string) => {
+  console.log("============ Get projectInfo By projectId ============== ");
+  console.log(projectInfo);
+  return JSON.parse(projectInfo).data.project;
 };
 /*
   传入需要查询的 IR 的 Id，返回其所对应的所有 SR
@@ -238,6 +244,7 @@ export {
   SRId2SRInfo,
   itId2ItInfo,
   servId2ServInfo,
+  projId2ProjInfo,
   oneIR2AllSR,
   oneSR2AllIR,
   IR2Iteration,
