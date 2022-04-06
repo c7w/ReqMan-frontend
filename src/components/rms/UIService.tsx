@@ -7,7 +7,10 @@ import { faAtom } from "@fortawesome/free-solid-svg-icons";
 import API from "../../utils/APIList";
 import { useParams } from "react-router-dom";
 import { ToastMessage } from "../../utils/Navigation";
-import { getServiceStore } from "../../store/slices/ServiceSlice";
+import {
+  getServiceStore,
+  getSRServiceStore,
+} from "../../store/slices/ServiceSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ReactMarkdown from "react-markdown";
@@ -19,7 +22,7 @@ import {
   doUpdateServiceInfo,
   updateServiceInfo,
 } from "../../store/functions/RMS";
-import { Iteration2SR } from "../../utils/Association";
+import { Iteration2SR, Service2SR } from "../../utils/Association";
 import { getSRIterationStore } from "../../store/slices/IterationSlice";
 import { getSRListStore } from "../../store/slices/IRSRSlice";
 import { SRCardProps } from "../../store/ConfigureStore";
@@ -32,17 +35,14 @@ interface ProjectServiceCardProps {
 export const ProjectServiceCard = (props: ProjectServiceCardProps) => {
   const data = JSON.parse(props.data);
 
-  const SRIterationAssociationStore = useSelector(getSRIterationStore);
+  // TODO: Buggy selected association!!!!!!
+  const serviceSRStore = useSelector(getSRServiceStore);
   const SRListStore = useSelector(getSRListStore);
 
-  const getPercentage = (iteration_id: number) => {
+  const getPercentage = (service_id: number) => {
     let now = 0;
     let all = 0;
-    Iteration2SR(
-      iteration_id,
-      SRIterationAssociationStore,
-      SRListStore
-    ).forEach((sr: any) => {
+    Service2SR(service_id, serviceSRStore, SRListStore).forEach((sr: any) => {
       all += sr.priority;
       if (sr.state === "Reviewing" || sr.state === "Done") {
         now += sr.priority;
@@ -51,14 +51,10 @@ export const ProjectServiceCard = (props: ProjectServiceCardProps) => {
     return all === 0 ? 0 : Number(((now / all) * 100).toFixed(1));
   };
 
-  const getSuccessPercentage = (iteration_id: number) => {
+  const getSuccessPercentage = (service_id: number) => {
     let now = 0;
     let all = 0;
-    Iteration2SR(
-      iteration_id,
-      SRIterationAssociationStore,
-      SRListStore
-    ).forEach((sr: any) => {
+    Service2SR(service_id, serviceSRStore, SRListStore).forEach((sr: any) => {
       all += sr.priority;
       if (sr.state === "Done") {
         now += sr.priority;
