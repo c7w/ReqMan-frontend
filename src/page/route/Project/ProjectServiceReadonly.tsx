@@ -14,9 +14,13 @@ import Loading from "../../../layout/components/Loading";
 import {
   getSRIterationInfo,
   getSRListInfo,
+  getSRServiceInfo,
   updateServiceInfo,
 } from "../../../store/functions/RMS";
-import { getServiceStore } from "../../../store/slices/ServiceSlice";
+import {
+  getServiceStore,
+  getSRServiceStore,
+} from "../../../store/slices/ServiceSlice";
 import { getSRIterationStore } from "../../../store/slices/IterationSlice";
 import { getSRListStore } from "../../../store/slices/IRSRSlice";
 import { useEffect } from "react";
@@ -30,7 +34,9 @@ const ProjectServiceReadonly = () => {
   const projectInfo = useSelector(getProjectStore);
   const serviceStore = useSelector(getServiceStore);
   const SRIterationAssociationStore = useSelector(getSRIterationStore);
+  const SRServiceAssociationStore = useSelector(getSRServiceStore);
   const SRListStore = useSelector(getSRListStore);
+
   const dispatcher = useDispatch();
 
   const params = useParams<"id">();
@@ -41,6 +47,7 @@ const ProjectServiceReadonly = () => {
     updateProjectInfo(dispatcher, Number(project_id));
     updateServiceInfo(dispatcher, Number(project_id));
     getSRIterationInfo(dispatcher, Number(project_id));
+    getSRServiceInfo(dispatcher, Number(project_id));
     getSRListInfo(dispatcher, Number(project_id));
   }, []);
 
@@ -50,7 +57,8 @@ const ProjectServiceReadonly = () => {
     projectInfo === "" ||
     serviceStore === "" ||
     SRIterationAssociationStore === "" ||
-    SRListStore === ""
+    SRListStore === "" ||
+    SRServiceAssociationStore === ""
   ) {
     // Re-Query...
   } else if (JSON.parse(userInfo).code !== 0) {

@@ -22,6 +22,7 @@ import {
   createUserIteration,
   deleteUserIteration,
 } from "../../store/functions/RMS";
+import { getUserStore } from "../../store/slices/UserSlice";
 
 interface UserManageProps {
   readonly userInfo: string;
@@ -271,6 +272,11 @@ const UserManage = (props: UserManageProps) => {
   const [cachedUserInfo, setCachedUserInfo] = useState("");
   const [userModalVisibility, setUserModalVisibility] = useState(false);
 
+  const userStore = useSelector(getUserStore);
+  const dispatcher = useDispatch();
+  const params = useParams<"id">();
+  const project_id = Number(params.id);
+
   // 总任务列表
   const ProjectList = JSON.parse(props.userInfo).data.users;
   const dataProjectList: ManageUserInfo[] = [];
@@ -353,17 +359,20 @@ const UserManage = (props: UserManageProps) => {
                 <br />
                 {item.role}
                 <br />
-                {
+                {["supermaster"].indexOf(
+                  JSON.parse(userStore).data.projects.filter(
+                    (project: any) => project.id === Number(project_id)
+                  )[0].role
+                ) < 0 ? null : (
                   <Typography.Link
                     onClick={() => {
                       setCachedUserInfo(JSON.stringify(item));
                       setUserModalVisibility(true);
                     }}
                   >
-                    {" "}
-                    编辑{" "}
+                    编辑
                   </Typography.Link>
-                }
+                )}
               </div>
             ),
           },
