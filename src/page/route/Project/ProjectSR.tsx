@@ -91,6 +91,15 @@ const ProjectSR = () => {
       const projectData = JSON.parse(projectInfo);
       // 如果得到的 project 信息跟用户键入的 url 中的 project_id 不符
       if (projectData.data.project.id === Number(project_id)) {
+        if (
+          ["supermaster", "sys", "dev", "qa"].indexOf(
+            JSON.parse(userInfo).data.projects.filter(
+              (project: any) => project.id === Number(project_id)
+            )[0].role
+          ) < 0
+        ) {
+          Redirect(dispatcher, "/error", 0);
+        }
         return (
           <Home sidebar={true}>
             <div>

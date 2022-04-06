@@ -50,7 +50,16 @@ const ProjectSetting = () => {
         if (projectData.data.project.id !== Number(project_id)) {
           updateProjectInfo(dispatcher, Number(project_id));
         } else {
-          // TODO: Render Page
+          if (
+            ["supermaster"].indexOf(
+              JSON.parse(userInfo).data.projects.filter(
+                (project: any) => project.id === Number(project_id)
+              )[0].role
+            ) < 0
+          ) {
+            Redirect(dispatcher, "/error", 0);
+          }
+
           return (
             <Home sidebar={true}>
               <UIProjectSetting />

@@ -25,6 +25,7 @@ import { getUserStore } from "../../store/slices/UserSlice";
 import { useParams } from "react-router-dom";
 import { getProjectStore } from "../../store/slices/ProjectSlice";
 import { Redirect } from "../../utils/Navigation";
+import Loading from "./Loading";
 
 const { Sider } = Layout;
 
@@ -54,13 +55,8 @@ const Sidebar = () => {
   const params = useParams<"id">();
   const project_id = Number(params.id) || 0;
 
-  let role = "developer";
-
-  if (projectStore !== "") {
-    const projectInfo = JSON.parse(projectStore);
-    // TODO: Read from project info, what is my role ???
-    // Show cards according to the role of people!
-    role = "supermaster";
+  if (userStore === "" || projectStore === "") {
+    return <Loading />;
   }
 
   return (
@@ -137,54 +133,86 @@ const Sidebar = () => {
         >
           迭代周期
         </Menu.Item>
-        <Menu.Item
-          key="member"
-          className={"sidebar-item"}
-          onClick={() => Redirect(dispatch, `/project/${project_id}/member`, 0)}
-          icon={<UserOutlined />}
-        >
-          项目成员
-        </Menu.Item>
-        <Menu.Item
-          key="IRManager"
-          className={"sidebar-item"}
-          onClick={() =>
-            Redirect(dispatch, `/project/${project_id}/IRManager`, 0)
-          }
-          icon={<OrderedListOutlined />}
-        >
-          原始需求管理
-        </Menu.Item>
-        <Menu.Item
-          key="SRManager"
-          className={"sidebar-item"}
-          onClick={() =>
-            Redirect(dispatch, `/project/${project_id}/SRManager`, 0)
-          }
-          icon={<UnorderedListOutlined />}
-        >
-          功能需求管理
-        </Menu.Item>
-        <Menu.Item
-          key="ServiceManager"
-          className={"sidebar-item"}
-          onClick={() =>
-            Redirect(dispatch, `/project/${project_id}/ServiceManager`, 0)
-          }
-          icon={<AppstoreAddOutlined />}
-        >
-          项目服务管理
-        </Menu.Item>
-        <Menu.Item
-          key="settings"
-          className={"sidebar-item"}
-          onClick={() =>
-            Redirect(dispatch, `/project/${project_id}/settings`, 0)
-          }
-          icon={<SettingOutlined />}
-        >
-          项目设置
-        </Menu.Item>
+        {["supermaster", "sys", "dev", "qa"].indexOf(
+          JSON.parse(userStore).data.projects.filter(
+            (project: any) => project.id === Number(project_id)
+          )[0].role
+        ) < 0 ? null : (
+          <Menu.Item
+            key="member"
+            className={"sidebar-item"}
+            onClick={() =>
+              Redirect(dispatch, `/project/${project_id}/member`, 0)
+            }
+            icon={<UserOutlined />}
+          >
+            项目成员
+          </Menu.Item>
+        )}
+        {["supermaster", "sys"].indexOf(
+          JSON.parse(userStore).data.projects.filter(
+            (project: any) => project.id === Number(project_id)
+          )[0].role
+        ) < 0 ? null : (
+          <Menu.Item
+            key="IRManager"
+            className={"sidebar-item"}
+            onClick={() =>
+              Redirect(dispatch, `/project/${project_id}/IRManager`, 0)
+            }
+            icon={<OrderedListOutlined />}
+          >
+            原始需求管理
+          </Menu.Item>
+        )}
+        {["supermaster", "sys", "dev", "qa"].indexOf(
+          JSON.parse(userStore).data.projects.filter(
+            (project: any) => project.id === Number(project_id)
+          )[0].role
+        ) < 0 ? null : (
+          <Menu.Item
+            key="SRManager"
+            className={"sidebar-item"}
+            onClick={() =>
+              Redirect(dispatch, `/project/${project_id}/SRManager`, 0)
+            }
+            icon={<UnorderedListOutlined />}
+          >
+            功能需求管理
+          </Menu.Item>
+        )}
+        {["supermaster", "sys"].indexOf(
+          JSON.parse(userStore).data.projects.filter(
+            (project: any) => project.id === Number(project_id)
+          )[0].role
+        ) < 0 ? null : (
+          <Menu.Item
+            key="ServiceManager"
+            className={"sidebar-item"}
+            onClick={() =>
+              Redirect(dispatch, `/project/${project_id}/ServiceManager`, 0)
+            }
+            icon={<AppstoreAddOutlined />}
+          >
+            项目服务管理
+          </Menu.Item>
+        )}
+        {["supermaster"].indexOf(
+          JSON.parse(userStore).data.projects.filter(
+            (project: any) => project.id === Number(project_id)
+          )[0].role
+        ) < 0 ? null : (
+          <Menu.Item
+            key="settings"
+            className={"sidebar-item"}
+            onClick={() =>
+              Redirect(dispatch, `/project/${project_id}/settings`, 0)
+            }
+            icon={<SettingOutlined />}
+          >
+            项目设置
+          </Menu.Item>
+        )}
       </Menu>
     </Sider>
   );

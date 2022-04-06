@@ -67,6 +67,15 @@ const ProjectIR = () => {
       const projectData = JSON.parse(projectInfo);
       // the project id is false, update from backend
       if (projectData.data.project.id === Number(project_id)) {
+        if (
+          ["supermaster", "sys"].indexOf(
+            JSON.parse(userInfo).data.projects.filter(
+              (project: any) => project.id === Number(project_id)
+            )[0].role
+          ) < 0
+        ) {
+          Redirect(dispatcher, "/error", 0);
+        }
         return (
           <Home sidebar={true}>
             <div>
