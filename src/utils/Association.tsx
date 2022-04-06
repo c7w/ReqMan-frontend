@@ -154,7 +154,9 @@ const Iteration2SR = (
       return obj.SR;
     }
   }).filter((obj: any) => obj);
-  return matchedSRId.map((id: any) => SRId2SRInfo(id, SRList));
+  return matchedSRId
+    .map((id: any) => SRId2SRInfo(id, SRList))
+    .filter((obj: any) => obj !== "not found");
 };
 /*
 传入需要查询的 SRId，返回其对应的服务 service(unique)
