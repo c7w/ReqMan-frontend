@@ -15,7 +15,7 @@ import {
 import { UserOutlined, DownOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { updateSRListStore } from "../../store/slices/IRSRSlice";
-import { SRCardProps } from "../../store/ConfigureStore";
+import { Iteration, SRCardProps } from "../../store/ConfigureStore";
 import { updateSRInfo } from "../../store/functions/RMS";
 import { projId2ProjInfo, SRId2SRInfo } from "../../utils/Association";
 import CryptoJS from "crypto-js";
@@ -25,6 +25,8 @@ import { updateProjectInfo } from "../../store/functions/UMS";
 import Loading from "../../layout/components/Loading";
 import { Option } from "antd/es/mentions";
 import Paragraph from "antd/es/typography/Paragraph";
+import { Service } from "./UIServiceReadonly";
+import { ToastMessage } from "../../utils/Navigation";
 const { Text } = Typography;
 
 const SRCard = (props: SRCardProps) => {
@@ -34,7 +36,13 @@ const SRCard = (props: SRCardProps) => {
   const state2Color = new Map();
   const state2ChineseState = new Map();
   const [modalVisible, setModalVisible] = useState<boolean>(false);
-  const [SRDesc, setSRDesc] = useState(props.description);
+  const [id, setId] = useState<number>(props.id);
+  const [title, setTitle] = useState<string>(props.title);
+  const [desc, setDesc] = useState<string>(props.description);
+  const [priority, setPriority] = useState<number>(props.priority);
+  const [currState, setCurrState] = useState<string>(props.currState);
+  const [chargedBy, setChargedBy] = useState(props.createdBy);
+  const [service, setService] = useState(props.service);
   const [bounds, setBounds] = useState({
     left: 0,
     top: 0,
@@ -50,6 +58,43 @@ const SRCard = (props: SRCardProps) => {
   state2ChineseState.set("WIP", "开发中");
   state2ChineseState.set("Reviewing", "测试中");
   state2ChineseState.set("Done", "已完成");
+
+  // readonly id: number; // id
+  // readonly project: number; // the project belongs to
+  // readonly title: string; // title
+  // readonly description: string; // description
+  // readonly priority: number; // the priority which indicates the importance of the SR
+  // readonly rank?: number;
+  // readonly currState: string; // "TODO", "WIP", "Reviewing", "Done"
+  // readonly stateColor?: string;
+  // readonly createdBy?: string; // somebody
+  // readonly createdAt?: number; // sometime
+  // readonly disabled?: boolean;
+  // readonly iter: Iteration[];
+  // readonly chargedBy: number;
+  // readonly service: Service | number;
+
+  const handleOK = () => {
+    updateSRInfo(dispatcher, props.project, {
+      id: props.id,
+      project: props.project,
+      title: props.title,
+      description: desc,
+      priority: props.priority,
+      currState: props.currState,
+      iter: props.iter,
+      chargedBy: props.chargedBy,
+      service: props.service,
+    }).then((data: any) => {
+      if (data.code === 0) {
+        ToastMessage("success", "修改成功", "您的功能需求描述修改成功");
+      } else {
+        ToastMessage("error", "修改失败", "您的功能需求描述修改失败");
+      }
+    });
+    // 关闭模态框
+    setModalVisible(false);
+  };
   // 获取用户头像
   const getUserAvatar = (userStore: string): string => {
     if (userStore === "" || JSON.parse(userStore).code !== 0) {
@@ -103,21 +148,21 @@ const SRCard = (props: SRCardProps) => {
         }}
       >
         <div className="card-small-header">
-          <div className="card-small-header-left">{props.title}</div>
+          <div className="card-small-header-left">{title}</div>
           <div className="card-small-header-right">
             <Space>
               <Tag
-                color={state2Color.get(props.currState)}
+                color={state2Color.get(currState)}
                 style={{ borderRadius: "10px" }}
               >
-                {state2ChineseState.get(props.currState)}
+                {state2ChineseState.get(currState)}
               </Tag>
             </Space>
           </div>
         </div>
         <div className="card-small-description">
           <Typography>
-            <Text ellipsis={true}>{props.description}</Text>
+            <Text ellipsis={true}>{desc}</Text>
           </Typography>
         </div>
         <div className="card-small-down">
@@ -134,7 +179,7 @@ const SRCard = (props: SRCardProps) => {
       <Modal
         centered={true}
         visible={modalVisible}
-        onOk={() => setModalVisible(false)}
+        onOk={handleOK}
         onCancel={() => setModalVisible(false)}
         width={"70%"}
       >
@@ -157,10 +202,10 @@ const SRCard = (props: SRCardProps) => {
               style={{ width: 120 }}
               onChange={handleChange}
             >
-              <Option value="未开始">未开始</Option>
-              <Option value="开发中">开发中</Option>
-              <Option value="测试中">测试中</Option>
-              <Option value="已完成">已完成</Option>
+              <Select.Option value="未开始">未开始</Select.Option>
+              <Select.Option value="开发中">开发中</Select.Option>
+              <Select.Option value="测试中">测试中</Select.Option>
+              <Select.Option value="已完成">已完成</Select.Option>
             </Select>
           </div>
           <div className="modal-header-right">I am right</div>
@@ -178,11 +223,11 @@ const SRCard = (props: SRCardProps) => {
             >
               <Paragraph
                 editable={{
-                  onChange: setSRDesc,
+                  onChange: setDesc,
                   autoSize: { maxRows: 5 },
                 }}
               >
-                {SRDesc}
+                {desc}
               </Paragraph>
             </Typography>
           </div>
