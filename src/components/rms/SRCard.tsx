@@ -27,6 +27,11 @@ import { Option } from "antd/es/mentions";
 import Paragraph from "antd/es/typography/Paragraph";
 import { Service } from "./UIServiceReadonly";
 import { ToastMessage } from "../../utils/Navigation";
+import { set } from "husky";
+import {
+  updateCounter,
+  updateTodoSRList,
+} from "../../store/slices/CalendarSlice";
 const { Text } = Typography;
 
 const SRCard = (props: SRCardProps) => {
@@ -38,7 +43,7 @@ const SRCard = (props: SRCardProps) => {
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [id, setId] = useState<number>(props.id);
   const [title, setTitle] = useState<string>(props.title);
-  const [desc, setDesc] = useState<string>(props.description);
+  const [description, setDescription] = useState<string>(props.description);
   const [priority, setPriority] = useState<number>(props.priority);
   const [currState, setCurrState] = useState<string>(props.currState);
   const [chargedBy, setChargedBy] = useState(props.createdBy);
@@ -76,23 +81,34 @@ const SRCard = (props: SRCardProps) => {
 
   const handleOK = () => {
     updateSRInfo(dispatcher, props.project, {
-      id: props.id,
+      id: id,
       project: props.project,
-      title: props.title,
-      description: desc,
-      priority: props.priority,
-      currState: props.currState,
+      title: title,
+      description: description,
+      priority: priority,
+      currState: currState,
       iter: props.iter,
       chargedBy: props.chargedBy,
       service: props.service,
     }).then((data: any) => {
       if (data.code === 0) {
         ToastMessage("success", "修改成功", "您的功能需求描述修改成功");
+        dispatcher(updateCounter("")); // test
       } else {
         ToastMessage("error", "修改失败", "您的功能需求描述修改失败");
       }
     });
     // 关闭模态框
+    setModalVisible(false);
+  };
+  const handleCancel = () => {
+    setId(props.id);
+    setTitle(props.title);
+    setDescription(props.description);
+    setCurrState(props.currState);
+    setChargedBy(props.createdBy);
+    setPriority(props.priority);
+    setService(props.service);
     setModalVisible(false);
   };
   // 获取用户头像
@@ -128,7 +144,15 @@ const SRCard = (props: SRCardProps) => {
     });
   };
   const handleChange = (value: string) => {
-    alert(value + "selected");
+    if (value === "未开始") {
+      setCurrState("TODO");
+    } else if (value === "开发中") {
+      setCurrState("WIP");
+    } else if (value === "测试中") {
+      setCurrState("Reviewing");
+    } else if (value === "已交付") {
+      setCurrState("Done");
+    }
   };
   const menu = (
     <Menu onClick={onClick} defaultSelectedKeys={["未开始"]}>
@@ -162,7 +186,7 @@ const SRCard = (props: SRCardProps) => {
         </div>
         <div className="card-small-description">
           <Typography>
-            <Text ellipsis={true}>{desc}</Text>
+            <Text ellipsis={true}>{description}</Text>
           </Typography>
         </div>
         <div className="card-small-down">
@@ -180,7 +204,7 @@ const SRCard = (props: SRCardProps) => {
         centered={true}
         visible={modalVisible}
         onOk={handleOK}
-        onCancel={() => setModalVisible(false)}
+        onCancel={handleCancel}
         width={"70%"}
       >
         <div className="modal-header">
@@ -223,11 +247,11 @@ const SRCard = (props: SRCardProps) => {
             >
               <Paragraph
                 editable={{
-                  onChange: setDesc,
+                  onChange: setDescription,
                   autoSize: { maxRows: 5 },
                 }}
               >
-                {desc}
+                {description}
               </Paragraph>
             </Typography>
           </div>

@@ -7,6 +7,7 @@ import { updateProjectInfo } from "../../store/functions/UMS";
 import { getSRListInfo } from "../../store/functions/RMS";
 import { reviewSR, todoSR, wipSR } from "../../utils/SRClassification";
 import {
+  getCounterStore,
   getReviewSRListStore,
   getTodoSRListStore,
   getWipSRListStore,
@@ -25,13 +26,18 @@ const Calendar = (props: CalendarProps) => {
   const userData = JSON.parse(props.userInfo).data;
   console.log("Calendar: " + userData);
   const dispatcher = useDispatch();
+  const counter = useSelector(getCounterStore);
   const todoSRList = useSelector(getTodoSRListStore); // string
   const wipSRList = useSelector(getWipSRListStore); // string
   const reviewSRList = useSelector(getReviewSRListStore); // string
-  const todoSRListData: any = [];
-  const wipSRListData: any = [];
-  const reviewSRListData: any = [];
+  let todoSRListData: any = [];
+  let wipSRListData: any = [];
+  let reviewSRListData: any = [];
   useEffect(() => {
+    console.log(" ========================== use Effect ! ==================");
+    todoSRListData = [];
+    wipSRListData = [];
+    reviewSRListData = [];
     for (const project of userData.projects) {
       const project_id = Number(project.id);
       getSRListInfo(dispatcher, project_id).then((data: any) => {
@@ -56,7 +62,7 @@ const Calendar = (props: CalendarProps) => {
         // console.log(reviewSRListData);
       });
     }
-  }, []);
+  }, [counter]);
   return (
     <div className="calendar">
       <List name={"未开始"} stateSRList={JSON.stringify(todoSRList)} />
