@@ -626,7 +626,7 @@ const UISRList = (props: UISRListProps) => {
   showColumn.push(columnChargedBy);
   showColumn.push(columnIter);
   showColumn.push(columnService);
-  showColumn.push(columnOpration);
+  // showColumn.push(columnOpration);
 
   const chooseColumn: ProColumns<SRCardProps>[] = [];
   chooseColumn.push(columnTitle1);
@@ -635,7 +635,7 @@ const UISRList = (props: UISRListProps) => {
   chooseColumn.push(columnChargedBy);
   chooseColumn.push(columnIter);
   chooseColumn.push(columnService);
-  chooseColumn.push(columnOpration);
+  // chooseColumn.push(columnOpration);
 
   const rowSelection = {
     onSelect: (record: SRCardProps, selected: boolean) => {

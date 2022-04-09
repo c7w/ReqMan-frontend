@@ -24,6 +24,7 @@ import UIService from "../../../components/rms/UIService";
 import { useEffect } from "react";
 import { getSRIterationStore } from "../../../store/slices/IterationSlice";
 import { getSRListStore } from "../../../store/slices/IRSRSlice";
+import { has } from "underscore";
 
 const ProjectService = () => {
   // 1. Judge if user logged in, if not send to `/login`
@@ -74,6 +75,15 @@ const ProjectService = () => {
       // 3. Continue, lookup projectInfo in cache.
       // If cached projectInfo not exists or cached ID not equal to project_id, then re-request, render Loading.
       // Else render page.
+      if (
+        ["supermaster", "sys"].indexOf(
+          JSON.parse(userInfo).data.projects.filter(
+            (project: any) => project.id === Number(project_id)
+          )[0].role
+        ) < 0
+      ) {
+        Redirect(dispatcher, "/error", 0);
+      }
 
       const projectData = JSON.parse(projectInfo);
       const serviceData = JSON.parse(serviceStore);

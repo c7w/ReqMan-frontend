@@ -59,6 +59,15 @@ const ProjectMember = () => {
       ).length > 0
     ) {
       const projectData = JSON.parse(projectInfo);
+
+      if (
+        JSON.parse(userInfo).data.projects.filter(
+          (project: any) => project.id === Number(project_id)
+        )[0].role === "member"
+      ) {
+        Redirect(dispatcher, "/error", 0);
+      }
+
       if (projectData.data.project.id === Number(project_id)) {
         // Render Page
         return (

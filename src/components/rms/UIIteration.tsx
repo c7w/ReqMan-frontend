@@ -333,6 +333,7 @@ const UIIterationManagerModel = (props: ManagerModelProps) => {
 
 const UIIteration = () => {
   // Select stores
+  const userStore = useSelector(getUserStore);
   const iterationStore = useSelector(getIterationStore);
   const IRStore = useSelector(getIRListStore);
   const SRStore = useSelector(getSRListStore);
@@ -446,9 +447,15 @@ const UIIteration = () => {
   return (
     <div className={"project-iteration-container"}>
       <div className={"project-iteration-header"}>
-        <Button type={"primary"} onClick={() => setManager(true)}>
-          迭代周期管理
-        </Button>
+        {["supermaster", "sys"].indexOf(
+          JSON.parse(userStore).data.projects.filter(
+            (project: any) => project.id === Number(project_id)
+          )[0].role
+        ) < 0 ? null : (
+          <Button type={"primary"} onClick={() => setManager(true)}>
+            迭代周期管理
+          </Button>
+        )}
         <UIIterationManagerModel
           visible={manager}
           close={() => {
