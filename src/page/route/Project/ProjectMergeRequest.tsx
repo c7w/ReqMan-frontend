@@ -30,6 +30,7 @@ import { Redirect, ToastMessage } from "../../../utils/Navigation";
 import Home from "../../../layout/Home";
 import UISRList from "../../../components/rms/UISRList";
 import Loading from "../../../layout/components/Loading";
+import UIMerge from "../../../components/rms/UIMerge";
 
 const ProjectMergeRequest = () => {
   // Judge if project list in user state
@@ -101,7 +102,7 @@ const ProjectMergeRequest = () => {
         }
         return (
           <Home sidebar={true}>
-            <div>12e</div>
+            <UIMerge />
           </Home>
         );
       }
