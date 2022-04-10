@@ -31,8 +31,9 @@ const LoginInterface = (props: LoginInterfaceProps) => {
   // 用户名判断
   const userCheck = (event: { target: { value: string } }) => {
     const usr = event.target.value;
-    const reg = /^([a-zA-Z0-9_@\.]+){3}$/;
-    if (!reg.test(usr)) {
+    const reg1 = /^([a-zA-Z0-9_]){3,16}$/;
+    const reg2 = /^\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,14}$/;
+    if (!reg1.test(usr) && !reg2.test(usr)) {
       setUserError("用户名为3-16位数字字母下划线及中文组成!");
     } else {
       setUserError(" ");
