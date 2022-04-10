@@ -42,9 +42,7 @@ const SingleMergeEntry = (props: MergeEntryProps) => {
     >
       <div className="issuable-main-info">
         <div className="merge-request-title">
-          <span style={{ fontWeight: "bold" }}>[{props.title}]</span>
-          &nbsp;&nbsp;
-          <span>{props.description}</span>
+          <span style={{ fontWeight: "bold" }}>{props.title}</span>
         </div>
         <div className="issuable-info">
           <span className="issuable-reference">!{props.mid}</span>
@@ -59,7 +57,6 @@ const SingleMergeEntry = (props: MergeEntryProps) => {
 
       <div className="issuable-meta">
         <div className="issuable-status">{getIssueState()}</div>
-
         <div className="float-right issuable-updated-at d-none d-sm-inline-block">
           <span>关联 {props.associate_sr_id}</span>
         </div>
@@ -89,6 +86,24 @@ const UIMerge = () => {
         author_id={1}
         mid={64}
         state={"closed"}
+        author_time={1649836206}
+      />{" "}
+      <SingleMergeEntry
+        title={"SR.001.002"}
+        description={"Merge dev into master"}
+        associate_sr_id={1}
+        author_id={2}
+        mid={64}
+        state={"opened"}
+        author_time={1649836206}
+      />{" "}
+      <SingleMergeEntry
+        title={"SR.001.002"}
+        description={"Merge dev into master"}
+        associate_sr_id={1}
+        author_id={2}
+        mid={64}
+        state={"merged"}
         author_time={1649836206}
       />
     </div>
