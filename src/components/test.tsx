@@ -1,5 +1,5 @@
 import { Button } from "antd";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector, useStore } from "react-redux";
 import {
   createIRInfo,
   updateIRInfo,
@@ -55,9 +55,17 @@ import {
   getServiceStore,
   getSRServiceStore,
 } from "../store/slices/ServiceSlice";
+import {
+  getIssueInfo,
+  getMergeInfo,
+  getRepoInfo,
+} from "../store/functions/RDTS";
+import { useEffect, useState } from "react";
+import { getRepoStore } from "../store/slices/RepoSlice";
 
 const Test = () => {
   const dispatcher = useDispatch();
+  const repoStore = useSelector(getRepoStore);
   const projectInfo = useSelector(getProjectStore);
   const IRSRAsso = useSelector(getIRSRStore);
   const SRIterationAsso = useSelector(getSRIterationStore);
@@ -67,77 +75,16 @@ const Test = () => {
   const IRListInfo = useSelector(getIRListStore);
   const iterationInfo = useSelector(getIterationStore);
   const serviceInfo = useSelector(getServiceStore);
-  const IR: IRCard = {
-    id: 27,
-    project: 2,
-    title: "邪门了",
-    description: "我就不信了",
-    rank: 1,
-    createdBy: "17",
-    createdAt: Date.now(),
-    disabled: false,
-    progress: 10,
-  };
-  const SR: SRCardProps = {
-    id: 1,
-    project: 2,
-    title: "test_sfdafafar",
-    description: "testfadfafafa_sr",
-    priority: 1,
-    rank: 1,
-    currState: "TODO",
-    createdBy: "17",
-    createdAt: Date.now(),
-    disabled: false,
-    iter: [],
-    chargedBy: -1,
-    service: -1,
-  };
-  const Iteration: Iteration = {
-    id: 1,
-    project: 2,
-    sid: 1,
-    title: "test_iteration",
-    begin: Date.now(),
-    end: Date.now(),
-    disabled: false,
-    createdAt: Date.now(),
-  };
-  const IRSRAssociation: IRSRAssociation = {
-    id: 1,
-    IR: 19,
-    SR: 5,
-  };
-  const SRIteration: SRIteration = {
-    id: 1,
-    SRId: 2,
-    iterationId: 3,
-  };
-  const UserIteration: UserIteration = {
-    id: 1,
-    userId: 1,
-    iterationId: 1,
-  };
+
+  useEffect(() => {
+    if (repoStore !== "") {
+      // getMergeInfo(dispatcher, 2, repoStore);
+      getIssueInfo(dispatcher, 2, repoStore);
+    }
+  }, [repoStore]);
+
   const handleOnClick = () => {
-    console.log("click");
-    // console.log(userId2UserInfo(17, projectInfo));
-    // console.log(oneIR2AllSR(26, IRSRAsso, SRListInfo));
-    // console.log(oneSR2AllIR(4, IRSRAsso, IRListInfo));
-    // console.log(SR2Iteration(24, SRIterationAsso, iterationInfo));
-    // console.log(IR2Iteration(1, IRIterationAsso, iterationInfo));
-    // console.log(Iteration2IR(5, IRIterationAsso, IRListInfo));
-    // console.log(Iteration2SR(1, SRIterationAsso, SRListInfo));
-    // console.log(SR2Service(24, SRServiceAsso, serviceInfo));
-    console.log(Service2SR(1, SRServiceAsso, SRListInfo));
-    // createIRInfo(dispatcher, 2, IR);
-    // createSRInfo(dispatcher, 2, SR);
-    // createIRSR(dispatcher, 2, IRSRAssociation);
-    // createIteration(dispatcher, 2, Iteration); 待解决 bug
-    // createSRIteration(dispatcher, 2, SRIteration);
-    // createUserIteration(dispatcher, 2, UserIteration);
-    // updateIRInfo(dispatcher, 2, IR);
-    // updateSRInfo(dispatcher, 2, SR);
-    // updateIterationInfo(dispatcher, 2, Iteration); 待解决 bug
+    getRepoInfo(dispatcher, 2);
   };
   if (
     projectInfo === "" ||
