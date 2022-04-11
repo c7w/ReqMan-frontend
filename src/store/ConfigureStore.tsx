@@ -11,6 +11,7 @@ import ProjectServiceReducer from "./slices/ServiceSlice";
 import IterationReducer from "./slices/IterationSlice";
 import CalendarReducer from "./slices/CalendarSlice";
 import MergeReducer from "./slices/MergeSlice";
+import RepoReducer from "./slices/RepoSlice";
 import { Service } from "../components/rms/UIServiceReadonly";
 
 interface SRCardProps {
@@ -121,6 +122,7 @@ export const store = configureStore({
     calendar_store: CalendarReducer,
     user_sr_store: UserSRReducer,
     merge_store: MergeReducer,
+    repo_store: RepoReducer,
     // rest of your reducers
   }),
   middleware: [routerMiddleware],
