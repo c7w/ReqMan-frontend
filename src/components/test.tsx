@@ -59,14 +59,25 @@ import {
   getCommitInfo,
   getIssueInfo,
   getMergeInfo,
+  getRDTSInfo,
   getRepoInfo,
 } from "../store/functions/RDTS";
 import { useEffect, useState } from "react";
 import { getRepoStore } from "../store/slices/RepoSlice";
+import {
+  getCommitStore,
+  getIssueStore,
+  getMergeStore,
+} from "../store/slices/IssueSlice";
 
 const Test = () => {
   const dispatcher = useDispatch();
+
   const repoStore = useSelector(getRepoStore);
+  const issueStore = useSelector(getIssueStore);
+  const mergeStore = useSelector(getMergeStore);
+  const commitStore = useSelector(getCommitStore);
+
   const projectInfo = useSelector(getProjectStore);
   const IRSRAsso = useSelector(getIRSRStore);
   const SRIterationAsso = useSelector(getSRIterationStore);
@@ -78,15 +89,20 @@ const Test = () => {
   const serviceInfo = useSelector(getServiceStore);
 
   useEffect(() => {
-    if (repoStore !== "") {
-      // getMergeInfo(dispatcher, 2, repoStore);
-      // getIssueInfo(dispatcher, 2, repoStore);
-      getCommitInfo(dispatcher, 2, repoStore);
-    }
-  }, [repoStore]);
+    updateProjectInfo(dispatcher, 2);
+    getIRSRInfo(dispatcher, 2);
+    getSRIterationInfo(dispatcher, 2);
+    getIRIterationInfo(dispatcher, 2);
+    getSRServiceInfo(dispatcher, 2);
+    getIRListInfo(dispatcher, 2);
+    getSRListInfo(dispatcher, 2);
+    updateServiceInfo(dispatcher, 2);
+    getIterationInfo(dispatcher, 2);
+    getRDTSInfo(dispatcher, 2);
+  }, []);
 
   const handleOnClick = () => {
-    getRepoInfo(dispatcher, 2);
+    getRDTSInfo(dispatcher, 2);
   };
   if (
     projectInfo === "" ||
@@ -97,17 +113,12 @@ const Test = () => {
     SRListInfo === "" ||
     IRListInfo === "" ||
     serviceInfo === "" ||
-    iterationInfo === ""
+    iterationInfo === "" ||
+    repoStore === "" ||
+    issueStore === "" ||
+    mergeStore === "" ||
+    commitStore === ""
   ) {
-    updateProjectInfo(dispatcher, 2);
-    getIRSRInfo(dispatcher, 2);
-    getSRIterationInfo(dispatcher, 2);
-    getIRIterationInfo(dispatcher, 2);
-    getSRServiceInfo(dispatcher, 2);
-    getIRListInfo(dispatcher, 2);
-    getSRListInfo(dispatcher, 2);
-    updateServiceInfo(dispatcher, 2);
-    getIterationInfo(dispatcher, 2);
   } else {
     return (
       <>

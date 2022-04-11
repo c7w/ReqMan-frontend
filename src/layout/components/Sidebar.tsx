@@ -12,6 +12,7 @@ import {
   ClockCircleOutlined,
   RiseOutlined,
   UnorderedListOutlined,
+  PieChartOutlined,
 } from "@ant-design/icons";
 import "./Sidebar.css";
 
@@ -76,53 +77,102 @@ const Sidebar = () => {
         >
           项目概览
         </Menu.Item>
-        <Menu.Item
-          key="requirements"
-          className={"sidebar-item"}
-          onClick={() =>
-            Redirect(dispatch, `/project/${project_id}/requirements`, 0)
-          }
-          icon={<CalendarOutlined />}
-        >
-          需求查看
-        </Menu.Item>
-        <Menu.Item
-          key="services"
-          className={"sidebar-item"}
-          onClick={() =>
-            Redirect(dispatch, `/project/${project_id}/services`, 0)
-          }
-          icon={<AppstoreOutlined />}
-        >
-          服务查看
-        </Menu.Item>
-        {/*<Menu.Item*/}
-        {/*  key="issues"*/}
-        {/*  className={"sidebar-item"}*/}
-        {/*  onClick={() => Redirect(dispatch, `/project/${project_id}/issues`, 0)}*/}
-        {/*  icon={<BugOutlined />}*/}
-        {/*>*/}
-        {/*  缺陷查看*/}
-        {/*</Menu.Item>*/}
-        {/*<Menu.Item*/}
-        {/*  key="commits"*/}
-        {/*  className={"sidebar-item"}*/}
-        {/*  onClick={() =>*/}
-        {/*    Redirect(dispatch, `/project/${project_id}/commits`, 0)*/}
-        {/*  }*/}
-        {/*  icon={<RiseOutlined />}*/}
-        {/*>*/}
-        {/*  贡献查看*/}
-        {/*</Menu.Item>*/}
-        <Menu.Item
-          key="merges"
-          className={"sidebar-item"}
-          onClick={() => Redirect(dispatch, `/project/${project_id}/merges`, 0)}
-          icon={<PullRequestOutlined />}
-        >
-          合并情况查看
-        </Menu.Item>
-
+        {["supermaster"].indexOf(
+          JSON.parse(userStore).data.projects.filter(
+            (project: any) => project.id === Number(project_id)
+          )[0].role
+        ) >= 0 ? null : (
+          <Menu.Item
+            key="requirements"
+            className={"sidebar-item"}
+            onClick={() =>
+              Redirect(dispatch, `/project/${project_id}/requirements`, 0)
+            }
+            icon={<CalendarOutlined />}
+          >
+            需求查看
+          </Menu.Item>
+        )}
+        {["supermaster"].indexOf(
+          JSON.parse(userStore).data.projects.filter(
+            (project: any) => project.id === Number(project_id)
+          )[0].role
+        ) >= 0 ? null : (
+          <Menu.Item
+            key="services"
+            className={"sidebar-item"}
+            onClick={() =>
+              Redirect(dispatch, `/project/${project_id}/services`, 0)
+            }
+            icon={<AppstoreOutlined />}
+          >
+            服务查看
+          </Menu.Item>
+        )}
+        {["supermaster", "qa"].indexOf(
+          JSON.parse(userStore).data.projects.filter(
+            (project: any) => project.id === Number(project_id)
+          )[0].role
+        ) < 0 ? null : (
+          <Menu.Item
+            key="merges"
+            className={"sidebar-item"}
+            onClick={() =>
+              Redirect(dispatch, `/project/${project_id}/merges`, 0)
+            }
+            icon={<PullRequestOutlined />}
+          >
+            项目合并情况
+          </Menu.Item>
+        )}{" "}
+        {["supermaster", "qa"].indexOf(
+          JSON.parse(userStore).data.projects.filter(
+            (project: any) => project.id === Number(project_id)
+          )[0].role
+        ) < 0 ? null : (
+          <Menu.Item
+            key="issues"
+            className={"sidebar-item"}
+            onClick={() =>
+              Redirect(dispatch, `/project/${project_id}/issues`, 0)
+            }
+            icon={<BugOutlined />}
+          >
+            项目缺陷追踪
+          </Menu.Item>
+        )}{" "}
+        {["supermaster", "qa"].indexOf(
+          JSON.parse(userStore).data.projects.filter(
+            (project: any) => project.id === Number(project_id)
+          )[0].role
+        ) < 0 ? null : (
+          <Menu.Item
+            key="commits"
+            className={"sidebar-item"}
+            onClick={() =>
+              Redirect(dispatch, `/project/${project_id}/commits`, 0)
+            }
+            icon={<RiseOutlined />}
+          >
+            项目贡献一览
+          </Menu.Item>
+        )}
+        {["supermaster", "qa"].indexOf(
+          JSON.parse(userStore).data.projects.filter(
+            (project: any) => project.id === Number(project_id)
+          )[0].role
+        ) < 0 ? null : (
+          <Menu.Item
+            key="analysis"
+            className={"sidebar-item"}
+            onClick={() =>
+              Redirect(dispatch, `/project/${project_id}/analysis`, 0)
+            }
+            icon={<PieChartOutlined />}
+          >
+            项目分析
+          </Menu.Item>
+        )}
         <Menu.Item
           key="analyse"
           className={"sidebar-item"}

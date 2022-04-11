@@ -11,7 +11,7 @@ import ProjectServiceReducer from "./slices/ServiceSlice";
 import IterationReducer from "./slices/IterationSlice";
 import CalendarReducer from "./slices/CalendarSlice";
 import RepoReducer from "./slices/RepoSlice";
-import IssueReducer from "./slices/RepoSlice";
+import IssueReducer from "./slices/IssueSlice";
 import { Service } from "../components/rms/UIServiceReadonly";
 
 interface SRCardProps {

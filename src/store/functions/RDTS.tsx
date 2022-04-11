@@ -9,6 +9,22 @@ import {
   updateMergeStore,
 } from "../slices/IssueSlice";
 
+const getRDTSInfo = async (dispatcher: any, project_id: number) => {
+  return getRepoInfo(dispatcher, project_id).then((repo_data: any) => {
+    const promise_list = [];
+    promise_list.push(
+      getIssueInfo(dispatcher, project_id, JSON.stringify(repo_data))
+    );
+    promise_list.push(
+      getCommitInfo(dispatcher, project_id, JSON.stringify(repo_data))
+    );
+    promise_list.push(
+      getMergeInfo(dispatcher, project_id, JSON.stringify(repo_data))
+    );
+    return Promise.all(promise_list);
+  });
+};
+
 const getRepoInfo = async (
   dispatcher: any,
   project_id: number
@@ -21,6 +37,7 @@ const getRepoInfo = async (
     getParams: myParams,
   }).then((data: any) => {
     dispatcher(updateRepoStore(JSON.stringify(data)));
+    return data;
   });
 };
 
@@ -78,7 +95,7 @@ const getMergeInfo = async (
   dispatcher: any,
   project_id: number,
   RepoStore: string
-): Promise<void> => {
+) => {
   const promise_list: any[] = [];
   JSON.parse(RepoStore).data.forEach((repo: any) => {
     const myParams = {
@@ -91,7 +108,7 @@ const getMergeInfo = async (
     promise_list.push(promise);
   });
 
-  Promise.all(promise_list).then((data: any) => {
+  return Promise.all(promise_list).then((data: any) => {
     const all_mr: any[] = [];
 
     data.forEach((repo_mr: any) => {
@@ -108,6 +125,7 @@ const getMergeInfo = async (
     };
 
     dispatcher(updateMergeStore(JSON.stringify(res)));
+    return res;
   });
 };
 
@@ -128,7 +146,7 @@ const getIssueInfo = async (
     promise_list.push(promise);
   });
 
-  Promise.all(promise_list).then((data: any) => {
+  return Promise.all(promise_list).then((data: any) => {
     let all_issue: any[] = [];
 
     data.forEach((repo_issue: any) => {
@@ -147,6 +165,7 @@ const getIssueInfo = async (
     };
 
     dispatcher(updateIssueStore(JSON.stringify(res)));
+    return res;
   });
 };
 
@@ -167,7 +186,7 @@ const getCommitInfo = async (
     promise_list.push(promise);
   });
 
-  Promise.all(promise_list).then((data: any) => {
+  return Promise.all(promise_list).then((data: any) => {
     let all_commit: any[] = [];
 
     data.forEach((repo_commit: any) => {
@@ -186,7 +205,7 @@ const getCommitInfo = async (
     };
 
     dispatcher(updateCommitStore(JSON.stringify(res)));
-    // console.debug(res);
+    return res;
   });
 };
 
@@ -197,4 +216,5 @@ export {
   getMergeInfo,
   getIssueInfo,
   getCommitInfo,
+  getRDTSInfo,
 };
