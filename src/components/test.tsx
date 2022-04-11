@@ -56,6 +56,7 @@ import {
   getSRServiceStore,
 } from "../store/slices/ServiceSlice";
 import {
+  getCommitInfo,
   getIssueInfo,
   getMergeInfo,
   getRepoInfo,
@@ -79,7 +80,8 @@ const Test = () => {
   useEffect(() => {
     if (repoStore !== "") {
       // getMergeInfo(dispatcher, 2, repoStore);
-      getIssueInfo(dispatcher, 2, repoStore);
+      // getIssueInfo(dispatcher, 2, repoStore);
+      getCommitInfo(dispatcher, 2, repoStore);
     }
   }, [repoStore]);
 

@@ -3,8 +3,11 @@
 import request_json from "../../utils/Network";
 import API from "../../utils/APIList";
 import { updateRepoStore } from "../slices/RepoSlice";
-import { updateMergeStore } from "../slices/MergeSlice";
-import { updateIssueStore } from "../slices/IssueSlice";
+import {
+  updateIssueStore,
+  updateCommitStore,
+  updateMergeStore,
+} from "../slices/IssueSlice";
 
 const getRepoInfo = async (
   dispatcher: any,
@@ -97,7 +100,7 @@ const getMergeInfo = async (
       });
     });
 
-    all_mr.sort((mr1: any, mr2: any) => mr1.authoredAt - mr2.authoredAt);
+    all_mr.sort((mr1: any, mr2: any) => mr2.authoredAt - mr1.authoredAt);
 
     const res = {
       code: 0,
@@ -125,10 +128,7 @@ const getIssueInfo = async (
     promise_list.push(promise);
   });
 
-  console.debug(promise_list);
-
   Promise.all(promise_list).then((data: any) => {
-    console.debug(data);
     let all_issue: any[] = [];
 
     data.forEach((repo_issue: any) => {
@@ -139,7 +139,7 @@ const getIssueInfo = async (
 
     all_issue = all_issue
       .filter((issue: any) => issue.is_bug)
-      .sort((mr1: any, mr2: any) => mr1.authoredAt - mr2.authoredAt);
+      .sort((mr1: any, mr2: any) => mr2.authoredAt - mr1.authoredAt);
 
     const res = {
       code: 0,
@@ -155,7 +155,39 @@ const getCommitInfo = async (
   project_id: number,
   RepoStore: string
 ) => {
-  return;
+  const promise_list: any[] = [];
+  JSON.parse(RepoStore).data.forEach((repo: any) => {
+    const myParams = {
+      repo: repo.id,
+      type: "commit",
+    };
+    const promise = request_json(API.GET_RDTS, {
+      getParams: myParams,
+    });
+    promise_list.push(promise);
+  });
+
+  Promise.all(promise_list).then((data: any) => {
+    let all_commit: any[] = [];
+
+    data.forEach((repo_commit: any) => {
+      repo_commit.data.forEach((commit: any) => {
+        all_commit.push(commit);
+      });
+    });
+
+    all_commit = all_commit.sort(
+      (mr1: any, mr2: any) => mr2.createdAt - mr1.createdAt // Inversed Order by default
+    );
+
+    const res = {
+      code: 0,
+      data: all_commit,
+    };
+
+    dispatcher(updateCommitStore(JSON.stringify(res)));
+    // console.debug(res);
+  });
 };
 
 export {
