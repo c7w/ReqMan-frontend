@@ -1,26 +1,122 @@
 import Title from "antd/es/typography/Title";
 import Text from "antd/es/typography/Text";
-import { Avatar, Button, Input, Modal, Select, Tooltip, Upload } from "antd";
+import {
+  Avatar,
+  Button,
+  Input,
+  Modal,
+  Select,
+  Tooltip,
+  Typography,
+  Upload,
+} from "antd";
 import request_json from "../../utils/Network";
 import API from "../../utils/APIList";
 import { ToastMessage } from "../../utils/Navigation";
 import ImgCrop from "antd-img-crop";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getProjectStore } from "../../store/slices/ProjectSlice";
 import { useParams } from "react-router-dom";
 import { MailOutlined } from "@ant-design/icons";
+import { Iteration } from "../../store/ConfigureStore";
+import moment from "moment";
+import { getRepoStore } from "../../store/slices/RepoSlice";
+import { createRepoInfo, deleteRepoInfo } from "../../store/functions/RDTS";
+import MDEditor from "@uiw/react-md-editor";
+
+interface CreateRepoModalProps {
+  close: () => void;
+  visible: boolean;
+}
+
+const CreateRepoModal = (props: CreateRepoModalProps) => {
+  const params = useParams<"id">();
+  const project_id = Number(params.id);
+  const dispatcher = useDispatch();
+
+  const [remoteId, setRemoteId] = useState("");
+  const [accessToken, setAccessToken] = useState("");
+  const [title, setTitle] = useState("");
+
+  const submit = () => {
+    createRepoInfo(dispatcher, project_id, remoteId, accessToken, title).then(
+      (res: any) => {
+        if (res.code === 0) {
+          ToastMessage("success", "添加成功", "远程仓库添加成功");
+          props.close();
+        }
+      }
+    );
+  };
+
+  return (
+    <Modal
+      visible={props.visible}
+      onCancel={() => props.close()}
+      destroyOnClose={true}
+      title={"创建远程仓库"}
+      width={"40vw"}
+      footer={
+        <Button
+          type={"primary"}
+          disabled={
+            !(
+              title.trim() !== "" &&
+              accessToken?.trim() !== "" &&
+              remoteId.trim() !== ""
+            )
+          }
+          onClick={submit}
+        >
+          确认提交
+        </Button>
+      }
+    >
+      <div>
+        <p style={{ marginTop: "1rem", marginBottom: "0.2rem" }}>仓库名称：</p>
+        <Input
+          value={title}
+          onChange={(evt) => setTitle(evt.target.value)}
+        />{" "}
+        <p style={{ marginTop: "1rem", marginBottom: "0.2rem" }}>仓库类型：</p>
+        <Select defaultValue={"gitlab"} disabled={true}>
+          <Select.Option value={"gitlab"}>GitLab</Select.Option>
+        </Select>
+        <p style={{ marginTop: "1rem", marginBottom: "0.2rem" }}>仓库地址：</p>
+        <Input value={"https://gitlab.secoder.net"} disabled={true} />{" "}
+        <p style={{ marginTop: "1rem", marginBottom: "0.2rem" }}>仓库 ID：</p>
+        <Input
+          value={remoteId}
+          placeholder={"示例：467"}
+          onChange={(evt) => setRemoteId(evt.target.value)}
+        />{" "}
+        <p style={{ marginTop: "1rem", marginBottom: "0.2rem" }}>
+          仓库访问令牌：
+        </p>
+        <Input
+          value={accessToken}
+          onChange={(evt) => setAccessToken(evt.target.value)}
+        />
+      </div>
+    </Modal>
+  );
+};
 
 const UIProjectSetting = () => {
   const projectStore = useSelector(getProjectStore);
+  const repoStore = useSelector(getRepoStore);
 
   const [fileList, setFileList] = useState([]);
   const [avatarEditor, setAvatarEditor] = useState(false);
   const [avatarDelete, setAvatarDelete] = useState(false);
   const [invitation, setInvitation] = useState("");
 
+  const [createRepoModalVisible, setCreateRepoModalVisible] = useState(false);
+
   const params = useParams<"id">();
   const project_id = params.id;
+  const dispatcher = useDispatch();
 
   const getProjectAvatar = (projectStore: string): string => {
     if (projectStore === "" || JSON.parse(projectStore).code !== 0) {
@@ -253,12 +349,86 @@ const UIProjectSetting = () => {
             className="setting-card"
             style={{ display: "flex", flexDirection: "column" }}
           >
-            <p
-              className={"register-prompt"}
-              style={{ marginBottom: "0.2rem", marginTop: "1rem" }}
+            <div>
+              <Button
+                type={"primary"}
+                onClick={() => setCreateRepoModalVisible(true)}
+              >
+                添加远程仓库
+              </Button>
+              <CreateRepoModal
+                close={() => setCreateRepoModalVisible(false)}
+                visible={createRepoModalVisible}
+              />
+            </div>
+            <br />
+            <table
+              width={"98%"}
+              style={{
+                margin: "0 auto 1rem",
+                textAlign: "center",
+              }}
             >
-              特性正在开发中
-            </p>
+              <thead>
+                <tr
+                  style={{
+                    borderWidth: "1px",
+                    padding: "8px",
+                    borderStyle: "solid",
+                    borderColor: "#666666",
+                    backgroundColor: "#dedede",
+                  }}
+                >
+                  <td>仓库编号</td>
+                  <td>仓库名</td>
+                  <td>创建时间</td>
+                  <td>操作</td>
+                </tr>
+              </thead>
+              <tbody>
+                {JSON.parse(repoStore).data.map((repo: any) => {
+                  return (
+                    <tr
+                      key={repo.id}
+                      style={{
+                        borderWidth: "1px",
+                        padding: "8px",
+                        borderStyle: "solid",
+                        borderColor: "#666666",
+                        backgroundColor: "#ffffff",
+                      }}
+                    >
+                      <td className={"iter-manager-column"}>{repo.id}</td>
+                      <td className={"iter-manager-column"}>{repo.title}</td>
+                      <td className={"iter-manager-column"}>
+                        {moment(repo.createdAt * 1000).format("lll")}
+                      </td>
+                      <td className={"iter-manager-column"}>
+                        <a
+                          onClick={() => {
+                            deleteRepoInfo(
+                              dispatcher,
+                              Number(project_id),
+                              repo.id
+                            ).then((res: any) => {
+                              if (res.code === 0) {
+                                ToastMessage(
+                                  "success",
+                                  "删除成功",
+                                  "远端仓库删除成功"
+                                );
+                              }
+                            });
+                          }}
+                        >
+                          删除
+                        </a>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>

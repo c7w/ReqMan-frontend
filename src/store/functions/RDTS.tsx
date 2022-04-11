@@ -60,7 +60,7 @@ const deleteRepoInfo = async (
       id: repo_id,
     },
   };
-  return request_json(API.POST_RMS, { body: myBody }).then((data) => {
+  return request_json(API.POST_RDTS, { body: myBody }).then((data) => {
     if (data.code === 0) {
       getRepoInfo(dispatcher, project_id);
     }
