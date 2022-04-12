@@ -2,12 +2,12 @@ import ReactEcharts from "echarts-for-react";
 import React, { Component } from "react";
 import "./TimeFigure.css";
 
-// interface ActiveFigureProps {
-//   text: string; // text for parsing
-//   title: string; // chart title
-// }
+interface TimeFigureProps {
+  text: string; // text for parsing
+  title: string; // chart title
+}
 
-const TimeFigure = () => {
+const TimeFigure = (props: TimeFigureProps) => {
   const test =
     '[{"user":{"name":"c7w"},"time":[10,20,30,30,40,100,40]},{"user":{"name":"wxy"},"time":[5,10,20,20,30,40,5,10]},{"user":{"name":"hbx"},"time":[10,20,30,70,40,10,40]}]';
   const data = JSON.parse(test);
@@ -23,6 +23,7 @@ const TimeFigure = () => {
   const option = {
     title: {
       text: "开发工程师能力分析",
+      // text: props.title,
       left: "center",
     },
     dataset: [
