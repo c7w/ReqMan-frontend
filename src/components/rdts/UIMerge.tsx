@@ -159,49 +159,6 @@ const UIMerge = () => {
       />
     </div>
   );
-
-  return (
-    <div className={"merge-card"}>
-      <div
-        style={{
-          fontSize: "2rem",
-          marginLeft: "1rem",
-          userSelect: "none",
-          alignSelf: "flex-start",
-        }}
-      >
-        合并情况查看
-      </div>
-      <hr style={{ width: "98%", margin: "1rem auto" }} />
-      <SingleMergeEntry
-        title={"SR.001.001"}
-        description={"Merge dev into master"}
-        associate_sr_id={1}
-        author_id={1}
-        mid={64}
-        state={"closed"}
-        author_time={1649836206}
-      />{" "}
-      <SingleMergeEntry
-        title={"SR.001.002"}
-        description={"Merge dev into master"}
-        associate_sr_id={1}
-        author_id={2}
-        mid={64}
-        state={"opened"}
-        author_time={1649836206}
-      />{" "}
-      <SingleMergeEntry
-        title={"SR.001.002"}
-        description={"Merge dev into master"}
-        associate_sr_id={1}
-        author_id={2}
-        mid={64}
-        state={"merged"}
-        author_time={1649836206}
-      />
-    </div>
-  );
 };
 
 export default UIMerge;
