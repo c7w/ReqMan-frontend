@@ -10,6 +10,7 @@ import { getRepoStore } from "../../store/slices/RepoSlice";
 import { getMergeStore } from "../../store/slices/IssueSlice";
 import { userId2UserInfo } from "../../utils/Association";
 import { getProjectStore } from "../../store/slices/ProjectSlice";
+import { UIMergeCardPreview } from "./UIMergeCard";
 
 interface MergeEntryProps {
   title: string;
@@ -115,12 +116,12 @@ const UIMerge = () => {
             overflow: "hidden",
           }}
         >
-          {record.title}
+          <UIMergeCardPreview data={JSON.stringify(record)} />
         </div>
       ),
     },
     {
-      title: "合并请求提交者",
+      title: "合并请求发起人",
       width: "15%",
       ellipsis: true,
       dataIndex: "createdBy",

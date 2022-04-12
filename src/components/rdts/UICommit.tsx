@@ -92,7 +92,7 @@ const UICommit = () => {
   return (
     <div className={"merge-card"}>
       <ProTable<CommitProps>
-        headerTitle="项目缺陷查看"
+        headerTitle="项目贡献查看"
         toolBarRender={() => {
           return [];
         }}
