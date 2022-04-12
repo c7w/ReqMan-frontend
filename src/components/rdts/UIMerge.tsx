@@ -8,6 +8,8 @@ import ReactMarkdown from "react-markdown";
 import { useDispatch, useSelector } from "react-redux";
 import { getRepoStore } from "../../store/slices/RepoSlice";
 import { getMergeStore } from "../../store/slices/IssueSlice";
+import { userId2UserInfo } from "../../utils/Association";
+import { getProjectStore } from "../../store/slices/ProjectSlice";
 
 interface MergeEntryProps {
   title: string;
@@ -20,17 +22,6 @@ interface MergeEntryProps {
 }
 
 const SingleMergeEntry = (props: MergeEntryProps) => {
-  const getBackgroundColor = () => {
-    switch (props.state) {
-      case "closed":
-        return "#ffe5e5";
-      case "merged":
-        return "#e5ffe5";
-      case "opened":
-        return "#ffffff";
-    }
-  };
-
   const getIssueState = () => {
     switch (props.state) {
       case "closed":
@@ -45,7 +36,7 @@ const SingleMergeEntry = (props: MergeEntryProps) => {
   return (
     <div
       className="issuable-info-container"
-      style={{ backgroundColor: getBackgroundColor() }}
+      // style={{ backgroundColor: getBackgroundColor() }}
     >
       <div className="issuable-main-info">
         <div className="merge-request-title">
@@ -75,8 +66,20 @@ const SingleMergeEntry = (props: MergeEntryProps) => {
 const UIMerge = () => {
   const dispatcher = useDispatch();
 
+  const projectStore = useSelector(getProjectStore);
   const repoStore = useSelector(getRepoStore);
   const mergeStore = useSelector(getMergeStore);
+
+  const getBackgroundColor = (state: "closed" | "merged" | "opened") => {
+    switch (state) {
+      case "closed":
+        return "#ffe5e5";
+      case "merged":
+        return "#e5ffe5";
+      case "opened":
+        return "#e5e5ff";
+    }
+  };
 
   const columns: ProColumns<MergeRequestProps>[] = [
     {
@@ -92,6 +95,7 @@ const UIMerge = () => {
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
+            backgroundColor: getBackgroundColor(record.state),
           }}
         >
           {record.repo}-!{record.merge_id}
@@ -101,27 +105,38 @@ const UIMerge = () => {
     {
       title: "合并请求信息",
       ellipsis: true,
-      width: "50%",
+      width: "70%",
       dataIndex: "description",
       align: "left",
       render: (_, record) => (
-        <div style={{ textOverflow: "ellipsis", overflow: "hidden" }}>
+        <div
+          style={{
+            textOverflow: "ellipsis",
+            overflow: "hidden",
+          }}
+        >
           {record.title}
         </div>
       ),
     },
     {
       title: "合并请求提交者",
-      width: "12%",
+      width: "15%",
       ellipsis: true,
       dataIndex: "createdBy",
       align: "center",
       render: (_, record) => {
         let user = record.authoredByUserName;
         if (record.user_authored > 0) {
-          user = String(record.user_authored);
+          const find_result = userId2UserInfo(
+            record.user_authored,
+            projectStore
+          );
+          if (find_result !== "not_found") {
+            user = find_result.name;
+          }
         }
-        return <div>{user}</div>;
+        return <div style={{}}>{user}</div>;
       },
     },
   ];
