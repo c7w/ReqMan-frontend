@@ -1,0 +1,7 @@
+.activeChart {
+  height: auto;
+  width: 50%;
+  border: 5px solid deepskyblue;
+  border-radius: 10px;
+  padding: 10px;
+}

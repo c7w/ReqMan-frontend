@@ -1,103 +1,94 @@
 import ReactEcharts from "echarts-for-react";
 import React, { Component } from "react";
-import "./ActiveFigure.css";
+import "./TimeFigure.css";
 
-interface ActiveFigureProps {
-  text: string; // text for parsing
-  title: string; // chart title
-}
+// interface ActiveFigureProps {
+//   text: string; // text for parsing
+//   title: string; // chart title
+// }
 
-const TimeFigure = (props: ActiveFigureProps) => {
+const TimeFigure = () => {
   const test =
-    '[{"user":{"name":"c7w"},"mr":10,"line":3000},{"user":{"name":"wxy"},"mr":8,"line":1500},{"user":{"name":"hbx"},"mr":7,"line":2000},' +
-    '{"user":{"name":"c7w"},"mr":10,"line":3000},{"user":{"name":"wxy"},"mr":8,"line":1500},{"user":{"name":"hbx"},"mr":7,"line":2000},' +
-    '{"user":{"name":"c7w"},"mr":10,"line":1000},{"user":{"name":"wxy"},"mr":8,"line":1500},{"user":{"name":"hbx"},"mr":7,"line":2000}]';
+    '[{"user":{"name":"c7w"},"time":[10,20,30,30,40,100,40]},{"user":{"name":"wxy"},"time":[5,10,20,20,30,40,5,10]},{"user":{"name":"hbx"},"time":[10,20,30,70,40,10,40]}]';
   const data = JSON.parse(test);
   // const data = JSON.parse(props.text);
-  const MRdata: any = [];
-  const LineData: any = [];
+  const allData: any = [];
+  const allName: any = [];
   data.forEach((value: any) => {
     const name = value.user.name;
-    const MR = value.mr;
-    const line = value.line;
-    const curDataMR = {
-      value: MR,
-      name: name,
-    };
-    const curDataLine = {
-      value: line,
-      name: name,
-    };
-    MRdata.push(curDataMR);
-    LineData.push(curDataLine);
+    const time = value.time;
+    allData.push(time);
+    allName.push(name);
   });
-
   const option = {
-    title: [
+    title: {
+      text: "开发工程师能力分析",
+      left: "center",
+    },
+    dataset: [
       {
-        text: "开发工程师活跃度分析",
-        // text: props.title,
-        left: "center",
+        source: allData,
       },
       {
-        subtext: "MR数量统计",
-        left: "25%",
-        top: "80%",
-        textAlign: "center",
+        transform: {
+          type: "boxplot",
+          config: {
+            itemNameFormatter: function (params: any) {
+              return allName[Number(params.value)];
+            },
+          },
+        },
       },
       {
-        subtext: "代码行数统计",
-        left: "75%",
-        top: "80%",
-        textAlign: "center",
+        fromDatasetIndex: 1,
+        fromTransformResult: 1,
       },
     ],
     tooltip: {
       trigger: "item",
+      axisPointer: {
+        type: "shadow",
+      },
     },
-    legend: {
-      orient: "vertical",
-      left: "left",
+    grid: {
+      left: "10%",
+      right: "10%",
+      bottom: "15%",
+    },
+    yAxis: {
+      type: "category",
+      boundaryGap: true,
+      nameGap: 30,
+      splitArea: {
+        show: false,
+      },
+      splitLine: {
+        show: false,
+      },
+    },
+    xAxis: {
+      type: "value",
+      name: "开发用时(小时)",
+      splitArea: {
+        show: true,
+      },
     },
     series: [
       {
-        name: "MR数量",
-        type: "pie",
-        radius: "50%",
-        data: MRdata,
-        emphasis: {
-          itemStyle: {
-            shadowBlur: 10,
-            shadowOffsetX: 0,
-            shadowColor: "rgba(0, 0, 0, 0.5)",
-          },
-        },
-        left: 0,
-        right: "50%",
-        top: 0,
-        bottom: 0,
+        name: "boxplot",
+        type: "boxplot",
+        datasetIndex: 1,
       },
       {
-        name: "代码行数",
-        type: "pie",
-        radius: "50%",
-        data: LineData,
-        emphasis: {
-          itemStyle: {
-            shadowBlur: 10,
-            shadowOffsetX: 0,
-            shadowColor: "rgba(0, 0, 0, 0.5)",
-          },
-        },
-        left: "50%",
-        right: 0,
-        top: 0,
-        bottom: 0,
+        name: "outlier",
+        type: "scatter",
+        encode: { x: 1, y: 0 },
+        datasetIndex: 2,
       },
     ],
   };
   return (
-    <div className={"activeChart"}>
+    <div className={"timeChart"}>
       <ReactEcharts option={option} />
     </div>
   );
