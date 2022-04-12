@@ -1,10 +1,11 @@
 import echarts from "echarts";
 import ReactEcharts from "echarts-for-react";
 import React, { Component } from "react";
+import "./IssueFigure.css";
 
-const IssueFigure = (text: string) => {
+const IssueFigure = () => {
   const test =
-    '{iterations: ["iter1", "iter2", "iter3", "iter4"], all_sr_count: [12, 14, 16, 18], issues: [1, 2, 4, 2]}';
+    '{"iterations":["iter1","iter2","iter3","iter4"],"all_sr_count":[12,14,16,18],"issues":[1,2,4,2]}';
   const data = JSON.parse(test);
   const iterations = data.iterations;
   const allSR = data.all_sr_count;
@@ -29,12 +30,12 @@ const IssueFigure = (text: string) => {
       },
     },
     legend: {
-      data: ["Evaporation", "Precipitation", "Temperature"],
+      data: ["Total SR", "Issues", "Error Rate"],
     },
     xAxis: [
       {
         type: "category",
-        data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+        data: iterations,
         axisPointer: {
           type: "shadow",
         },
@@ -45,7 +46,7 @@ const IssueFigure = (text: string) => {
         type: "value",
         name: "Precipitation",
         min: 0,
-        max: 250,
+        max: 260,
         interval: 50,
         axisLabel: {
           formatter: "{value} ml",
@@ -102,7 +103,11 @@ const IssueFigure = (text: string) => {
       },
     ],
   };
-  return <ReactEcharts option={option} />;
+  return (
+    <div className={"issueChart"}>
+      <ReactEcharts option={option} />
+    </div>
+  );
 };
 
 export default IssueFigure;

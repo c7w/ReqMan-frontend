@@ -23,6 +23,7 @@ import ProjectRequirementsReadonly from "./route/Project/ProjectRequirementsRead
 import ProjectMember from "./route/Project/ProjectMember";
 import Test from "../components/test"; // 测试接口
 import ProjectIteration from "./route/Project/ProjectIteration";
+import IssueFigure from "../components/Figure/IssueFigure";
 
 const SiteRouter = () => {
   const testIR =
@@ -39,7 +40,7 @@ const SiteRouter = () => {
           <Route path="settings" element={<PersonalSetting />} />
           <Route path="project/:id/IRManager" element={<ProjectIR />} />
           <Route path="project/:id/SRManager" element={<ProjectSR />} />
-
+          <Route path="figure" element={<IssueFigure />} />
           <Route
             path="project/:id/ServiceManager"
             element={<ProjectService />}
@@ -58,11 +59,9 @@ const SiteRouter = () => {
           <Route path="project/:id/settings" element={<ProjectSetting />} />
           <Route path="project/:id" element={<Project />} />
           <Route path="projects" element={<ProjectList />} />
-
           {/* Dev Paths */}
           <Route path="SR_List" element={<ProjectSR />} />
           <Route path="test" element={<Test />} />
-
           <Route
             path={"dev/loading"}
             element={
