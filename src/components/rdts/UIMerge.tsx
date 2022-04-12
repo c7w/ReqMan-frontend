@@ -1,6 +1,13 @@
 import "./UIMerge.css";
 import React from "react";
 import moment from "moment";
+import { IRCard, MergeRequestProps } from "../../store/ConfigureStore";
+import { Button, Popconfirm, Progress } from "antd";
+import ProTable, { ProColumns } from "@ant-design/pro-table";
+import ReactMarkdown from "react-markdown";
+import { useDispatch, useSelector } from "react-redux";
+import { getRepoStore } from "../../store/slices/RepoSlice";
+import { getMergeStore } from "../../store/slices/IssueSlice";
 
 interface MergeEntryProps {
   title: string;
@@ -66,6 +73,93 @@ const SingleMergeEntry = (props: MergeEntryProps) => {
 };
 
 const UIMerge = () => {
+  const dispatcher = useDispatch();
+
+  const repoStore = useSelector(getRepoStore);
+  const mergeStore = useSelector(getMergeStore);
+
+  const columns: ProColumns<MergeRequestProps>[] = [
+    {
+      title: "合并请求编号",
+      width: "15%",
+      dataIndex: "id",
+      ellipsis: true,
+      align: "center",
+      render: (_, record) => (
+        <div
+          style={{
+            fontWeight: "bold",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {record.repo}-!{record.merge_id}
+        </div>
+      ),
+    },
+    {
+      title: "合并请求信息",
+      ellipsis: true,
+      width: "50%",
+      dataIndex: "description",
+      align: "left",
+      render: (_, record) => (
+        <div style={{ textOverflow: "ellipsis", overflow: "hidden" }}>
+          {record.title}
+        </div>
+      ),
+    },
+    {
+      title: "合并请求提交者",
+      width: "12%",
+      ellipsis: true,
+      dataIndex: "createdBy",
+      align: "center",
+      render: (_, record) => {
+        let user = record.authoredByUserName;
+        if (record.user_authored > 0) {
+          user = String(record.user_authored);
+        }
+        return <div>{user}</div>;
+      },
+    },
+  ];
+
+  const data_source = JSON.parse(mergeStore).data;
+
+  return (
+    <div className={"merge-card"}>
+      <ProTable<MergeRequestProps>
+        headerTitle="项目合并请求查看"
+        toolBarRender={() => {
+          return [];
+        }}
+        cardBordered={true}
+        columns={columns}
+        options={{
+          fullScreen: false,
+          reload: false,
+          setting: true,
+          density: true,
+        }}
+        // request={() => {
+        //   return Promise.resolve({
+        //     data: tableListDataSource,
+        //     success: true,
+        //   });
+        // }}
+        defaultSize={"small"}
+        dataSource={data_source}
+        rowKey="id"
+        pagination={{ position: ["bottomRight"] }}
+        tableStyle={{ padding: "1rem 1rem 2rem" }}
+        dateFormatter="string"
+        search={false}
+      />
+    </div>
+  );
+
   return (
     <div className={"merge-card"}>
       <div
