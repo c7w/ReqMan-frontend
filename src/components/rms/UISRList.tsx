@@ -178,6 +178,7 @@ const UISRList = (props: UISRListProps) => {
           stateColor: color,
           createdBy: user.name,
           createdAt: value.createdAt * 1000,
+
           iter: SR2Iteration(value.id, iterSRAssoStore, iterationStore),
           chargedBy: SR2ChargedUser(value.id, userSRStore, projectInfo),
           service:

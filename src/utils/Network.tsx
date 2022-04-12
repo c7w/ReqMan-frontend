@@ -64,7 +64,7 @@ const request_json = async (config: APIConfig, settings: Settings = {}) => {
   return fetch(path, initRequest)
     .then((data) => data.json())
     .then((json) => {
-      // console.warn(`Fetched ${path} successfully: ` + JSON.stringify(json));
+      // console.log(`Fetched ${path} successfully: ` + JSON.stringify(json));
       return json;
     });
 };
