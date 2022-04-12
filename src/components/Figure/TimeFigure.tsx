@@ -68,7 +68,7 @@ const TimeFigure = () => {
     },
     xAxis: {
       type: "value",
-      name: "开发用时(小时)",
+      name: "开发用时\n(小时)",
       splitArea: {
         show: true,
       },
