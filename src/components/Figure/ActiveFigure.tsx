@@ -2,10 +2,18 @@ import ReactEcharts from "echarts-for-react";
 import React, { Component } from "react";
 import "./ActiveFigure.css";
 
-const ActiveFigure = () => {
+interface ActiveFigureProps {
+  text: string; // text for parsing
+  title: string; // chart title
+}
+
+const ActiveFigure = (props: ActiveFigureProps) => {
   const test =
-    '[{"user":{"name":"c7w"},"mr":10,"line":3000},{"user":{"name":"wxy"},"mr":8,"line":1500},{"user":{"name":"hbx"},"mr":7,"line":2000}]';
+    '[{"user":{"name":"c7w"},"mr":10,"line":3000},{"user":{"name":"wxy"},"mr":8,"line":1500},{"user":{"name":"hbx"},"mr":7,"line":2000},' +
+    '{"user":{"name":"c7w"},"mr":10,"line":3000},{"user":{"name":"wxy"},"mr":8,"line":1500},{"user":{"name":"hbx"},"mr":7,"line":2000},' +
+    '{"user":{"name":"c7w"},"mr":10,"line":1000},{"user":{"name":"wxy"},"mr":8,"line":1500},{"user":{"name":"hbx"},"mr":7,"line":2000}]';
   const data = JSON.parse(test);
+  // const data = JSON.parse(props.text);
   const MRdata: any = [];
   const LineData: any = [];
   data.forEach((value: any) => {
@@ -28,6 +36,7 @@ const ActiveFigure = () => {
     title: [
       {
         text: "开发工程师活跃度分析",
+        // text: props.title,
         left: "center",
       },
       {
