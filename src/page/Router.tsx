@@ -23,7 +23,7 @@ import ProjectRequirementsReadonly from "./route/Project/ProjectRequirementsRead
 import ProjectMember from "./route/Project/ProjectMember";
 import Test from "../components/test"; // 测试接口
 import ProjectIteration from "./route/Project/ProjectIteration";
-import ActiveFigureMR from "../components/Figure/ActiveFigure";
+import ActiveFigure from "../components/Figure/ActiveFigure";
 
 const SiteRouter = () => {
   const testIR =
@@ -40,7 +40,7 @@ const SiteRouter = () => {
           <Route path="settings" element={<PersonalSetting />} />
           <Route path="project/:id/IRManager" element={<ProjectIR />} />
           <Route path="project/:id/SRManager" element={<ProjectSR />} />
-          <Route path="figure" element={<ActiveFigureMR />} />
+          <Route path="figure" element={<ActiveFigure />} />
           <Route
             path="project/:id/ServiceManager"
             element={<ProjectService />}
