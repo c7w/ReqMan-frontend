@@ -12,7 +12,7 @@ import {
 } from "../../../store/slices/ServiceSlice";
 import { getUserSRStore } from "../../../store/slices/UserSRSlice";
 import { useParams } from "react-router-dom";
-import { useEffect } from "react";
+import { ReactElement, useEffect } from "react";
 import {
   updateProjectInfo,
   updateUserInfo,
@@ -30,22 +30,31 @@ import { Redirect, ToastMessage } from "../../../utils/Navigation";
 import Home from "../../../layout/Home";
 import UISRList from "../../../components/rms/UISRList";
 import Loading from "../../../layout/components/Loading";
-import UIMerge from "../../../components/rms/UIMerge";
+import UIMerge from "../../../components/rdts/UIMerge";
+import { getRepoStore } from "../../../store/slices/RepoSlice";
+import {
+  getCommitStore,
+  getIssueStore,
+  getMergeStore,
+} from "../../../store/slices/IssueSlice";
+import { getRDTSInfo } from "../../../store/functions/RDTS";
 
-const ProjectMergeRequest = () => {
+interface ProjectRDTSProps {
+  children: ReactElement;
+}
+
+const ProjectRDTS = (props: ProjectRDTSProps) => {
   // Judge if project list in user state
   // If not re-query the user state from the backend
   // Render the project list
   const userInfo = useSelector(getUserStore);
   const projectInfo = useSelector(getProjectStore);
   const SRListInfo = useSelector(getSRListStore);
-  const IRSRAssociation = useSelector(getIRSRStore);
 
-  const iterationStore = useSelector(getIterationStore);
-  const SRIterationStore = useSelector(getSRIterationStore);
-  const serviceStore = useSelector(getServiceStore);
-  const SRServiceStore = useSelector(getSRServiceStore);
-  const UserSRStore = useSelector(getUserSRStore);
+  const repoInfo = useSelector(getRepoStore);
+  const commitInfo = useSelector(getCommitStore);
+  const mergeInfo = useSelector(getMergeStore);
+  const issueInfo = useSelector(getIssueStore);
 
   const dispatcher = useDispatch();
   const params = useParams<"id">();
@@ -55,24 +64,17 @@ const ProjectMergeRequest = () => {
     updateUserInfo(dispatcher);
     updateProjectInfo(dispatcher, project_id);
     getSRListInfo(dispatcher, project_id);
-    getIRSRInfo(dispatcher, project_id);
-    updateServiceInfo(dispatcher, project_id);
-    getIterationInfo(dispatcher, project_id);
-    getSRIterationInfo(dispatcher, project_id);
-    getSRServiceInfo(dispatcher, project_id);
-    getUserSRInfo(dispatcher, project_id);
+    getRDTSInfo(dispatcher, project_id);
   }, []);
 
   if (
     userInfo === "" ||
     projectInfo === "" ||
     SRListInfo === "" ||
-    IRSRAssociation === "" ||
-    iterationStore === "" ||
-    SRIterationStore === "" ||
-    serviceStore === "" ||
-    SRServiceStore === "" ||
-    UserSRStore === ""
+    repoInfo === "" ||
+    commitInfo === "" ||
+    mergeInfo === "" ||
+    issueInfo === ""
   ) {
     // Just let useEffect to re-query!
   } else if (JSON.parse(userInfo).code !== 0) {
@@ -100,11 +102,7 @@ const ProjectMergeRequest = () => {
         ) {
           Redirect(dispatcher, "/error", 0);
         }
-        return (
-          <Home sidebar={true}>
-            <UIMerge />
-          </Home>
-        );
+        return <Home sidebar={true}>{props.children}</Home>;
       }
     } else {
       // 这个用户不在这个 project 中
@@ -119,4 +117,4 @@ const ProjectMergeRequest = () => {
   );
 };
 
-export default ProjectMergeRequest;
+export default ProjectRDTS;

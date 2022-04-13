@@ -36,21 +36,21 @@ const Root = () => {
             title: "连接成功",
             message: `欢迎回来，${username}！`,
             position: "topRight",
-            timeout: 2000,
+            timeout: 1000,
           });
           setTimeout(() => {
             dispatcher(push("/dashboard")); // Use this way to redirect
-          }, 2000);
+          }, 1000);
         } else {
           immediateToast("success", {
             title: "连接成功",
             message: "欢迎来到 ReqMan，请登录！",
             position: "topRight",
-            timeout: 2000,
+            timeout: 1000,
           });
           setTimeout(() => {
             dispatcher(push("/login"));
-          }, 2000);
+          }, 1000);
         }
       })
       .catch(() => {

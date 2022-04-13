@@ -75,6 +75,18 @@ const API = {
     path: "/rms/project/",
     method: "post",
   },
+  GET_RDTS: {
+    path: "/rdts/project/",
+    method: "get",
+  },
+  POST_RDTS: {
+    path: "/rdts/project/",
+    method: "post",
+  },
+  CREATE_REPO: {
+    path: "/rdts/repo_op/",
+    method: "post",
+  },
   JOIN_PROJECT: {
     path: "/ums/user_join_project_invitation/",
     method: "post",

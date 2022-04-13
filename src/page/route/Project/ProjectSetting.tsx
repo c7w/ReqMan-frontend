@@ -11,6 +11,9 @@ import { Redirect, ToastMessage } from "../../../utils/Navigation";
 import UIProject from "../../../components/rms/UIProject";
 import Loading from "../../../layout/components/Loading";
 import UIProjectSetting from "../../../components/rms/UIProjectSetting";
+import { useEffect } from "react";
+import { getRepoStore, updateRepoStore } from "../../../store/slices/RepoSlice";
+import { getRepoInfo } from "../../../store/functions/RDTS";
 
 const ProjectSetting = () => {
   // 1. Judge if user logged in, if not send to `/login`
@@ -19,15 +22,22 @@ const ProjectSetting = () => {
 
   const userInfo = useSelector(getUserStore);
   const projectInfo = useSelector(getProjectStore);
+  const repoStore = useSelector(getRepoStore);
   const dispatcher = useDispatch();
 
   const params = useParams<"id">();
   const project_id = params.id;
 
-  // 1. User State Judge
-  if (userInfo === "") {
-    // Re-Query...
+  useEffect(() => {
     updateUserInfo(dispatcher);
+    updateProjectInfo(dispatcher, Number(project_id));
+    getRepoInfo(dispatcher, Number(project_id));
+  }, []);
+  console.debug(repoStore);
+
+  // 1. User State Judge
+  if (userInfo === "" || projectInfo === "" || repoStore === "") {
+    // Re-Query...
   } else if (JSON.parse(userInfo).code !== 0) {
     // Redirect to `Root`
     ToastMessage("error", "未确认登录态", "即将跳转回登录界面");

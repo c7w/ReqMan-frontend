@@ -23,7 +23,11 @@ import ProjectRequirementsReadonly from "./route/Project/ProjectRequirementsRead
 import ProjectMember from "./route/Project/ProjectMember";
 import Test from "../components/test"; // 测试接口
 import ProjectIteration from "./route/Project/ProjectIteration";
-import ProjectMergeRequest from "./route/Project/ProjectMergeRequest";
+import ProjectRDTS from "./route/Project/ProjectRDTS";
+import UIMerge from "../components/rdts/UIMerge";
+import UICommit from "../components/rdts/UICommit";
+import UIIssue from "../components/rdts/UIIssue";
+import UIAnalysis from "../components/rdts/UIAnalysis";
 
 const SiteRouter = () => {
   const testIR =
@@ -53,7 +57,38 @@ const SiteRouter = () => {
             element={<ProjectRequirementsReadonly />}
           />
           <Route path="project/:id/member" element={<ProjectMember />} />
-          <Route path="project/:id/merges" element={<ProjectMergeRequest />} />
+          <Route
+            path="project/:id/merges"
+            element={
+              <ProjectRDTS>
+                <UIMerge />
+              </ProjectRDTS>
+            }
+          />
+          <Route
+            path="project/:id/issues"
+            element={
+              <ProjectRDTS>
+                <UIIssue />
+              </ProjectRDTS>
+            }
+          />
+          <Route
+            path="project/:id/commits"
+            element={
+              <ProjectRDTS>
+                <UICommit />
+              </ProjectRDTS>
+            }
+          />{" "}
+          <Route
+            path="project/:id/analysis"
+            element={
+              <ProjectRDTS>
+                <UIAnalysis />
+              </ProjectRDTS>
+            }
+          />
           <Route path="project/:id/iteration" element={<ProjectIteration />} />
           <Route path="project/:id/analyse" element={<ProjectAnalyse />} />
           <Route path="project/:id/settings" element={<ProjectSetting />} />
