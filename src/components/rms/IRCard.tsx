@@ -1,6 +1,13 @@
 import { IRCardProps } from "../../store/ConfigureStore";
 import React, { useEffect, useState } from "react";
-import { updateIRInfo } from "../../store/functions/RMS";
+import {
+  getIRIterationInfo,
+  getIRListInfo,
+  getIRSRInfo,
+  getIterationInfo,
+  getSRListInfo,
+  updateIRInfo,
+} from "../../store/functions/RMS";
 import { ToastMessage } from "../../utils/Navigation";
 import { updateCounter } from "../../store/slices/CalendarSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -20,17 +27,36 @@ import {
 import moment from "moment";
 import Paragraph from "antd/es/typography/Paragraph";
 import Text from "antd/es/typography/Text";
-import { getIRSRStore, getSRListStore } from "../../store/slices/IRSRSlice";
-import { oneIR2AllSR } from "../../utils/Association";
+import {
+  getIRListStore,
+  getIRSRStore,
+  getSRListStore,
+} from "../../store/slices/IRSRSlice";
+import {
+  IR2Iteration,
+  oneIR2AllSR,
+  oneSR2AllIR,
+} from "../../utils/Association";
+import {
+  getIRIterationStore,
+  getIterationStore,
+} from "../../store/slices/IterationSlice";
 
 const IRCard = (props: IRCardProps) => {
   const dispatcher = useDispatch();
   const userInfo = useSelector(getUserStore);
   const projectInfo = useSelector(getProjectStore);
+  const IRSRAssoStore = useSelector(getIRSRStore);
+  const IRIterAssoStore = useSelector(getIRIterationStore);
+  const iterationStore = useSelector(getIterationStore);
+  const SRListStore = useSelector(getSRListStore);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [title, setTitle] = useState<string>(props.title);
   const [progress, setProgress] = useState<number>(props.progress);
   const [description, setDescription] = useState<string>(props.description);
+  const [assoSRListData, setAssoSRListData] = useState([]);
+  const [assoIRIterData, setAssoIRIterData] = useState([]);
+  console.log(props);
 
   const handleOK = () => {
     if (
@@ -62,6 +88,43 @@ const IRCard = (props: IRCardProps) => {
     setModalVisible(false);
   };
 
+  // 更新打开的 modal 对应的 SR 的所有关系
+  const updateAssociation = () => {
+    console.log("updating !");
+    // 该项目所有 IRSR
+    getIRSRInfo(dispatcher, props.project).then(() => {
+      console.log(IRSRAssoStore);
+    });
+    // 该项目所有 SR
+    getSRListInfo(dispatcher, props.project).then(() => {
+      console.log(SRListStore);
+    });
+    // 该项目所有 IRIteration
+    getIRIterationInfo(dispatcher, props.project).then(() => {
+      console.log(IRIterAssoStore);
+    });
+    // 该项目所有 Iteration
+    getIterationInfo(dispatcher, props.project).then(() => {
+      console.log(iterationStore);
+    });
+  };
+
+  useEffect(() => {
+    if (IRSRAssoStore !== "" && SRListStore !== "") {
+      setAssoSRListData(oneIR2AllSR(props.id, IRSRAssoStore, SRListStore));
+      console.log(assoSRListData);
+    }
+  }, [IRSRAssoStore, SRListStore]);
+
+  useEffect(() => {
+    if (iterationStore !== "" && IRIterAssoStore !== "") {
+      setAssoIRIterData(
+        IR2Iteration(props.id, IRIterAssoStore, iterationStore)
+      );
+      console.log(assoIRIterData);
+    }
+  }, [iterationStore, IRIterAssoStore]);
+
   const handleCancel = () => {
     setTitle(props.title);
     setDescription(props.description);
@@ -91,6 +154,7 @@ const IRCard = (props: IRCardProps) => {
         onClick={() => {
           // document.getElementsByTagName("input")[0].checked = true;
           setModalVisible(true);
+          updateAssociation();
         }}
       >
         <div className="card-small-header">
@@ -195,11 +259,15 @@ const IRCard = (props: IRCardProps) => {
           <div className="modal-content-bottom">
             <div className="wrap">
               <div className="title-related">关联功能需求</div>
-              <div className="content-related">i am SR</div>
+              <div className="content-related">
+                {JSON.stringify(assoSRListData)}
+              </div>
             </div>
             <div className="iteration-related wrap">
               <div className="title-related">关联迭代</div>
-              <div className="content-related">i am iteration</div>
+              <div className="content-related">
+                {JSON.stringify(assoIRIterData)}
+              </div>
             </div>
           </div>
         </div>

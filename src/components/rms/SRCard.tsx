@@ -98,7 +98,6 @@ const SRCard = (props: SRCardProps) => {
     // 该项目所有 IR
     getIRListInfo(dispatcher, props.project).then(() => {
       console.log(IRListStore);
-      // 异步等待
     });
   };
 
