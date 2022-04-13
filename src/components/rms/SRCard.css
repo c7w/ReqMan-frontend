@@ -17,7 +17,6 @@
   position: fixed;
   top: 50%;
   left: 50%;
-  z-index: 32;
   border-radius: 20px;
   transform: translate(-50%, -50%);
   transition: width 0.5s ease 0.5s, height 0.5s;
@@ -52,10 +51,14 @@
 
 .card-small-down {
   padding: 5px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 .card-small-avatar {
   margin-right: 5px;
+  cursor: pointer;
 }
 
 .ant-modal-title {
@@ -66,29 +69,63 @@
 }
 
 .modal-header {
-  background: white;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  white-space: nowrap;
+  align-items: center;
 }
 
 .modal-header-left {
-  width: 60%;
   display: flex;
   flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
 }
 
-.modal-header-desc {
-  width: 70%;
-  max-width: 70%;
-  overflow: auto;
+.modal-content-up {
+}
+
+.modal-content-middle {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.modal-content-bottom {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 方法一 start */
+.wrap {
+  position: relative;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  padding: 20px;
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.title-related {
+  font-weight: bold;
   font-size: 1rem;
 }
 
-.modal-header-right {
-  width: 50%;
+.wrap .title-related {
+  position: absolute;
+  top: -1em;
+  left: 2%;
+  line-height: 2em;
+  padding: 0 1em;
+  background-color: #fff;
 }
+/* 方法一 end */
 
 .modal-content {
   width: 100%;
@@ -114,7 +151,6 @@
   position: fixed;
   right: 12vw;
   top: 12.5vh;
-  z-index: 33;
   -webkit-appearance: none;
   width: 40px;
 }
