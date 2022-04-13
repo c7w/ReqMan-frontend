@@ -28,6 +28,7 @@ import UIMerge from "../components/rdts/UIMerge";
 import UICommit from "../components/rdts/UICommit";
 import UIIssue from "../components/rdts/UIIssue";
 import UIAnalysis from "../components/rdts/UIAnalysis";
+import IRCard from "../components/rms/IRCard";
 
 const SiteRouter = () => {
   const testIR =
@@ -103,6 +104,21 @@ const SiteRouter = () => {
               <Home sidebar={true}>
                 <Loading />
               </Home>
+            }
+          />
+          <Route
+            path={"IRCard"}
+            element={
+              <IRCard
+                id={1}
+                project={2}
+                rank={1}
+                createdAt={166666666.0}
+                progress={0.5}
+                title={"ir"}
+                description={"irrrrrr"}
+                iter={[]}
+              />
             }
           />
           <Route path={"*"} element={<Fallback />} />

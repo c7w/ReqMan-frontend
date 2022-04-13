@@ -38,14 +38,7 @@ const List = (props: ListProps) => {
     <div className="list-list">
       <div className="list-header">{props.name}</div>
       <Divider />
-      <Droppable droppableId={props.id}>
-        {(provided) => (
-          <div className="list-content" {...provided.droppableProps}>
-            {mySRCardList}
-            {provided.placeholder}
-          </div>
-        )}
-      </Droppable>
+      <div className="list-content">{mySRCardList}</div>
     </div>
   );
 };

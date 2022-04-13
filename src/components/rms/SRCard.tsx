@@ -14,11 +14,30 @@ import {
 } from "antd";
 import { UserOutlined, DownOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
-import { updateSRListStore } from "../../store/slices/IRSRSlice";
+import {
+  getIRListStore,
+  getIRSRStore,
+  getSRListStore,
+  updateIRSRStore,
+  updateSRListStore,
+} from "../../store/slices/IRSRSlice";
 import { Draggable } from "react-beautiful-dnd";
-import { Iteration, SRCardProps } from "../../store/ConfigureStore";
-import { updateSRInfo } from "../../store/functions/RMS";
-import { projId2ProjInfo, SRId2SRInfo } from "../../utils/Association";
+import {
+  IRCardProps,
+  Iteration,
+  SRCardProps,
+} from "../../store/ConfigureStore";
+import {
+  getIRListInfo,
+  getIRSRInfo,
+  updateSRInfo,
+} from "../../store/functions/RMS";
+import {
+  oneIR2AllSR,
+  oneSR2AllIR,
+  projId2ProjInfo,
+  SRId2SRInfo,
+} from "../../utils/Association";
 import CryptoJS from "crypto-js";
 import { getUserStore } from "../../store/slices/UserSlice";
 import { getProjectStore } from "../../store/slices/ProjectSlice";
@@ -50,6 +69,7 @@ const SRCard = (props: SRCardProps) => {
   const [currState, setCurrState] = useState<string>(props.currState);
   const [chargedBy, setChargedBy] = useState(props.createdBy);
   const [service, setService] = useState(props.service);
+  const [assoIRListData, setAssoIRListData] = useState([]);
   const [bounds, setBounds] = useState({
     left: 0,
     top: 0,
@@ -66,22 +86,15 @@ const SRCard = (props: SRCardProps) => {
   state2ChineseState.set("Reviewing", "测试中");
   state2ChineseState.set("Done", "已完成");
 
-  // readonly id: number; // id
-  // readonly project: number; // the project belongs to
-  // readonly title: string; // title
-  // readonly description: string; // description
-  // readonly priority: number; // the priority which indicates the importance of the SR
-  // readonly rank?: number;
-  // readonly currState: string; // "TODO", "WIP", "Reviewing", "Done"
-  // readonly stateColor?: string;
-  // readonly createdBy?: string; // somebody
-  // readonly createdAt?: number; // sometime
-  // readonly disabled?: boolean;
-  // readonly iter: Iteration[];
-  // readonly chargedBy: number;
-  // readonly service: Service | number;
-
   const handleOK = () => {
+    if (
+      title === props.title &&
+      description === props.description &&
+      currState === props.currState
+    ) {
+      setModalVisible(false);
+      return;
+    }
     updateSRInfo(dispatcher, props.project, {
       id: id,
       project: props.project,
@@ -128,7 +141,6 @@ const SRCard = (props: SRCardProps) => {
     }
   };
   const onClick = (e: any) => {
-    alert("click " + e.key);
     updateSRInfo(dispatcher, props.project, {
       id: props.id,
       project: props.project,
@@ -152,7 +164,7 @@ const SRCard = (props: SRCardProps) => {
       setCurrState("WIP");
     } else if (value === "测试中") {
       setCurrState("Reviewing");
-    } else if (value === "已交付") {
+    } else if (value === "已完成") {
       setCurrState("Done");
     }
   };
@@ -201,9 +213,7 @@ const SRCard = (props: SRCardProps) => {
           </Avatar.Group>
           <div>
             {props.createdAt
-              ? moment(
-                  new Date(props.createdAt * 1000).toLocaleString()
-                ).format("YYYY-MM-DD HH:mm:ss")
+              ? moment(props.createdAt * 1000).format("YYYY-MM-DD HH:mm:ss")
               : "无创建时间记录"}
           </div>
         </div>
@@ -253,7 +263,7 @@ const SRCard = (props: SRCardProps) => {
                 marginBottom: "1rem",
               }}
             >
-              需求描述
+              功能需求描述
             </div>
             <Typography
               style={{
@@ -289,13 +299,15 @@ const SRCard = (props: SRCardProps) => {
               <b>创建时间:</b>
               {"   " +
                 (props.createdAt
-                  ? moment(
-                      new Date(props.createdAt * 1000).toLocaleString()
-                    ).format("YYYY-MM-DD HH:mm:ss")
+                  ? moment(props.createdAt * 1000).format("YYYY-MM-DD HH:mm:ss")
                   : "无创建时间记录")}
             </div>
           </div>
           <div className="modal-content-bottom">
+            <div className="wrap">
+              <div className="title-related">关联原始需求</div>
+              <div className="content-related">sr</div>
+            </div>
             <div className="wrap">
               <div className="title-related">关联缺陷</div>
               <div className="content-related">i am issue</div>

@@ -31,16 +31,17 @@ interface SRCardProps {
   readonly service: Service | number;
 }
 
-interface IRCard {
+interface IRCardProps {
   readonly id: number; // id
   readonly project: number; // the project belongs to
   readonly title: string; // title
   readonly description: string; // description
   readonly rank: number;
-  readonly createdBy: string; // somebody
+  readonly createdBy?: string; // somebody
   readonly createdAt: number; // sometime
-  readonly disabled: boolean;
+  readonly disabled?: boolean;
   readonly progress: number;
+  readonly iter: Iteration[];
 }
 
 interface IRSRAssociation {
@@ -130,7 +131,7 @@ export const store = configureStore({
 
 export const history = createReduxHistory(store);
 export type {
-  IRCard,
+  IRCardProps,
   SRCardProps,
   IRSRAssociation,
   UserIteration,
