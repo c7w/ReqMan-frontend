@@ -107,6 +107,64 @@ interface UserSRAssociationProps {
   readonly sr: number;
 }
 
+interface MergeRequestProps {
+  authoredAt: number;
+  authoredByEmail: string;
+  authoredByUserName: string;
+  description: string;
+  disabled: boolean;
+  id: number;
+  merge_id: number;
+  repo: number;
+  reviewedAt: number;
+  reviewedByEmail: string;
+  reviewedByUserName: string;
+  state: "merged" | "opened" | "closed";
+  title: string;
+  url: string;
+  user_authored: number;
+  user_reviewed: number;
+}
+
+interface CommitProps {
+  additions: number;
+  commiter_email: string;
+  commiter_name: string;
+  createdAt: number;
+  deletions: number;
+  diff: string;
+  disabled: boolean;
+  hash_id: string;
+  id: number;
+  message: string;
+  repo: number;
+  title: string;
+  url: string;
+  user_committer: number;
+}
+
+interface IssueProps {
+  assigneeUserName: string;
+  authoredAt: number;
+  authoredByUserName: string;
+  closedAt: number;
+  closedByUserName: string;
+  description: string;
+  disabled: boolean;
+  id: number;
+  is_bug: boolean;
+  issue_id: number;
+  labels: string;
+  repo: number;
+  state: "opened" | "closed";
+  title: string;
+  updatedAt: number;
+  url: string;
+  user_assignee: number;
+  user_authored: number;
+  user_closed: number;
+}
+
 const { createReduxHistory, routerMiddleware, routerReducer } =
   createReduxHistoryContext({ history: createBrowserHistory() });
 
@@ -141,4 +199,7 @@ export type {
   Iteration,
   SRService,
   UserSRAssociationProps,
+  MergeRequestProps,
+  IssueProps,
+  CommitProps,
 };

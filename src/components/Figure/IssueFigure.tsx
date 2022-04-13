@@ -7,11 +7,11 @@ interface IssueFigureProps {
   title: string; // chart title
 }
 
-const IssueFigure = () => {
+const IssueFigure = (props: IssueFigureProps) => {
   const test =
     '{"iterations":["iter1","iter2","iter3","iter4"],"all_sr_count":[12,14,16,18],"issues":[1,2,4,2]}';
-  const data = JSON.parse(test);
-  // const data = JSON.parse(props.text);
+  // const data = JSON.parse(test);
+  const data = JSON.parse(props.text);
   const iterations = data.iterations;
   const allSR = data.all_sr_count;
   let maxSR = 0;
@@ -36,7 +36,7 @@ const IssueFigure = () => {
 
   const option = {
     title: {
-      text: "需求交付质量分析",
+      text: props.title,
       // text: props.title,
     },
     tooltip: {

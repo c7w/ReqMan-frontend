@@ -120,6 +120,10 @@ const Test = () => {
     commitStore === ""
   ) {
   } else {
+    console.debug(JSON.parse(repoStore));
+    console.debug(JSON.parse(issueStore));
+    console.debug(JSON.parse(commitStore));
+    console.debug(JSON.parse(mergeStore));
     return (
       <>
         <p>I am test page</p>

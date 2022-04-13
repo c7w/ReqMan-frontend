@@ -96,7 +96,7 @@ const SiteRouter = () => {
           <Route path="projects" element={<ProjectList />} />
           {/* Dev Paths */}
           <Route path="SR_List" element={<ProjectSR />} />
-          <Route path="test" element={<Test />} />
+          <Route path="dev/test" element={<Test />} />
           <Route
             path={"dev/loading"}
             element={
