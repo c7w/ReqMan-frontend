@@ -4,6 +4,7 @@ import List from "./List";
 import { useDispatch, useSelector } from "react-redux";
 import { getProjectStore } from "../../store/slices/ProjectSlice";
 import { updateProjectInfo } from "../../store/functions/UMS";
+import { DragDropContext } from "react-beautiful-dnd";
 import { getSRListInfo } from "../../store/functions/RMS";
 import { reviewSR, todoSR, wipSR } from "../../utils/SRClassification";
 import {
@@ -33,11 +34,13 @@ const Calendar = (props: CalendarProps) => {
   let todoSRListData: any = [];
   let wipSRListData: any = [];
   let reviewSRListData: any = [];
+  let allSRListData: any = [];
   useEffect(() => {
     console.log(" ========================== use Effect ! ==================");
     todoSRListData = [];
     wipSRListData = [];
     reviewSRListData = [];
+    allSRListData = [];
     for (const project of userData.projects) {
       const project_id = Number(project.id);
       getSRListInfo(dispatcher, project_id).then((data: any) => {
@@ -47,12 +50,15 @@ const Calendar = (props: CalendarProps) => {
         const review_arr = reviewSR(JSON.stringify(data));
         todo_arr.forEach((value: any) => {
           todoSRListData.push(value);
+          allSRListData.push(value);
         });
         wip_arr.forEach((value: any) => {
           wipSRListData.push(value);
+          allSRListData.push(value);
         });
         review_arr.forEach((value: any) => {
           reviewSRListData.push(value);
+          allSRListData.push(value);
         });
         dispatcher(updateTodoSRList(JSON.stringify(todoSRListData)));
         dispatcher(updateWipSRList(JSON.stringify(wipSRListData)));
@@ -63,12 +69,31 @@ const Calendar = (props: CalendarProps) => {
       });
     }
   }, [counter]);
+
+  const onDragEnd = (result: any) => {
+    //Todo
+  };
+
   return (
-    <div className="calendar">
-      <List name={"未开始"} stateSRList={JSON.stringify(todoSRList)} />
-      <List name={"开发中"} stateSRList={JSON.stringify(wipSRList)} />
-      <List name={"测试中"} stateSRList={JSON.stringify(reviewSRList)} />
-    </div>
+    <DragDropContext onDragEnd={onDragEnd}>
+      <div className="calendar">
+        <List
+          name={"未开始"}
+          stateSRList={JSON.stringify(todoSRList)}
+          id={"1"}
+        />
+        <List
+          name={"开发中"}
+          stateSRList={JSON.stringify(wipSRList)}
+          id={"2"}
+        />
+        <List
+          name={"测试中"}
+          stateSRList={JSON.stringify(reviewSRList)}
+          id={"3"}
+        />
+      </div>
+    </DragDropContext>
   );
 };
 

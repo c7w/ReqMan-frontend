@@ -15,6 +15,7 @@ import {
 import { UserOutlined, DownOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { updateSRListStore } from "../../store/slices/IRSRSlice";
+import { Draggable } from "react-beautiful-dnd";
 import { Iteration, SRCardProps } from "../../store/ConfigureStore";
 import { updateSRInfo } from "../../store/functions/RMS";
 import { projId2ProjInfo, SRId2SRInfo } from "../../utils/Association";
@@ -240,11 +241,20 @@ const SRCard = (props: SRCardProps) => {
               <Select.Option value="已完成">已完成</Select.Option>
             </Select>
           </div>
-          <div className="modal-header-right">I am right</div>
+          <div className="modal-header-right"></div>
         </div>
         <Divider />
         <div className="modal-content">
           <div className="modal-content-up">
+            <div
+              style={{
+                fontWeight: "bold",
+                fontSize: "1.5rem",
+                marginBottom: "1rem",
+              }}
+            >
+              需求描述
+            </div>
             <Typography
               style={{
                 overflowWrap: "normal",
@@ -285,7 +295,20 @@ const SRCard = (props: SRCardProps) => {
                   : "无创建时间记录")}
             </div>
           </div>
-          <div className="modal-content-bottom"></div>
+          <div className="modal-content-bottom">
+            <div className="wrap">
+              <div className="title-related">关联缺陷</div>
+              <div className="content-related">i am issue</div>
+            </div>
+            <div className="commit-related wrap">
+              <div className="title-related">关联提交</div>
+              <div className="content-related">i am commit</div>
+            </div>
+            <div className="iteration-related wrap">
+              <div className="title-related">关联迭代</div>
+              <div className="content-related">i am iteration</div>
+            </div>
+          </div>
         </div>
       </Modal>
     </>
