@@ -59,6 +59,8 @@ const SRCard = (props: SRCardProps) => {
   const dispatcher = useDispatch();
   const userInfo = useSelector(getUserStore);
   const projectInfo = useSelector(getProjectStore);
+  const IRSRAssoStore = useSelector(getIRSRStore);
+  const IRListStore = useSelector(getIRListStore);
   const state2Color = new Map();
   const state2ChineseState = new Map();
   const [modalVisible, setModalVisible] = useState<boolean>(false);
@@ -85,6 +87,27 @@ const SRCard = (props: SRCardProps) => {
   state2ChineseState.set("WIP", "开发中");
   state2ChineseState.set("Reviewing", "测试中");
   state2ChineseState.set("Done", "已完成");
+
+  // 更新打开的 modal 对应的 SR 的所有关系
+  const updateAssociation = () => {
+    console.log("updating !");
+    // 该项目所有 IRSR
+    getIRSRInfo(dispatcher, props.project).then(() => {
+      console.log(IRSRAssoStore);
+    });
+    // 该项目所有 IR
+    getIRListInfo(dispatcher, props.project).then(() => {
+      console.log(IRListStore);
+      // 异步等待
+    });
+  };
+
+  useEffect(() => {
+    if (IRSRAssoStore !== "" && IRListStore !== "") {
+      setAssoIRListData(oneSR2AllIR(props.id, IRSRAssoStore, IRListStore));
+      console.log(assoIRListData);
+    }
+  }, [IRSRAssoStore, IRListStore]);
 
   const handleOK = () => {
     if (
@@ -183,6 +206,7 @@ const SRCard = (props: SRCardProps) => {
         onClick={() => {
           // document.getElementsByTagName("input")[0].checked = true;
           setModalVisible(true);
+          updateAssociation(); // 更新 store
         }}
       >
         <div className="card-small-header">
@@ -306,7 +330,9 @@ const SRCard = (props: SRCardProps) => {
           <div className="modal-content-bottom">
             <div className="wrap">
               <div className="title-related">关联原始需求</div>
-              <div className="content-related">sr</div>
+              <div className="content-related">
+                {JSON.stringify(assoIRListData)}
+              </div>
             </div>
             <div className="wrap">
               <div className="title-related">关联缺陷</div>
