@@ -23,6 +23,7 @@ import ProjectRequirementsReadonly from "./route/Project/ProjectRequirementsRead
 import ProjectMember from "./route/Project/ProjectMember";
 import Test from "../components/test"; // 测试接口
 import ProjectIteration from "./route/Project/ProjectIteration";
+import ProjectMergeRequest from "./route/Project/ProjectMergeRequest";
 
 const SiteRouter = () => {
   const testIR =
@@ -52,6 +53,7 @@ const SiteRouter = () => {
             element={<ProjectRequirementsReadonly />}
           />
           <Route path="project/:id/member" element={<ProjectMember />} />
+          <Route path="project/:id/merges" element={<ProjectMergeRequest />} />
           <Route path="project/:id/iteration" element={<ProjectIteration />} />
           <Route path="project/:id/analyse" element={<ProjectAnalyse />} />
           <Route path="project/:id/settings" element={<ProjectSetting />} />
