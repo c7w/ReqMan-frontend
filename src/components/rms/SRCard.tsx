@@ -32,6 +32,7 @@ import {
   updateCounter,
   updateTodoSRList,
 } from "../../store/slices/CalendarSlice";
+import moment from "moment";
 const { Text } = Typography;
 
 const SRCard = (props: SRCardProps) => {
@@ -197,6 +198,13 @@ const SRCard = (props: SRCardProps) => {
               src={getUserAvatar(userInfo)}
             />
           </Avatar.Group>
+          <div>
+            {props.createdAt
+              ? moment(
+                  new Date(props.createdAt * 1000).toLocaleString()
+                ).format("YYYY-MM-DD HH:mm:ss")
+              : "无创建时间记录"}
+          </div>
         </div>
       </div>
       {/*<input className="card-input" id="button" type="checkbox" />*/}
@@ -271,7 +279,9 @@ const SRCard = (props: SRCardProps) => {
               <b>创建时间:</b>
               {"   " +
                 (props.createdAt
-                  ? new Date(props.createdAt).toLocaleString()
+                  ? moment(
+                      new Date(props.createdAt * 1000).toLocaleString()
+                    ).format("YYYY-MM-DD HH:mm:ss")
                   : "无创建时间记录")}
             </div>
           </div>

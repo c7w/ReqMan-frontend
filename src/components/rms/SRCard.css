@@ -52,6 +52,9 @@
 
 .card-small-down {
   padding: 5px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 .card-small-avatar {
