@@ -22,7 +22,9 @@ const getRDTSInfo = async (dispatcher: any, project_id: number) => {
     promise_list.push(
       getMergeInfo(dispatcher, project_id, JSON.stringify(repo_data))
     );
-    promise_list.push(getMRSRAssociation(dispatcher, project_id));
+    promise_list.push(
+      getMRSRAssociation(dispatcher, project_id, JSON.stringify(repo_data))
+    );
     return Promise.all(promise_list);
   });
 };
@@ -213,17 +215,37 @@ const getCommitInfo = async (
 
 const getMRSRAssociation = async (
   dispatcher: any,
-  project_id: number
+  project_id: number,
+  RepoStore: string
 ): Promise<any> => {
-  const myParams = {
-    project: project_id,
-    type: "mr-sr",
-  };
-  return request_json(API.GET_RDTS, {
-    getParams: myParams,
-  }).then((data: any) => {
-    dispatcher(updateMRSRAssociationStore(JSON.stringify(data)));
-    return data;
+  const promise_list: any[] = [];
+  JSON.parse(RepoStore).data.forEach((repo: any) => {
+    const myParams = {
+      repo: repo.id,
+      type: "mr-sr",
+    };
+    const promise = request_json(API.GET_RDTS, {
+      getParams: myParams,
+    });
+    promise_list.push(promise);
+  });
+
+  return Promise.all(promise_list).then((data: any) => {
+    const all_mr_sr_asso: any[] = [];
+
+    data.forEach((repo_mr_sr_asso: any) => {
+      repo_mr_sr_asso.data.forEach((mr_sr_asso: any) => {
+        all_mr_sr_asso.push(mr_sr_asso);
+      });
+    });
+
+    const res = {
+      code: 0,
+      data: all_mr_sr_asso,
+    };
+
+    dispatcher(updateMRSRAssociationStore(JSON.stringify(res)));
+    return res;
   });
 };
 
@@ -231,7 +253,8 @@ const createMRSRAssociation = async (
   dispatcher: any,
   project_id: number,
   mr_id: number,
-  sr_id: number
+  sr_id: number,
+  repoStore: string
 ) => {
   const myBody = {
     project: project_id,
@@ -246,7 +269,7 @@ const createMRSRAssociation = async (
   };
   return request_json(API.POST_RDTS, { body: myBody }).then((data) => {
     if (data.code === 0) {
-      getMRSRAssociation(dispatcher, project_id);
+      getMRSRAssociation(dispatcher, project_id, repoStore);
     }
     return data;
   });
@@ -256,7 +279,8 @@ const deleteMRSRAssociation = async (
   dispatcher: any,
   project_id: number,
   mr_id: number,
-  sr_id: number
+  sr_id: number,
+  repoStore: string
 ) => {
   const myBody = {
     project: project_id,
@@ -271,7 +295,7 @@ const deleteMRSRAssociation = async (
   };
   return request_json(API.POST_RDTS, { body: myBody }).then((data) => {
     if (data.code === 0) {
-      getMRSRAssociation(dispatcher, project_id);
+      getMRSRAssociation(dispatcher, project_id, repoStore);
     }
     return data;
   });

@@ -3,9 +3,15 @@ import React, { useState } from "react";
 import "./UIMergeCard.css";
 import { MergeRequestProps } from "../../store/ConfigureStore";
 import { userId2UserInfo } from "../../utils/Association";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getProjectStore } from "../../store/slices/ProjectSlice";
 import moment from "moment";
+import { useParams } from "react-router-dom";
+import {
+  createMRSRAssociation,
+  deleteMRSRAssociation,
+} from "../../store/functions/RDTS";
+import { getRepoStore } from "../../store/slices/RepoSlice";
 
 interface UIMergeCardProps {
   data: string;
@@ -22,7 +28,13 @@ interface UIMergeCardPreviewProps {
 }
 
 const UIMergeCard = (props: UIMergeCardProps) => {
+  const dispatcher = useDispatch();
+  const params = useParams<"id">();
+  const project_id = Number(params.id);
+
   const projectStore = useSelector(getProjectStore);
+  const repoStore = useSelector(getRepoStore);
+
   const data: MergeRequestProps = JSON.parse(props.data);
 
   const getBackgroundColor = (state: "closed" | "merged" | "opened") => {
@@ -63,13 +75,45 @@ const UIMergeCard = (props: UIMergeCardProps) => {
     }
   }
 
+  let currAssociatedSRId = -1;
+  console.debug(JSON.parse(props.MRSRAssociationStore).data);
+  const filtered_list = JSON.parse(props.MRSRAssociationStore).data.filter(
+    (asso: any) => asso.MR === data.id
+  );
+  if (filtered_list.length > 0) {
+    currAssociatedSRId = filtered_list[0].SR;
+  }
+
   const onSRAssociatedChange = (val: string) => {
+    const key = Number(val);
+    if (currAssociatedSRId > 0) {
+      deleteMRSRAssociation(
+        dispatcher,
+        project_id,
+        data.id,
+        currAssociatedSRId,
+        repoStore
+      ).then((data: any) => {
+        if (data.id === 0) {
+          createMRSRAssociation(
+            dispatcher,
+            project_id,
+            data.id,
+            key,
+            repoStore
+          );
+        }
+      });
+    } else {
+      createMRSRAssociation(dispatcher, project_id, data.id, key, repoStore);
+    }
     console.debug(val);
   };
 
   return (
     <Modal
       centered={true}
+      footer={null}
       destroyOnClose={true}
       visible={props.visible}
       onCancel={() => props.close()}
@@ -118,18 +162,21 @@ const UIMergeCard = (props: UIMergeCardProps) => {
           </span>
           <Select
             showSearch={true}
-            style={{ width: "10rem" }}
+            style={{ width: "20rem" }}
             placeholder="功能需求"
             optionFilterProp="children"
             onChange={onSRAssociatedChange}
+            defaultValue={currAssociatedSRId.toString()}
             filterOption={(input, option: any) =>
               option.children.indexOf(input.toLowerCase()) >= 0
             }
           >
-            <Select.Option value={""}>　</Select.Option>
-            <Select.Option value="jack">Jack</Select.Option>
-            <Select.Option value="v">VJack</Select.Option>
-            <Select.Option value="m">MJack</Select.Option>
+            <Select.Option value="-1">　</Select.Option>
+            {JSON.parse(props.SRListStore).data.map((sr: any) => (
+              <Select.Option key={sr.id} value={sr.id.toString()}>
+                {sr.title}
+              </Select.Option>
+            ))}
           </Select>
         </div>
       </div>
