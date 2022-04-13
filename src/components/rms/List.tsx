@@ -1,21 +1,18 @@
 import React, { useEffect, useState } from "react";
 import "./List.css";
 import SRCard from "./SRCard";
+import { Droppable } from "react-beautiful-dnd";
 import { Divider } from "antd";
 
 interface ListProps {
   readonly name: string;
   readonly stateSRList: string;
+  readonly id: string;
 }
 
 const List = (props: ListProps) => {
-  console.log("list: " + props.stateSRList);
   const tmp_SRList = eval(JSON.parse(props.stateSRList));
-  // const [SRList, setSRList] = useState(props.stateSRList);
-  // console.log("list: " + SRList);
   const mySRCardList: any = [];
-  console.log(tmp_SRList);
-  // console.log(tmp_SRList[0]);
   if (tmp_SRList) {
     tmp_SRList.forEach((value: any) => {
       mySRCardList.push(
@@ -41,7 +38,14 @@ const List = (props: ListProps) => {
     <div className="list-list">
       <div className="list-header">{props.name}</div>
       <Divider />
-      <div className="list-content">{mySRCardList}</div>
+      <Droppable droppableId={props.id}>
+        {(provided) => (
+          <div className="list-content" {...provided.droppableProps}>
+            {mySRCardList}
+            {provided.placeholder}
+          </div>
+        )}
+      </Droppable>
     </div>
   );
 };

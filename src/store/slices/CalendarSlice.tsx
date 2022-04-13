@@ -6,6 +6,7 @@ export const CalendarSlice = createSlice({
     todoSRList: "",
     wipSRList: "",
     reviewSRList: "",
+    counter: 0,
   },
   reducers: {
     updateTodoSRList: (state, action) => {
@@ -17,11 +18,18 @@ export const CalendarSlice = createSlice({
     updateReviewSRList: (state, action) => {
       state.reviewSRList = action.payload;
     },
+    updateCounter: (state, action) => {
+      state.counter++;
+    },
   },
 });
 
-export const { updateTodoSRList, updateWipSRList, updateReviewSRList } =
-  CalendarSlice.actions;
+export const {
+  updateTodoSRList,
+  updateWipSRList,
+  updateReviewSRList,
+  updateCounter,
+} = CalendarSlice.actions;
 
 export const getTodoSRListStore = (state: {
   calendar_store: { todoSRList: string };
@@ -39,6 +47,12 @@ export const getReviewSRListStore = (state: {
   calendar_store: { reviewSRList: string };
 }) => {
   return state.calendar_store.reviewSRList;
+};
+
+export const getCounterStore = (state: {
+  calendar_store: { counter: number };
+}) => {
+  return state.calendar_store.counter;
 };
 
 export default CalendarSlice.reducer;
