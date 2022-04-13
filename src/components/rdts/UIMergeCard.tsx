@@ -1,4 +1,4 @@
-import { Modal, Space, Tag, Typography } from "antd";
+import { Modal, Select, Space, Tag, Typography } from "antd";
 import React, { useState } from "react";
 import "./UIMergeCard.css";
 import { MergeRequestProps } from "../../store/ConfigureStore";
@@ -9,11 +9,15 @@ import moment from "moment";
 
 interface UIMergeCardProps {
   data: string;
+  SRListStore: string;
+  MRSRAssociationStore: string;
   visible: boolean;
   close: () => void;
 }
 
 interface UIMergeCardPreviewProps {
+  SRListStore: string;
+  MRSRAssociationStore: string;
   data: string;
 }
 
@@ -58,6 +62,10 @@ const UIMergeCard = (props: UIMergeCardProps) => {
       reviewedBy = find_result.name;
     }
   }
+
+  const onSRAssociatedChange = (val: string) => {
+    console.debug(val);
+  };
 
   return (
     <Modal
@@ -104,8 +112,27 @@ const UIMergeCard = (props: UIMergeCardProps) => {
           &nbsp;&nbsp;
           <span>@&nbsp;&nbsp;{moment(data.reviewedAt * 1000).calendar()}</span>
         </div>
+        <div>
+          <span className={"meta-data-label"} style={{ marginRight: "1rem" }}>
+            关联功能需求
+          </span>
+          <Select
+            showSearch={true}
+            style={{ width: "10rem" }}
+            placeholder="功能需求"
+            optionFilterProp="children"
+            onChange={onSRAssociatedChange}
+            filterOption={(input, option: any) =>
+              option.children.indexOf(input.toLowerCase()) >= 0
+            }
+          >
+            <Select.Option value={""}>　</Select.Option>
+            <Select.Option value="jack">Jack</Select.Option>
+            <Select.Option value="v">VJack</Select.Option>
+            <Select.Option value="m">MJack</Select.Option>
+          </Select>
+        </div>
       </div>
-      <hr />
     </Modal>
   );
 };
@@ -119,6 +146,8 @@ const UIMergeCardPreview = (props: UIMergeCardPreviewProps) => {
         data={props.data}
         visible={visible}
         close={() => setVisible(false)}
+        MRSRAssociationStore={props.MRSRAssociationStore}
+        SRListStore={props.SRListStore}
       />
       <a onClick={() => setVisible(true)}>{data.title}</a>
     </>

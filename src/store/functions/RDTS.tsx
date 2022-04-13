@@ -7,6 +7,7 @@ import {
   updateIssueStore,
   updateCommitStore,
   updateMergeStore,
+  updateMRSRAssociationStore,
 } from "../slices/IssueSlice";
 
 const getRDTSInfo = async (dispatcher: any, project_id: number) => {
@@ -21,6 +22,7 @@ const getRDTSInfo = async (dispatcher: any, project_id: number) => {
     promise_list.push(
       getMergeInfo(dispatcher, project_id, JSON.stringify(repo_data))
     );
+    promise_list.push(getMRSRAssociation(dispatcher, project_id));
     return Promise.all(promise_list);
   });
 };
@@ -209,6 +211,72 @@ const getCommitInfo = async (
   });
 };
 
+const getMRSRAssociation = async (
+  dispatcher: any,
+  project_id: number
+): Promise<any> => {
+  const myParams = {
+    project: project_id,
+    type: "mr-sr",
+  };
+  return request_json(API.GET_RDTS, {
+    getParams: myParams,
+  }).then((data: any) => {
+    dispatcher(updateMRSRAssociationStore(JSON.stringify(data)));
+    return data;
+  });
+};
+
+const createMRSRAssociation = async (
+  dispatcher: any,
+  project_id: number,
+  mr_id: number,
+  sr_id: number
+) => {
+  const myBody = {
+    project: project_id,
+    type: "mr-sr",
+    operation: "create",
+    data: {
+      updateData: {
+        MRId: mr_id,
+        SRId: sr_id,
+      },
+    },
+  };
+  return request_json(API.POST_RDTS, { body: myBody }).then((data) => {
+    if (data.code === 0) {
+      getMRSRAssociation(dispatcher, project_id);
+    }
+    return data;
+  });
+};
+
+const deleteMRSRAssociation = async (
+  dispatcher: any,
+  project_id: number,
+  mr_id: number,
+  sr_id: number
+) => {
+  const myBody = {
+    project: project_id,
+    type: "mr-sr",
+    operation: "delete",
+    data: {
+      updateData: {
+        MRId: mr_id,
+        SRId: sr_id,
+      },
+    },
+  };
+  return request_json(API.POST_RDTS, { body: myBody }).then((data) => {
+    if (data.code === 0) {
+      getMRSRAssociation(dispatcher, project_id);
+    }
+    return data;
+  });
+};
+
 export {
   getRepoInfo,
   createRepoInfo,
@@ -217,4 +285,7 @@ export {
   getIssueInfo,
   getCommitInfo,
   getRDTSInfo,
+  getMRSRAssociation,
+  createMRSRAssociation,
+  deleteMRSRAssociation,
 };

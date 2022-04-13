@@ -7,10 +7,14 @@ import ProTable, { ProColumns } from "@ant-design/pro-table";
 import ReactMarkdown from "react-markdown";
 import { useDispatch, useSelector } from "react-redux";
 import { getRepoStore } from "../../store/slices/RepoSlice";
-import { getMergeStore } from "../../store/slices/IssueSlice";
+import {
+  getMergeStore,
+  getMRSRAssociationStore,
+} from "../../store/slices/IssueSlice";
 import { userId2UserInfo } from "../../utils/Association";
 import { getProjectStore } from "../../store/slices/ProjectSlice";
 import { UIMergeCardPreview } from "./UIMergeCard";
+import { getSRListStore } from "../../store/slices/IRSRSlice";
 
 interface MergeEntryProps {
   title: string;
@@ -71,6 +75,9 @@ const UIMerge = () => {
   const repoStore = useSelector(getRepoStore);
   const mergeStore = useSelector(getMergeStore);
 
+  const SRListStore = useSelector(getSRListStore);
+  const MRSRAssoStore = useSelector(getMRSRAssociationStore);
+
   const getBackgroundColor = (state: "closed" | "merged" | "opened") => {
     switch (state) {
       case "closed":
@@ -116,7 +123,11 @@ const UIMerge = () => {
             overflow: "hidden",
           }}
         >
-          <UIMergeCardPreview data={JSON.stringify(record)} />
+          <UIMergeCardPreview
+            data={JSON.stringify(record)}
+            MRSRAssociationStore={MRSRAssoStore}
+            SRListStore={SRListStore}
+          />
         </div>
       ),
     },
