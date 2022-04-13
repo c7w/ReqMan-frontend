@@ -11,7 +11,7 @@ import {
   getMergeStore,
   getMRSRAssociationStore,
 } from "../../store/slices/IssueSlice";
-import { userId2UserInfo } from "../../utils/Association";
+import { SRId2SRInfo, userId2UserInfo } from "../../utils/Association";
 import { getProjectStore } from "../../store/slices/ProjectSlice";
 import { UIMergeCardPreview } from "./UIMergeCard";
 import { getSRListStore } from "../../store/slices/IRSRSlice";
@@ -92,7 +92,7 @@ const UIMerge = () => {
   const columns: ProColumns<MergeRequestProps>[] = [
     {
       title: "合并请求编号",
-      width: "15%",
+      width: "12%",
       dataIndex: "id",
       ellipsis: true,
       align: "center",
@@ -113,7 +113,7 @@ const UIMerge = () => {
     {
       title: "合并请求信息",
       ellipsis: true,
-      width: "70%",
+      width: "58%",
       dataIndex: "description",
       align: "left",
       render: (_, record) => (
@@ -149,6 +149,29 @@ const UIMerge = () => {
           }
         }
         return <div style={{}}>{user}</div>;
+      },
+    },
+    {
+      title: "关联功能需求",
+      width: "15%",
+      ellipsis: true,
+      dataIndex: "SR",
+      align: "center",
+      render: (_, record) => {
+        let currAssociatedSRId = -1;
+        console.debug(JSON.parse(MRSRAssoStore).data);
+        const filtered_list = JSON.parse(MRSRAssoStore).data.filter(
+          (asso: any) => asso.MR === record.id
+        );
+        if (filtered_list.length > 0) {
+          currAssociatedSRId = filtered_list[0].SR;
+        }
+        const related =
+          currAssociatedSRId <= 0
+            ? "-"
+            : SRId2SRInfo(currAssociatedSRId, SRListStore).title;
+
+        return <div style={{}}>{related}</div>;
       },
     },
   ];

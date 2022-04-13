@@ -287,10 +287,8 @@ const deleteMRSRAssociation = async (
     type: "mr-sr",
     operation: "delete",
     data: {
-      updateData: {
-        MRId: mr_id,
-        SRId: sr_id,
-      },
+      MRId: mr_id,
+      SRId: sr_id,
     },
   };
   return request_json(API.POST_RDTS, { body: myBody }).then((data) => {

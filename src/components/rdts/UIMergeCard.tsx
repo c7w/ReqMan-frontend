@@ -36,6 +36,7 @@ const UIMergeCard = (props: UIMergeCardProps) => {
   const repoStore = useSelector(getRepoStore);
 
   const data: MergeRequestProps = JSON.parse(props.data);
+  const [mrId, setMrId] = useState(data.id);
 
   const getBackgroundColor = (state: "closed" | "merged" | "opened") => {
     switch (state) {
@@ -78,7 +79,7 @@ const UIMergeCard = (props: UIMergeCardProps) => {
   let currAssociatedSRId = -1;
   console.debug(JSON.parse(props.MRSRAssociationStore).data);
   const filtered_list = JSON.parse(props.MRSRAssociationStore).data.filter(
-    (asso: any) => asso.MR === data.id
+    (asso: any) => asso.MR === mrId
   );
   if (filtered_list.length > 0) {
     currAssociatedSRId = filtered_list[0].SR;
@@ -87,27 +88,22 @@ const UIMergeCard = (props: UIMergeCardProps) => {
   const onSRAssociatedChange = (val: string) => {
     const key = Number(val);
     if (currAssociatedSRId > 0) {
+      console.debug(currAssociatedSRId);
       deleteMRSRAssociation(
         dispatcher,
         project_id,
-        data.id,
+        mrId,
         currAssociatedSRId,
         repoStore
       ).then((data: any) => {
-        if (data.id === 0) {
-          createMRSRAssociation(
-            dispatcher,
-            project_id,
-            data.id,
-            key,
-            repoStore
-          );
+        console.debug(key);
+        if (data.code === 0 && key !== Number(-1)) {
+          createMRSRAssociation(dispatcher, project_id, mrId, key, repoStore);
         }
       });
     } else {
-      createMRSRAssociation(dispatcher, project_id, data.id, key, repoStore);
+      createMRSRAssociation(dispatcher, project_id, mrId, key, repoStore);
     }
-    console.debug(val);
   };
 
   return (
