@@ -91,7 +91,7 @@ const UIIRList = (props: UIIRListProps) => {
       createdAt: value.createdAt * 1000,
       disabled: value.disabled,
       progress: curProgress,
-      iter: IR2Iteration(value.id, iterIRAssoStore, iterationStore),
+      iter: [],
     });
   });
   // const [tableListDataSource] = useState<IRCard[]>(dataIRList);
