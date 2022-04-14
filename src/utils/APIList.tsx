@@ -91,6 +91,14 @@ const API = {
     path: "/ums/user_join_project_invitation/",
     method: "post",
   },
+  EMAIL_MODIFY_PASSWORD_REQUEST: {
+    path: "/ums/email_modify_password_request/",
+    method: "post",
+  },
+  EMAIL_MODIFY_PASSWORD_CALLBACK: {
+    path: "/ums/email_modify_password_callback/",
+    method: "post",
+  },
 };
 
 export default API;

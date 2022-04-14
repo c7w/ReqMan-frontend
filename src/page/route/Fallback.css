@@ -127,6 +127,8 @@ body {
 
 .fallback {
   background: #695681;
+  max-height: 100vh;
+  overflow: hidden;
 }
 
 .logo {
@@ -271,10 +273,11 @@ nav .menu .menu_icon:hover .icon:after {
   align-items: center;
   height: 100vh;
   overflow-x: hidden;
+  overflow-y: hidden;
 }
 .wrapper .container {
   margin: 0 auto;
-  transition: all 0.4s ease;
+  /*transition: all 0.4s ease;*/
   display: flex;
   justify-content: center;
   align-items: center;
@@ -312,7 +315,7 @@ nav .menu .menu_icon:hover .icon:after {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  animation: content 0.8s cubic-bezier(1, 0.06, 0.25, 1) backwards;
+  /*animation: content 0.8s cubic-bezier(1, 0.06, 0.25, 1) backwards;*/
 }
 @keyframes content {
   0% {
@@ -330,7 +333,7 @@ nav .menu .menu_icon:hover .icon:after {
   position: absolute;
   border-radius: 80px;
   z-index: 1;
-  animation: pieceLeft 8s cubic-bezier(1, 0.06, 0.25, 1) infinite both;
+  /*animation: pieceLeft 8s cubic-bezier(1, 0.06, 0.25, 1) infinite both;*/
 }
 @keyframes pieceLeft {
   50% {
@@ -379,7 +382,7 @@ nav .menu .menu_icon:hover .icon:after {
   min-height: 500px;
   position: absolute;
   margin: 40px 0;
-  animation: text 0.6s 1.8s ease backwards;
+  /*animation: text 0.6s 1.8s ease backwards;*/
 }
 @keyframes text {
   0% {
@@ -449,7 +452,7 @@ nav .menu .menu_icon:hover .icon:after {
   align-items: center;
   position: absolute;
   z-index: 2;
-  animation: anime404 0.6s cubic-bezier(0.3, 0.8, 1, 1.05) both;
+  /*animation: anime404 0.6s cubic-bezier(0.3, 0.8, 1, 1.05) both;*/
   animation-delay: 1.2s;
 }
 @media screen and (max-width: 799px) {
@@ -466,7 +469,7 @@ nav .menu .menu_icon:hover .icon:after {
 .wrapper .container .p404:nth-of-type(2) {
   color: #36184f;
   z-index: 1;
-  animation-delay: 1s;
+  /*animation-delay: 1s;*/
   filter: blur(10px);
   opacity: 0.8;
 }
@@ -487,7 +490,7 @@ nav .menu .menu_icon:hover .icon:after {
     inset 5px 0px 5px rgba(50, 36, 62, 0.3),
     inset 5px 5px 20px rgba(50, 36, 62, 0.25),
     2px 2px 5px rgba(255, 255, 255, 0.2);
-  animation: circle 0.8s cubic-bezier(1, 0.06, 0.25, 1) backwards;
+  /*animation: circle 0.8s cubic-bezier(1, 0.06, 0.25, 1) backwards;*/
 }
 @keyframes circle {
   0% {
@@ -512,7 +515,7 @@ nav .menu .menu_icon:hover .icon:after {
     inset 5px 0px 5px rgba(50, 36, 62, 0.3),
     inset 5px 5px 20px rgba(50, 36, 62, 0.25),
     2px 2px 5px rgba(255, 255, 255, 0.2);
-  animation: circle 0.8s 0.4s cubic-bezier(1, 0.06, 0.25, 1) backwards;
+  /*animation: circle 0.8s 0.4s cubic-bezier(1, 0.06, 0.25, 1) backwards;*/
 }
 @media screen and (max-width: 799px) {
   .wrapper .container .one .content:before {
