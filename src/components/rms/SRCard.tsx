@@ -201,16 +201,16 @@ const SRCard = (props: SRCardProps) => {
   return (
     <>
       <div
-        className="card-small"
+        className="SRCard-small"
         onClick={() => {
           // document.getElementsByTagName("input")[0].checked = true;
           setModalVisible(true);
           updateAssociation(); // 更新 store
         }}
       >
-        <div className="card-small-header">
-          <div className="card-small-header-left">{title}</div>
-          <div className="card-small-header-right">
+        <div className="SRCard-small-header">
+          <div className="SRCard-small-header-left">{title}</div>
+          <div className="SRCard-small-header-right">
             <Space>
               <Tag
                 color={state2Color.get(currState)}
@@ -221,15 +221,15 @@ const SRCard = (props: SRCardProps) => {
             </Space>
           </div>
         </div>
-        <div className="card-small-description">
+        <div className="SRCard-small-description">
           <Typography>
             <Text ellipsis={true}>{description}</Text>
           </Typography>
         </div>
-        <div className="card-small-down">
+        <div className="SRCard-small-down">
           <Avatar.Group>
             <Avatar
-              className="card-small-avatar"
+              className="SRCard-small-avatar"
               size="small"
               src={getUserAvatar(userInfo)}
             />
@@ -249,9 +249,9 @@ const SRCard = (props: SRCardProps) => {
         onCancel={handleCancel}
         width={"70%"}
       >
-        <div className="modal-header">
+        <div className="SRModal-header">
           <div
-            className="modal-header-left"
+            className="SRModal-header-left"
             style={{ fontWeight: "bold", fontSize: "1.5rem" }}
           >
             <Breadcrumb
@@ -274,11 +274,11 @@ const SRCard = (props: SRCardProps) => {
               <Select.Option value="已完成">已完成</Select.Option>
             </Select>
           </div>
-          <div className="modal-header-right"></div>
+          <div className="SRModal-header-right"></div>
         </div>
         <Divider />
-        <div className="modal-content">
-          <div className="modal-content-up">
+        <div className="SRModal-content">
+          <div className="SRModal-content-up">
             <div
               style={{
                 fontWeight: "bold",
@@ -307,12 +307,12 @@ const SRCard = (props: SRCardProps) => {
             </Typography>
           </div>
           <Divider />
-          <div className="modal-content-middle">
+          <div className="SRModal-content-middle">
             <div style={{ display: "flex", flexDirection: "row" }}>
               <p>负责人：</p>
               <Avatar.Group>
                 <Avatar
-                  className="card-small-avatar"
+                  className="SRCard-small-avatar"
                   size="small"
                   src={getUserAvatar(userInfo)}
                 />
@@ -326,24 +326,24 @@ const SRCard = (props: SRCardProps) => {
                   : "无创建时间记录")}
             </div>
           </div>
-          <div className="modal-content-bottom">
-            <div className="wrap">
-              <div className="title-related">关联原始需求</div>
-              <div className="content-related">
+          <div className="SRModal-content-bottom">
+            <div className="SRWrap SR-IR-related">
+              <div className="SR-title-related">关联原始需求</div>
+              <div className="SR-content-related">
                 {JSON.stringify(assoIRListData)}
               </div>
             </div>
-            <div className="wrap">
-              <div className="title-related">关联缺陷</div>
-              <div className="content-related">i am issue</div>
+            <div className="SRWrap SR-issue-related">
+              <div className="SR-title-related">关联缺陷</div>
+              <div className="SR-content-related">i am issue</div>
             </div>
-            <div className="commit-related wrap">
-              <div className="title-related">关联提交</div>
-              <div className="content-related">i am commit</div>
+            <div className="SRWrap SR-commit-related">
+              <div className="SR-title-related">关联提交</div>
+              <div className="SR-content-related">i am commit</div>
             </div>
-            <div className="iteration-related wrap">
-              <div className="title-related">关联迭代</div>
-              <div className="content-related">i am iteration</div>
+            <div className="SRWrap SR-iteration-related">
+              <div className="SR-title-related">关联迭代</div>
+              <div className="SR-content-related">i am iteration</div>
             </div>
           </div>
         </div>
