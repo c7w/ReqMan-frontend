@@ -1,7 +1,7 @@
 import "./UIMerge.css";
 import React from "react";
 import moment from "moment";
-import { IRCard, MergeRequestProps } from "../../store/ConfigureStore";
+import { IRCardProps, MergeRequestProps } from "../../store/ConfigureStore";
 import { Button, Popconfirm, Progress } from "antd";
 import ProTable, { ProColumns } from "@ant-design/pro-table";
 import ReactMarkdown from "react-markdown";
