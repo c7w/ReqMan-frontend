@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getUserStore } from "../../store/slices/UserSlice";
 import { getProjectStore } from "../../store/slices/ProjectSlice";
 import CryptoJS from "crypto-js";
+import "./IRCard.css";
 import {
   Avatar,
   Breadcrumb,
@@ -150,26 +151,26 @@ const IRCard = (props: IRCardProps) => {
   return (
     <>
       <div
-        className="card-small"
+        className="IRCard-small"
         onClick={() => {
           // document.getElementsByTagName("input")[0].checked = true;
           setModalVisible(true);
           updateAssociation();
         }}
       >
-        <div className="card-small-header">
-          <div className="card-small-header-left">{title}</div>
-          <div className="card-small-header-right"></div>
+        <div className="IRCard-small-header">
+          <div className="IRCard-small-header-left">{title}</div>
+          <div className="IRCard-small-header-right"></div>
         </div>
-        <div className="card-small-description">
+        <div className="IRCard-small-description">
           <Typography>
             <Text ellipsis={true}>{description}</Text>
           </Typography>
         </div>
-        <div className="card-small-down">
+        <div className="IRCard-small-down">
           <Avatar.Group>
             <Avatar
-              className="card-small-avatar"
+              className="IRCard-small-avatar"
               size="small"
               src={getUserAvatar(userInfo)}
             />
@@ -189,9 +190,9 @@ const IRCard = (props: IRCardProps) => {
         onCancel={handleCancel}
         width={"70%"}
       >
-        <div className="modal-header">
+        <div className="IRModal-header">
           <div
-            className="modal-header-left"
+            className="IRModal-header-left"
             style={{ fontWeight: "bold", fontSize: "1.5rem" }}
           >
             <Breadcrumb
@@ -204,11 +205,11 @@ const IRCard = (props: IRCardProps) => {
               <Breadcrumb.Item>{props.title}</Breadcrumb.Item>
             </Breadcrumb>
           </div>
-          <div className="modal-header-right"></div>
+          <div className="IRModal-header-right"></div>
         </div>
         <Divider />
-        <div className="modal-content">
-          <div className="modal-content-up">
+        <div className="IRModal-content">
+          <div className="IRModal-content-up">
             <div
               style={{
                 fontWeight: "bold",
@@ -237,12 +238,12 @@ const IRCard = (props: IRCardProps) => {
             </Typography>
           </div>
           <Divider />
-          <div className="modal-content-middle">
+          <div className="IRModal-content-middle">
             <div style={{ display: "flex", flexDirection: "row" }}>
               <p>负责人：</p>
               <Avatar.Group>
                 <Avatar
-                  className="card-small-avatar"
+                  className="IRCard-small-avatar"
                   size="small"
                   src={getUserAvatar(userInfo)}
                 />
@@ -256,16 +257,16 @@ const IRCard = (props: IRCardProps) => {
                   : "无创建时间记录")}
             </div>
           </div>
-          <div className="modal-content-bottom">
-            <div className="wrap">
-              <div className="title-related">关联功能需求</div>
-              <div className="content-related">
+          <div className="IRModal-content-bottom">
+            <div className="IRWrap IR-SR-related">
+              <div className="IR-title-related">关联功能需求</div>
+              <div className="IR-content-related">
                 {JSON.stringify(assoSRListData)}
               </div>
             </div>
-            <div className="iteration-related wrap">
-              <div className="title-related">关联迭代</div>
-              <div className="content-related">
+            <div className="IR-iteration-related IRWrap">
+              <div className="IR-title-related">关联迭代</div>
+              <div className="IR-content-related">
                 {JSON.stringify(assoIRIterData)}
               </div>
             </div>
