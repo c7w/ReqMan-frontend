@@ -24,7 +24,7 @@ import {
   updateIterationInfo,
 } from "../../store/functions/RMS";
 import {
-  IRCard,
+  IRCardProps,
   Iteration,
   SRCardProps,
   SRIteration,
@@ -487,7 +487,7 @@ const UIIteration = () => {
                 >
                   &nbsp;
                 </div>
-                {JSON.parse(IRStore).data.map((ir: IRCard) => {
+                {JSON.parse(IRStore).data.map((ir: IRCardProps) => {
                   return (
                     <div key={ir.id}>
                       <div
@@ -554,7 +554,7 @@ const UIIteration = () => {
                     .data.sort((a: Iteration, b: Iteration) => a.sid - b.sid)
                     .map((data: Iteration) => (
                       <div key={data.id}>
-                        {JSON.parse(IRStore).data.map((ir: IRCard) => {
+                        {JSON.parse(IRStore).data.map((ir: IRCardProps) => {
                           return (
                             <div key={ir.id}>
                               <div

@@ -20,7 +20,7 @@ import {
   getIterationInfo,
 } from "../store/functions/RMS";
 import {
-  IRCard,
+  IRCardProps,
   IRSRAssociation,
   Iteration,
   SRCardProps,

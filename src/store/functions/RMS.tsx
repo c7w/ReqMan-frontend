@@ -11,7 +11,7 @@ import {
   updateIRSRStore,
 } from "../slices/IRSRSlice";
 import {
-  IRCard,
+  IRCardProps,
   Iteration,
   SRCardProps,
   IRSRAssociation,
@@ -46,7 +46,7 @@ const getIRListInfo = async (
 const createIRInfo = async (
   dispatcher: any,
   project_id: number,
-  ir: IRCard
+  ir: IRCardProps
 ): Promise<void> => {
   // console.log(ir);
   const myBody = {
@@ -73,7 +73,7 @@ const createIRInfo = async (
 const updateIRInfo = async (
   dispatcher: any,
   project_id: number,
-  ir: IRCard
+  ir: IRCardProps
 ): Promise<void> => {
   // console.log(ir);
   const myBody = {
@@ -104,7 +104,7 @@ const updateIRInfo = async (
 const deleteIRInfo = async (
   dispatcher: any,
   project_id: number,
-  ir: IRCard
+  ir: IRCardProps
 ): Promise<void> => {
   const myBody = {
     project: ir.project,

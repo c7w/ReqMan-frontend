@@ -1,0 +1,122 @@
+.IRCard-small {
+  height: 100px;
+  left: 0;
+  margin: 20px 5px 5px 5px;
+  padding: 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  background: #fff;
+  box-shadow: 1px 1px 2px #aaaaaa;
+  transition: color 0.5s ease 0.5s;
+}
+
+.IRCard-small:hover {
+  background: rgb(244, 245, 247);
+}
+
+.IRCard-small-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.IRCard-small-header-left {
+  width: 70%;
+  font-weight: bold;
+  font-size: 18px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  overflow-wrap: normal;
+}
+
+.IRCard-small-header-right {
+}
+
+.IRCard-small-description {
+  overflow-wrap: normal;
+}
+
+.IRCard-small-down {
+  padding: 5px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.IRCard-small-avatar {
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+.ant-modal-title {
+  width: 90%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.IRModal-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.IRModal-header-left {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.IRModal-content-up {
+}
+
+.IRModal-content-middle {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.IRModal-content-bottom {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 方法一 start */
+.IRWrap {
+  position: relative;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  padding: 20px;
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.IR-title-related {
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.IRWrap .IR-title-related {
+  position: absolute;
+  top: -1em;
+  left: 2%;
+  line-height: 2em;
+  padding: 0 1em;
+  background-color: #fff;
+}
+/* 方法一 end */
+
+.IRModal-content {
+  width: 100%;
+  max-width: 100%;
+  overflow: auto;
+  padding-top: 20px;
+}

@@ -12,7 +12,7 @@ import {
   Space,
 } from "antd";
 import {
-  IRCard,
+  IRCardProps,
   IRSRAssociation,
   SRCardProps,
 } from "../../store/ConfigureStore";
@@ -27,12 +27,18 @@ import {
 import { ToastMessage } from "../../utils/Navigation";
 import ReactMarkdown from "react-markdown";
 import {
+  IR2Iteration,
   Iteration2SR,
   oneIR2AllSR,
+  SR2Iteration,
   SRId2SRInfo,
   userId2UserInfo,
 } from "../../utils/Association";
-import { getSRIterationStore } from "../../store/slices/IterationSlice";
+import {
+  getIRIterationStore,
+  getIterationStore,
+  getSRIterationStore,
+} from "../../store/slices/IterationSlice";
 import { getSRListStore } from "../../store/slices/IRSRSlice";
 import { getProjectStore } from "../../store/slices/ProjectSlice";
 const { TextArea } = Input;
@@ -51,10 +57,12 @@ const UIIRList = (props: UIIRListProps) => {
   const IRSRAssociationData = JSON.parse(props.IRSRAssociation).data;
   const dispatcher = useDispatch();
   const project = props.project_id;
-  const dataIRList: IRCard[] = [];
+  const dataIRList: IRCardProps[] = [];
   const projectInfo = useSelector(getProjectStore);
+  const iterationStore = useSelector(getIterationStore);
+  const iterIRAssoStore = useSelector(getIRIterationStore);
 
-  IRListData.forEach((value: IRCard) => {
+  IRListData.forEach((value: IRCardProps) => {
     const user = userId2UserInfo(Number(value.createdBy), projectInfo);
     // calculate the IR Progress
     const curSRKey: number[] = [];
@@ -83,6 +91,7 @@ const UIIRList = (props: UIIRListProps) => {
       createdAt: value.createdAt * 1000,
       disabled: value.disabled,
       progress: curProgress,
+      iter: IR2Iteration(value.id, iterIRAssoStore, iterationStore),
     });
   });
   // const [tableListDataSource] = useState<IRCard[]>(dataIRList);
@@ -96,7 +105,7 @@ const UIIRList = (props: UIIRListProps) => {
   const [desc, setDesc] = useState<string>("");
   const [rank, setRank] = useState<number>(1);
 
-  const showSRModal = (record: IRCard) => {
+  const showSRModal = (record: IRCardProps) => {
     setId(record.id);
     setIsSRModalVisible(true);
   };
@@ -114,7 +123,7 @@ const UIIRList = (props: UIIRListProps) => {
     setIsSRModalVisible(false);
   };
 
-  const showEditModal = (record: IRCard) => {
+  const showEditModal = (record: IRCardProps) => {
     setId(record.id);
     setTitle(record.title);
     setDesc(record.description);
@@ -123,12 +132,13 @@ const UIIRList = (props: UIIRListProps) => {
   };
 
   const handleEditOk = () => {
-    const newIR: IRCard = {
+    const newIR: IRCardProps = {
       id: id,
       project: project,
       title: title,
       description: desc,
       rank: rank,
+      iter: [],
       createdBy: "", // 未用到
       createdAt: -1, // 未用到
       disabled: true, // 未用到
@@ -162,12 +172,13 @@ const UIIRList = (props: UIIRListProps) => {
   };
 
   const handleCreateOk = () => {
-    const newIR: IRCard = {
+    const newIR: IRCardProps = {
       id: id,
       project: project,
       title: title,
       description: desc,
       rank: rank,
+      iter: [],
       createdBy: "", // 未用到
       createdAt: -1, // 未用到
       disabled: true, // 未用到
@@ -196,7 +207,7 @@ const UIIRList = (props: UIIRListProps) => {
     setIsCreateModalVisible(false);
   };
 
-  function confirmDelete(record: IRCard) {
+  function confirmDelete(record: IRCardProps) {
     deleteIRInfo(dispatcher, project, record).then((data: any) => {
       if (data.code === 0) {
         ToastMessage("success", "删除成功", "您的原始需求删除成功");
@@ -212,7 +223,7 @@ const UIIRList = (props: UIIRListProps) => {
     });
   }
 
-  const columns: ProColumns<IRCard>[] = [
+  const columns: ProColumns<IRCardProps>[] = [
     {
       title: "原始需求标题",
       width: "15%",
@@ -286,7 +297,7 @@ const UIIRList = (props: UIIRListProps) => {
     },
   ];
 
-  const expandedRowRender = (record: IRCard) => {
+  const expandedRowRender = (record: IRCardProps) => {
     return (
       <SRList
         showChoose={false}
@@ -300,7 +311,7 @@ const UIIRList = (props: UIIRListProps) => {
     );
   };
 
-  const onlyShowColumn: ProColumns<IRCard>[] = [];
+  const onlyShowColumn: ProColumns<IRCardProps>[] = [];
   for (let i = 0; i < 5; i += 1) {
     onlyShowColumn.push(columns[i]);
   }
@@ -308,7 +319,7 @@ const UIIRList = (props: UIIRListProps) => {
   if (!props.onlyShow) {
     return (
       <div className={`IRTable`}>
-        <ProTable<IRCard>
+        <ProTable<IRCardProps>
           headerTitle="原始需求列表"
           toolBarRender={() => {
             return [
@@ -455,7 +466,7 @@ const UIIRList = (props: UIIRListProps) => {
   } else {
     return (
       <div className={`showIRTable`}>
-        <ProTable<IRCard>
+        <ProTable<IRCardProps>
           headerTitle="需求展示列表"
           toolBarRender={() => {
             return [];

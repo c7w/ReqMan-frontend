@@ -75,25 +75,17 @@ const Calendar = (props: CalendarProps) => {
   };
 
   return (
-    <DragDropContext onDragEnd={onDragEnd}>
-      <div className="calendar">
-        <List
-          name={"未开始"}
-          stateSRList={JSON.stringify(todoSRList)}
-          id={"1"}
-        />
-        <List
-          name={"开发中"}
-          stateSRList={JSON.stringify(wipSRList)}
-          id={"2"}
-        />
-        <List
-          name={"测试中"}
-          stateSRList={JSON.stringify(reviewSRList)}
-          id={"3"}
-        />
-      </div>
-    </DragDropContext>
+    // <DragDropContext onDragEnd={onDragEnd}>
+    <div className="calendar">
+      <List name={"未开始"} stateSRList={JSON.stringify(todoSRList)} id={"1"} />
+      <List name={"开发中"} stateSRList={JSON.stringify(wipSRList)} id={"2"} />
+      <List
+        name={"测试中"}
+        stateSRList={JSON.stringify(reviewSRList)}
+        id={"3"}
+      />
+    </div>
+    // </DragDropContext>
   );
 };
 

@@ -1,4 +1,4 @@
-.card-small {
+.SRCard-small {
   height: 100px;
   left: 0;
   margin: 20px 5px 5px 5px;
@@ -10,30 +10,30 @@
   transition: color 0.5s ease 0.5s;
 }
 
-.modal {
-  background: white;
-  height: 1px;
-  overflow: hidden;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  border-radius: 20px;
-  transform: translate(-50%, -50%);
-  transition: width 0.5s ease 0.5s, height 0.5s;
-  width: 0;
-}
+/*.modal {*/
+/*  background: white;*/
+/*  height: 1px;*/
+/*  overflow: hidden;*/
+/*  position: fixed;*/
+/*  top: 50%;*/
+/*  left: 50%;*/
+/*  border-radius: 20px;*/
+/*  transform: translate(-50%, -50%);*/
+/*  transition: width 0.5s ease 0.5s, height 0.5s;*/
+/*  width: 0;*/
+/*}*/
 
-.card-small:hover {
+.SRCard-small:hover {
   background: rgb(244, 245, 247);
 }
 
-.card-small-header {
+.SRCard-small-header {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 }
 
-.card-small-header-left {
+.SRCard-small-header-left {
   width: 70%;
   font-weight: bold;
   font-size: 18px;
@@ -42,21 +42,21 @@
   overflow-wrap: normal;
 }
 
-.card-small-header-right {
+.SRCard-small-header-right {
 }
 
-.card-small-description {
+.SRCard-small-description {
   overflow-wrap: normal;
 }
 
-.card-small-down {
+.SRCard-small-down {
   padding: 5px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 }
 
-.card-small-avatar {
+.SRCard-small-avatar {
   margin-right: 5px;
   cursor: pointer;
 }
@@ -68,24 +68,24 @@
   white-space: nowrap;
 }
 
-.modal-header {
+.SRModal-header {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
 }
 
-.modal-header-left {
+.SRModal-header-left {
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
 }
 
-.modal-content-up {
+.SRModal-content-up {
 }
 
-.modal-content-middle {
+.SRModal-content-middle {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -93,7 +93,7 @@
   padding-right: 1rem;
 }
 
-.modal-content-bottom {
+.SRModal-content-bottom {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -101,7 +101,7 @@
 }
 
 /* 方法一 start */
-.wrap {
+.SRWrap {
   position: relative;
   border: 2px solid #ccc;
   border-radius: 5px;
@@ -112,12 +112,12 @@
   margin-bottom: 1rem;
 }
 
-.title-related {
+.SR-title-related {
   font-weight: bold;
   font-size: 1rem;
 }
 
-.wrap .title-related {
+.SRWrap .SR-title-related {
   position: absolute;
   top: -1em;
   left: 2%;
@@ -127,7 +127,7 @@
 }
 /* 方法一 end */
 
-.modal-content {
+.SRModal-content {
   width: 100%;
   max-width: 100%;
   overflow: auto;
