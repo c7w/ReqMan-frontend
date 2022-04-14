@@ -16,6 +16,7 @@ const ResetPasswordWithHash = () => {
   const hash1 = params.hash;
 
   const [hash2, setHash2] = useState("");
+  const [isClicked, setIsClicked] = useState(false);
 
   const [passwordError, setPasswordError] = useState("");
   const [password, setPassword] = useState("");
@@ -23,6 +24,7 @@ const ResetPasswordWithHash = () => {
   const [doubleCheck, setDoubleCheck] = useState(false);
 
   const handleResetPass = () => {
+    setIsClicked(true);
     request_json(API.EMAIL_MODIFY_PASSWORD_CALLBACK, {
       body: {
         stage: 2,
@@ -164,7 +166,9 @@ const ResetPasswordWithHash = () => {
             size={"large"}
             type={"primary"}
             shape={"round"}
-            disabled={passwordError !== " " || doubleCheckError !== " "}
+            disabled={
+              passwordError !== " " || doubleCheckError !== " " || isClicked
+            }
             onClick={handleResetPass}
             className={"register-button"}
           >
@@ -194,6 +198,8 @@ const ResetPassword = () => {
   const [mail, setMail] = useState("");
   const [mailError, setMailError] = useState("");
 
+  const [isClicked, setIsClicked] = useState(false);
+
   const getInputClassName = (msg: string) => {
     if (msg === "") {
       return "my-input input-unknown";
@@ -205,13 +211,14 @@ const ResetPassword = () => {
   };
 
   const handleResetPass = () => {
+    setIsClicked(true);
     request_json(API.EMAIL_MODIFY_PASSWORD_REQUEST, {
       body: { email: mail },
     })
       .then((data: any) => {
         switch (data.code) {
           case 1:
-            ToastMessage("error", "发送失败", "邮件服务暂时不可用");
+            ToastMessage("error", "发送失败", "短时间内发送邮件次数过于频繁");
             break;
           case 0:
             ToastMessage("success", "发送成功", "已发送验证邮件");
@@ -219,6 +226,7 @@ const ResetPassword = () => {
           // case 2:
           default:
             ToastMessage("error", "发送失败", "该邮箱不存在");
+            setIsClicked(false);
             break;
         }
       })
@@ -273,7 +281,7 @@ const ResetPassword = () => {
             size={"large"}
             type={"primary"}
             shape={"round"}
-            disabled={mailError !== " "}
+            disabled={mailError !== " " || isClicked}
             onClick={handleResetPass}
             className={"register-button"}
           >

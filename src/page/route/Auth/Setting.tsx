@@ -16,6 +16,8 @@ import {
 import { Redirect, ToastMessage } from "../../../utils/Navigation";
 import request_json from "../../../utils/Network";
 import API from "../../../utils/APIList";
+import moment from "moment";
+import { deleteRepoInfo } from "../../../store/functions/RDTS";
 
 const PersonalSetting = () => {
   const userStore = useSelector(getUserStore);
@@ -261,6 +263,73 @@ const PersonalSetting = () => {
               >
                 添加邮箱
               </Button>
+            </div>
+          </div>
+        </div>
+        <div className="setting-row">
+          <div className="column-1">
+            <Title level={3}>用户名设置</Title>
+            <Text>您可以在这里修改当前账户与其他网站的用户名绑定设置</Text>
+            <br />
+            <br />
+            <Text>绑定的用户名信息用于关联 Issue 与 Merge Request</Text>
+          </div>
+          <div className="column-2">
+            <div
+              className="setting-card"
+              style={{ display: "flex", flexDirection: "column" }}
+            >
+              <p
+                className={"register-prompt"}
+                style={{ marginBottom: "0.2rem" }}
+              >
+                远程用户名绑定：
+              </p>
+              <table
+                width={"98%"}
+                style={{
+                  margin: "0 auto 1rem",
+                  textAlign: "center",
+                }}
+              >
+                <thead>
+                  <tr
+                    style={{
+                      borderWidth: "1px",
+                      padding: "8px",
+                      borderStyle: "solid",
+                      borderColor: "#666666",
+                      backgroundColor: "#dedede",
+                    }}
+                  >
+                    <td>仓库编号</td>
+                    <td>仓库名</td>
+                    <td>创建时间</td>
+                    <td>操作</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    // key={repo.id}
+                    style={{
+                      borderWidth: "1px",
+                      padding: "8px",
+                      borderStyle: "solid",
+                      borderColor: "#666666",
+                      backgroundColor: "#ffffff",
+                    }}
+                  >
+                    {/*<td className={"iter-manager-column"}>{repo.id}</td>*/}
+                    {/*<td className={"iter-manager-column"}>{repo.title}</td>*/}
+                    {/*<td className={"iter-manager-column"}>*/}
+                    {/*  {moment(repo.createdAt * 1000).format("lll")}*/}
+                    {/*</td>*/}
+                    {/*<td className={"iter-manager-column"}>*/}
+                    {/*  <a>删除</a>*/}
+                    {/*</td>*/}
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
