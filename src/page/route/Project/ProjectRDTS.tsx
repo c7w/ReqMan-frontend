@@ -17,15 +17,7 @@ import {
   updateProjectInfo,
   updateUserInfo,
 } from "../../../store/functions/UMS";
-import {
-  getIRSRInfo,
-  getIterationInfo,
-  getSRIterationInfo,
-  getSRListInfo,
-  getSRServiceInfo,
-  getUserSRInfo,
-  updateServiceInfo,
-} from "../../../store/functions/RMS";
+import { getSRListInfo } from "../../../store/functions/RMS";
 import { Redirect, ToastMessage } from "../../../utils/Navigation";
 import Home from "../../../layout/Home";
 import UISRList from "../../../components/rms/UISRList";
@@ -36,6 +28,7 @@ import {
   getCommitStore,
   getIssueStore,
   getMergeStore,
+  getMRSRAssociationStore,
 } from "../../../store/slices/IssueSlice";
 import { getRDTSInfo } from "../../../store/functions/RDTS";
 
@@ -56,6 +49,8 @@ const ProjectRDTS = (props: ProjectRDTSProps) => {
   const mergeInfo = useSelector(getMergeStore);
   const issueInfo = useSelector(getIssueStore);
 
+  const MRSRStore = useSelector(getMRSRAssociationStore);
+
   const dispatcher = useDispatch();
   const params = useParams<"id">();
   const project_id = Number(params.id);
@@ -74,7 +69,8 @@ const ProjectRDTS = (props: ProjectRDTSProps) => {
     repoInfo === "" ||
     commitInfo === "" ||
     mergeInfo === "" ||
-    issueInfo === ""
+    issueInfo === "" ||
+    MRSRStore === ""
   ) {
     // Just let useEffect to re-query!
   } else if (JSON.parse(userInfo).code !== 0) {

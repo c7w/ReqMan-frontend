@@ -7,9 +7,14 @@ import ProTable, { ProColumns } from "@ant-design/pro-table";
 import ReactMarkdown from "react-markdown";
 import { useDispatch, useSelector } from "react-redux";
 import { getRepoStore } from "../../store/slices/RepoSlice";
-import { getMergeStore } from "../../store/slices/IssueSlice";
-import { userId2UserInfo } from "../../utils/Association";
+import {
+  getMergeStore,
+  getMRSRAssociationStore,
+} from "../../store/slices/IssueSlice";
+import { SRId2SRInfo, userId2UserInfo } from "../../utils/Association";
 import { getProjectStore } from "../../store/slices/ProjectSlice";
+import { UIMergeCardPreview } from "./UIMergeCard";
+import { getSRListStore } from "../../store/slices/IRSRSlice";
 
 interface MergeEntryProps {
   title: string;
@@ -70,6 +75,9 @@ const UIMerge = () => {
   const repoStore = useSelector(getRepoStore);
   const mergeStore = useSelector(getMergeStore);
 
+  const SRListStore = useSelector(getSRListStore);
+  const MRSRAssoStore = useSelector(getMRSRAssociationStore);
+
   const getBackgroundColor = (state: "closed" | "merged" | "opened") => {
     switch (state) {
       case "closed":
@@ -84,7 +92,7 @@ const UIMerge = () => {
   const columns: ProColumns<MergeRequestProps>[] = [
     {
       title: "合并请求编号",
-      width: "15%",
+      width: "12%",
       dataIndex: "id",
       ellipsis: true,
       align: "center",
@@ -105,7 +113,7 @@ const UIMerge = () => {
     {
       title: "合并请求信息",
       ellipsis: true,
-      width: "70%",
+      width: "58%",
       dataIndex: "description",
       align: "left",
       render: (_, record) => (
@@ -115,12 +123,16 @@ const UIMerge = () => {
             overflow: "hidden",
           }}
         >
-          {record.title}
+          <UIMergeCardPreview
+            data={JSON.stringify(record)}
+            MRSRAssociationStore={MRSRAssoStore}
+            SRListStore={SRListStore}
+          />
         </div>
       ),
     },
     {
-      title: "合并请求提交者",
+      title: "合并请求发起人",
       width: "15%",
       ellipsis: true,
       dataIndex: "createdBy",
@@ -137,6 +149,29 @@ const UIMerge = () => {
           }
         }
         return <div style={{}}>{user}</div>;
+      },
+    },
+    {
+      title: "关联功能需求",
+      width: "15%",
+      ellipsis: true,
+      dataIndex: "SR",
+      align: "center",
+      render: (_, record) => {
+        let currAssociatedSRId = -1;
+        console.debug(JSON.parse(MRSRAssoStore).data);
+        const filtered_list = JSON.parse(MRSRAssoStore).data.filter(
+          (asso: any) => asso.MR === record.id
+        );
+        if (filtered_list.length > 0) {
+          currAssociatedSRId = filtered_list[0].SR;
+        }
+        const related =
+          currAssociatedSRId <= 0
+            ? "-"
+            : SRId2SRInfo(currAssociatedSRId, SRListStore).title;
+
+        return <div style={{}}>{related}</div>;
       },
     },
   ];
