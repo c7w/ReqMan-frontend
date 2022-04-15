@@ -23,7 +23,6 @@ interface CalendarProps {
 }
 
 const Calendar = (props: CalendarProps) => {
-  console.log("--------------------- calendar ===========================");
   const userData = JSON.parse(props.userInfo).data;
   console.log("Calendar: " + userData);
   const dispatcher = useDispatch();
@@ -36,7 +35,6 @@ const Calendar = (props: CalendarProps) => {
   let reviewSRListData: any = [];
   let allSRListData: any = [];
   useEffect(() => {
-    console.log(" ========================== use Effect ! ==================");
     todoSRListData = [];
     wipSRListData = [];
     reviewSRListData = [];
@@ -44,7 +42,6 @@ const Calendar = (props: CalendarProps) => {
     for (const project of userData.projects) {
       const project_id = Number(project.id);
       getSRListInfo(dispatcher, project_id).then((data: any) => {
-        console.log(data);
         const todo_arr = todoSR(JSON.stringify(data));
         const wip_arr = wipSR(JSON.stringify(data));
         const review_arr = reviewSR(JSON.stringify(data));
@@ -77,13 +74,9 @@ const Calendar = (props: CalendarProps) => {
   return (
     // <DragDropContext onDragEnd={onDragEnd}>
     <div className="calendar">
-      <List name={"未开始"} stateSRList={JSON.stringify(todoSRList)} id={"1"} />
-      <List name={"开发中"} stateSRList={JSON.stringify(wipSRList)} id={"2"} />
-      <List
-        name={"测试中"}
-        stateSRList={JSON.stringify(reviewSRList)}
-        id={"3"}
-      />
+      <List name={"未开始"} stateSRList={todoSRList} id={"1"} />
+      <List name={"开发中"} stateSRList={wipSRList} id={"2"} />
+      <List name={"测试中"} stateSRList={reviewSRList} id={"3"} />
     </div>
     // </DragDropContext>
   );

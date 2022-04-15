@@ -11,29 +11,36 @@ interface ListProps {
 }
 
 const List = (props: ListProps) => {
-  const tmp_SRList = eval(JSON.parse(props.stateSRList));
-  const mySRCardList: any = [];
-  if (tmp_SRList) {
-    tmp_SRList.forEach((value: any) => {
-      mySRCardList.push(
-        <SRCard
-          id={value.id}
-          title={value.title}
-          priority={value.priority}
-          disabled={value.disabled}
-          description={value.description}
-          currState={value.state}
-          project={value.project}
-          rank={value.rank}
-          createdBy={value.createdBy}
-          createdAt={value.createdAt}
-          chargedBy={-1}
-          service={-1}
-          iter={[]}
-        />
-      );
-    });
-  }
+  const [mySRCardList, setMySRCardList] = useState([]);
+  useEffect(() => {
+    console.log(props.stateSRList);
+    const tmp_SRList = Array.from(JSON.parse(props.stateSRList));
+    console.log(tmp_SRList);
+    const newSRCardList: any = [];
+    if (tmp_SRList && tmp_SRList !== []) {
+      tmp_SRList.forEach((value: any) => {
+        newSRCardList.push(
+          <SRCard
+            id={value.id}
+            key={value.id}
+            title={value.title}
+            priority={value.priority}
+            disabled={value.disabled}
+            description={value.description}
+            currState={value.state}
+            project={value.project}
+            rank={value.rank}
+            createdBy={value.createdBy}
+            createdAt={value.createdAt}
+            chargedBy={-1}
+            service={-1}
+            iter={[]}
+          />
+        );
+      });
+    }
+    setMySRCardList(newSRCardList);
+  }, [props.stateSRList]);
   return (
     <div className="list-list">
       <div className="list-header">{props.name}</div>

@@ -3,9 +3,9 @@ import { createSlice } from "@reduxjs/toolkit";
 export const CalendarSlice = createSlice({
   name: "calendar_slice",
   initialState: {
-    todoSRList: "",
-    wipSRList: "",
-    reviewSRList: "",
+    todoSRList: "{}",
+    wipSRList: "{}",
+    reviewSRList: "{}",
     counter: 0,
   },
   reducers: {
