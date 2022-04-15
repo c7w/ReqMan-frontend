@@ -85,6 +85,17 @@
 .SRModal-content-up {
 }
 
+.SRModal-content-desc {
+  border-radius: 5px;
+  padding-left: 1rem;
+  font-size: 1rem;
+  transition: background-color 0.3s;
+}
+
+.SRModal-content-desc:hover {
+  background-color: rgb(240, 240, 240);
+}
+
 .SRModal-content-middle {
   display: flex;
   flex-direction: row;
@@ -115,6 +126,12 @@
 .SR-title-related {
   font-weight: bold;
   font-size: 1rem;
+}
+
+.SR-content-related {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
 }
 
 .SRWrap .SR-title-related {

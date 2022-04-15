@@ -1,8 +1,9 @@
 .IRCard-small {
   height: 100px;
   left: 0;
-  margin: 20px 5px 5px 5px;
   padding: 12px;
+  width: 30%;
+  margin: 5px 5px 5px 5px;
   border-radius: 5px;
   cursor: pointer;
   background: #fff;
