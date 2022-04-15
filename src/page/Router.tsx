@@ -14,7 +14,6 @@ import Project from "./route/Project/Project";
 import ProjectService from "./route/Project/ProjectService";
 import ProjectSR from "./route/Project/ProjectSR";
 import ProjectIR from "./route/Project/ProjectIR";
-import ProjectAnalyse from "./route/Project/ProjectAnalyse";
 import ProjectSetting from "./route/Project/ProjectSetting";
 import Loading from "../layout/components/Loading";
 import PersonalSetting from "./route/Auth/Setting";
@@ -97,7 +96,6 @@ const SiteRouter = () => {
             }
           />
           <Route path="project/:id/iteration" element={<ProjectIteration />} />
-          <Route path="project/:id/analyse" element={<ProjectAnalyse />} />
           <Route path="project/:id/settings" element={<ProjectSetting />} />
           <Route path="project/:id" element={<Project />} />
           <Route path="projects" element={<ProjectList />} />

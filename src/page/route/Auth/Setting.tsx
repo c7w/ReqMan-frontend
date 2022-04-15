@@ -606,7 +606,7 @@ const PersonalSetting = () => {
               style={{ marginTop: "1rem" }}
               disabled={
                 !(
-                  newPass == newPassConfirmation &&
+                  newPass === newPassConfirmation &&
                   checkError === " " &&
                   doubleCheckError === " "
                 )

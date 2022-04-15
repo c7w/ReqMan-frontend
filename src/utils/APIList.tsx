@@ -111,6 +111,10 @@ const API = {
     path: "/ums/email_request/",
     method: "post",
   },
+  GET_RECENT_ACTIVITY: {
+    path: "/rdts/get_recent_activity/",
+    method: "post",
+  },
 };
 
 export default API;
