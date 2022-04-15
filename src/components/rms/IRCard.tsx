@@ -1,4 +1,4 @@
-import { IRCardProps } from "../../store/ConfigureStore";
+import { IRCardProps, SRCardProps } from "../../store/ConfigureStore";
 import React, { useEffect, useState } from "react";
 import {
   getIRIterationInfo,
@@ -42,6 +42,7 @@ import {
   getIRIterationStore,
   getIterationStore,
 } from "../../store/slices/IterationSlice";
+import SRCard from "./SRCard";
 
 const IRCard = (props: IRCardProps) => {
   const dispatcher = useDispatch();
@@ -55,9 +56,8 @@ const IRCard = (props: IRCardProps) => {
   const [title, setTitle] = useState<string>(props.title);
   const [progress, setProgress] = useState<number>(props.progress);
   const [description, setDescription] = useState<string>(props.description);
-  const [assoSRListData, setAssoSRListData] = useState([]);
+  const [assoSRCardList, setAssoSRCardList] = useState([]);
   const [assoIRIterData, setAssoIRIterData] = useState([]);
-  console.log(props);
 
   const handleOK = () => {
     if (
@@ -108,23 +108,42 @@ const IRCard = (props: IRCardProps) => {
     getIterationInfo(dispatcher, props.project).then(() => {
       console.log(iterationStore);
     });
-  };
-
-  useEffect(() => {
-    if (IRSRAssoStore !== "" && SRListStore !== "") {
-      setAssoSRListData(oneIR2AllSR(props.id, IRSRAssoStore, SRListStore));
-      console.log(assoSRListData);
-    }
-  }, [IRSRAssoStore, SRListStore]);
-
-  useEffect(() => {
-    if (iterationStore !== "" && IRIterAssoStore !== "") {
-      setAssoIRIterData(
-        IR2Iteration(props.id, IRIterAssoStore, iterationStore)
+    Promise.all([
+      getIRSRInfo(dispatcher, props.project),
+      getSRListInfo(dispatcher, props.project),
+      getIRIterationInfo(dispatcher, props.project),
+      getIterationInfo(dispatcher, props.project),
+    ]).then((data) => {
+      const assoSRListData = oneIR2AllSR(
+        props.id,
+        JSON.stringify(data[0]),
+        JSON.stringify(data[1])
       );
-      console.log(assoIRIterData);
-    }
-  }, [iterationStore, IRIterAssoStore]);
+      const assoIterListData = IR2Iteration(
+        props.id,
+        JSON.stringify(data[2]),
+        JSON.stringify(data[3])
+      );
+      const newAssoSRCardList: any = [];
+      assoSRListData.forEach((value: SRCardProps) => {
+        newAssoSRCardList.push(
+          <SRCard
+            id={value.id}
+            key={value.id}
+            project={value.project}
+            title={value.title}
+            description={value.description}
+            priority={value.priority}
+            currState={value.currState}
+            iter={value.iter}
+            chargedBy={value.chargedBy}
+            service={value.service}
+          />
+        );
+      });
+      setAssoSRCardList(newAssoSRCardList);
+    });
+  };
 
   const handleCancel = () => {
     setTitle(props.title);
@@ -260,9 +279,7 @@ const IRCard = (props: IRCardProps) => {
           <div className="IRModal-content-bottom">
             <div className="IRWrap IR-SR-related">
               <div className="IR-title-related">关联功能需求</div>
-              <div className="IR-content-related">
-                {JSON.stringify(assoSRListData)}
-              </div>
+              <div className="IR-content-related">{assoSRCardList}</div>
             </div>
             <div className="IR-iteration-related IRWrap">
               <div className="IR-title-related">关联迭代</div>

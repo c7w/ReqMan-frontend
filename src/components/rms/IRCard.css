@@ -104,6 +104,11 @@
   font-size: 1rem;
 }
 
+.IR-content-related {
+  display: grid;
+  grid-template-columns: repeat(3, 33.33%);
+}
+
 .IRWrap .IR-title-related {
   position: absolute;
   top: -1em;

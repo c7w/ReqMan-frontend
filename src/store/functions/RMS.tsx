@@ -186,10 +186,6 @@ const getSRListInfo = async (
     project: project_id,
     type: "sr",
   };
-  // const SRList_data = await request_json(API.GET_RMS, { getParams: myParams });
-  // // // console.log("SRList: " + JSON.stringify(SRList_data));
-  // dispatcher(updateSRListStore(JSON.stringify(SRList_data)));
-  // return SRList_data;
   return request_json(API.GET_RMS, { getParams: myParams }).then(
     (SRList_data) => {
       // console.log(SRList_data.code);
@@ -289,10 +285,15 @@ const getIterationInfo = async (
     project: project_id,
     type: "iteration",
   };
-  const Iteration_data = await request_json(API.GET_RMS, {
-    getParams: myParams,
-  });
-  dispatcher(updateIterationStore(JSON.stringify(Iteration_data)));
+  return request_json(API.GET_RMS, { getParams: myParams }).then(
+    (Iteration_data) => {
+      // console.log(SRList_data.code);
+      if (Iteration_data.code === 0) {
+        dispatcher(updateIterationStore(JSON.stringify(Iteration_data)));
+      }
+      return Iteration_data;
+    }
+  );
 };
 
 const createIteration = async (
@@ -446,10 +447,15 @@ const getIRIterationInfo = async (
     project: project_id,
     type: "ir-iteration",
   };
-  const IRIteration_data = await request_json(API.GET_RMS, {
-    getParams: myParams,
-  });
-  dispatcher(updateIRIterationStore(JSON.stringify(IRIteration_data)));
+  return request_json(API.GET_RMS, { getParams: myParams }).then(
+    (IRIteration_data) => {
+      // console.log(SRList_data.code);
+      if (IRIteration_data.code === 0) {
+        dispatcher(updateIRIterationStore(JSON.stringify(IRIteration_data)));
+      }
+      return IRIteration_data;
+    }
+  );
 };
 
 const createIRIteration = async (
