@@ -72,7 +72,6 @@ const SRCard = (props: SRCardProps) => {
   const [currState, setCurrState] = useState<string>(props.currState);
   const [chargedBy, setChargedBy] = useState(props.createdBy);
   const [service, setService] = useState(props.service);
-  const [assoIRListData, setAssoIRListData] = useState([]);
   const [descEditing, setDescEditing] = useState<boolean>(false);
   const [bounds, setBounds] = useState({
     left: 0,
@@ -104,19 +103,17 @@ const SRCard = (props: SRCardProps) => {
   // };
   // 更新打开的 modal 对应的 SR 的所有关系
   const updateAssociation = () => {
-    // 该项目所有 IRSR
-    getIRSRInfo(dispatcher, props.project).then(() => {
-      console.log(IRSRAssoStore);
-    });
-    // 该项目所有 IR
-    getIRListInfo(dispatcher, props.project).then(() => {
-      console.log(IRListStore);
-    });
-  };
-
-  useEffect(() => {
-    if (IRSRAssoStore !== "" && IRListStore !== "") {
-      setAssoIRListData(oneSR2AllIR(props.id, IRSRAssoStore, IRListStore));
+    console.log("updating !");
+    Promise.all([
+      getIRSRInfo(dispatcher, props.project), // 该项目所有 IR SR
+      getIRListInfo(dispatcher, props.project), // 该项目所有 IR
+    ]).then((data) => {
+      // data 为即时得到的 store 信息，不等异步了
+      const assoIRListData = oneSR2AllIR(
+        props.id,
+        JSON.stringify(data[0]),
+        JSON.stringify(data[1])
+      );
       console.log(assoIRListData);
       const newAssoIRCardList: any = [];
       assoIRListData.forEach((value: IRCardProps) => {
@@ -135,8 +132,8 @@ const SRCard = (props: SRCardProps) => {
         );
       });
       setAssoIRCardList(newAssoIRCardList);
-    }
-  }, [IRSRAssoStore, IRListStore]);
+    });
+  };
 
   const handleOK = () => {
     if (

@@ -37,10 +37,15 @@ const getIRListInfo = async (
     project: project_id,
     type: "ir",
   };
-  // console.log(JSON.stringify(myParams));
-  const IRList_data = await request_json(API.GET_RMS, { getParams: myParams });
-  // console.log("IRList: " + JSON.stringify(IRList_data));
-  dispatcher(updateIRListStore(JSON.stringify(IRList_data)));
+  return request_json(API.GET_RMS, { getParams: myParams }).then(
+    (IRList_data) => {
+      // console.log(SRList_data.code);
+      if (IRList_data.code === 0) {
+        dispatcher(updateIRListStore(JSON.stringify(IRList_data)));
+      }
+      return IRList_data;
+    }
+  );
 };
 
 const createIRInfo = async (
@@ -373,10 +378,15 @@ const getIRSRInfo = async (
     project: project_id,
     type: "ir-sr",
   };
-  const IRSRAssociation_data = await request_json(API.GET_RMS, {
-    getParams: myParams,
-  });
-  dispatcher(updateIRSRStore(JSON.stringify(IRSRAssociation_data)));
+
+  return request_json(API.GET_RMS, { getParams: myParams }).then(
+    (IRSRAssociation_data) => {
+      if (IRSRAssociation_data.code === 0) {
+        dispatcher(updateIRSRStore(JSON.stringify(IRSRAssociation_data)));
+      }
+      return IRSRAssociation_data;
+    }
+  );
 };
 
 const createIRSR = async (

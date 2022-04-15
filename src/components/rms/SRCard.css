@@ -129,9 +129,8 @@
 }
 
 .SR-content-related {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(3, 33.33%);
 }
 
 .SRWrap .SR-title-related {
