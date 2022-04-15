@@ -133,6 +133,11 @@
   grid-template-columns: repeat(3, 33.33%);
 }
 
+.SR-MR-content-related {
+  display: flex;
+  flex-direction: column;
+}
+
 .SRWrap .SR-title-related {
   position: absolute;
   top: -1em;

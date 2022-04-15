@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./SRCard.css";
+import "../rdts/UIMergeCard.css";
 import {
   Avatar,
   Typography,
@@ -25,16 +26,19 @@ import { Draggable } from "react-beautiful-dnd";
 import {
   IRCardProps,
   Iteration,
+  MergeRequestProps,
   SRCardProps,
 } from "../../store/ConfigureStore";
 import {
   getIRListInfo,
   getIRSRInfo,
+  getSRListInfo,
   updateSRInfo,
 } from "../../store/functions/RMS";
 import {
   oneIR2AllSR,
   oneSR2AllIR,
+  oneSR2AllMR,
   projId2ProjInfo,
   SRId2SRInfo,
 } from "../../utils/Association";
@@ -72,6 +76,7 @@ import {
   getRepoInfo,
 } from "../../store/functions/RDTS";
 import { getRepoStore } from "../../store/slices/RepoSlice";
+import { UIMergeCard, UIMergeCardPreview } from "../rdts/UIMergeCard";
 const { Text } = Typography;
 
 const SRCard = (props: SRCardProps) => {
@@ -81,6 +86,7 @@ const SRCard = (props: SRCardProps) => {
   // rms
   const IRSRAssoStore = useSelector(getIRSRStore);
   const IRListStore = useSelector(getIRListStore);
+  const SRListStore = useSelector(getSRListStore);
   const SRIterAssoStore = useSelector(getSRIterationStore);
   const iterationStore = useSelector(getIterationStore);
   // rdts
@@ -135,15 +141,37 @@ const SRCard = (props: SRCardProps) => {
   // 更新打开的 modal 对应的 SR 的所有关系
   const updateAssociation = () => {
     console.log("updating !");
-    // update RDTS
-    getRDTSInfo(dispatcher, props.project).then((data) => {
+    Promise.all([
+      getRDTSInfo(dispatcher, props.project),
+      getSRListInfo(dispatcher, props.project),
+      updateProjectInfo(dispatcher, props.project),
+    ]).then((data) => {
       /*
-        data[0]: issue
-        data[1]: commit
-        data[2]: merge
-        data[3]: mr-sr
+        data[0][0]: issue
+        data[0][1]: commit
+        data[0][2]: merge
+        data[0][3]: mr-sr
+        data[1]: SRList
+        data[2]: ProjectInfo
       */
-      // const assoMRListData = oneSR2AllMR;
+      const assoMRListData = oneSR2AllMR(
+        props.id,
+        JSON.stringify(data[0][3]),
+        JSON.stringify(data[0][2])
+      );
+      const newAssoMRCardList: any = [];
+      console.log(assoMRListData);
+      assoMRListData.forEach((value: MergeRequestProps) => {
+        newAssoMRCardList.push(
+          <UIMergeCardPreview
+            data={JSON.stringify(value)}
+            key={value.id}
+            MRSRAssociationStore={JSON.stringify(data[0][3])}
+            SRListStore={JSON.stringify(data[1])}
+          />
+        );
+      });
+      setAssoMRCardList(newAssoMRCardList);
     });
     // update IR SR Association
     Promise.all([
@@ -404,9 +432,9 @@ const SRCard = (props: SRCardProps) => {
               <div className="SR-title-related">关联原始需求</div>
               <div className="SR-content-related">{assoIRCardList}</div>
             </div>
-            <div className="SRWrap SR-IR-related">
+            <div className="SRWrap SR-MR-related">
               <div className="SR-title-related">关联合并</div>
-              <div className="SR-content-related">{assoMRCardList}</div>
+              <div className="SR-MR-content-related">{assoMRCardList}</div>
             </div>
             <div className="SRWrap SR-issue-related">
               <div className="SR-title-related">关联缺陷</div>

@@ -23,6 +23,13 @@ const IRId2IRInfo = (IRId: number, IRList: string) => {
   const IR = IRListData.filter((obj: any) => obj.id === IRId);
   return IR.length > 0 ? IR[0] : "not found";
 };
+// 传入 MR 的 Id，返回其详细信息，同时需要传入该项目的 MRList (getMRStore 而来) （未解析）
+const MRId2MRInfo = (MRId: number, MRList: string) => {
+  console.log("==================== Get MRInfo By MRId ===================");
+  const MRListData = JSON.parse(MRList).data;
+  const MR = MRListData.filter((obj: any) => obj.id === MRId);
+  return MR.length > 0 ? MR[0] : "not found";
+};
 // 传入 iteration 的 Id, 返回其详细信息，同时需要传入该项目的 iterationInfo (getIterationInfo 而来) （未解析）
 const itId2ItInfo = (iterationId: number, iterationInfo: string) => {
   // console.log("============ Get iterationInfo By iterationId ============== ");
@@ -92,14 +99,21 @@ const MR2SR = (MRId: number, MRSRAsso: string, SRList: string) => {
   return {};
 };
 /*
-传入需要查询的 MRId，返回其对应的 SR(unique)
+传入需要查询的 SRId，返回其对应的所有 MR
 还需传入 MRSRAsso (getMRSRAssociationStore 而来) 未解析
-同时需要传入该项目的 SRList ( getSRListStore 而来) （未解析）
+同时需要传入该项目的 MRList ( getMergeStore 而来) （未解析）
 返回未排序
  */
 const oneSR2AllMR = (SRId: number, SRMRAsso: string, MRList: string) => {
   console.log("================ Get MR By SR ===============");
-  return {};
+  const SRMRData = JSON.parse(SRMRAsso).data;
+  console.log(SRMRData);
+  const matchedMRId = SRMRData.map((obj: any) => {
+    if (obj.SR === SRId) {
+      return obj.MR;
+    }
+  }).filter((obj: any) => obj);
+  return matchedMRId.map((id: any) => MRId2MRInfo(id, MRList));
 };
 /*
 传入需要查询的 IRId，返回其对应的所有迭代
@@ -263,6 +277,7 @@ export {
   userId2UserInfo,
   IRId2IRInfo,
   SRId2SRInfo,
+  MRId2MRInfo,
   itId2ItInfo,
   servId2ServInfo,
   projId2ProjInfo,

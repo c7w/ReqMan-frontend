@@ -106,21 +106,6 @@ const SiteRouter = () => {
               </Home>
             }
           />
-          <Route
-            path={"IRCard"}
-            element={
-              <IRCard
-                id={1}
-                project={2}
-                rank={1}
-                createdAt={166666666.0}
-                progress={0.5}
-                title={"ir"}
-                description={"irrrrrr"}
-                iter={[]}
-              />
-            }
-          />
           <Route path={"*"} element={<Fallback />} />
         </Routes>
       </Router>
