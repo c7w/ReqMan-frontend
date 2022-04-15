@@ -42,13 +42,16 @@ const PersonalSetting = () => {
   const [currMailValid, setCurrMailValid] = useState(false);
 
   const [fileList, setFileList] = useState([]);
+  const [disableSelect, setDisableSelect] = useState(false);
+
+  const [reload_cnt, set_reload_cnt] = useState(0);
 
   useEffect(() => {
     updateUserInfo(dispatcher);
     request_json(API.REMOTE_LIST).then((data: any) => {
       setRemoteUrl(JSON.stringify(data));
     });
-  }, []);
+  }, [reload_cnt]);
 
   if (userStore === "") {
     // Re-Query...
@@ -237,6 +240,7 @@ const PersonalSetting = () => {
               </p>
 
               <Select
+                disabled={disableSelect}
                 defaultValue={
                   userStore === "" || JSON.parse(userStore).code !== 0
                     ? "-"
@@ -246,11 +250,45 @@ const PersonalSetting = () => {
                 className={"setting-input"}
                 style={{ width: "20rem" }}
                 onChange={(value) => {
-                  console.debug(value); // TODO: change user primary email
+                  const former_email = JSON.parse(userStore).data.user.email;
+                  setDisableSelect(true);
+                  request_json(API.EMAIL_REQUEST, {
+                    body: {
+                      email: value,
+                      op: "rm",
+                      type: "minor",
+                    },
+                  }).then((data: any) => {
+                    request_json(API.EMAIL_REQUEST, {
+                      body: { email: value, op: "modify", type: "major" },
+                    }).then((data: any) => {
+                      request_json(API.EMAIL_REQUEST, {
+                        body: { email: former_email, op: "add", type: "minor" },
+                      }).then((data: any) => {
+                        if (data.code === 0 || data.code === 2) {
+                          ToastMessage(
+                            "success",
+                            "修改成功",
+                            "您的邮箱修改成功"
+                          );
+                        }
+                        updateUserInfo(dispatcher);
+                        setDisableSelect(false);
+                      });
+                    });
+                  });
                 }}
               >
-                <Select.Option value="jack">项目开发中</Select.Option>
-                // TODO
+                <Select.Option value={JSON.parse(userStore).data.user.email}>
+                  {JSON.parse(userStore).data.user.email}
+                </Select.Option>
+                {JSON.parse(userStore).data.user.minor_emails.map(
+                  (entry: any) => (
+                    <Select.Option key={entry[0]} value={entry[0]}>
+                      {entry[0]}
+                    </Select.Option>
+                  )
+                )}
               </Select>
 
               <p
@@ -296,6 +334,7 @@ const PersonalSetting = () => {
                       ToastMessage("success", "添加成功", "邮箱添加成功");
                       setCurrMailValid(false);
                       setCurrMailInput("");
+                      updateUserInfo(dispatcher);
                     } else if (data.code === 2) {
                       ToastMessage("error", "添加失败", "邮箱添加过于频繁");
                     } else {
@@ -346,13 +385,14 @@ const PersonalSetting = () => {
                     }}
                   >
                     <td>远程地址</td>
+                    <td>当前用户名</td>
                     <td>操作</td>
                   </tr>
                 </thead>
                 <tbody>
                   {remoteUrl === ""
                     ? null
-                    : Object.entries(JSON.parse(remoteUrl).data).map(
+                    : Object.entries(JSON.parse(remoteUrl).data.all_urls).map(
                         (remote: any) => (
                           <tr
                             key={remote[0]}
@@ -366,6 +406,11 @@ const PersonalSetting = () => {
                           >
                             <td className={"iter-manager-column"}>
                               {remote[0]}
+                            </td>
+                            <td>
+                              {JSON.parse(remoteUrl).data.exist_usernames[
+                                remote[0]
+                              ] || "- 未设定 -"}
                             </td>
                             <td className={"iter-manager-column"}>
                               <a
@@ -403,6 +448,7 @@ const PersonalSetting = () => {
                               );
                               setRemoteNameResetVisible(false);
                               setRemoteName("");
+                              set_reload_cnt(reload_cnt + 1);
                             } else {
                               ToastMessage(
                                 "error",
@@ -566,10 +612,6 @@ const PersonalSetting = () => {
                 )
               }
               onClick={() => {
-                console.debug({
-                  prev: CryptoJS.MD5(oldPass).toString(),
-                  curr: CryptoJS.MD5(newPass).toString(),
-                });
                 request_json(API.CHANGE_USER_PASSWORD, {
                   body: {
                     prev: CryptoJS.MD5(oldPass).toString(),
