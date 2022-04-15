@@ -99,6 +99,18 @@ const API = {
     path: "/ums/email_modify_password_callback/",
     method: "post",
   },
+  REMOTE_LIST: {
+    path: "/ums/urls_to_set_remote_name/",
+    method: "get",
+  },
+  SET_REMOTE_USERNAME: {
+    path: "/ums/set_remote_username/",
+    method: "post",
+  },
+  EMAIL_REQUEST: {
+    path: "/ums/email_request/",
+    method: "post",
+  },
 };
 
 export default API;
