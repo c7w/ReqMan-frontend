@@ -22,6 +22,7 @@ import {
   updateIRSRStore,
   updateSRListStore,
 } from "../../store/slices/IRSRSlice";
+import QueueAnim from "rc-queue-anim";
 import { Draggable } from "react-beautiful-dnd";
 import {
   IRCardProps,
@@ -430,11 +431,24 @@ const SRCard = (props: SRCardProps) => {
           <div className="SRModal-content-bottom">
             <div className="SRWrap SR-IR-related">
               <div className="SR-title-related">关联原始需求</div>
-              <div className="SR-content-related">{assoIRCardList}</div>
+              {/*<div className="SR-content-related">{assoIRCardList}</div>*/}
+              <QueueAnim
+                className="SR-content-related"
+                duration={2000}
+                interval={100}
+              >
+                {assoIRCardList}
+              </QueueAnim>
             </div>
             <div className="SRWrap SR-MR-related">
               <div className="SR-title-related">关联合并</div>
-              <div className="SR-MR-content-related">{assoMRCardList}</div>
+              <QueueAnim
+                className="SR-MR-content-related"
+                type="right"
+                ease="[.42,0,.58,1, .42,0,.58,1]"
+              >
+                {assoMRCardList}
+              </QueueAnim>
             </div>
             <div className="SRWrap SR-issue-related">
               <div className="SR-title-related">关联缺陷</div>
