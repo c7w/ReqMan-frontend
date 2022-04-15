@@ -57,7 +57,7 @@ const IRCard = (props: IRCardProps) => {
   const [progress, setProgress] = useState<number>(props.progress);
   const [description, setDescription] = useState<string>(props.description);
   const [assoSRCardList, setAssoSRCardList] = useState([]);
-  const [assoIRIterData, setAssoIRIterData] = useState([]);
+  const [assoIterCardList, setAssoIterList] = useState([]);
 
   const handleOK = () => {
     if (
@@ -92,22 +92,6 @@ const IRCard = (props: IRCardProps) => {
   // 更新打开的 modal 对应的 SR 的所有关系
   const updateAssociation = () => {
     console.log("updating !");
-    // 该项目所有 IRSR
-    getIRSRInfo(dispatcher, props.project).then(() => {
-      console.log(IRSRAssoStore);
-    });
-    // 该项目所有 SR
-    getSRListInfo(dispatcher, props.project).then(() => {
-      console.log(SRListStore);
-    });
-    // 该项目所有 IRIteration
-    getIRIterationInfo(dispatcher, props.project).then(() => {
-      console.log(IRIterAssoStore);
-    });
-    // 该项目所有 Iteration
-    getIterationInfo(dispatcher, props.project).then(() => {
-      console.log(iterationStore);
-    });
     Promise.all([
       getIRSRInfo(dispatcher, props.project),
       getSRListInfo(dispatcher, props.project),
@@ -119,6 +103,7 @@ const IRCard = (props: IRCardProps) => {
         JSON.stringify(data[0]),
         JSON.stringify(data[1])
       );
+      // to do: iteration card
       const assoIterListData = IR2Iteration(
         props.id,
         JSON.stringify(data[2]),
@@ -284,7 +269,7 @@ const IRCard = (props: IRCardProps) => {
             <div className="IR-iteration-related IRWrap">
               <div className="IR-title-related">关联迭代</div>
               <div className="IR-content-related">
-                {JSON.stringify(assoIRIterData)}
+                {JSON.stringify(assoIterCardList)}
               </div>
             </div>
           </div>

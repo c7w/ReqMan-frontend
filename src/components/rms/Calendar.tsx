@@ -24,7 +24,6 @@ interface CalendarProps {
 
 const Calendar = (props: CalendarProps) => {
   const userData = JSON.parse(props.userInfo).data;
-  console.log("Calendar: " + userData);
   const dispatcher = useDispatch();
   const counter = useSelector(getCounterStore);
   const todoSRList = useSelector(getTodoSRListStore); // string

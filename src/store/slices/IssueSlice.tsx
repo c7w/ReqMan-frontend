@@ -7,6 +7,8 @@ export const IssueSlice = createSlice({
     commit: "",
     merge: "",
     mr_sr: "",
+    issue_sr: "",
+    commit_sr: "",
   },
   reducers: {
     updateIssueStore: (state, action) => {
@@ -21,6 +23,12 @@ export const IssueSlice = createSlice({
     updateMRSRAssociationStore: (state, action) => {
       state.mr_sr = action.payload;
     },
+    updateIssueSRAssociationStore: (state, action) => {
+      state.issue_sr = action.payload;
+    },
+    updateCommitSRAssociationStore: (state, action) => {
+      state.commit_sr = action.payload;
+    },
   },
 });
 
@@ -29,6 +37,8 @@ export const {
   updateCommitStore,
   updateMergeStore,
   updateMRSRAssociationStore,
+  updateCommitSRAssociationStore,
+  updateIssueSRAssociationStore,
 } = IssueSlice.actions;
 
 export const getIssueStore = (state: any) => {
@@ -42,6 +52,12 @@ export const getMergeStore = (state: any) => {
 };
 export const getMRSRAssociationStore = (state: any) => {
   return state.issue_store.mr_sr;
+};
+export const getIssueSRAssociationStore = (state: any) => {
+  return state.issue_store.issue_sr;
+};
+export const getCommitSRAssociationStore = (state: any) => {
+  return state.issue_store.commit_sr;
 };
 
 export default IssueSlice.reducer;

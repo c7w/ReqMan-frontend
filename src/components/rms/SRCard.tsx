@@ -54,14 +54,44 @@ import {
 } from "../../store/slices/CalendarSlice";
 import moment from "moment";
 import IRCard from "./IRCard";
+import {
+  getIterationStore,
+  getSRIterationStore,
+} from "../../store/slices/IterationSlice";
+import {
+  getCommitSRAssociationStore,
+  getCommitStore,
+  getIssueSRAssociationStore,
+  getIssueStore,
+  getMergeStore,
+  getMRSRAssociationStore,
+} from "../../store/slices/IssueSlice";
+import {
+  getMRSRAssociation,
+  getRDTSInfo,
+  getRepoInfo,
+} from "../../store/functions/RDTS";
+import { getRepoStore } from "../../store/slices/RepoSlice";
 const { Text } = Typography;
 
 const SRCard = (props: SRCardProps) => {
   const dispatcher = useDispatch();
   const userInfo = useSelector(getUserStore);
-  const projectInfo = useSelector(getProjectStore);
+  const projectStore = useSelector(getProjectStore);
+  // rms
   const IRSRAssoStore = useSelector(getIRSRStore);
   const IRListStore = useSelector(getIRListStore);
+  const SRIterAssoStore = useSelector(getSRIterationStore);
+  const iterationStore = useSelector(getIterationStore);
+  // rdts
+  const repoStore = useSelector(getRepoStore);
+  const issueSRAssoStore = useSelector(getIssueSRAssociationStore);
+  const issueStore = useSelector(getIssueStore);
+  const commitSRAssoStore = useSelector(getCommitSRAssociationStore);
+  const commitStore = useSelector(getCommitStore);
+  const MRSRAssoStore = useSelector(getMRSRAssociationStore);
+  const MRStore = useSelector(getMergeStore);
+  // state map
   const state2Color = new Map();
   const state2ChineseState = new Map();
   const [modalVisible, setModalVisible] = useState<boolean>(false);
@@ -80,6 +110,7 @@ const SRCard = (props: SRCardProps) => {
     right: 0,
   });
   const [assoIRCardList, setAssoIRCardList] = useState([]);
+  const [assoMRCardList, setAssoMRCardList] = useState([]);
   state2Color.set("TODO", "red");
   state2Color.set("WIP", "blue");
   state2Color.set("Reviewing", "yellow");
@@ -104,6 +135,17 @@ const SRCard = (props: SRCardProps) => {
   // 更新打开的 modal 对应的 SR 的所有关系
   const updateAssociation = () => {
     console.log("updating !");
+    // update RDTS
+    getRDTSInfo(dispatcher, props.project).then((data) => {
+      /*
+        data[0]: issue
+        data[1]: commit
+        data[2]: merge
+        data[3]: mr-sr
+      */
+      // const assoMRListData = oneSR2AllMR;
+    });
+    // update IR SR Association
     Promise.all([
       getIRSRInfo(dispatcher, props.project), // 该项目所有 IR SR
       getIRListInfo(dispatcher, props.project), // 该项目所有 IR
@@ -361,6 +403,10 @@ const SRCard = (props: SRCardProps) => {
             <div className="SRWrap SR-IR-related">
               <div className="SR-title-related">关联原始需求</div>
               <div className="SR-content-related">{assoIRCardList}</div>
+            </div>
+            <div className="SRWrap SR-IR-related">
+              <div className="SR-title-related">关联合并</div>
+              <div className="SR-content-related">{assoMRCardList}</div>
             </div>
             <div className="SRWrap SR-issue-related">
               <div className="SR-title-related">关联缺陷</div>

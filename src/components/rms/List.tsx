@@ -13,9 +13,7 @@ interface ListProps {
 const List = (props: ListProps) => {
   const [mySRCardList, setMySRCardList] = useState([]);
   useEffect(() => {
-    console.log(props.stateSRList);
     const tmp_SRList = Array.from(JSON.parse(props.stateSRList));
-    console.log(tmp_SRList);
     const newSRCardList: any = [];
     if (tmp_SRList && tmp_SRList !== []) {
       tmp_SRList.forEach((value: any) => {
