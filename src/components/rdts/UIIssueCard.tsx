@@ -150,7 +150,19 @@ const UIIssueCard = (props: UIIssueCardProps) => {
     }
   });
 
-  data.description = data.description.replace(/!\[image\]\((.*?)\)/, "");
+  const indices = [];
+  let idx = data.url.indexOf("/");
+  while (idx != -1) {
+    indices.push(idx);
+    idx = data.url.indexOf("/", idx + 1);
+  }
+
+  const image_front_url = data.url.slice(0, indices[indices.length - 3]);
+
+  data.description = data.description.replace(
+    /!\[image\]\((.*?)\)/,
+    `<img src='${image_front_url}/$1' style="width: auto; height: auto; max-width: 90%"></img>`
+  );
 
   const onSelectionChange = (val: number[]) => {
     setMRBindDisabled(true);
@@ -248,7 +260,7 @@ const UIIssueCard = (props: UIIssueCardProps) => {
           <Select
             mode={"multiple"}
             showSearch={true}
-            style={{ width: "40rem", margin: "0.5rem 0 0.5rem 2rem" }}
+            style={{ width: "60%", margin: "0.5rem 0 0.5rem 1rem" }}
             placeholder="合并请求"
             disabled={MRBindDisabled}
             optionFilterProp="children"
@@ -278,7 +290,10 @@ const UIIssueCard = (props: UIIssueCardProps) => {
             {timeline_list
               .sort((entryA, entryB) => entryB.time - entryA.time)
               .map((entry: TimelineEntry) => (
-                <Timeline.Item color={entry.color}>
+                <Timeline.Item
+                  color={entry.color}
+                  key={entry.content.toString()}
+                >
                   <>
                     <span>
                       [{moment(entry.time * 1000).format("lll")}]&nbsp;&nbsp;
