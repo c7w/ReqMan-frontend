@@ -299,6 +299,44 @@ const deleteMRSRAssociation = async (
   });
 };
 
+const createMRIssueAssociation = async (
+  dispatcher: any,
+  project_id: number,
+  mr_id: number,
+  issue_id: number
+) => {
+  const myBody = {
+    project: project_id,
+    type: "issue-mr",
+    operation: "create",
+    data: {
+      updateData: {
+        issueId: issue_id,
+        MRId: mr_id,
+      },
+    },
+  };
+  return request_json(API.POST_RDTS, { body: myBody });
+};
+
+const deleteMRIssueAssociation = async (
+  dispatcher: any,
+  project_id: number,
+  mr_id: number,
+  issue_id: number
+) => {
+  const myBody = {
+    project: project_id,
+    type: "issue-mr",
+    operation: "delete",
+    data: {
+      issueId: issue_id,
+      MRId: mr_id,
+    },
+  };
+  return request_json(API.POST_RDTS, { body: myBody });
+};
+
 export {
   getRepoInfo,
   createRepoInfo,
@@ -310,4 +348,6 @@ export {
   getMRSRAssociation,
   createMRSRAssociation,
   deleteMRSRAssociation,
+  createMRIssueAssociation,
+  deleteMRIssueAssociation,
 };
