@@ -19,6 +19,7 @@ import API from "../../../utils/APIList";
 import moment from "moment";
 import { deleteRepoInfo, getRepoInfo } from "../../../store/functions/RDTS";
 import Loading from "../../../layout/components/Loading";
+import { compressBase64Image } from "../../../utils/ImageCompressor";
 
 const PersonalSetting = () => {
   const userStore = useSelector(getUserStore);
@@ -99,16 +100,21 @@ const PersonalSetting = () => {
     const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
     const reader = new FileReader();
     reader.addEventListener("load", () => {
-      request_json(API.UPLOAD_USER_AVATAR, { body: { avatar: reader.result } })
-        .then((data) => {
-          if (data.code === 0) {
-            ToastMessage("success", "上传成功", "您的头像上传成功");
-            window.location.href = "/settings";
-          }
+      console.debug(reader.result);
+      compressBase64Image(reader.result as string).then((result: any) => {
+        request_json(API.UPLOAD_USER_AVATAR, {
+          body: { avatar: result },
         })
-        .catch(() => {
-          ToastMessage("error", "上传失败", "请检查网络连接后重试");
-        });
+          .then((data) => {
+            if (data.code === 0) {
+              ToastMessage("success", "上传成功", "您的头像上传成功");
+              updateUserInfo(dispatcher);
+            }
+          })
+          .catch(() => {
+            ToastMessage("error", "上传失败", "请检查网络连接后重试");
+          });
+      });
     });
     reader.readAsDataURL(file);
 
