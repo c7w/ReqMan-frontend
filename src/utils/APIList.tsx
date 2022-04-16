@@ -115,6 +115,10 @@ const API = {
     path: "/rdts/get_recent_activity/",
     method: "post",
   },
+  TEST_ACCESS_TOKEN: {
+    path: "/rdts/test_access_token/",
+    method: "get",
+  },
 };
 
 export default API;

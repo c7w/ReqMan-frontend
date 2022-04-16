@@ -14,7 +14,7 @@ import request_json from "../../utils/Network";
 import API from "../../utils/APIList";
 import { ToastMessage } from "../../utils/Navigation";
 import ImgCrop from "antd-img-crop";
-import React, { useEffect, useState } from "react";
+import React, { ReactElement, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getProjectStore } from "../../store/slices/ProjectSlice";
 import { useParams } from "react-router-dom";
@@ -77,10 +77,7 @@ const CreateRepoModal = (props: CreateRepoModalProps) => {
     >
       <div>
         <p style={{ marginTop: "1rem", marginBottom: "0.2rem" }}>仓库名称：</p>
-        <Input
-          value={title}
-          onChange={(evt) => setTitle(evt.target.value)}
-        />{" "}
+        <Input value={title} onChange={(evt) => setTitle(evt.target.value)} />
         <p style={{ marginTop: "1rem", marginBottom: "0.2rem" }}>仓库类型：</p>
         <Select defaultValue={"gitlab"} disabled={true}>
           <Select.Option value={"gitlab"}>GitLab</Select.Option>
@@ -94,11 +91,13 @@ const CreateRepoModal = (props: CreateRepoModalProps) => {
           onChange={(evt) => setRemoteId(evt.target.value)}
         />{" "}
         <p style={{ marginTop: "1rem", marginBottom: "0.2rem" }}>
-          仓库访问令牌：
+          仓库 Access Token：
         </p>
         <Input
           value={accessToken}
-          onChange={(evt) => setAccessToken(evt.target.value)}
+          onChange={(evt) => {
+            setAccessToken(evt.target.value);
+          }}
         />
       </div>
     </Modal>
@@ -347,6 +346,9 @@ const UIProjectSetting = () => {
         <div className="column-1">
           <Title level={3}>项目仓库</Title>
           <Text>您可以在这里管理项目下属 GitLab 仓库</Text>
+          <br />
+          <br />
+          <Text>两种令牌的具体配置教程详见开发者文档</Text>
         </div>
         <div className="column-2">
           <div
@@ -364,6 +366,19 @@ const UIProjectSetting = () => {
                 close={() => setCreateRepoModalVisible(false)}
                 visible={createRepoModalVisible}
               />
+              <br />
+              <br />
+              <Text>
+                Access Token 用于定时主动拉取仓库信息，在 项目设置 &gt; 访问令牌
+                中维护
+              </Text>
+              <br />
+              <br />
+              <Text>
+                Secret Token 用于被动收取仓库 Webhooks 推送信息，在 项目设置
+                &gt; Webhooks 中维护，即时性较强
+              </Text>
+              <br />
             </div>
             <br />
             <table
@@ -385,7 +400,7 @@ const UIProjectSetting = () => {
                 >
                   <td>仓库编号</td>
                   <td>仓库名</td>
-                  <td>创建时间</td>
+                  <td>Access Token</td>
                   <td>操作</td>
                 </tr>
               </thead>
@@ -405,9 +420,58 @@ const UIProjectSetting = () => {
                       <td className={"iter-manager-column"}>{repo.id}</td>
                       <td className={"iter-manager-column"}>{repo.title}</td>
                       <td className={"iter-manager-column"}>
-                        {moment(repo.createdAt * 1000).format("lll")}
+                        <a
+                          onClick={() => {
+                            navigator.clipboard
+                              .writeText(repo.remote.secret_token)
+                              .then((r) => {
+                                ToastMessage(
+                                  "success",
+                                  "复制成功",
+                                  "项目邀请码复制成功"
+                                );
+                              });
+                          }}
+                        >
+                          点击复制
+                        </a>
                       </td>
                       <td className={"iter-manager-column"}>
+                        <a
+                          onClick={() => {
+                            request_json(API.TEST_ACCESS_TOKEN, {
+                              getParams: {
+                                project: project_id,
+                                repository: repo.id,
+                              },
+                            })
+                              .then((data: any) => {
+                                if (data.data.status === 200) {
+                                  ToastMessage(
+                                    "success",
+                                    "测试成功",
+                                    "成功对接到远程仓库"
+                                  );
+                                } else {
+                                  ToastMessage(
+                                    "error",
+                                    "测试失败",
+                                    "网络错误或令牌无权限"
+                                  );
+                                }
+                              })
+                              .catch((data: any) => {
+                                ToastMessage(
+                                  "error",
+                                  "测试失败",
+                                  "网络错误或令牌无权限"
+                                );
+                              });
+                          }}
+                        >
+                          测试
+                        </a>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
                         <a
                           onClick={() => {
                             deleteRepoInfo(
