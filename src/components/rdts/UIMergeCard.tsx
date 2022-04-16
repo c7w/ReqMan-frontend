@@ -146,12 +146,16 @@ const UIMergeCard = (props: UIMergeCardProps) => {
           &nbsp;&nbsp;
           <span>@&nbsp;&nbsp;{moment(data.authoredAt * 1000).calendar()}</span>
         </div>
-        <div>
-          <span className={"meta-data-label"}>合并请求负责人</span>
-          <span style={{ marginLeft: "1rem" }}>{reviewedBy}</span>
-          &nbsp;&nbsp;
-          <span>@&nbsp;&nbsp;{moment(data.reviewedAt * 1000).calendar()}</span>
-        </div>
+        {data.state === "merged" ? (
+          <div>
+            <span className={"meta-data-label"}>合并请求负责人</span>
+            <span style={{ marginLeft: "1rem" }}>{reviewedBy}</span>
+            &nbsp;&nbsp;
+            <span>
+              @&nbsp;&nbsp;{moment(data.reviewedAt * 1000).calendar()}
+            </span>
+          </div>
+        ) : null}
         <div>
           <span className={"meta-data-label"} style={{ marginRight: "1rem" }}>
             关联功能需求
