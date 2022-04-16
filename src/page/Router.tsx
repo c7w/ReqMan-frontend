@@ -1,4 +1,4 @@
-import { Provider } from "react-redux";
+import { Provider, useDispatch } from "react-redux";
 import { Route, Routes } from "react-router-dom";
 import { HistoryRouter as Router } from "redux-first-history/rr6";
 import { store, history } from "../store/ConfigureStore";
@@ -32,10 +32,15 @@ import {
   ResetPassword,
   ResetPasswordWithHash,
 } from "./route/Auth/ResetPassword";
+import { getCookie } from "../utils/CookieOperation";
+import { Redirect, ToastMessage } from "../utils/Navigation";
 
 const SiteRouter = () => {
-  const testIR =
-    "[{id: 1, project: 2, title: 'I am the first IR', description: 'hahahahahahah', rank: 1, createdBy: 'c7w', createdAt: 10000000000, disabled: false}]";
+  // See if sessionId in place
+  if (getCookie("sessionId", "") === "") {
+    ToastMessage("error", "需要登录", "用户令牌失效或已过期");
+    window.location.href = "/";
+  }
 
   return (
     <Provider store={store}>
