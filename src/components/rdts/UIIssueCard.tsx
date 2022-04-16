@@ -4,7 +4,7 @@ import React, { ReactElement, useEffect, useState } from "react";
 import { UIMergeCard } from "./UIMergeCard";
 import { IssueProps, MergeRequestProps } from "../../store/ConfigureStore";
 import { userId2UserInfo } from "../../utils/Association";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getProjectStore } from "../../store/slices/ProjectSlice";
 import request_json from "../../utils/Network";
 import API from "../../utils/APIList";
@@ -12,6 +12,12 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import { getMergeStore } from "../../store/slices/IssueSlice";
+import { difference, values } from "underscore";
+import {
+  createMRIssueAssociation,
+  deleteMRIssueAssociation,
+} from "../../store/functions/RDTS";
+import { useParams } from "react-router-dom";
 
 interface UIIssueCardProps {
   data: string;
@@ -33,7 +39,14 @@ const UIIssueCard = (props: UIIssueCardProps) => {
   const projectStore = useSelector(getProjectStore);
   const MRStore = useSelector(getMergeStore);
 
+  const dispatcher = useDispatch();
+  const params = useParams();
+  const project_id = Number(params.id);
+
   const [MRIssueAssociation, setMRIssueAssociation] = useState("[]");
+
+  const [MRBindDisabled, setMRBindDisabled] = useState(false);
+  const [reload, setReload] = useState(0);
 
   const data: IssueProps = JSON.parse(props.data);
 
@@ -43,7 +56,7 @@ const UIIssueCard = (props: UIIssueCardProps) => {
     }).then((data: any) => {
       setMRIssueAssociation(JSON.stringify(data.data));
     });
-  });
+  }, [reload]);
 
   const getBackgroundColor = (state: "closed" | "opened") => {
     switch (state) {
@@ -129,7 +142,7 @@ const UIIssueCard = (props: UIIssueCardProps) => {
         color: "purple",
         content: (
           <span>
-            {closedBy} 提出了合并请求 !{filtered[0].merge_id} &nbsp;&nbsp;
+            {MRBy} 提出了合并请求 !{filtered[0].merge_id} &nbsp;&nbsp;
             {asso.auto_added ? <Tag color={"green"}>自动关联</Tag> : null}
           </span>
         ),
@@ -139,6 +152,35 @@ const UIIssueCard = (props: UIIssueCardProps) => {
 
   data.description = data.description.replace(/!\[image\]\((.*?)\)/, "");
 
+  const onSelectionChange = (val: number[]) => {
+    setMRBindDisabled(true);
+    console.debug(val);
+    const former = JSON.parse(MRIssueAssociation).map((asso: any) => asso.MR);
+    const promise_list: any[] = [];
+    difference(former, val).forEach((to_delete: number) => {
+      const promise = deleteMRIssueAssociation(
+        dispatcher,
+        project_id,
+        to_delete,
+        data.id
+      );
+      promise_list.push(promise);
+    });
+    difference(val, former).forEach((to_create: number) => {
+      const promise = createMRIssueAssociation(
+        dispatcher,
+        project_id,
+        to_create,
+        data.id
+      );
+      promise_list.push(promise);
+    });
+    Promise.all(promise_list).then((data: any) => {
+      setReload(reload + 1);
+      setMRBindDisabled(false);
+    });
+  };
+
   return (
     <Modal
       centered={true}
@@ -147,7 +189,6 @@ const UIIssueCard = (props: UIIssueCardProps) => {
       visible={props.visible}
       onCancel={() => props.close()}
       width={"70%"}
-      style={{ maxHeight: "80vh", overflowY: "scroll" }}
       title={"合并请求查看"}
     >
       <div className={"meta-data"}>
@@ -202,6 +243,35 @@ const UIIssueCard = (props: UIIssueCardProps) => {
 
         <div>
           <span className={"meta-data-label"} style={{ marginRight: "1rem" }}>
+            关联合并请求
+          </span>
+          <Select
+            mode={"multiple"}
+            showSearch={true}
+            style={{ width: "40rem", margin: "0.5rem 0 0.5rem 2rem" }}
+            placeholder="合并请求"
+            disabled={MRBindDisabled}
+            optionFilterProp="children"
+            onChange={onSelectionChange}
+            defaultValue={JSON.parse(MRIssueAssociation).map(
+              (asso: any) => asso.MR
+            )}
+            filterOption={(input, option: any) =>
+              option.children.indexOf(input.toLowerCase()) >= 0
+            }
+          >
+            {JSON.parse(MRStore).data.map((mr: MergeRequestProps) => (
+              <Select.Option
+                key={mr.id}
+                value={mr.id}
+                children={`<${mr.repo}-!${mr.merge_id}> ${mr.title}`}
+              />
+            ))}
+          </Select>
+        </div>
+
+        <div>
+          <span className={"meta-data-label"} style={{ marginRight: "1rem" }}>
             项目缺陷进展
           </span>
           <Timeline style={{ marginTop: "1rem", marginLeft: "2rem" }}>
@@ -219,30 +289,6 @@ const UIIssueCard = (props: UIIssueCardProps) => {
               ))}
           </Timeline>
         </div>
-
-        {/*<div>*/}
-        {/*  <span className={"meta-data-label"} style={{ marginRight: "1rem" }}>*/}
-        {/*    关联功能需求*/}
-        {/*  </span>*/}
-        {/*  <Select*/}
-        {/*    showSearch={true}*/}
-        {/*    style={{ width: "20rem" }}*/}
-        {/*    placeholder="功能需求"*/}
-        {/*    optionFilterProp="children"*/}
-        {/*    onChange={onSRAssociatedChange}*/}
-        {/*    defaultValue={currAssociatedSRId.toString()}*/}
-        {/*    filterOption={(input, option: any) =>*/}
-        {/*      option.children.indexOf(input.toLowerCase()) >= 0*/}
-        {/*    }*/}
-        {/*  >*/}
-        {/*    <Select.Option value="-1">　</Select.Option>*/}
-        {/*    {JSON.parse(props.SRListStore).data.map((sr: any) => (*/}
-        {/*      <Select.Option key={sr.id} value={sr.id.toString()}>*/}
-        {/*        {sr.title}*/}
-        {/*      </Select.Option>*/}
-        {/*    ))}*/}
-        {/*  </Select>*/}
-        {/*</div>*/}
       </div>
     </Modal>
   );
