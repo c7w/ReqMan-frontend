@@ -3,8 +3,8 @@ import "./Setting.css";
 import { Avatar, Button, Input, Modal, Select, Tooltip, Upload } from "antd";
 import Title from "antd/es/typography/Title";
 import Text from "antd/es/typography/Text";
-import { KeyOutlined, MailOutlined } from "@ant-design/icons";
-import React, { useState } from "react";
+import { KeyOutlined, MailOutlined, UserOutlined } from "@ant-design/icons";
+import React, { useEffect, useState } from "react";
 import CryptoJS from "crypto-js";
 import ImgCrop from "antd-img-crop";
 import { getUserStore } from "../../../store/slices/UserSlice";
@@ -16,19 +16,18 @@ import {
 import { Redirect, ToastMessage } from "../../../utils/Navigation";
 import request_json from "../../../utils/Network";
 import API from "../../../utils/APIList";
+import moment from "moment";
+import { deleteRepoInfo, getRepoInfo } from "../../../store/functions/RDTS";
+import Loading from "../../../layout/components/Loading";
 
 const PersonalSetting = () => {
   const userStore = useSelector(getUserStore);
   const dispatcher = useDispatch();
 
-  if (userStore === "") {
-    // Re-Query...
-    updateUserInfo(dispatcher);
-  } else if (JSON.parse(userStore).code !== 0) {
-    // Redirect to `Root`
-    ToastMessage("error", "未确认登录态", "即将跳转回登录界面");
-    Redirect(dispatcher, "/login");
-  }
+  const [remoteUrl, setRemoteUrl] = useState("");
+  const [currRemoteUrl, setCurrRemoteUrl] = useState("");
+  const [remoteNameResetVisible, setRemoteNameResetVisible] = useState(false);
+  const [remoteName, setRemoteName] = useState("");
 
   const [avatarEditor, setAvatarEditor] = useState(false);
   const [avatarDelete, setAvatarDelete] = useState(false);
@@ -38,6 +37,30 @@ const PersonalSetting = () => {
 
   const [checkError, setCheckError] = useState("");
   const [doubleCheckError, setDoubleCheckError] = useState("");
+
+  const [currMailInput, setCurrMailInput] = useState("");
+  const [currMailValid, setCurrMailValid] = useState(false);
+
+  const [fileList, setFileList] = useState([]);
+  const [disableSelect, setDisableSelect] = useState(false);
+
+  const [reload_cnt, set_reload_cnt] = useState(0);
+
+  useEffect(() => {
+    updateUserInfo(dispatcher);
+    request_json(API.REMOTE_LIST).then((data: any) => {
+      setRemoteUrl(JSON.stringify(data));
+    });
+  }, [reload_cnt]);
+
+  if (userStore === "") {
+    // Re-Query...
+    return <Loading />;
+  } else if (JSON.parse(userStore).code !== 0) {
+    // Redirect to `Root`
+    ToastMessage("error", "未确认登录态", "即将跳转回登录界面");
+    Redirect(dispatcher, "/login");
+  }
 
   const getUserAvatar = (userStore: string): string => {
     if (userStore === "" || JSON.parse(userStore).code !== 0) {
@@ -52,8 +75,6 @@ const PersonalSetting = () => {
       return userInfo.data.user.avatar;
     }
   };
-
-  const [fileList, setFileList] = useState([]);
 
   const onChange = ({ fileList: newFileList }: any) => {
     setFileList(newFileList);
@@ -219,6 +240,7 @@ const PersonalSetting = () => {
               </p>
 
               <Select
+                disabled={disableSelect}
                 defaultValue={
                   userStore === "" || JSON.parse(userStore).code !== 0
                     ? "-"
@@ -228,11 +250,45 @@ const PersonalSetting = () => {
                 className={"setting-input"}
                 style={{ width: "20rem" }}
                 onChange={(value) => {
-                  console.debug(value); // TODO: change user primary email
+                  const former_email = JSON.parse(userStore).data.user.email;
+                  setDisableSelect(true);
+                  request_json(API.EMAIL_REQUEST, {
+                    body: {
+                      email: value,
+                      op: "rm",
+                      type: "minor",
+                    },
+                  }).then((data: any) => {
+                    request_json(API.EMAIL_REQUEST, {
+                      body: { email: value, op: "modify", type: "major" },
+                    }).then((data: any) => {
+                      request_json(API.EMAIL_REQUEST, {
+                        body: { email: former_email, op: "add", type: "minor" },
+                      }).then((data: any) => {
+                        if (data.code === 0 || data.code === 2) {
+                          ToastMessage(
+                            "success",
+                            "修改成功",
+                            "您的邮箱修改成功"
+                          );
+                        }
+                        updateUserInfo(dispatcher);
+                        setDisableSelect(false);
+                      });
+                    });
+                  });
                 }}
               >
-                <Select.Option value="jack">项目开发中</Select.Option>
-                // TODO
+                <Select.Option value={JSON.parse(userStore).data.user.email}>
+                  {JSON.parse(userStore).data.user.email}
+                </Select.Option>
+                {JSON.parse(userStore).data.user.minor_emails.map(
+                  (entry: any) => (
+                    <Select.Option key={entry[0]} value={entry[0]}>
+                      {entry[0]}
+                    </Select.Option>
+                  )
+                )}
               </Select>
 
               <p
@@ -246,10 +302,18 @@ const PersonalSetting = () => {
                   className={"setting-input"}
                   size={"large"}
                   prefix={<MailOutlined />}
+                  value={currMailInput}
                   type="text"
                   placeholder=""
-                  onChange={(val) => {
-                    console.debug(val); // TODO: verify email
+                  onChange={(e) => {
+                    setCurrMailInput(e.target.value);
+                    const reg =
+                      /^\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,14}$/;
+                    if (reg.test(e.target.value)) {
+                      setCurrMailValid(true);
+                    } else {
+                      setCurrMailValid(false);
+                    }
                   }}
                   bordered={false}
                 />
@@ -257,10 +321,174 @@ const PersonalSetting = () => {
               <Button
                 type={"primary"}
                 style={{ marginTop: "1rem", width: "88px" }}
-                disabled={true}
+                disabled={!currMailValid}
+                onClick={() => {
+                  request_json(API.EMAIL_REQUEST, {
+                    body: {
+                      email: currMailInput,
+                      op: "add",
+                      type: "minor",
+                    },
+                  }).then((data: any) => {
+                    if (data.code === 0) {
+                      ToastMessage("success", "添加成功", "邮箱添加成功");
+                      setCurrMailValid(false);
+                      setCurrMailInput("");
+                      updateUserInfo(dispatcher);
+                    } else if (data.code === 2) {
+                      ToastMessage("error", "添加失败", "邮箱添加过于频繁");
+                    } else {
+                      ToastMessage("error", "添加失败", "邮箱已被占用或不合法");
+                    }
+                  });
+                }}
               >
                 添加邮箱
               </Button>
+            </div>
+          </div>
+        </div>
+        <div className="setting-row">
+          <div className="column-1">
+            <Title level={3}>用户名设置</Title>
+            <Text>您可以在这里修改当前账户与其他网站的用户名绑定设置</Text>
+          </div>
+          <div className="column-2">
+            <div
+              className="setting-card"
+              style={{ display: "flex", flexDirection: "column" }}
+            >
+              <p
+                className={"register-prompt"}
+                style={{ marginBottom: "0.2rem" }}
+              >
+                远程用户名绑定：
+              </p>
+              <Text style={{ color: "grey" }}>
+                绑定的用户名信息用于关联 Issue 与 Merge Request
+              </Text>
+              <table
+                width={"98%"}
+                style={{
+                  margin: "0.5rem auto 1rem",
+                  textAlign: "center",
+                }}
+              >
+                <thead>
+                  <tr
+                    style={{
+                      borderWidth: "1px",
+                      padding: "8px",
+                      borderStyle: "solid",
+                      borderColor: "#666666",
+                      backgroundColor: "#dedede",
+                    }}
+                  >
+                    <td>远程地址</td>
+                    <td>当前用户名</td>
+                    <td>操作</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  {remoteUrl === ""
+                    ? null
+                    : Object.entries(JSON.parse(remoteUrl).data.all_urls).map(
+                        (remote: any) => (
+                          <tr
+                            key={remote[0]}
+                            style={{
+                              borderWidth: "1px",
+                              padding: "8px",
+                              borderStyle: "solid",
+                              borderColor: "#666666",
+                              backgroundColor: "#ffffff",
+                            }}
+                          >
+                            <td className={"iter-manager-column"}>
+                              {remote[0]}
+                            </td>
+                            <td>
+                              {JSON.parse(remoteUrl).data.exist_usernames[
+                                remote[0]
+                              ] || "- 未设定 -"}
+                            </td>
+                            <td className={"iter-manager-column"}>
+                              <a
+                                onClick={() => {
+                                  setCurrRemoteUrl(remote[0]);
+                                  setRemoteNameResetVisible(true);
+                                }}
+                              >
+                                更新用户名
+                              </a>
+                            </td>
+                          </tr>
+                        )
+                      )}
+                  <Modal
+                    destroyOnClose={true}
+                    title={"设置远端用户名"}
+                    width={"30vw"}
+                    visible={remoteNameResetVisible}
+                    onCancel={() => setRemoteNameResetVisible(false)}
+                    footer={
+                      <Button
+                        onClick={() => {
+                          request_json(API.SET_REMOTE_USERNAME, {
+                            body: {
+                              url: currRemoteUrl,
+                              remote_name: remoteName,
+                            },
+                          }).then((data: any) => {
+                            if (data.code === 0) {
+                              ToastMessage(
+                                "success",
+                                "更新成功",
+                                "远端用户名设置成功"
+                              );
+                              setRemoteNameResetVisible(false);
+                              setRemoteName("");
+                              set_reload_cnt(reload_cnt + 1);
+                            } else {
+                              ToastMessage(
+                                "error",
+                                "更新失败",
+                                "请检查用户名是否合法"
+                              );
+                            }
+                          });
+                        }}
+                      >
+                        确定更新
+                      </Button>
+                    }
+                  >
+                    <p
+                      className={"register-prompt"}
+                      style={{
+                        marginBottom: "0.2rem",
+                        marginTop: "1rem",
+                      }}
+                    >
+                      输入用户名：
+                    </p>
+                    <div>
+                      <Input
+                        className={"setting-input"}
+                        style={{ width: "100%" }}
+                        size={"large"}
+                        prefix={<UserOutlined />}
+                        type="text"
+                        placeholder=""
+                        onChange={(e) => {
+                          setRemoteName(e.target.value);
+                        }}
+                        bordered={false}
+                      />
+                    </div>
+                  </Modal>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
@@ -378,16 +606,12 @@ const PersonalSetting = () => {
               style={{ marginTop: "1rem" }}
               disabled={
                 !(
-                  newPass == newPassConfirmation &&
+                  newPass === newPassConfirmation &&
                   checkError === " " &&
                   doubleCheckError === " "
                 )
               }
               onClick={() => {
-                console.debug({
-                  prev: CryptoJS.MD5(oldPass).toString(),
-                  curr: CryptoJS.MD5(newPass).toString(),
-                });
                 request_json(API.CHANGE_USER_PASSWORD, {
                   body: {
                     prev: CryptoJS.MD5(oldPass).toString(),

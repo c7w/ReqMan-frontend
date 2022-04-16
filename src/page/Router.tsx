@@ -14,7 +14,6 @@ import Project from "./route/Project/Project";
 import ProjectService from "./route/Project/ProjectService";
 import ProjectSR from "./route/Project/ProjectSR";
 import ProjectIR from "./route/Project/ProjectIR";
-import ProjectAnalyse from "./route/Project/ProjectAnalyse";
 import ProjectSetting from "./route/Project/ProjectSetting";
 import Loading from "../layout/components/Loading";
 import PersonalSetting from "./route/Auth/Setting";
@@ -29,6 +28,10 @@ import UICommit from "../components/rdts/UICommit";
 import UIIssue from "../components/rdts/UIIssue";
 import UIAnalysis from "../components/rdts/UIAnalysis";
 import IRCard from "../components/rms/IRCard";
+import {
+  ResetPassword,
+  ResetPasswordWithHash,
+} from "./route/Auth/ResetPassword";
 
 const SiteRouter = () => {
   const testIR =
@@ -42,6 +45,8 @@ const SiteRouter = () => {
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
+          <Route path="resetpass/:hash" element={<ResetPasswordWithHash />} />
+          <Route path="resetpass" element={<ResetPassword />} />
           <Route path="settings" element={<PersonalSetting />} />
           <Route path="project/:id/IRManager" element={<ProjectIR />} />
           <Route path="project/:id/SRManager" element={<ProjectSR />} />
@@ -91,7 +96,6 @@ const SiteRouter = () => {
             }
           />
           <Route path="project/:id/iteration" element={<ProjectIteration />} />
-          <Route path="project/:id/analyse" element={<ProjectAnalyse />} />
           <Route path="project/:id/settings" element={<ProjectSetting />} />
           <Route path="project/:id" element={<Project />} />
           <Route path="projects" element={<ProjectList />} />

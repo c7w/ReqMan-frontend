@@ -53,7 +53,7 @@ const createRepoInfo = async (
   title: string
 ): Promise<void> => {
   const myBody = {
-    project: 2,
+    project: project_id,
     type: "gitlab",
     remote_id: remote_id,
     access_token: access_token,

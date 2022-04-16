@@ -76,16 +76,16 @@ const TimeFigure = (props: TimeFigureProps) => {
     },
     series: [
       {
-        name: "boxplot",
+        name: "Issue 解决时间",
         type: "boxplot",
         datasetIndex: 1,
       },
-      {
-        name: "outlier",
-        type: "scatter",
-        encode: { x: 1, y: 0 },
-        datasetIndex: 2,
-      },
+      // {
+      //   name: "特殊点",
+      //   type: "scatter",
+      //   encode: { x: 1, y: 0 },
+      //   datasetIndex: 2,
+      // },
     ],
   };
   return (

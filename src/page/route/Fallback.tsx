@@ -1,11 +1,19 @@
 import "./Fallback.css";
 import logo from "../../assets/ReqMan.png";
-import React from "react";
-import { useDispatch } from "react-redux";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Redirect } from "../../utils/Navigation";
+import { getUserStore } from "../../store/slices/UserSlice";
+import { updateUserInfo } from "../../store/functions/UMS";
 
 const Fallback = () => {
+  const userStore = useSelector(getUserStore);
   const dispatcher = useDispatch();
+
+  useEffect(() => {
+    updateUserInfo(dispatcher);
+  }, []);
+
   return (
     <div className="fallback">
       <nav>
@@ -19,18 +27,12 @@ const Fallback = () => {
             onClick={() => (window.location.href = "/dashboard")}
           />
           <div className="menu_links">
-            <a
-              className="link"
-              onClick={() => Redirect(dispatcher, "./about", 0)}
-            >
-              关于我们
-            </a>
-            <a
-              className="link"
-              onClick={() => Redirect(dispatcher, "./projects", 0)}
-            >
-              项目列表
-            </a>
+            {/*<a*/}
+            {/*  className="link"*/}
+            {/*  onClick={() => Redirect(dispatcher, "./about", 0)}*/}
+            {/*>*/}
+            {/*  关于我们*/}
+            {/*</a>*/}
           </div>
           <div className="menu_icon">
             <span className="icon"></span>
@@ -77,9 +79,22 @@ const Fallback = () => {
 
           <div className="text">
             <article>
-              <p style={{ fontWeight: "bolder" }}>哦不，页面走丢了~</p>
-              <button onClick={() => Redirect(dispatcher, "/login", 0)}>
-                回到工作面板
+              <p style={{ fontWeight: "bolder" }}>找不到页面</p>
+              <button
+                onClick={() =>
+                  Redirect(
+                    dispatcher,
+                    userStore !== "" && JSON.parse(userStore).code === 0
+                      ? "/dashboard"
+                      : "/login",
+                    0
+                  )
+                }
+              >
+                回到
+                {userStore !== "" && JSON.parse(userStore).code === 0
+                  ? "工作面板"
+                  : "登录界面"}
               </button>
             </article>
           </div>

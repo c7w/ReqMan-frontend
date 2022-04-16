@@ -91,6 +91,30 @@ const API = {
     path: "/ums/user_join_project_invitation/",
     method: "post",
   },
+  EMAIL_MODIFY_PASSWORD_REQUEST: {
+    path: "/ums/email_modify_password_request/",
+    method: "post",
+  },
+  EMAIL_MODIFY_PASSWORD_CALLBACK: {
+    path: "/ums/email_modify_password_callback/",
+    method: "post",
+  },
+  REMOTE_LIST: {
+    path: "/ums/urls_to_set_remote_name/",
+    method: "get",
+  },
+  SET_REMOTE_USERNAME: {
+    path: "/ums/set_remote_username/",
+    method: "post",
+  },
+  EMAIL_REQUEST: {
+    path: "/ums/email_request/",
+    method: "post",
+  },
+  GET_RECENT_ACTIVITY: {
+    path: "/rdts/get_recent_activity/",
+    method: "post",
+  },
 };
 
 export default API;
