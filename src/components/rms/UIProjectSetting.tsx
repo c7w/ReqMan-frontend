@@ -24,6 +24,8 @@ import moment from "moment";
 import { getRepoStore } from "../../store/slices/RepoSlice";
 import { createRepoInfo, deleteRepoInfo } from "../../store/functions/RDTS";
 import MDEditor from "@uiw/react-md-editor";
+import { compressBase64Image } from "../../utils/ImageCompressor";
+import { updateUserInfo } from "../../store/functions/UMS";
 
 interface CreateRepoModalProps {
   close: () => void;
@@ -148,18 +150,20 @@ const UIProjectSetting = () => {
   const onBeforeUpload = (file: File) => {
     const reader = new FileReader();
     reader.addEventListener("load", () => {
-      request_json(API.UPLOAD_PROJECT_AVATAR, {
-        body: { project: project_id, avatar: reader.result },
-      })
-        .then((data) => {
-          if (data.code === 0) {
-            ToastMessage("success", "上传成功", "项目 Logo 上传成功");
-            window.location.reload();
-          }
+      compressBase64Image(reader.result as string).then((result: any) => {
+        request_json(API.UPLOAD_PROJECT_AVATAR, {
+          body: { avatar: result, project: project_id },
         })
-        .catch(() => {
-          ToastMessage("error", "上传失败", "请检查网络连接后重试");
-        });
+          .then((data) => {
+            if (data.code === 0) {
+              ToastMessage("success", "上传成功", "项目 Logo 上传成功");
+              window.location.reload();
+            }
+          })
+          .catch(() => {
+            ToastMessage("error", "上传失败", "请检查网络连接后重试");
+          });
+      });
     });
     reader.readAsDataURL(file);
 

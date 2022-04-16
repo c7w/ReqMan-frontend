@@ -101,18 +101,20 @@ const PersonalSetting = () => {
     const reader = new FileReader();
     reader.addEventListener("load", () => {
       console.debug(reader.result);
-      request_json(API.UPLOAD_USER_AVATAR, {
-        body: { avatar: compressBase64Image(reader.result as string) },
-      })
-        .then((data) => {
-          if (data.code === 0) {
-            ToastMessage("success", "上传成功", "您的头像上传成功");
-            window.location.href = "/settings";
-          }
+      compressBase64Image(reader.result as string).then((result: any) => {
+        request_json(API.UPLOAD_USER_AVATAR, {
+          body: { avatar: result },
         })
-        .catch(() => {
-          ToastMessage("error", "上传失败", "请检查网络连接后重试");
-        });
+          .then((data) => {
+            if (data.code === 0) {
+              ToastMessage("success", "上传成功", "您的头像上传成功");
+              updateUserInfo(dispatcher);
+            }
+          })
+          .catch(() => {
+            ToastMessage("error", "上传失败", "请检查网络连接后重试");
+          });
+      });
     });
     reader.readAsDataURL(file);
 
