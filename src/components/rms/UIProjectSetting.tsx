@@ -92,7 +92,7 @@ const CreateRepoModal = (props: CreateRepoModalProps) => {
           onChange={(evt) => setRemoteId(evt.target.value)}
         />{" "}
         <p style={{ marginTop: "1rem", marginBottom: "0.2rem" }}>
-          仓库访问令牌：
+          仓库 Access Token：
         </p>
         <Input
           value={accessToken}
@@ -343,6 +343,9 @@ const UIProjectSetting = () => {
         <div className="column-1">
           <Title level={3}>项目仓库</Title>
           <Text>您可以在这里管理项目下属 GitLab 仓库</Text>
+          <br />
+          <br />
+          <Text>两种令牌的具体配置教程详见开发者文档</Text>
         </div>
         <div className="column-2">
           <div
@@ -360,6 +363,19 @@ const UIProjectSetting = () => {
                 close={() => setCreateRepoModalVisible(false)}
                 visible={createRepoModalVisible}
               />
+              <br />
+              <br />
+              <Text>
+                Access Token 用于定时主动拉取仓库信息，在 项目设置 &gt; 访问令牌
+                中维护
+              </Text>
+              <br />
+              <br />
+              <Text>
+                Secret Token 用于被动收取仓库 Webhooks 推送信息，在 项目设置
+                &gt; Webhooks 中维护，即时性较强
+              </Text>
+              <br />
             </div>
             <br />
             <table
@@ -381,7 +397,7 @@ const UIProjectSetting = () => {
                 >
                   <td>仓库编号</td>
                   <td>仓库名</td>
-                  <td>创建时间</td>
+                  <td>Access Token</td>
                   <td>操作</td>
                 </tr>
               </thead>
@@ -401,7 +417,7 @@ const UIProjectSetting = () => {
                       <td className={"iter-manager-column"}>{repo.id}</td>
                       <td className={"iter-manager-column"}>{repo.title}</td>
                       <td className={"iter-manager-column"}>
-                        {moment(repo.createdAt * 1000).format("lll")}
+                        {repo.remote.secret_token}
                       </td>
                       <td className={"iter-manager-column"}>
                         <a
