@@ -1,8 +1,8 @@
 import { Modal, Select, Space, Tag, Timeline, Typography } from "antd";
 import moment from "moment";
-import React, { useEffect, useState } from "react";
+import React, { ReactElement, useEffect, useState } from "react";
 import { UIMergeCard } from "./UIMergeCard";
-import { IssueProps } from "../../store/ConfigureStore";
+import { IssueProps, MergeRequestProps } from "../../store/ConfigureStore";
 import { userId2UserInfo } from "../../utils/Association";
 import { useSelector } from "react-redux";
 import { getProjectStore } from "../../store/slices/ProjectSlice";
@@ -11,6 +11,7 @@ import API from "../../utils/APIList";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
+import { getMergeStore } from "../../store/slices/IssueSlice";
 
 interface UIIssueCardProps {
   data: string;
@@ -25,11 +26,12 @@ interface UIIssueCardPreviewProps {
 interface TimelineEntry {
   time: number;
   color: string;
-  content: string;
+  content: ReactElement;
 }
 
 const UIIssueCard = (props: UIIssueCardProps) => {
   const projectStore = useSelector(getProjectStore);
+  const MRStore = useSelector(getMergeStore);
 
   const [MRIssueAssociation, setMRIssueAssociation] = useState("[]");
 
@@ -85,20 +87,57 @@ const UIIssueCard = (props: UIIssueCardProps) => {
     }
   }
 
-  console.debug(JSON.parse(MRIssueAssociation));
+  console.debug();
   const timeline_list: TimelineEntry[] = [];
   timeline_list.push({
     time: data.authoredAt,
     color: "red",
-    content: `${authoredBy} 提出了本项目缺陷`,
+    content: (
+      <span>
+        {authoredBy} 提出了本项目缺陷（#{data.issue_id}）
+      </span>
+    ),
   });
   if (closedBy) {
     timeline_list.push({
       time: data.closedAt,
       color: "green",
-      content: `${closedBy} 审核并关闭了本项目缺陷`,
+      content: (
+        <span>
+          {closedBy} 审核并关闭了本项目缺陷（#{data.issue_id}）
+        </span>
+      ),
     });
   }
+  JSON.parse(MRIssueAssociation).forEach((asso: any) => {
+    const filtered: MergeRequestProps[] = JSON.parse(MRStore).data.filter(
+      (entry: MergeRequestProps) => entry.id === asso.MR
+    );
+    if (filtered.length > 0) {
+      let MRBy = filtered[0].authoredByUserName;
+      if (filtered[0].user_authored > 0) {
+        const find_result = userId2UserInfo(
+          filtered[0].user_authored,
+          projectStore
+        );
+        if (find_result !== "not_found") {
+          MRBy = find_result.name;
+        }
+      }
+      timeline_list.push({
+        time: filtered[0].authoredAt,
+        color: "purple",
+        content: (
+          <span>
+            {closedBy} 提出了合并请求 !{filtered[0].merge_id} &nbsp;&nbsp;
+            {asso.auto_added ? <Tag color={"green"}>自动关联</Tag> : null}
+          </span>
+        ),
+      });
+    }
+  });
+
+  data.description = data.description.replace(/!\[image\]\((.*?)\)/, "");
 
   return (
     <Modal
@@ -170,8 +209,12 @@ const UIIssueCard = (props: UIIssueCardProps) => {
               .sort((entryA, entryB) => entryB.time - entryA.time)
               .map((entry: TimelineEntry) => (
                 <Timeline.Item color={entry.color}>
-                  [{moment(entry.time * 1000).format("lll")}]&nbsp;&nbsp;
-                  {entry.content}
+                  <>
+                    <span>
+                      [{moment(entry.time * 1000).format("lll")}]&nbsp;&nbsp;
+                    </span>
+                    {entry.content}
+                  </>
                 </Timeline.Item>
               ))}
           </Timeline>
