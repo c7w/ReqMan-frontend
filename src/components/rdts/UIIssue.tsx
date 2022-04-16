@@ -7,6 +7,7 @@ import { getIssueStore, getMergeStore } from "../../store/slices/IssueSlice";
 import ProTable, { ProColumns } from "@ant-design/pro-table";
 import { IssueProps, MergeRequestProps } from "../../store/ConfigureStore";
 import { userId2UserInfo } from "../../utils/Association";
+import { UIIssueCardPreview } from "./UIIssueCard";
 
 const UIIssue = () => {
   const dispatcher = useDispatch();
@@ -58,7 +59,7 @@ const UIIssue = () => {
             overflow: "hidden",
           }}
         >
-          {record.title}
+          <UIIssueCardPreview data={JSON.stringify(record)} />
         </div>
       ),
     },
