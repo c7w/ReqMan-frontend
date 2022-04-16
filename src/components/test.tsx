@@ -1,4 +1,4 @@
-import { Button } from "antd";
+import { Button, Upload } from "antd";
 import { useDispatch, useSelector, useStore } from "react-redux";
 import {
   createIRInfo,
@@ -62,13 +62,17 @@ import {
   getRDTSInfo,
   getRepoInfo,
 } from "../store/functions/RDTS";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { getRepoStore } from "../store/slices/RepoSlice";
 import {
   getCommitStore,
   getIssueStore,
   getMergeStore,
 } from "../store/slices/IssueSlice";
+import { compressBase64Image } from "../utils/ImageCompressor";
+import request_json from "../utils/Network";
+import API from "../utils/APIList";
+import { ToastMessage } from "../utils/Navigation";
 
 const Test = () => {
   const dispatcher = useDispatch();
@@ -88,6 +92,41 @@ const Test = () => {
   const iterationInfo = useSelector(getIterationStore);
   const serviceInfo = useSelector(getServiceStore);
 
+  const [fileList, setFileList] = useState([]);
+
+  const onChange = ({ fileList: newFileList }: any) => {
+    setFileList(newFileList);
+  };
+
+  const onPreview = async (file: { url: any; originFileObj: Blob }) => {
+    let src = file.url;
+    if (!src) {
+      src = await new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file.originFileObj);
+        reader.onload = () => resolve(reader.result);
+      });
+    }
+    const image = new Image();
+    image.src = src;
+    const imgWindow = window.open(src);
+    imgWindow?.document.write(image.outerHTML);
+  };
+
+  const onBeforeUpload = (file: File) => {
+    const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
+    const reader = new FileReader();
+    reader.addEventListener("load", () => {
+      console.debug(reader.result);
+      compressBase64Image(reader.result as string).then((result: string) => {
+        console.debug(result);
+      });
+    });
+    reader.readAsDataURL(file);
+
+    return false;
+  };
+
   useEffect(() => {
     updateProjectInfo(dispatcher, 2);
     getIRSRInfo(dispatcher, 2);
@@ -102,7 +141,7 @@ const Test = () => {
   }, []);
 
   const handleOnClick = () => {
-    getRDTSInfo(dispatcher, 2);
+    // compressBase64Image(``);
   };
   if (
     projectInfo === "" ||
@@ -130,6 +169,20 @@ const Test = () => {
         <Button type="primary" onClick={() => handleOnClick()}>
           Primary Button
         </Button>
+        <div id={"test-id"} />
+        <Upload
+          action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+          listType="text"
+          showUploadList={false}
+          beforeUpload={onBeforeUpload}
+          fileList={fileList}
+          onChange={onChange}
+          onPreview={onPreview as any}
+          id={"setting-upload"}
+          className={"setting-upload"}
+        >
+          <Button type={"primary"}>修改头像</Button>
+        </Upload>
       </>
     );
   }

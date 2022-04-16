@@ -19,6 +19,7 @@ import API from "../../../utils/APIList";
 import moment from "moment";
 import { deleteRepoInfo, getRepoInfo } from "../../../store/functions/RDTS";
 import Loading from "../../../layout/components/Loading";
+import { compressBase64Image } from "../../../utils/ImageCompressor";
 
 const PersonalSetting = () => {
   const userStore = useSelector(getUserStore);
@@ -99,7 +100,10 @@ const PersonalSetting = () => {
     const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
     const reader = new FileReader();
     reader.addEventListener("load", () => {
-      request_json(API.UPLOAD_USER_AVATAR, { body: { avatar: reader.result } })
+      console.debug(reader.result);
+      request_json(API.UPLOAD_USER_AVATAR, {
+        body: { avatar: compressBase64Image(reader.result as string) },
+      })
         .then((data) => {
           if (data.code === 0) {
             ToastMessage("success", "上传成功", "您的头像上传成功");
