@@ -23,6 +23,13 @@ const IRId2IRInfo = (IRId: number, IRList: string) => {
   const IR = IRListData.filter((obj: any) => obj.id === IRId);
   return IR.length > 0 ? IR[0] : "not found";
 };
+// 传入 MR 的 Id，返回其详细信息，同时需要传入该项目的 MRList (getMRStore 而来) （未解析）
+const MRId2MRInfo = (MRId: number, MRList: string) => {
+  // console.log("==================== Get MRInfo By MRId ===================");
+  const MRListData = JSON.parse(MRList).data;
+  const MR = MRListData.filter((obj: any) => obj.id === MRId);
+  return MR.length > 0 ? MR[0] : "not found";
+};
 // 传入 iteration 的 Id, 返回其详细信息，同时需要传入该项目的 iterationInfo (getIterationInfo 而来) （未解析）
 const itId2ItInfo = (iterationId: number, iterationInfo: string) => {
   // console.log("============ Get iterationInfo By iterationId ============== ");
@@ -78,9 +85,40 @@ const oneSR2AllIR = (SRId: number, IRSRAssociation: string, IRList: string) => {
   return matchedIRId.map((id: any) => IRId2IRInfo(id, IRList));
 };
 /*
+传入需要查询的 MRId，返回其对应的 SR(unique)
+还需传入 MRSRAsso (getMRSRAssociationStore 而来) 未解析
+同时需要传入该项目的 SRList ( getSRListStore 而来) （未解析）
+返回未排序
+ */
+const MR2SR = (MRId: number, MRSRAsso: string, SRList: string) => {
+  console.log("================ Get SR By MR ===============");
+  const MRSRData = JSON.parse(MRSRAsso).data;
+  console.log(MRSRData);
+  const matchedSR = MRSRData.filter((obj: any) => obj.MR === MRId);
+  if (matchedSR.length > 0) return SRId2SRInfo(matchedSR[0].SR, SRList);
+  return {};
+};
+/*
+传入需要查询的 SRId，返回其对应的所有 MR
+还需传入 MRSRAsso (getMRSRAssociationStore 而来) 未解析
+同时需要传入该项目的 MRList ( getMergeStore 而来) （未解析）
+返回未排序
+ */
+const oneSR2AllMR = (SRId: number, SRMRAsso: string, MRList: string) => {
+  // console.log("================ Get MR By SR ===============");
+  const SRMRData = JSON.parse(SRMRAsso).data;
+  // console.log(SRMRData);
+  const matchedMRId = SRMRData.map((obj: any) => {
+    if (obj.SR === SRId) {
+      return obj.MR;
+    }
+  }).filter((obj: any) => obj);
+  return matchedMRId.map((id: any) => MRId2MRInfo(id, MRList));
+};
+/*
 传入需要查询的 IRId，返回其对应的所有迭代
 还需传入 IRIteration (getIRIterationStore 而来) 未解析
-同时需要传入该项目的 iterationInfo (getIterationInfo 而来) （未解析）
+同时需要传入该项目的 iterationInfo (getIterationStore 而来) （未解析）
 返回未排序
  */
 const IR2Iteration = (
@@ -140,7 +178,6 @@ const SR2Iteration = (
   }).filter((obj: any) => obj);
   return matchedItId.map((id: any) => itId2ItInfo(id, iterationInfo));
 };
-// 传入需要查询的 IterationId，返回其对应的所有 SR，还需传入 SRIteration (getSRIterationStore 而来) 未解析
 /*
 传入需要查询的 IterationId，返回其对应的所有 SR
 还需传入 SRIteration (getSRIterationStore 而来) 未解析
@@ -178,12 +215,10 @@ const SR2Service = (
   // console.log("================ Get Service By SR ===============");
   const SRServiceData = JSON.parse(SRServiceAsso).data;
   // console.log(SRServiceData);
-  const matchedServiceId = SRServiceData.map((obj: any) => {
-    if (obj.SR === SRId) {
-      return obj.service;
-    }
-  }).filter((obj: any) => obj);
-  return matchedServiceId.map((id: any) => servId2ServInfo(id, serviceInfo));
+  const matchedService = SRServiceData.filter((obj: any) => obj.SR === SRId);
+  if (matchedService.length > 0)
+    return servId2ServInfo(matchedService[0].service, serviceInfo);
+  return {};
 };
 /*
 传入需要查询的 serviceId，返回其对应的所有 SR
@@ -242,11 +277,14 @@ export {
   userId2UserInfo,
   IRId2IRInfo,
   SRId2SRInfo,
+  MRId2MRInfo,
   itId2ItInfo,
   servId2ServInfo,
   projId2ProjInfo,
   oneIR2AllSR,
   oneSR2AllIR,
+  MR2SR,
+  oneSR2AllMR,
   IR2Iteration,
   Iteration2IR,
   SR2Iteration,

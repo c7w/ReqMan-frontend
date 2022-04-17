@@ -1,8 +1,8 @@
 .IRCard-small {
   height: 100px;
   left: 0;
-  margin: 20px 5px 5px 5px;
   padding: 12px;
+  margin: 5px 5px 5px 5px;
   border-radius: 5px;
   cursor: pointer;
   background: #fff;
@@ -102,6 +102,11 @@
 .IR-title-related {
   font-weight: bold;
   font-size: 1rem;
+}
+
+.IR-content-related {
+  display: grid;
+  grid-template-columns: repeat(3, 33.33%);
 }
 
 .IRWrap .IR-title-related {

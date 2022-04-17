@@ -1,7 +1,7 @@
 .SRCard-small {
   height: 100px;
   left: 0;
-  margin: 20px 5px 5px 5px;
+  margin: 5px 5px 20px 5px;
   padding: 12px;
   border-radius: 5px;
   cursor: pointer;
@@ -82,10 +82,36 @@
   align-items: center;
 }
 
-.SRModal-content-up {
+.SRModal-content {
+  display: grid;
+  grid-template-columns: 2fr 10px 3fr;
+  align-items: start;
 }
 
-.SRModal-content-middle {
+.SRModal-content-left {
+
+}
+
+.SRModal-content-left-up {
+}
+
+.SRModal-content-right {
+  margin-left: 1rem;
+}
+
+.SRModal-content-desc {
+  border-radius: 5px;
+  padding-left: 1rem;
+  max-width: 40vw;
+  font-size: 1rem;
+  transition: background-color 0.3s;
+}
+
+.SRModal-content-desc:hover {
+  background-color: rgb(240, 240, 240);
+}
+
+.SRModal-content-left-middle {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -93,7 +119,7 @@
   padding-right: 1rem;
 }
 
-.SRModal-content-bottom {
+.SRModal-content-right {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -117,6 +143,16 @@
   font-size: 1rem;
 }
 
+.SR-content-related {
+  display: grid;
+  grid-template-columns: repeat(3, 33.33%);
+}
+
+.SR-MR-content-related {
+  display: flex;
+  flex-direction: column;
+}
+
 .SRWrap .SR-title-related {
   position: absolute;
   top: -1em;
@@ -126,13 +162,6 @@
   background-color: #fff;
 }
 /* 方法一 end */
-
-.SRModal-content {
-  width: 100%;
-  max-width: 100%;
-  overflow: auto;
-  padding-top: 20px;
-}
 
 .card-input {
   cursor: pointer;
