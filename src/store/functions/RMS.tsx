@@ -20,6 +20,7 @@ import {
   IRIteration,
   SRService,
   UserSRAssociationProps,
+  SRChangelog,
 } from "../ConfigureStore";
 import {
   updateIRIterationStore,
@@ -28,6 +29,7 @@ import {
   updateUserIterationStore,
 } from "../slices/IterationSlice";
 import { updateUserSRStore } from "../slices/UserSRSlice";
+import { updateSRChangeLogStore } from "../slices/SRChangeLogSlice";
 
 const getIRListInfo = async (
   dispatcher: any,
@@ -736,6 +738,27 @@ const deleteUserSRInfo = async (
   });
 };
 
+const getSRChangeLogInfo = async (
+  dispatcher: any,
+  project_id: number,
+  SRId: number
+): Promise<void> => {
+  const myParams = {
+    project: project_id,
+    SRId: SRId,
+    type: "SR_changeLog",
+  };
+  return request_json(API.GET_RMS, { getParams: myParams }).then(
+    (SRChangeLog_data) => {
+      // console.log(SRList_data.code);
+      if (SRChangeLog_data.code === 0) {
+        dispatcher(updateSRChangeLogStore(JSON.stringify(SRChangeLog_data)));
+      }
+      return SRChangeLog_data;
+    }
+  );
+};
+
 export {
   getIRListInfo,
   createIRInfo,
@@ -770,4 +793,5 @@ export {
   createUserSRInfo,
   deleteUserSRInfo,
   getUserSRInfo,
+  getSRChangeLogInfo,
 };

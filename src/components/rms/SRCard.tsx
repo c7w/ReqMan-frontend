@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./SRCard.css";
 import "../rdts/UIMergeCard.css";
 import {
@@ -33,6 +33,7 @@ import {
 import {
   getIRListInfo,
   getIRSRInfo,
+  getSRChangeLogInfo,
   getSRListInfo,
   updateSRInfo,
 } from "../../store/functions/RMS";
@@ -78,6 +79,7 @@ import {
 } from "../../store/functions/RDTS";
 import { getRepoStore } from "../../store/slices/RepoSlice";
 import { UIMergeCard, UIMergeCardPreview } from "../rdts/UIMergeCard";
+import { getSRChangeLogStore } from "../../store/slices/SRChangeLogSlice";
 const { Text } = Typography;
 
 const SRCard = (props: SRCardProps) => {
@@ -90,6 +92,7 @@ const SRCard = (props: SRCardProps) => {
   const SRListStore = useSelector(getSRListStore);
   const SRIterAssoStore = useSelector(getSRIterationStore);
   const iterationStore = useSelector(getIterationStore);
+  const SRChangeLogStore = useSelector(getSRChangeLogStore);
   // rdts
   const repoStore = useSelector(getRepoStore);
   const issueSRAssoStore = useSelector(getIssueSRAssociationStore);
@@ -203,6 +206,11 @@ const SRCard = (props: SRCardProps) => {
       });
       setAssoIRCardList(newAssoIRCardList);
     });
+    getSRChangeLogInfo(dispatcher, props.project, props.id).then(
+      (data: any) => {
+        console.log(data);
+      }
+    );
   };
 
   const handleOK = () => {
@@ -345,7 +353,7 @@ const SRCard = (props: SRCardProps) => {
         visible={modalVisible}
         onOk={handleOK}
         onCancel={handleCancel}
-        width={"70%"}
+        width={"90%"}
       >
         <div className="SRModal-header">
           <div
@@ -376,59 +384,74 @@ const SRCard = (props: SRCardProps) => {
         </div>
         <Divider />
         <div className="SRModal-content">
-          <div className="SRModal-content-up">
+          <div className="SRModal-content-left">
+            <div className="SRModal-content-left-up">
+              <div
+                style={{
+                  fontWeight: "bold",
+                  fontSize: "1.5rem",
+                  marginBottom: "1rem",
+                }}
+              >
+                功能需求描述
+              </div>
+              <Typography id="description-container">
+                <Paragraph
+                  className="SRModal-content-desc"
+                  id="description-inner"
+                  editable={{
+                    onChange: setDescription,
+                    editing: descEditing,
+                    icon: null,
+                    onEnd: () => setDescEditing(false),
+                    onCancel: () => setDescEditing(false),
+                  }}
+                  onClick={() => setDescEditing(true)}
+                  // style={{
+                  //   overflowX: "hidden",
+                  //   overflowY: "auto",
+                  //   height: "12vh",
+                  // }}
+                >
+                  {description}
+                </Paragraph>
+              </Typography>
+            </div>
+            <div className="SRModal-content-left-middle">
+              <div style={{ display: "flex", flexDirection: "row" }}>
+                <p>负责人：</p>
+                <Avatar.Group>
+                  <Avatar
+                    className="SRCard-small-avatar"
+                    size="small"
+                    src={getUserAvatar(userInfo)}
+                  />
+                </Avatar.Group>
+              </div>
+              <div>
+                <b>创建时间:</b>
+                {"   " +
+                  (props.createdAt
+                    ? moment(props.createdAt * 1000).format(
+                        "YYYY-MM-DD HH:mm:ss"
+                      )
+                    : "无创建时间记录")}
+              </div>
+            </div>
             <div
+              className="SRModal-content-SRChangeLog"
               style={{
-                fontWeight: "bold",
-                fontSize: "1.5rem",
-                marginBottom: "1rem",
+                maxWidth: "30vw",
+                overflowY: "scroll",
+                maxHeight: "60vh",
+                padding: "1rem",
               }}
             >
-              功能需求描述
-            </div>
-            <Typography id="description-container">
-              <Paragraph
-                className="SRModal-content-desc"
-                id="description-inner"
-                editable={{
-                  onChange: setDescription,
-                  editing: descEditing,
-                  icon: null,
-                  onEnd: () => setDescEditing(false),
-                  onCancel: () => setDescEditing(false),
-                }}
-                onClick={() => setDescEditing(true)}
-                // style={{
-                //   overflowX: "hidden",
-                //   overflowY: "auto",
-                //   height: "12vh",
-                // }}
-              >
-                {description}
-              </Paragraph>
-            </Typography>
-          </div>
-          <Divider />
-          <div className="SRModal-content-middle">
-            <div style={{ display: "flex", flexDirection: "row" }}>
-              <p>负责人：</p>
-              <Avatar.Group>
-                <Avatar
-                  className="SRCard-small-avatar"
-                  size="small"
-                  src={getUserAvatar(userInfo)}
-                />
-              </Avatar.Group>
-            </div>
-            <div>
-              <b>创建时间:</b>
-              {"   " +
-                (props.createdAt
-                  ? moment(props.createdAt * 1000).format("YYYY-MM-DD HH:mm:ss")
-                  : "无创建时间记录")}
+              {SRChangeLogStore}
             </div>
           </div>
-          <div className="SRModal-content-bottom">
+          <Divider type="vertical" style={{ width: "5px", height: "auto" }} />
+          <div className="SRModal-content-right">
             <div className="SRWrap SR-IR-related">
               <div className="SR-title-related">关联原始需求</div>
               {/*<div className="SR-content-related">{assoIRCardList}</div>*/}

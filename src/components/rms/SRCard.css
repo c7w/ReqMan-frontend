@@ -82,12 +82,27 @@
   align-items: center;
 }
 
-.SRModal-content-up {
+.SRModal-content {
+  display: grid;
+  grid-template-columns: 1fr 10px 2fr;
+  align-items: start;
+}
+
+.SRModal-content-left {
+
+}
+
+.SRModal-content-left-up {
+}
+
+.SRModal-content-right {
+  margin-left: 1rem;
 }
 
 .SRModal-content-desc {
   border-radius: 5px;
   padding-left: 1rem;
+  max-width: 40vw;
   font-size: 1rem;
   transition: background-color 0.3s;
 }
@@ -96,7 +111,7 @@
   background-color: rgb(240, 240, 240);
 }
 
-.SRModal-content-middle {
+.SRModal-content-left-middle {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -104,7 +119,7 @@
   padding-right: 1rem;
 }
 
-.SRModal-content-bottom {
+.SRModal-content-right {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -147,13 +162,6 @@
   background-color: #fff;
 }
 /* 方法一 end */
-
-.SRModal-content {
-  width: 100%;
-  max-width: 100%;
-  overflow: auto;
-  padding-top: 20px;
-}
 
 .card-input {
   cursor: pointer;

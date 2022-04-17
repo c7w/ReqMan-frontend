@@ -6,15 +6,15 @@ export const SRChangeLogSlice = createSlice({
     SRChangeLog: "",
   },
   reducers: {
-    updateSRChangeLog: (state, action) => {
+    updateSRChangeLogStore: (state, action) => {
       state.SRChangeLog = action.payload;
     },
   },
 });
 
-export const { updateSRChangeLog } = SRChangeLogSlice.actions;
+export const { updateSRChangeLogStore } = SRChangeLogSlice.actions;
 
-export const getSRChangLogStore = (state: {
+export const getSRChangeLogStore = (state: {
   sr_changelog_store: { SRChangeLog: string };
 }) => {
   return state.sr_changelog_store.SRChangeLog;
