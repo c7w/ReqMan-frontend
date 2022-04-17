@@ -25,7 +25,7 @@ const IRId2IRInfo = (IRId: number, IRList: string) => {
 };
 // 传入 MR 的 Id，返回其详细信息，同时需要传入该项目的 MRList (getMRStore 而来) （未解析）
 const MRId2MRInfo = (MRId: number, MRList: string) => {
-  console.log("==================== Get MRInfo By MRId ===================");
+  // console.log("==================== Get MRInfo By MRId ===================");
   const MRListData = JSON.parse(MRList).data;
   const MR = MRListData.filter((obj: any) => obj.id === MRId);
   return MR.length > 0 ? MR[0] : "not found";
@@ -105,9 +105,9 @@ const MR2SR = (MRId: number, MRSRAsso: string, SRList: string) => {
 返回未排序
  */
 const oneSR2AllMR = (SRId: number, SRMRAsso: string, MRList: string) => {
-  console.log("================ Get MR By SR ===============");
+  // console.log("================ Get MR By SR ===============");
   const SRMRData = JSON.parse(SRMRAsso).data;
-  console.log(SRMRData);
+  // console.log(SRMRData);
   const matchedMRId = SRMRData.map((obj: any) => {
     if (obj.SR === SRId) {
       return obj.MR;

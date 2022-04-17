@@ -80,6 +80,9 @@ import {
 import { getRepoStore } from "../../store/slices/RepoSlice";
 import { UIMergeCard, UIMergeCardPreview } from "../rdts/UIMergeCard";
 import { getSRChangeLogStore } from "../../store/slices/SRChangeLogSlice";
+import getUserAvatar from "../../utils/UserAvatar";
+import UISRChangeLogList from "./UISRChangeLogList";
+import { state2Color, state2ChineseState } from "../../utils/SRStateConvert";
 const { Text } = Typography;
 
 const SRCard = (props: SRCardProps) => {
@@ -102,8 +105,6 @@ const SRCard = (props: SRCardProps) => {
   const MRSRAssoStore = useSelector(getMRSRAssociationStore);
   const MRStore = useSelector(getMergeStore);
   // state map
-  const state2Color = new Map();
-  const state2ChineseState = new Map();
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [id, setId] = useState<number>(props.id);
   const [title, setTitle] = useState<string>(props.title);
@@ -121,14 +122,6 @@ const SRCard = (props: SRCardProps) => {
   });
   const [assoIRCardList, setAssoIRCardList] = useState([]);
   const [assoMRCardList, setAssoMRCardList] = useState([]);
-  state2Color.set("TODO", "red");
-  state2Color.set("WIP", "blue");
-  state2Color.set("Reviewing", "yellow");
-  state2Color.set("Done", "orange");
-  state2ChineseState.set("TODO", "未开始");
-  state2ChineseState.set("WIP", "开发中");
-  state2ChineseState.set("Reviewing", "测试中");
-  state2ChineseState.set("Done", "已完成");
 
   // let descriptionInner;
   // let descriptionContainer;
@@ -144,7 +137,6 @@ const SRCard = (props: SRCardProps) => {
   // };
   // 更新打开的 modal 对应的 SR 的所有关系
   const updateAssociation = () => {
-    console.log("updating !");
     Promise.all([
       getRDTSInfo(dispatcher, props.project),
       getSRListInfo(dispatcher, props.project),
@@ -164,7 +156,6 @@ const SRCard = (props: SRCardProps) => {
         JSON.stringify(data[0][2])
       );
       const newAssoMRCardList: any = [];
-      console.log(assoMRListData);
       assoMRListData.forEach((value: MergeRequestProps) => {
         newAssoMRCardList.push(
           <UIMergeCardPreview
@@ -252,20 +243,6 @@ const SRCard = (props: SRCardProps) => {
     setPriority(props.priority);
     setService(props.service);
     setModalVisible(false);
-  };
-  // 获取用户头像
-  const getUserAvatar = (userStore: string): string => {
-    if (userStore === "" || JSON.parse(userStore).code !== 0) {
-      return "";
-    }
-    const userInfo = JSON.parse(userStore);
-    if (userInfo.data.user.avatar.length < 5) {
-      return `https://www.gravatar.com/avatar/${CryptoJS.MD5(
-        userInfo.data.user.email
-      )}`;
-    } else {
-      return userInfo.data.user.avatar;
-    }
   };
   const onClick = (e: any) => {
     updateSRInfo(dispatcher, props.project, {
@@ -438,17 +415,20 @@ const SRCard = (props: SRCardProps) => {
                     : "无创建时间记录")}
               </div>
             </div>
+            <Divider />
             <div
-              className="SRModal-content-SRChangeLog"
               style={{
-                maxWidth: "30vw",
-                overflowY: "scroll",
-                maxHeight: "60vh",
-                padding: "1rem",
+                fontWeight: "bold",
+                fontSize: "1.5rem",
+                marginBottom: "1rem",
               }}
             >
-              {SRChangeLogStore}
+              更改记录
             </div>
+            <UISRChangeLogList
+              SRChangeLogListInfo={SRChangeLogStore}
+              userInfo={userInfo}
+            />
           </div>
           <Divider type="vertical" style={{ width: "5px", height: "auto" }} />
           <div className="SRModal-content-right">

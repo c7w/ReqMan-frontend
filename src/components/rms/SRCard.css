@@ -84,7 +84,7 @@
 
 .SRModal-content {
   display: grid;
-  grid-template-columns: 1fr 10px 2fr;
+  grid-template-columns: 2fr 10px 3fr;
   align-items: start;
 }
 
