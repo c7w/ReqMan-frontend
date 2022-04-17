@@ -12,6 +12,7 @@ import IterationReducer from "./slices/IterationSlice";
 import CalendarReducer from "./slices/CalendarSlice";
 import RepoReducer from "./slices/RepoSlice";
 import IssueReducer from "./slices/IssueSlice";
+import SRChangeLogReducer from "./slices/SRChangeLogSlice";
 import { Service } from "../components/rms/UIServiceReadonly";
 
 interface SRCardProps {
@@ -29,6 +30,17 @@ interface SRCardProps {
   readonly iter: Iteration[];
   readonly chargedBy: number;
   readonly service: Service | number;
+}
+
+interface SRChangelog {
+  readonly id: number;
+  readonly project: number;
+  readonly SRId: number;
+  readonly description: string;
+  readonly formerState: string; // "TODO", "WIP", "Reviewing", "Done"
+  readonly formerDescription: string;
+  readonly changedBy: number;
+  readonly changedAt: number;
 }
 
 interface IRCardProps {
@@ -182,6 +194,7 @@ export const store = configureStore({
     user_sr_store: UserSRReducer,
     repo_store: RepoReducer,
     issue_store: IssueReducer,
+    sr_changelog_store: SRChangeLogReducer,
     // rest of your reducers
   }),
   middleware: [routerMiddleware],
@@ -191,6 +204,7 @@ export const history = createReduxHistory(store);
 export type {
   IRCardProps,
   SRCardProps,
+  SRChangelog,
   IRSRAssociation,
   UserIteration,
   IRIteration,
