@@ -13,18 +13,26 @@ import { getRDTSInfo } from "../../store/functions/RDTS";
 
 const MRTimeFigure = () => {
   // const dispatcher = useDispatch();
-  // const mergeStore = useSelector(getMergeStore);
-  // const mergeData = JSON.parse(mergeStore).data;
-  // console.log(mergeData);
+  // let mergedata = {};
   //
   // useEffect(() => {
-  //   const repo_info = getRDTSInfo(dispatcher, 1);
-  //   console.log(repo_info);
+  //   Promise.all([getRDTSInfo(dispatcher, 2)]).then((data) => {
+  //     /*
+  //       data[0][0]: issue
+  //       data[0][1]: commit
+  //       data[0][2]: merge
+  //       data[0][3]: mr-sr
+  //       data[1]: SRList
+  //       data[2]: ProjectInfo
+  //     */
+  //     console.log(data[0][2]);
+  //     mergedata = data[0][2];
+  //   });
   // });
 
   // put in all the MRs get from an repo
   const test =
-    '{"data":[{"reviewedAt":1649906641.84},{"reviewedAt":1649907641.84}{"reviewedAt":1649908641},{"reviewedAt":1649909641.231}]}';
+    '{"data":[{"reviewedAt":1646906641.84},{"reviewedAt":1649907641.84},{"reviewedAt":1648908641},{"reviewedAt":1647909641.231}]}';
   const data = JSON.parse(test).data;
   // const data = JSON.parse(props.text);
   const all_mr: number[] = [];
@@ -33,14 +41,38 @@ const MRTimeFigure = () => {
     all_mr.push(time * 1000);
   });
   all_mr.sort();
-  const series1 = [];
-  let iter = 0;
+  const series1: any = [];
+  let iter = 1;
   all_mr.forEach((value: any) => {
     series1.push([value, iter]);
     iter++;
   });
 
-  const option = {};
+  const option = {
+    title: {
+      text: "MR数量统计表",
+    },
+    tooltip: {
+      trigger: "axis",
+    },
+    legend: {
+      data: ["累计 MR 数量"],
+    },
+    xAxis: {
+      type: "time",
+    },
+    yAxis: {
+      type: "value",
+    },
+    series: [
+      {
+        name: "累计 MR 数量",
+        type: "line",
+        data: series1,
+        smooth: true,
+      },
+    ],
+  };
 
   return (
     <div className={"MRChart"}>

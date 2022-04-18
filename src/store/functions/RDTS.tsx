@@ -12,6 +12,7 @@ import {
 
 const getRDTSInfo = async (dispatcher: any, project_id: number) => {
   return getRepoInfo(dispatcher, project_id).then((repo_data: any) => {
+    console.log(JSON.stringify(repo_data));
     const promise_list = [];
     promise_list.push(
       getIssueInfo(dispatcher, project_id, JSON.stringify(repo_data))

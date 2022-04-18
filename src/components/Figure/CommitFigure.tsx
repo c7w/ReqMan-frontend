@@ -63,13 +63,6 @@ const CommitFigure = () => {
     },
     xAxis: {
       type: "time",
-      // axisLabel: {
-      //   formatter: function (para: number) {
-      //     const time = moment(para).format("YYYY-MM-DD");
-      //     console.log(time);
-      //     return time;
-      //   },
-      // },
     },
     yAxis: {
       type: "value",
