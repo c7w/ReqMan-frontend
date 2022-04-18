@@ -19,7 +19,16 @@ const CommitFigure = () => {
       all_commit.push(value1);
     });
   });
-  all_commit.sort();
+  function compare(value1: number, value2: number) {
+    if (value1 < value2) {
+      return -1;
+    } else if (value1 > value2) {
+      return 1;
+    } else {
+      return 0;
+    }
+  }
+  all_commit.sort(compare);
   const commit_num = [];
   const commit_acc: number[] = [];
   const commit_time = [];
@@ -45,10 +54,6 @@ const CommitFigure = () => {
     series1.push([commit_time[i] * 1000, commit_num[i]]);
     series2.push([commit_time[i] * 1000, commit_acc[i]]);
   }
-  // console.log(commit_num);
-  // console.log(commit_acc);
-  // console.log(commit_time);
-  // console.log(moment(1649761649).format("YYYY-MM-DD"));
 
   const option = {
     title: {

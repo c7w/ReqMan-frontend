@@ -80,12 +80,6 @@ const TimeFigure = (props: TimeFigureProps) => {
         type: "boxplot",
         datasetIndex: 1,
       },
-      // {
-      //   name: "特殊点",
-      //   type: "scatter",
-      //   encode: { x: 1, y: 0 },
-      //   datasetIndex: 2,
-      // },
     ],
   };
   return (
