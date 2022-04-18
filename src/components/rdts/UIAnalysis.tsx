@@ -13,6 +13,7 @@ import { getRepoStore } from "../../store/slices/RepoSlice";
 import {
   getIssueSRAssociationStore,
   getIssueStore,
+  getMergeStore,
 } from "../../store/slices/IssueSlice";
 import {
   getIterationStore,
@@ -21,11 +22,14 @@ import {
 import { getRDTSInfo } from "../../store/functions/RDTS";
 import { Iteration2SR, SR2Issue } from "../../utils/Association";
 import { getSRListStore } from "../../store/slices/IRSRSlice";
+import MRTimeFigure from "../Figure/MRTimeFigure";
+import CountDistribution from "../Figure/CountDistribution";
+import CountDistributionFigure from "../Figure/CountDistribution";
+import CommitFigure from "../Figure/CommitFigure";
 
 const UIAnalysis = () => {
   const [recentSeven, setRecentSeven] = useState("");
   const [overall, setOverall] = useState("");
-
   const projectStore = useSelector(getProjectStore);
   const repoStore = useSelector(getRepoStore);
   const iterationStore = useSelector(getIterationStore);
@@ -33,6 +37,7 @@ const UIAnalysis = () => {
   const issueSRStore = useSelector(getIssueSRAssociationStore);
   const issueStore = useSelector(getIssueStore);
   const SRListStore = useSelector(getSRListStore);
+  const mergeStore = useSelector(getMergeStore);
 
   const [reload, setReload] = useState(0);
 
@@ -153,6 +158,17 @@ const UIAnalysis = () => {
   });
   // console.log(iter_issue_sr_list);
 
+  // put in all the MRs get from an repo
+  const MRReviewList = {
+    data: Array<any>(),
+  };
+  JSON.parse(mergeStore).data.forEach((mr: any) => {
+    MRReviewList.data.push({
+      reviewedAt: mr.reviewedAt,
+    });
+  });
+  // console.log(MRReviewList);
+
   return (
     <div className={"merge-card"}>
       <IssueFigure
@@ -179,6 +195,12 @@ const UIAnalysis = () => {
         text={JSON.stringify(issue_list_all)}
         title={"开发工程师基于 Issue 解决时间的能力评定（总）"}
       />
+      <MRTimeFigure
+        text={JSON.stringify(MRReviewList)}
+        title={"MR数量统计表"}
+      />
+      <CountDistributionFigure />
+      <CommitFigure />
     </div>
   );
 };
