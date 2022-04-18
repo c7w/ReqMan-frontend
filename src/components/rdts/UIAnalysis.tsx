@@ -95,9 +95,12 @@ const UIAnalysis = () => {
     });
   }
 
-  // 你需要：
-  // 查 Issue-SR 对照表，找出某个 Issue 对应哪个 SR
-  // 查 SR-Iter 对照表，找出这个 Iter 有多少 SR
+  // 先获得该项目下的所有 iteration
+  // 再获得该项目下的所有 repo
+  // 对每个 repo，查询所有的 issue-sr
+  // 再根据 sr-iteration 关系，对每个 iteration，查询其对应哪些 sr，需要 utils::Iteration2SR
+  // 再根据已得到的 issue-sr，对上述每个 iteration 的每个 sr，需要 utils::SR2Issue
+  // 查询有没有 issue 跟它对应，有就计数器 + 1
   const issue_test =
     '{"iterations":["iter1","iter2","iter3","iter4"],"all_sr_count":[12,14,16,18],"issues":[1,2,4,2]}';
 

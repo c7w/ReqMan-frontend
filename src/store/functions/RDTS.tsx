@@ -8,6 +8,7 @@ import {
   updateCommitStore,
   updateMergeStore,
   updateMRSRAssociationStore,
+  updateIssueSRAssociationStore,
 } from "../slices/IssueSlice";
 
 const getRDTSInfo = async (dispatcher: any, project_id: number) => {
@@ -299,6 +300,92 @@ const deleteMRSRAssociation = async (
   });
 };
 
+const getIssueSRAssociation = async (
+  dispatcher: any,
+  project_id: number,
+  RepoStore: string
+): Promise<any> => {
+  const promise_list: any[] = [];
+  JSON.parse(RepoStore).data.forEach((repo: any) => {
+    const myParams = {
+      repo: repo.id,
+      type: "issue-sr",
+    };
+    const promise = request_json(API.GET_RDTS, {
+      getParams: myParams,
+    });
+    promise_list.push(promise);
+  });
+
+  return Promise.all(promise_list).then((data: any) => {
+    const all_issue_sr_asso: any[] = [];
+
+    data.forEach((repo_issue_sr_asso: any) => {
+      repo_issue_sr_asso.data.forEach((issue_sr_asso: any) => {
+        all_issue_sr_asso.push(issue_sr_asso);
+      });
+    });
+
+    const res = {
+      code: 0,
+      data: all_issue_sr_asso,
+    };
+
+    dispatcher(updateIssueSRAssociationStore(JSON.stringify(res)));
+    return res;
+  });
+};
+
+const createIssueSRAssociation = async (
+  dispatcher: any,
+  project_id: number,
+  issue_id: number,
+  sr_id: number,
+  repoStore: string
+) => {
+  const myBody = {
+    project: project_id,
+    type: "issue-sr",
+    operation: "create",
+    data: {
+      updateData: {
+        issueId: issue_id,
+        SRId: sr_id,
+      },
+    },
+  };
+  return request_json(API.POST_RDTS, { body: myBody }).then((data) => {
+    if (data.code === 0) {
+      getIssueSRAssociation(dispatcher, project_id, repoStore);
+    }
+    return data;
+  });
+};
+
+const deleteIssueSRAssociation = async (
+  dispatcher: any,
+  project_id: number,
+  issue_id: number,
+  sr_id: number,
+  repoStore: string
+) => {
+  const myBody = {
+    project: project_id,
+    type: "issue-sr",
+    operation: "delete",
+    data: {
+      issue: issue_id,
+      SRId: sr_id,
+    },
+  };
+  return request_json(API.POST_RDTS, { body: myBody }).then((data) => {
+    if (data.code === 0) {
+      getIssueSRAssociation(dispatcher, project_id, repoStore);
+    }
+    return data;
+  });
+};
+
 const createMRIssueAssociation = async (
   dispatcher: any,
   project_id: number,
@@ -348,6 +435,9 @@ export {
   getMRSRAssociation,
   createMRSRAssociation,
   deleteMRSRAssociation,
+  getIssueSRAssociation,
+  createIssueSRAssociation,
+  deleteIssueSRAssociation,
   createMRIssueAssociation,
   deleteMRIssueAssociation,
 };

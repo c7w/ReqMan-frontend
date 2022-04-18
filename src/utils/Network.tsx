@@ -31,7 +31,7 @@ const request_json = async (config: APIConfig, settings: Settings = {}) => {
     ...settings.getParams,
     sessionId: getCookie("sessionId", ""),
   };
-  // console.log(getParams_.sessionId);
+  console.log(getParams_.sessionId);
   const getParams =
     "?" +
     Object.entries(getParams_)
