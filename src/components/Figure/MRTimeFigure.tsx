@@ -60,9 +60,11 @@ const MRTimeFigure = () => {
     },
     xAxis: {
       type: "time",
+      name: "时间",
     },
     yAxis: {
       type: "value",
+      name: "数量",
     },
     series: [
       {
