@@ -39,6 +39,16 @@ const MRTimeFigure = () => {
     const time = value.reviewedAt;
     all_mr.push(time * 1000);
   });
+  function compare(value1: number, value2: number) {
+    if (value1 < value2) {
+      return -1;
+    } else if (value1 > value2) {
+      return 1;
+    } else {
+      return 0;
+    }
+  }
+  all_mr.sort(compare);
   const series1: any = [];
   let iter = 1;
   all_mr.forEach((value: any) => {
