@@ -1,6 +1,5 @@
 import ReactEcharts from "echarts-for-react";
 import React, { Component, useEffect } from "react";
-import moment from "moment";
 import "./MRTimeFigure.css";
 import { useDispatch, useSelector } from "react-redux";
 import { getMergeStore } from "../../store/slices/IssueSlice";

@@ -34,7 +34,6 @@ import {
 } from "./route/Auth/ResetPassword";
 import { getCookie } from "../utils/CookieOperation";
 import { Redirect, ToastMessage } from "../utils/Navigation";
-import MRTimeFigure from "../components/Figure/MRTimeFigure";
 
 const SiteRouter = () => {
   // See if sessionId in place
@@ -56,7 +55,6 @@ const SiteRouter = () => {
           <Route path="settings" element={<PersonalSetting />} />
           <Route path="project/:id/IRManager" element={<ProjectIR />} />
           <Route path="project/:id/SRManager" element={<ProjectSR />} />
-          <Route path="figure" element={<MRTimeFigure />} />
           <Route
             path="project/:id/ServiceManager"
             element={<ProjectService />}

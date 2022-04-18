@@ -1,6 +1,5 @@
 import ReactEcharts from "echarts-for-react";
 import React, { Component } from "react";
-import moment from "moment";
 import "./CommitFigure.css";
 
 // interface CommitFigureProps {
@@ -46,10 +45,10 @@ const CommitFigure = () => {
     series1.push([commit_time[i] * 1000, commit_num[i]]);
     series2.push([commit_time[i] * 1000, commit_acc[i]]);
   }
-  console.log(commit_num);
-  console.log(commit_acc);
-  console.log(commit_time);
-  console.log(moment(1649761649).format("YYYY-MM-DD"));
+  // console.log(commit_num);
+  // console.log(commit_acc);
+  // console.log(commit_time);
+  // console.log(moment(1649761649).format("YYYY-MM-DD"));
 
   const option = {
     title: {
