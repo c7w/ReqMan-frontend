@@ -202,6 +202,20 @@ const Iteration2SR = (
     .filter((obj: any) => obj !== "not found");
 };
 /*
+传入需要查询的 SRId，返回其对应的缺陷 issue (unique or not exist)
+还需传入 SRIssueAsso ( 对每个 repo， getIssueSRAssociationStore 而来，并拼接在一起！) 传入 string
+同时需要传入该项目的 issueInfo (getIssueStore 而来) （未解析）
+返回未排序
+ */
+const SR2Issue = (SRId: number, SRIssueAsso: string, issueInfo: string) => {
+  // console.log("================ Get Issue By SR ===============");
+  const SRIssueData = JSON.parse(SRIssueAsso).data;
+  // console.log(SRIssueData);
+  return SRIssueData.filter((obj: any) => obj.SR === SRId).map(
+    (obj: any) => obj.issue
+  ); // 直接返回匹配的 issueId 列表，要么空要么只有一个元素
+};
+/*
 传入需要查询的 SRId，返回其对应的服务 service(unique)
 还需传入 SRService (getServiceStore 而来) 不解析
 同时需要传入该项目的 serviceInfo (getServiceStore 而来) （未解析）
@@ -289,6 +303,7 @@ export {
   Iteration2IR,
   SR2Iteration,
   Iteration2SR,
+  SR2Issue,
   SR2Service,
   Service2SR,
   SR2ChargedUser,

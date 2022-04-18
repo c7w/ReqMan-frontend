@@ -9,12 +9,30 @@ import { useDispatch, useSelector } from "react-redux";
 import { getProjectStore } from "../../store/slices/ProjectSlice";
 import { useParams } from "react-router-dom";
 import Loading from "../../layout/components/Loading";
+import { getRepoStore } from "../../store/slices/RepoSlice";
+import {
+  getIssueSRAssociationStore,
+  getIssueStore,
+} from "../../store/slices/IssueSlice";
+import {
+  getIterationStore,
+  getSRIterationStore,
+} from "../../store/slices/IterationSlice";
+import { getRDTSInfo } from "../../store/functions/RDTS";
+import { Iteration2SR, SR2Issue } from "../../utils/Association";
+import { getSRListStore } from "../../store/slices/IRSRSlice";
 
 const UIAnalysis = () => {
   const [recentSeven, setRecentSeven] = useState("");
   const [overall, setOverall] = useState("");
 
   const projectStore = useSelector(getProjectStore);
+  const repoStore = useSelector(getRepoStore);
+  const iterationStore = useSelector(getIterationStore);
+  const SRIterationStore = useSelector(getSRIterationStore);
+  const issueSRStore = useSelector(getIssueSRAssociationStore);
+  const issueStore = useSelector(getIssueStore);
+  const SRListStore = useSelector(getSRListStore);
 
   const [reload, setReload] = useState(0);
 
@@ -95,18 +113,52 @@ const UIAnalysis = () => {
     });
   }
 
-  // 先获得该项目下的所有 iteration
-  // 再获得该项目下的所有 repo
-  // 对每个 repo，查询所有的 issue-sr
+  // 先获得该项目下的所有 iteration ok
+  // 再获得该项目下的所有 repo ok
+  // 对每个 repo，查询所有的 issue-sr ok
   // 再根据 sr-iteration 关系，对每个 iteration，查询其对应哪些 sr，需要 utils::Iteration2SR
   // 再根据已得到的 issue-sr，对上述每个 iteration 的每个 sr，需要 utils::SR2Issue
   // 查询有没有 issue 跟它对应，有就计数器 + 1
-  const issue_test =
-    '{"iterations":["iter1","iter2","iter3","iter4"],"all_sr_count":[12,14,16,18],"issues":[1,2,4,2]}';
+  // console.log("repo info: " + repoStore);
+  // console.log("issue-sr info" + issueSRStore);
+  // console.log("iteration info" + iterationStore);
+  // console.log("issue info: " + issueStore);
+  const iter_issue_sr_list = {
+    iterations: Array<string>(),
+    all_sr_count: Array<number>(),
+    issues: Array<number>(),
+  };
+  // 所有 iteration id
+  const iterationList = JSON.parse(iterationStore).data.map((value: any) => {
+    return {
+      id: value.id,
+      title: value.title,
+    };
+  });
+  iterationList.forEach((iteration: any) => {
+    // 该 iteration 对应的所有 SR 信息
+    const assoSRList = Iteration2SR(
+      iteration.id,
+      SRIterationStore,
+      SRListStore
+    );
+    // console.log(assoSRList);
+    iter_issue_sr_list.iterations.push(iteration.title);
+    iter_issue_sr_list.all_sr_count.push(assoSRList.length);
+    let counter = 0;
+    assoSRList.forEach((sr: any) => {
+      if (SR2Issue(sr.id, issueSRStore, issueStore).length > 0) counter++;
+    });
+    iter_issue_sr_list.issues.push(counter);
+  });
+  // console.log(iter_issue_sr_list);
 
   return (
     <div className={"merge-card"}>
-      <IssueFigure text={issue_test} title={"交付后缺陷分析"} />
+      <IssueFigure
+        text={JSON.stringify(iter_issue_sr_list)}
+        title={"交付后缺陷分析"}
+      />
 
       <ActiveFigure
         text={JSON.stringify(active_list_7)}

@@ -138,7 +138,7 @@ const SRCard = (props: SRCardProps) => {
   // 更新打开的 modal 对应的 SR 的所有关系
   const updateAssociation = () => {
     Promise.all([
-      getRDTSInfo(dispatcher, props.project),
+      getRDTSInfo(dispatcher, 2),
       getSRListInfo(dispatcher, props.project),
       updateProjectInfo(dispatcher, props.project),
     ]).then((data) => {
