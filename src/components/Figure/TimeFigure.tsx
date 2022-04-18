@@ -76,7 +76,7 @@ const TimeFigure = (props: TimeFigureProps) => {
     },
     series: [
       {
-        name: "Issue 解决时间",
+        name: "平均解决时间",
         type: "boxplot",
         datasetIndex: 1,
       },
