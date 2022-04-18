@@ -83,6 +83,7 @@ import { getSRChangeLogStore } from "../../store/slices/SRChangeLogSlice";
 import getUserAvatar from "../../utils/UserAvatar";
 import UISRChangeLogList from "./UISRChangeLogList";
 import { state2Color, state2ChineseState } from "../../utils/SRStateConvert";
+import MRCard from "../rdts/MRCard";
 const { Text } = Typography;
 
 const SRCard = (props: SRCardProps) => {
@@ -158,7 +159,7 @@ const SRCard = (props: SRCardProps) => {
       const newAssoMRCardList: any = [];
       assoMRListData.forEach((value: MergeRequestProps) => {
         newAssoMRCardList.push(
-          <UIMergeCardPreview
+          <MRCard
             data={JSON.stringify(value)}
             key={value.id}
             MRSRAssociationStore={JSON.stringify(data[0][3])}

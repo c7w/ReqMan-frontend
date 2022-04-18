@@ -32,7 +32,7 @@ const UISRChangeLogList = (props: SRChangeLogListProps) => {
                   {state2ChineseState.get(SRChangeLogList[i].formerState)}
                 </Tag>
               </Space>
-              <span>Create a services</span>
+              <span>{SRChangeLogList[i].description}</span>
             </Timeline.Item>
           );
         }
