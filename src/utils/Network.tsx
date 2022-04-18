@@ -31,13 +31,12 @@ const request_json = async (config: APIConfig, settings: Settings = {}) => {
     ...settings.getParams,
     sessionId: getCookie("sessionId", ""),
   };
-  // console.log(getParams_.sessionId);
   const getParams =
     "?" +
     Object.entries(getParams_)
       .map((key) => key[0] + "=" + key[1])
       .join("&");
-
+  console.log(getParams_.sessionId);
   let initRequest: RequestInit;
   if (config.method === "post") {
     initRequest = {

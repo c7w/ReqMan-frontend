@@ -137,7 +137,9 @@ const Test = () => {
     getSRListInfo(dispatcher, 2);
     updateServiceInfo(dispatcher, 2);
     getIterationInfo(dispatcher, 2);
-    getRDTSInfo(dispatcher, 2);
+    getRDTSInfo(dispatcher, 2).then((data) => {
+      console.log(data);
+    });
   }, []);
 
   const handleOnClick = () => {

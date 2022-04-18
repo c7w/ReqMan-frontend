@@ -5,6 +5,7 @@ import { getIRSRStore, getSRListStore } from "../../../store/slices/IRSRSlice";
 import {
   getIterationStore,
   getSRIterationStore,
+  updateIterationStore,
 } from "../../../store/slices/IterationSlice";
 import {
   getServiceStore,
@@ -17,7 +18,11 @@ import {
   updateProjectInfo,
   updateUserInfo,
 } from "../../../store/functions/UMS";
-import { getSRListInfo } from "../../../store/functions/RMS";
+import {
+  getIterationInfo,
+  getSRIterationInfo,
+  getSRListInfo,
+} from "../../../store/functions/RMS";
 import { Redirect, ToastMessage } from "../../../utils/Navigation";
 import Home from "../../../layout/Home";
 import UISRList from "../../../components/rms/UISRList";
@@ -26,6 +31,7 @@ import UIMerge from "../../../components/rdts/UIMerge";
 import { getRepoStore } from "../../../store/slices/RepoSlice";
 import {
   getCommitStore,
+  getIssueSRAssociationStore,
   getIssueStore,
   getMergeStore,
   getMRSRAssociationStore,
@@ -43,6 +49,8 @@ const ProjectRDTS = (props: ProjectRDTSProps) => {
   const userInfo = useSelector(getUserStore);
   const projectInfo = useSelector(getProjectStore);
   const SRListInfo = useSelector(getSRListStore);
+  const iterationStore = useSelector(getIterationStore);
+  const SRIterationStore = useSelector(getSRIterationStore);
 
   const repoInfo = useSelector(getRepoStore);
   const commitInfo = useSelector(getCommitStore);
@@ -50,6 +58,7 @@ const ProjectRDTS = (props: ProjectRDTSProps) => {
   const issueInfo = useSelector(getIssueStore);
 
   const MRSRStore = useSelector(getMRSRAssociationStore);
+  const issueSRStore = useSelector(getIssueSRAssociationStore);
 
   const dispatcher = useDispatch();
   const params = useParams<"id">();
@@ -58,7 +67,9 @@ const ProjectRDTS = (props: ProjectRDTSProps) => {
   useEffect(() => {
     updateUserInfo(dispatcher);
     updateProjectInfo(dispatcher, project_id);
+    getIterationInfo(dispatcher, project_id);
     getSRListInfo(dispatcher, project_id);
+    getSRIterationInfo(dispatcher, project_id);
     getRDTSInfo(dispatcher, project_id);
   }, []);
 
@@ -70,7 +81,10 @@ const ProjectRDTS = (props: ProjectRDTSProps) => {
     commitInfo === "" ||
     mergeInfo === "" ||
     issueInfo === "" ||
-    MRSRStore === ""
+    MRSRStore === "" ||
+    issueSRStore === "" ||
+    iterationStore === "" ||
+    SRIterationStore === ""
   ) {
     // Just let useEffect to re-query!
   } else if (JSON.parse(userInfo).code !== 0) {
