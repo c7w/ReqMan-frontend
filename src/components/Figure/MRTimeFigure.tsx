@@ -12,23 +12,23 @@ import { getRDTSInfo } from "../../store/functions/RDTS";
 // }
 
 const MRTimeFigure = () => {
-  // const dispatcher = useDispatch();
+  const dispatcher = useDispatch();
   // let mergedata = {};
-  //
-  // useEffect(() => {
-  //   Promise.all([getRDTSInfo(dispatcher, 2)]).then((data) => {
-  //     /*
-  //       data[0][0]: issue
-  //       data[0][1]: commit
-  //       data[0][2]: merge
-  //       data[0][3]: mr-sr
-  //       data[1]: SRList
-  //       data[2]: ProjectInfo
-  //     */
-  //     console.log(data[0][2]);
-  //     mergedata = data[0][2];
-  //   });
-  // });
+
+  useEffect(() => {
+    getRDTSInfo(dispatcher, 2).then((data) => {
+      /*
+        data[0][0]: issue
+        data[0][1]: commit
+        data[0][2]: merge
+        data[0][3]: mr-sr
+        data[1]: SRList
+        data[2]: ProjectInfo
+      */
+      console.log(data);
+      // mergedata = data[0][2];
+    });
+  });
 
   // put in all the MRs get from an repo
   const test =

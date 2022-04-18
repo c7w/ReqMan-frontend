@@ -1,6 +1,6 @@
 import ReactEcharts from "echarts-for-react";
 import React, { Component } from "react";
-import "./TimeFigure.css";
+import "./CountDistribution.css";
 
 // interface CountDistributionProps {
 //   text: string; // text for parsing
@@ -9,7 +9,9 @@ import "./TimeFigure.css";
 
 const CountDistributionFigure = () => {
   const test =
-    '{"data":[{"mr_count":1,"commit_count":2,"additions":371,"deletions":11,"issue_count":1,"issue_times":[174219],"commit_times":[1649750000,1649760000,1649760000,1649770000,1649775000,1649775000]},{"mr_count":1,"commit_count":2,"additions":371,"deletions":11,"issue_count":1,"issue_times":[174219],"commit_times":[1649780000]}]}';
+    '{"data":[{"mr_count":1,"commit_count":2,"issue_count":1},{"mr_count":5,"commit_count":2,"issue_count":4},{"mr_count":3,"commit_count":1,"issue_count":1},' +
+    '{"mr_count":10,"commit_count":7,"issue_count":8},{"mr_count":5,"commit_count":4,"issue_count":0},{"mr_count":2,"commit_count":9,"issue_count":6},' +
+    '{"mr_count":7,"commit_count":8,"issue_count":4},{"mr_count":8,"commit_count":2,"issue_count":6},{"mr_count":5,"commit_count":3,"issue_count":4}]}';
   const data = JSON.parse(test).data;
   // const data = JSON.parse(props.text);
   const commit_cnt: number[] = [];
@@ -77,7 +79,7 @@ const CountDistributionFigure = () => {
     },
     series: [
       {
-        name: "Issue 解决时间",
+        name: "平均值",
         type: "boxplot",
         datasetIndex: 1,
       },
