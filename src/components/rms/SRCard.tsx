@@ -244,6 +244,7 @@ const SRCard = (props: SRCardProps) => {
     setPriority(props.priority);
     setService(props.service);
     setModalVisible(false);
+    setDescEditing(false);
   };
   const onClick = (e: any) => {
     updateSRInfo(dispatcher, props.project, {
@@ -379,10 +380,14 @@ const SRCard = (props: SRCardProps) => {
                   id="description-inner"
                   editable={{
                     onChange: setDescription,
+                    maxLength: 512,
                     editing: descEditing,
                     icon: null,
                     onEnd: () => setDescEditing(false),
                     onCancel: () => setDescEditing(false),
+                  }}
+                  ellipsis={{
+                    rows: 6,
                   }}
                   onClick={() => setDescEditing(true)}
                   // style={{
