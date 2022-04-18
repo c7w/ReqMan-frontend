@@ -169,6 +169,17 @@ const UIAnalysis = () => {
   });
   // console.log(MRReviewList);
 
+  // mr, commit, issue counter
+  const mr_commit_issue_counter = {
+    data: Array<any>(),
+  };
+  const test_counter =
+    '{"data":[{"mr_count":1,"commit_count":2,"issue_count":1},{"mr_count":5,"commit_count":2,"issue_count":4},{"mr_count":3,"commit_count":1,"issue_count":1},' +
+    '{"mr_count":10,"commit_count":7,"issue_count":8},{"mr_count":5,"commit_count":4,"issue_count":0},{"mr_count":2,"commit_count":9,"issue_count":6},' +
+    '{"mr_count":7,"commit_count":8,"issue_count":4},{"mr_count":8,"commit_count":2,"issue_count":6},{"mr_count":5,"commit_count":3,"issue_count":4}]}';
+
+  const test_commit =
+    '{"data":[{"mr_count":1,"commit_count":2,"additions":371,"deletions":11,"issue_count":1,"issue_times":[174219],"commit_times":[1649750000,1649760000,1649760000,1649770000,1649775000,1649775000]},{"mr_count":1,"commit_count":2,"additions":371,"deletions":11,"issue_count":1,"issue_times":[174219],"commit_times":[1649780000]}]}';
   return (
     <div className={"merge-card"}>
       <IssueFigure
@@ -199,8 +210,11 @@ const UIAnalysis = () => {
         text={JSON.stringify(MRReviewList)}
         title={"MR数量统计表"}
       />
-      <CountDistributionFigure />
-      <CommitFigure />
+      <CountDistributionFigure
+        title={"MR,commit及Issue数量分析"}
+        text={test_counter}
+      />
+      <CommitFigure title={"Commit数量统计表"} text={test_commit} />
     </div>
   );
 };
