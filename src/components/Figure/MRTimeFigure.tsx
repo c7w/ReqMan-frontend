@@ -12,27 +12,32 @@ import { getRDTSInfo } from "../../store/functions/RDTS";
 // }
 
 const MRTimeFigure = () => {
-  const dispatcher = useDispatch();
+  // const dispatcher = useDispatch();
   // const mergeStore = useSelector(getMergeStore);
   // const mergeData = JSON.parse(mergeStore).data;
-  // console.log(mergeStore);
+  // console.log(mergeData);
+  //
+  // useEffect(() => {
+  //   const repo_info = getRDTSInfo(dispatcher, 1);
+  //   console.log(repo_info);
+  // });
 
-  useEffect(() => {
-    console.log("updating !");
-    const all_list = getRDTSInfo(dispatcher, 1);
-    console.log(all_list);
-  });
-
+  // put in all the MRs get from an repo
   const test =
-    '{"data":[{"mr_count":1,"commit_count":2,"additions":371,"deletions":11,"issue_count":1,"issue_times":[174219],"commit_times":[1649750000,1649760000,1649760000,1649770000,1649775000,1649775000]},{"mr_count":1,"commit_count":2,"additions":371,"deletions":11,"issue_count":1,"issue_times":[174219],"commit_times":[1649780000]}]}';
+    '{"data":[{"reviewedAt":1649906641.84},{"reviewedAt":1649907641.84}{"reviewedAt":1649908641},{"reviewedAt":1649909641.231}]}';
   const data = JSON.parse(test).data;
   // const data = JSON.parse(props.text);
-  const all_commit: number[] = [];
+  const all_mr: number[] = [];
   data.forEach((value: any) => {
-    const times = value.commit_times;
-    times.forEach((value1: any) => {
-      all_commit.push(value1);
-    });
+    const time = value.reviewedAt;
+    all_mr.push(time * 1000);
+  });
+  all_mr.sort();
+  const series1 = [];
+  let iter = 0;
+  all_mr.forEach((value: any) => {
+    series1.push([value, iter]);
+    iter++;
   });
 
   const option = {};
