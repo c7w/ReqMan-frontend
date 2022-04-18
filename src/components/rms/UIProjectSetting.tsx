@@ -277,7 +277,11 @@ const UIProjectSetting = () => {
                     <Button type={"primary"}>修改 Logo</Button>
                   </Upload>
                 </ImgCrop>
-                <Button danger={true} onClick={() => setAvatarDelete(true)}>
+                <Button
+                  style={{ marginLeft: "1rem" }}
+                  danger={true}
+                  onClick={() => setAvatarDelete(true)}
+                >
                   删除 Logo
                 </Button>
               </div>
@@ -315,9 +319,14 @@ const UIProjectSetting = () => {
                 bordered={false}
               />
             </div>
-            <div style={{ marginTop: "1rem" }}>
+            <div
+              style={{
+                marginTop: "1rem",
+              }}
+            >
               <Button
                 type={"primary"}
+                style={{ marginRight: "1rem" }}
                 onClick={() => {
                   navigator.clipboard.writeText(invitation).then((r) => {
                     ToastMessage("success", "复制成功", "项目邀请码复制成功");

@@ -39,7 +39,6 @@ const MRTimeFigure = () => {
     const time = value.reviewedAt;
     all_mr.push(time * 1000);
   });
-  all_mr.sort();
   const series1: any = [];
   let iter = 1;
   all_mr.forEach((value: any) => {

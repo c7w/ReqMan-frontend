@@ -19,7 +19,6 @@ const CommitFigure = () => {
       all_commit.push(value1);
     });
   });
-  all_commit.sort();
   const commit_num = [];
   const commit_acc: number[] = [];
   const commit_time = [];
