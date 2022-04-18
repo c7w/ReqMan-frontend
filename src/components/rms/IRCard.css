@@ -1,6 +1,6 @@
 .IRCard-small {
   height: 100px;
-  left: 0;
+  max-width: 20vw;
   padding: 12px;
   margin: 5px 5px 5px 5px;
   border-radius: 5px;
@@ -21,12 +21,11 @@
 }
 
 .IRCard-small-header-left {
-  width: 70%;
   font-weight: bold;
   font-size: 18px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  overflow-wrap: normal;
+  white-space:nowrap;          /* 不换行 */
+  overflow:hidden;               /* 内容超出宽度时隐藏超出内容*/
+  text-overflow:ellipsis;         /* 当对象内文本溢出时显示省略标记(...) ；需与overflow:hidden;一起使用。*/
 }
 
 .IRCard-small-header-right {

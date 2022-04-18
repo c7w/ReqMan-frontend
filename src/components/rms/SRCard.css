@@ -1,6 +1,6 @@
 .SRCard-small {
   height: 100px;
-  left: 0;
+  max-width: 20vw;
   margin: 5px 5px 20px 5px;
   padding: 12px;
   border-radius: 5px;
@@ -34,12 +34,11 @@
 }
 
 .SRCard-small-header-left {
-  width: 70%;
   font-weight: bold;
   font-size: 18px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  overflow-wrap: normal;
+  white-space:nowrap;          /* 不换行 */
+  overflow:hidden;               /* 内容超出宽度时隐藏超出内容*/
+  text-overflow:ellipsis;         /* 当对象内文本溢出时显示省略标记(...) ；需与overflow:hidden;一起使用。*/
 }
 
 .SRCard-small-header-right {
@@ -101,7 +100,8 @@
 .SRModal-content-desc {
   border-radius: 5px;
   padding-left: 1rem;
-  max-width: 40vw;
+  max-width: 33vw;
+  max-height: 50vh;
   font-size: 1rem;
   transition: background-color 0.3s;
 }
@@ -148,8 +148,9 @@
 }
 
 .SR-MR-content-related {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(3, 33.33%);
+  box-sizing: content-box;
 }
 
 .SRWrap .SR-title-related {
