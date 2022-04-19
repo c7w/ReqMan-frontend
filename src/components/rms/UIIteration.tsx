@@ -501,13 +501,31 @@ const UIIteration = () => {
                             setDetail(JSON.stringify(det));
                           }
                         }}
-                        style={{ cursor: "pointer", fontWeight: "bold" }}
+                        style={{
+                          cursor: "pointer",
+                          fontWeight: "bold",
+                          display: "flex",
+                          flexDirection: "row",
+                          justifyContent: "start",
+                        }}
                         key={ir.id}
                       >
-                        <span id={`iteration-table-ir-control-${ir.id}`}>
+                        <span
+                          id={`iteration-table-ir-control-${ir.id}`}
+                          style={{ display: "inline-block" }}
+                        >
                           　　{JSON.parse(detail).includes(ir.id) ? "-" : "+"}
                         </span>
-                        <span>　{ir.title}</span>
+                        <span
+                          style={{
+                            whiteSpace: "nowrap",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            display: "inline-block",
+                          }}
+                        >
+                          　{ir.title}
+                        </span>
                       </div>
                       {oneIR2AllSR(ir.id, IRSRAssociation, SRStore).map(
                         (sr: SRCardProps) => (

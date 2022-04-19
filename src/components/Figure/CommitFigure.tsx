@@ -61,7 +61,7 @@ const CommitFigure = (props: CommitFigureProps) => {
       trigger: "axis",
     },
     legend: {
-      data: ["当前commit数量", "累计commit数量"],
+      data: ["累计commit数量"],
     },
     xAxis: {
       type: "time",
@@ -72,12 +72,6 @@ const CommitFigure = (props: CommitFigureProps) => {
       name: "数量",
     },
     series: [
-      {
-        name: "当前commit数量",
-        type: "line",
-        data: series1,
-        smooth: true,
-      },
       {
         name: "累计commit数量",
         type: "line",
