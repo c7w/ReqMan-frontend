@@ -11,6 +11,7 @@ import { useParams } from "react-router-dom";
 import Loading from "../../layout/components/Loading";
 import { getRepoStore } from "../../store/slices/RepoSlice";
 import {
+  getCommitStore,
   getIssueSRAssociationStore,
   getIssueStore,
   getMergeStore,
@@ -38,6 +39,7 @@ const UIAnalysis = () => {
   const issueStore = useSelector(getIssueStore);
   const SRListStore = useSelector(getSRListStore);
   const mergeStore = useSelector(getMergeStore);
+  const commitStore = useSelector(getCommitStore);
 
   const [reload, setReload] = useState(0);
 
@@ -178,8 +180,14 @@ const UIAnalysis = () => {
     '{"mr_count":10,"commit_count":7,"issue_count":8},{"mr_count":5,"commit_count":4,"issue_count":0},{"mr_count":2,"commit_count":9,"issue_count":6},' +
     '{"mr_count":7,"commit_count":8,"issue_count":4},{"mr_count":8,"commit_count":2,"issue_count":6},{"mr_count":5,"commit_count":3,"issue_count":4}]}';
 
+  console.log(recentSeven);
+  console.log(overall);
+  // commit time
+  const commit_time = {
+    data: Array<any>(),
+  };
   const test_commit =
-    '{"data":[{"mr_count":1,"commit_count":2,"additions":371,"deletions":11,"issue_count":1,"issue_times":[174219],"commit_times":[1649750000,1649760000,1649760000,1649770000,1649775000,1649775000]},{"mr_count":1,"commit_count":2,"additions":371,"deletions":11,"issue_count":1,"issue_times":[174219],"commit_times":[1649780000]}]}';
+    '{"data":{"commit_times":[1649750000,1649760000,1649760000,1649770000,1649775000,1649775000]}}';
   return (
     <div className={"merge-card"}>
       <IssueFigure
@@ -212,9 +220,9 @@ const UIAnalysis = () => {
       />
       <CountDistributionFigure
         title={"MR,commit及Issue数量分析"}
-        text={test_counter}
+        text={overall}
       />
-      <CommitFigure title={"Commit数量统计表"} text={test_commit} />
+      <CommitFigure title={"Commit数量统计表"} text={overall} />
     </div>
   );
 };
