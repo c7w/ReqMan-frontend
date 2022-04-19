@@ -289,11 +289,8 @@ const UIIssueCard = (props: UIIssueCardProps) => {
           <Timeline style={{ marginTop: "1rem", marginLeft: "2rem" }}>
             {timeline_list
               .sort((entryA, entryB) => entryB.time - entryA.time)
-              .map((entry: TimelineEntry) => (
-                <Timeline.Item
-                  color={entry.color}
-                  key={entry.content.toString()}
-                >
+              .map((entry: TimelineEntry, ind) => (
+                <Timeline.Item color={entry.color} key={ind}>
                   <>
                     <span>
                       [{moment(entry.time * 1000).format("lll")}]&nbsp;&nbsp;

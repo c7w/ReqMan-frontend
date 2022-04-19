@@ -588,6 +588,7 @@ const UIIteration = () => {
                               {oneIR2AllSR(ir.id, IRSRAssociation, SRStore).map(
                                 (sr: SRCardProps) => (
                                   <div
+                                    key={sr.id}
                                     style={{
                                       height: JSON.parse(detail).includes(ir.id)
                                         ? "2.0rem"

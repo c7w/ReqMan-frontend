@@ -87,7 +87,7 @@ const UIIssue = () => {
       title: "项目缺陷提交者",
       width: "12%",
       ellipsis: true,
-      dataIndex: "createdBy",
+      dataIndex: "authoredBy",
       align: "center",
       render: (_, record) => {
         let user = record.authoredByUserName;

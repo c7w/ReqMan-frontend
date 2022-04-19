@@ -77,7 +77,7 @@ const UIMergeCard = (props: UIMergeCardProps) => {
   }
 
   let currAssociatedSRId = -1;
-  console.debug(JSON.parse(props.MRSRAssociationStore).data);
+  // console.debug(JSON.parse(props.MRSRAssociationStore).data);
   const filtered_list = JSON.parse(props.MRSRAssociationStore).data.filter(
     (asso: any) => asso.MR === mrId
   );

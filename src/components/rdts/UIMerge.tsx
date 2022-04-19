@@ -107,7 +107,7 @@ const UIMerge = () => {
       align: "center",
       render: (_, record) => {
         let currAssociatedSRId = -1;
-        console.debug(JSON.parse(MRSRAssoStore).data);
+        // console.debug(JSON.parse(MRSRAssoStore).data);
         const filtered_list = JSON.parse(MRSRAssoStore).data.filter(
           (asso: any) => asso.MR === record.id
         );
