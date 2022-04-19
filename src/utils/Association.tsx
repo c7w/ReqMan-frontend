@@ -220,6 +220,7 @@ const SR2Issue = (SRId: number, SRIssueAsso: string, issueInfo: string) => {
 还需传入 SRService (getServiceStore 而来) 不解析
 同时需要传入该项目的 serviceInfo (getServiceStore 而来) （未解析）
 返回未排序
+// NOTE: 返回是个列表！最多只有一个元素，因为一个 SR 只能属于一个服务
  */
 const SR2Service = (
   SRId: number,
@@ -231,8 +232,10 @@ const SR2Service = (
   // console.log(SRServiceData);
   const matchedService = SRServiceData.filter((obj: any) => obj.SR === SRId);
   if (matchedService.length > 0)
-    return servId2ServInfo(matchedService[0].service, serviceInfo);
-  return {};
+    return matchedService.map((obj: any) =>
+      servId2ServInfo(obj.service, serviceInfo)
+    );
+  return [];
 };
 /*
 传入需要查询的 serviceId，返回其对应的所有 SR
@@ -240,7 +243,6 @@ const SR2Service = (
 同时需要传入该项目的 SRList (getSRListStore 而来) （未解析）
 返回未排序
  */
-// NOTE: 返回是个列表！最多只有一个元素，因为一个 SR 只能属于一个服务
 const Service2SR = (
   serviceId: number,
   SRServiceAsso: string,

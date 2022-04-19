@@ -378,7 +378,7 @@ const UIProjectSetting = () => {
               <br />
               <br />
               <Text>
-                Secret Token 用于定时主动拉取仓库信息，在 项目设置 &gt; 访问令牌
+                Access Token 用于定时主动拉取仓库信息，在 项目设置 &gt; 访问令牌
                 中维护
               </Text>
               <br />
