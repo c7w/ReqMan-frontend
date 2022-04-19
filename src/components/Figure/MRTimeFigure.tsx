@@ -12,10 +12,9 @@ interface MRTimeFigureProps {
 
 const MRTimeFigure = (props: MRTimeFigureProps) => {
   const data = JSON.parse(props.text).data;
-  // const data = JSON.parse(props.text);
   const all_mr: number[] = [];
   data.forEach((value: any) => {
-    const time = value.reviewedAt;
+    const time = value.authoredAt;
     all_mr.push(time * 1000);
   });
   function compare(value1: number, value2: number) {

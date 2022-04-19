@@ -22,8 +22,6 @@ const MRCard = (props: MRCardProps) => {
   const rgx_match = data.title.match(new RegExp("\\[(.*?)\\] (.*)")); // 匹配 [SR.001.001] sth
   const title = rgx_match[1];
   const description = rgx_match[2];
-  // console.log(data.title);
-  // console.log(description);
   const [visible, setVisible] = useState(false);
   const getBackgroundColor = (state: "closed" | "merged" | "opened") => {
     switch (state) {

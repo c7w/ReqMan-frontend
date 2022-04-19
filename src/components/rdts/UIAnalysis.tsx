@@ -92,7 +92,7 @@ const UIAnalysis = () => {
     return <Loading />;
   }
 
-  const active_list_7 = [];
+  let active_list_7 = [];
   const issue_list_7 = [];
   for (let i = 0; i < JSON.parse(recentSeven).data.length; ++i) {
     active_list_7.push({
@@ -106,7 +106,7 @@ const UIAnalysis = () => {
     });
   }
 
-  const active_list_all = [];
+  let active_list_all = [];
   const issue_list_all = [];
   for (let i = 0; i < JSON.parse(recentSeven).data.length; ++i) {
     active_list_all.push({
@@ -119,6 +119,13 @@ const UIAnalysis = () => {
       time: JSON.parse(overall).data[i].issue_times,
     });
   }
+  // filter 掉贡献为 0 的
+  active_list_7 = active_list_7.filter(
+    (active: any) => active.mr !== 0 || active.line !== 0
+  );
+  active_list_all = active_list_all.filter(
+    (active: any) => active.mr !== 0 || active.line !== 0
+  );
 
   // 先获得该项目下的所有 iteration ok
   // 再获得该项目下的所有 repo ok
@@ -162,9 +169,11 @@ const UIAnalysis = () => {
   };
   JSON.parse(mergeStore).data.forEach((mr: any) => {
     MRReviewList.data.push({
-      reviewedAt: mr.reviewedAt,
+      authoredAt: mr.authoredAt,
     });
   });
+  // console.log(mergeStore);
+  console.log(MRReviewList);
   return (
     <div className={"merge-card"}>
       <IssueFigure
@@ -195,10 +204,10 @@ const UIAnalysis = () => {
         text={JSON.stringify(MRReviewList)}
         title={"MR数量统计表"}
       />
-      <CountDistributionFigure
-        title={"MR,commit及Issue数量分析"}
-        text={overall}
-      />
+      {/*<CountDistributionFigure*/}
+      {/*  title={"MR,commit及Issue数量分析"}*/}
+      {/*  text={overall}*/}
+      {/*/>*/}
       <CommitFigure title={"Commit数量统计表"} text={overall} />
     </div>
   );
