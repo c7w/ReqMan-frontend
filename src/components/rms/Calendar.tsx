@@ -20,6 +20,7 @@ import { getSRListStore } from "../../store/slices/IRSRSlice";
 
 interface CalendarProps {
   readonly userInfo: string;
+  readonly inProject: boolean; // 是否是要展示当前项目的开发日程表
 }
 
 const Calendar = (props: CalendarProps) => {

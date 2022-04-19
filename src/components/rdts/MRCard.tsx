@@ -19,6 +19,8 @@ interface MRCardProps {
 
 const MRCard = (props: MRCardProps) => {
   const data = JSON.parse(props.data);
+  const title = data.title.search("(?<=\\[)SR.\\d{3}.\\d{3}(?=(.[I/F/B])?])");
+  console.log(title);
   const [visible, setVisible] = useState(false);
   const getBackgroundColor = (state: "closed" | "merged" | "opened") => {
     switch (state) {

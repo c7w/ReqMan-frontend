@@ -435,7 +435,7 @@ const UIIRList = (props: UIIRListProps) => {
               fontSize: "16px",
             }}
           >
-            项目名称
+            原始需求标题
           </p>
           <Input
             value={title}
@@ -450,7 +450,7 @@ const UIIRList = (props: UIIRListProps) => {
               fontSize: "16px",
             }}
           >
-            项目介绍
+            原始需求描述
           </p>
           <TextArea
             rows={4}

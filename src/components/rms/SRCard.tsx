@@ -12,6 +12,7 @@ import {
   Divider,
   Breadcrumb,
   Select,
+  Empty,
 } from "antd";
 import { UserOutlined, DownOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
@@ -200,7 +201,7 @@ const SRCard = (props: SRCardProps) => {
     });
     getSRChangeLogInfo(dispatcher, props.project, props.id).then(
       (data: any) => {
-        console.log(data);
+        // console.log(data);
       }
     );
   };
@@ -440,24 +441,41 @@ const SRCard = (props: SRCardProps) => {
           <div className="SRModal-content-right">
             <div className="SRWrap SR-IR-related">
               <div className="SR-title-related">关联原始需求</div>
-              {/*<div className="SR-content-related">{assoIRCardList}</div>*/}
-              <QueueAnim
-                className="SR-content-related"
-                duration={2000}
-                interval={100}
-              >
-                {assoIRCardList}
-              </QueueAnim>
+              {assoIRCardList.length === 0 ? (
+                <Empty
+                  image={Empty.PRESENTED_IMAGE_SIMPLE}
+                  style={{
+                    width: "100%",
+                  }}
+                />
+              ) : (
+                <QueueAnim
+                  className="SR-content-related"
+                  duration={2000}
+                  interval={100}
+                >
+                  {assoIRCardList}
+                </QueueAnim>
+              )}
             </div>
             <div className="SRWrap SR-MR-related">
               <div className="SR-title-related">关联合并</div>
-              <QueueAnim
-                className="SR-MR-content-related"
-                type="right"
-                ease="[.42,0,.58,1, .42,0,.58,1]"
-              >
-                {assoMRCardList}
-              </QueueAnim>
+              {assoMRCardList.length === 0 ? (
+                <Empty
+                  image={Empty.PRESENTED_IMAGE_SIMPLE}
+                  style={{
+                    width: "100%",
+                  }}
+                />
+              ) : (
+                <QueueAnim
+                  className="SR-MR-content-related"
+                  type="right"
+                  ease="[.42,0,.58,1, .42,0,.58,1]"
+                >
+                  {assoMRCardList}
+                </QueueAnim>
+              )}
             </div>
             <div className="SRWrap SR-issue-related">
               <div className="SR-title-related">关联缺陷</div>

@@ -126,10 +126,6 @@ const UIAnalysis = () => {
   // 再根据 sr-iteration 关系，对每个 iteration，查询其对应哪些 sr，需要 utils::Iteration2SR
   // 再根据已得到的 issue-sr，对上述每个 iteration 的每个 sr，需要 utils::SR2Issue
   // 查询有没有 issue 跟它对应，有就计数器 + 1
-  // console.log("repo info: " + repoStore);
-  // console.log("issue-sr info" + issueSRStore);
-  // console.log("iteration info" + iterationStore);
-  // console.log("issue info: " + issueStore);
   const iter_issue_sr_list = {
     iterations: Array<string>(),
     all_sr_count: Array<number>(),
@@ -169,25 +165,6 @@ const UIAnalysis = () => {
       reviewedAt: mr.reviewedAt,
     });
   });
-  // console.log(MRReviewList);
-
-  // mr, commit, issue counter
-  const mr_commit_issue_counter = {
-    data: Array<any>(),
-  };
-  const test_counter =
-    '{"data":[{"mr_count":1,"commit_count":2,"issue_count":1},{"mr_count":5,"commit_count":2,"issue_count":4},{"mr_count":3,"commit_count":1,"issue_count":1},' +
-    '{"mr_count":10,"commit_count":7,"issue_count":8},{"mr_count":5,"commit_count":4,"issue_count":0},{"mr_count":2,"commit_count":9,"issue_count":6},' +
-    '{"mr_count":7,"commit_count":8,"issue_count":4},{"mr_count":8,"commit_count":2,"issue_count":6},{"mr_count":5,"commit_count":3,"issue_count":4}]}';
-
-  console.log(recentSeven);
-  console.log(overall);
-  // commit time
-  const commit_time = {
-    data: Array<any>(),
-  };
-  const test_commit =
-    '{"data":{"commit_times":[1649750000,1649760000,1649760000,1649770000,1649775000,1649775000]}}';
   return (
     <div className={"merge-card"}>
       <IssueFigure

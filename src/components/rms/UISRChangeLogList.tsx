@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Space, Tag, Timeline } from "antd";
+import { Empty, Space, Tag, Timeline } from "antd";
 import moment from "moment";
 import { state2ChineseState, state2Color } from "../../utils/SRStateConvert";
 
@@ -52,7 +52,11 @@ const UISRChangeLogList = (props: SRChangeLogListProps) => {
         paddingRight: "1rem",
       }}
     >
-      <Timeline mode="left">{SRChangeLogListData}</Timeline>
+      {SRChangeLogListData.length === 0 ? (
+        <Empty />
+      ) : (
+        <Timeline mode="left">{SRChangeLogListData}</Timeline>
+      )}
     </div>
   );
 };

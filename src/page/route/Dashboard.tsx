@@ -36,7 +36,7 @@ const Dashboard = () => {
             <Breadcrumb.Item>Home</Breadcrumb.Item>
             <Breadcrumb.Item>我的日程</Breadcrumb.Item>
           </Breadcrumb>
-          <Calendar userInfo={userInfo} />
+          <Calendar userInfo={userInfo} inProject={false} />
         </div>
       </Home>
     );

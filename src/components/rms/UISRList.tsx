@@ -315,7 +315,7 @@ const UISRList = (props: UISRListProps) => {
         });
       }
     });
-
+    setIsEditModalVisible(false);
     // Main SR Info
     updateSRInfo(dispatcher, project, newSR).then((data: any) => {
       if (data.code === 0) {
@@ -365,7 +365,7 @@ const UISRList = (props: UISRListProps) => {
       chargedBy: -1,
       service: service,
     };
-
+    setIsCreateModalVisible(false);
     createSRInfo(dispatcher, project, newSR).then((data: any) => {
       if (data.code === 0) {
         ToastMessage("success", "创建成功", "您的功能需求创建成功");
@@ -375,7 +375,6 @@ const UISRList = (props: UISRListProps) => {
         setDesc("");
         setPriority(1);
         setCurrState("未开始");
-        setIsCreateModalVisible(false);
         setIter([]);
         setChargedBy(-1);
         setService(-1);
@@ -817,7 +816,7 @@ const UISRList = (props: UISRListProps) => {
               fontSize: "16px",
             }}
           >
-            项目名称
+            功能需求标题
           </p>
           <Input
             value={title}
@@ -832,7 +831,7 @@ const UISRList = (props: UISRListProps) => {
               fontSize: "16px",
             }}
           >
-            项目介绍
+            功能需求描述
           </p>
           <TextArea
             rows={4}
