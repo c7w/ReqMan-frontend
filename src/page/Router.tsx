@@ -56,7 +56,6 @@ const SiteRouter = () => {
           <Route path="settings" element={<PersonalSetting />} />
           <Route path="project/:id/IRManager" element={<ProjectIR />} />
           <Route path="project/:id/SRManager" element={<ProjectSR />} />
-          <Route path="figure" element={<CommitFigure />} />
           <Route
             path="project/:id/ServiceManager"
             element={<ProjectService />}
