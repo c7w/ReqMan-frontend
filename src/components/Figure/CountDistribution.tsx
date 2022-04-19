@@ -2,17 +2,13 @@ import ReactEcharts from "echarts-for-react";
 import React, { Component } from "react";
 import "./CountDistribution.css";
 
-// interface CountDistributionProps {
-//   text: string; // text for parsing
-//   title: string; // chart title
-// }
+interface CountDistributionProps {
+  text: string; // text for parsing
+  title: string; // chart title
+}
 
-const CountDistributionFigure = () => {
-  const test =
-    '{"data":[{"mr_count":1,"commit_count":2,"issue_count":1},{"mr_count":5,"commit_count":2,"issue_count":4},{"mr_count":3,"commit_count":1,"issue_count":1},' +
-    '{"mr_count":10,"commit_count":7,"issue_count":8},{"mr_count":5,"commit_count":4,"issue_count":0},{"mr_count":2,"commit_count":9,"issue_count":6},' +
-    '{"mr_count":7,"commit_count":8,"issue_count":4},{"mr_count":8,"commit_count":2,"issue_count":6},{"mr_count":5,"commit_count":3,"issue_count":4}]}';
-  const data = JSON.parse(test).data;
+const CountDistributionFigure = (props: CountDistributionProps) => {
+  const data = JSON.parse(props.text).data;
   // const data = JSON.parse(props.text);
   const commit_cnt: number[] = [];
   const mr_cnt: number[] = [];
@@ -26,7 +22,7 @@ const CountDistributionFigure = () => {
   const all_cnt: any = [mr_cnt, commit_cnt, issue_cnt];
   const option = {
     title: {
-      text: "MR,commit及Issue数量分析",
+      text: props.title,
       left: "center",
     },
     dataset: [
