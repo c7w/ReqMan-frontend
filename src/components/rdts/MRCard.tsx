@@ -19,8 +19,11 @@ interface MRCardProps {
 
 const MRCard = (props: MRCardProps) => {
   const data = JSON.parse(props.data);
-  const title = data.title.search("(?<=\\[)SR.\\d{3}.\\d{3}(?=(.[I/F/B])?])");
-  console.log(title);
+  const rgx_match = data.title.match(new RegExp("\\[(.*?)\\] (.*)")); // 匹配 [SR.001.001] sth
+  const title = rgx_match[1];
+  const description = rgx_match[2];
+  // console.log(data.title);
+  // console.log(description);
   const [visible, setVisible] = useState(false);
   const getBackgroundColor = (state: "closed" | "merged" | "opened") => {
     switch (state) {
@@ -59,12 +62,12 @@ const MRCard = (props: MRCardProps) => {
         }}
       >
         <div className="MRCard-small-header">
-          <span className="MRCard-small-header-left">{data.title}</span>
+          <span className="MRCard-small-header-left">{title}</span>
           <div className="MRCard-small-header-right"></div>
         </div>
         <div className="MRCard-small-description">
           <Typography>
-            <Text ellipsis={true}>{data.description}</Text>
+            <Text ellipsis={true}>{description}</Text>
           </Typography>
         </div>
         <div className="MRCard-small-down">

@@ -17,6 +17,7 @@ import {
   updateWipSRList,
 } from "../../store/slices/CalendarSlice";
 import { getSRListStore } from "../../store/slices/IRSRSlice";
+import { useParams } from "react-router-dom";
 
 interface CalendarProps {
   readonly userInfo: string;
@@ -34,13 +35,22 @@ const Calendar = (props: CalendarProps) => {
   let wipSRListData: any = [];
   let reviewSRListData: any = [];
   let allSRListData: any = [];
+  const params = useParams();
+  const project_id = Number(params.id);
   useEffect(() => {
     todoSRListData = [];
     wipSRListData = [];
     reviewSRListData = [];
     allSRListData = [];
-    for (const project of userData.projects) {
-      const project_id = Number(project.id);
+    let projectIdList = [];
+    if (props.inProject) {
+      projectIdList.push(project_id);
+    } else {
+      projectIdList = userData.projects.map((project: any) =>
+        Number(project.id)
+      );
+    }
+    for (const project_id of projectIdList) {
       getSRListInfo(dispatcher, project_id).then((data: any) => {
         const todo_arr = todoSR(JSON.stringify(data));
         const wip_arr = wipSR(JSON.stringify(data));

@@ -391,11 +391,6 @@ const SRCard = (props: SRCardProps) => {
                     rows: 6,
                   }}
                   onClick={() => setDescEditing(true)}
-                  // style={{
-                  //   overflowX: "hidden",
-                  //   overflowY: "auto",
-                  //   height: "12vh",
-                  // }}
                 >
                   {description}
                 </Paragraph>
