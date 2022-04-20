@@ -1,5 +1,5 @@
-import { Button } from "antd";
-import { useDispatch, useSelector } from "react-redux";
+import { Button, Upload } from "antd";
+import { useDispatch, useSelector, useStore } from "react-redux";
 import {
   createIRInfo,
   updateIRInfo,
@@ -20,7 +20,7 @@ import {
   getIterationInfo,
 } from "../store/functions/RMS";
 import {
-  IRCard,
+  IRCardProps,
   IRSRAssociation,
   Iteration,
   SRCardProps,
@@ -55,9 +55,33 @@ import {
   getServiceStore,
   getSRServiceStore,
 } from "../store/slices/ServiceSlice";
+import {
+  getCommitInfo,
+  getIssueInfo,
+  getMergeInfo,
+  getRDTSInfo,
+  getRepoInfo,
+} from "../store/functions/RDTS";
+import React, { useEffect, useState } from "react";
+import { getRepoStore } from "../store/slices/RepoSlice";
+import {
+  getCommitStore,
+  getIssueStore,
+  getMergeStore,
+} from "../store/slices/IssueSlice";
+import { compressBase64Image } from "../utils/ImageCompressor";
+import request_json from "../utils/Network";
+import API from "../utils/APIList";
+import { ToastMessage } from "../utils/Navigation";
 
 const Test = () => {
   const dispatcher = useDispatch();
+
+  const repoStore = useSelector(getRepoStore);
+  const issueStore = useSelector(getIssueStore);
+  const mergeStore = useSelector(getMergeStore);
+  const commitStore = useSelector(getCommitStore);
+
   const projectInfo = useSelector(getProjectStore);
   const IRSRAsso = useSelector(getIRSRStore);
   const SRIterationAsso = useSelector(getSRIterationStore);
@@ -67,77 +91,59 @@ const Test = () => {
   const IRListInfo = useSelector(getIRListStore);
   const iterationInfo = useSelector(getIterationStore);
   const serviceInfo = useSelector(getServiceStore);
-  const IR: IRCard = {
-    id: 27,
-    project: 2,
-    title: "邪门了",
-    description: "我就不信了",
-    rank: 1,
-    createdBy: "17",
-    createdAt: Date.now(),
-    disabled: false,
-    progress: 10,
+
+  const [fileList, setFileList] = useState([]);
+
+  const onChange = ({ fileList: newFileList }: any) => {
+    setFileList(newFileList);
   };
-  const SR: SRCardProps = {
-    id: 1,
-    project: 2,
-    title: "test_sfdafafar",
-    description: "testfadfafafa_sr",
-    priority: 1,
-    rank: 1,
-    currState: "TODO",
-    createdBy: "17",
-    createdAt: Date.now(),
-    disabled: false,
-    iter: [],
-    chargedBy: -1,
-    service: -1,
+
+  const onPreview = async (file: { url: any; originFileObj: Blob }) => {
+    let src = file.url;
+    if (!src) {
+      src = await new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file.originFileObj);
+        reader.onload = () => resolve(reader.result);
+      });
+    }
+    const image = new Image();
+    image.src = src;
+    const imgWindow = window.open(src);
+    imgWindow?.document.write(image.outerHTML);
   };
-  const Iteration: Iteration = {
-    id: 1,
-    project: 2,
-    sid: 1,
-    title: "test_iteration",
-    begin: Date.now(),
-    end: Date.now(),
-    disabled: false,
-    createdAt: Date.now(),
+
+  const onBeforeUpload = (file: File) => {
+    const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
+    const reader = new FileReader();
+    reader.addEventListener("load", () => {
+      console.debug(reader.result);
+      compressBase64Image(reader.result as string).then((result: string) => {
+        console.debug(result);
+      });
+    });
+    reader.readAsDataURL(file);
+
+    return false;
   };
-  const IRSRAssociation: IRSRAssociation = {
-    id: 1,
-    IR: 19,
-    SR: 5,
-  };
-  const SRIteration: SRIteration = {
-    id: 1,
-    SRId: 2,
-    iterationId: 3,
-  };
-  const UserIteration: UserIteration = {
-    id: 1,
-    userId: 1,
-    iterationId: 1,
-  };
+
+  useEffect(() => {
+    updateProjectInfo(dispatcher, 2);
+    getIRSRInfo(dispatcher, 2);
+    getSRIterationInfo(dispatcher, 2);
+    getIRIterationInfo(dispatcher, 2);
+    getSRServiceInfo(dispatcher, 2);
+    getIRListInfo(dispatcher, 2);
+    getSRListInfo(dispatcher, 2);
+    updateServiceInfo(dispatcher, 2);
+    getIterationInfo(dispatcher, 2);
+    getRDTSInfo(dispatcher, 2).then((data) => {
+      console.log(data);
+    });
+  }, []);
+
   const handleOnClick = () => {
-    console.log("click");
-    // console.log(userId2UserInfo(17, projectInfo));
-    // console.log(oneIR2AllSR(26, IRSRAsso, SRListInfo));
-    // console.log(oneSR2AllIR(4, IRSRAsso, IRListInfo));
-    // console.log(SR2Iteration(24, SRIterationAsso, iterationInfo));
-    // console.log(IR2Iteration(1, IRIterationAsso, iterationInfo));
-    // console.log(Iteration2IR(5, IRIterationAsso, IRListInfo));
-    // console.log(Iteration2SR(1, SRIterationAsso, SRListInfo));
-    // console.log(SR2Service(24, SRServiceAsso, serviceInfo));
-    console.log(Service2SR(1, SRServiceAsso, SRListInfo));
-    // createIRInfo(dispatcher, 2, IR);
-    // createSRInfo(dispatcher, 2, SR);
-    // createIRSR(dispatcher, 2, IRSRAssociation);
-    // createIteration(dispatcher, 2, Iteration); 待解决 bug
-    // createSRIteration(dispatcher, 2, SRIteration);
-    // createUserIteration(dispatcher, 2, UserIteration);
-    // updateIRInfo(dispatcher, 2, IR);
-    // updateSRInfo(dispatcher, 2, SR);
-    // updateIterationInfo(dispatcher, 2, Iteration); 待解决 bug
+    // compressBase64Image(``);
   };
   if (
     projectInfo === "" ||
@@ -148,24 +154,37 @@ const Test = () => {
     SRListInfo === "" ||
     IRListInfo === "" ||
     serviceInfo === "" ||
-    iterationInfo === ""
+    iterationInfo === "" ||
+    repoStore === "" ||
+    issueStore === "" ||
+    mergeStore === "" ||
+    commitStore === ""
   ) {
-    updateProjectInfo(dispatcher, 2);
-    getIRSRInfo(dispatcher, 2);
-    getSRIterationInfo(dispatcher, 2);
-    getIRIterationInfo(dispatcher, 2);
-    getSRServiceInfo(dispatcher, 2);
-    getIRListInfo(dispatcher, 2);
-    getSRListInfo(dispatcher, 2);
-    updateServiceInfo(dispatcher, 2);
-    getIterationInfo(dispatcher, 2);
   } else {
+    console.debug(JSON.parse(repoStore));
+    console.debug(JSON.parse(issueStore));
+    console.debug(JSON.parse(commitStore));
+    console.debug(JSON.parse(mergeStore));
     return (
       <>
         <p>I am test page</p>
         <Button type="primary" onClick={() => handleOnClick()}>
           Primary Button
         </Button>
+        <div id={"test-id"} />
+        <Upload
+          action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+          listType="text"
+          showUploadList={false}
+          beforeUpload={onBeforeUpload}
+          fileList={fileList}
+          onChange={onChange}
+          onPreview={onPreview as any}
+          id={"setting-upload"}
+          className={"setting-upload"}
+        >
+          <Button type={"primary"}>修改头像</Button>
+        </Upload>
       </>
     );
   }

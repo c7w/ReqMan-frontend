@@ -1,7 +1,7 @@
-.card-small {
+.SRCard-small {
   height: 100px;
-  left: 0;
-  margin: 20px 5px 5px 5px;
+  max-width: 20vw;
+  margin: 5px 5px 20px 5px;
   padding: 12px;
   border-radius: 5px;
   cursor: pointer;
@@ -10,52 +10,54 @@
   transition: color 0.5s ease 0.5s;
 }
 
-.modal {
-  background: white;
-  height: 1px;
-  overflow: hidden;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  z-index: 32;
-  border-radius: 20px;
-  transform: translate(-50%, -50%);
-  transition: width 0.5s ease 0.5s, height 0.5s;
-  width: 0;
-}
+/*.modal {*/
+/*  background: white;*/
+/*  height: 1px;*/
+/*  overflow: hidden;*/
+/*  position: fixed;*/
+/*  top: 50%;*/
+/*  left: 50%;*/
+/*  border-radius: 20px;*/
+/*  transform: translate(-50%, -50%);*/
+/*  transition: width 0.5s ease 0.5s, height 0.5s;*/
+/*  width: 0;*/
+/*}*/
 
-.card-small:hover {
+.SRCard-small:hover {
   background: rgb(244, 245, 247);
 }
 
-.card-small-header {
+.SRCard-small-header {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 }
 
-.card-small-header-left {
-  width: 70%;
+.SRCard-small-header-left {
   font-weight: bold;
   font-size: 18px;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space:nowrap;          /* 不换行 */
+  overflow:hidden;               /* 内容超出宽度时隐藏超出内容*/
+  text-overflow:ellipsis;         /* 当对象内文本溢出时显示省略标记(...) ；需与overflow:hidden;一起使用。*/
+}
+
+.SRCard-small-header-right {
+}
+
+.SRCard-small-description {
   overflow-wrap: normal;
 }
 
-.card-small-header-right {
-}
-
-.card-small-description {
-  overflow-wrap: normal;
-}
-
-.card-small-down {
+.SRCard-small-down {
   padding: 5px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
-.card-small-avatar {
+.SRCard-small-avatar {
   margin-right: 5px;
+  cursor: pointer;
 }
 
 .ant-modal-title {
@@ -65,37 +67,101 @@
   white-space: nowrap;
 }
 
-.modal-header {
-  background: white;
+.SRModal-header {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  white-space: nowrap;
+  align-items: center;
 }
 
-.modal-header-left {
-  width: 60%;
+.SRModal-header-left {
   display: flex;
   flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
 }
 
-.modal-header-desc {
-  width: 70%;
-  max-width: 70%;
-  overflow: auto;
+.SRModal-content {
+  display: grid;
+  grid-template-columns: 2fr 10px 3fr;
+  align-items: start;
+}
+
+.SRModal-content-left {
+}
+
+.SRModal-content-left-up {
+}
+
+.SRModal-content-right {
+  margin-left: 1rem;
+}
+
+.SRModal-content-desc {
+  border-radius: 5px;
+  padding-left: 1rem;
+  max-width: 33vw;
+  max-height: 50vh;
+  font-size: 1rem;
+  transition: background-color 0.3s;
+}
+
+.SRModal-content-desc:hover {
+  background-color: rgb(240, 240, 240);
+}
+
+.SRModal-content-left-middle {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.SRModal-content-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 方法一 start */
+.SRWrap {
+  position: relative;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  padding: 20px;
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.SR-title-related {
+  font-weight: bold;
   font-size: 1rem;
 }
 
-.modal-header-right {
-  width: 50%;
+.SR-content-related {
+  display: grid;
+  grid-template-columns: repeat(3, 33.33%);
 }
 
-.modal-content {
-  width: 100%;
-  max-width: 100%;
-  overflow: auto;
-  padding-top: 20px;
+.SR-MR-content-related {
+  display: grid;
+  grid-template-columns: repeat(3, 33.33%);
+  box-sizing: content-box;
 }
+
+.SRWrap .SR-title-related {
+  position: absolute;
+  top: -1em;
+  left: 2%;
+  line-height: 2em;
+  padding: 0 1em;
+  background-color: #fff;
+}
+/* 方法一 end */
 
 .card-input {
   cursor: pointer;
@@ -114,7 +180,6 @@
   position: fixed;
   right: 12vw;
   top: 12.5vh;
-  z-index: 33;
   -webkit-appearance: none;
   width: 40px;
 }

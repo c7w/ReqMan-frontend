@@ -1,4 +1,4 @@
-import { Provider } from "react-redux";
+import { Provider, useDispatch } from "react-redux";
 import { Route, Routes } from "react-router-dom";
 import { HistoryRouter as Router } from "redux-first-history/rr6";
 import { store, history } from "../store/ConfigureStore";
@@ -14,7 +14,6 @@ import Project from "./route/Project/Project";
 import ProjectService from "./route/Project/ProjectService";
 import ProjectSR from "./route/Project/ProjectSR";
 import ProjectIR from "./route/Project/ProjectIR";
-import ProjectAnalyse from "./route/Project/ProjectAnalyse";
 import ProjectSetting from "./route/Project/ProjectSetting";
 import Loading from "../layout/components/Loading";
 import PersonalSetting from "./route/Auth/Setting";
@@ -23,10 +22,26 @@ import ProjectRequirementsReadonly from "./route/Project/ProjectRequirementsRead
 import ProjectMember from "./route/Project/ProjectMember";
 import Test from "../components/test"; // 测试接口
 import ProjectIteration from "./route/Project/ProjectIteration";
+import ProjectRDTS from "./route/Project/ProjectRDTS";
+import UIMerge from "../components/rdts/UIMerge";
+import UICommit from "../components/rdts/UICommit";
+import UIIssue from "../components/rdts/UIIssue";
+import UIAnalysis from "../components/rdts/UIAnalysis";
+import IRCard from "../components/rms/IRCard";
+import {
+  ResetPassword,
+  ResetPasswordWithHash,
+} from "./route/Auth/ResetPassword";
+import { getCookie } from "../utils/CookieOperation";
+import { Redirect, ToastMessage } from "../utils/Navigation";
+import CommitFigure from "../components/Figure/CommitFigure";
 
 const SiteRouter = () => {
-  const testIR =
-    "[{id: 1, project: 2, title: 'I am the first IR', description: 'hahahahahahah', rank: 1, createdBy: 'c7w', createdAt: 10000000000, disabled: false}]";
+  // See if sessionId in place
+  if (getCookie("sessionId", "") === "") {
+    ToastMessage("error", "需要登录", "用户令牌失效或已过期");
+    window.location.href = "/";
+  }
 
   return (
     <Provider store={store}>
@@ -36,10 +51,11 @@ const SiteRouter = () => {
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
+          <Route path="resetpass/:hash" element={<ResetPasswordWithHash />} />
+          <Route path="resetpass" element={<ResetPassword />} />
           <Route path="settings" element={<PersonalSetting />} />
           <Route path="project/:id/IRManager" element={<ProjectIR />} />
           <Route path="project/:id/SRManager" element={<ProjectSR />} />
-
           <Route
             path="project/:id/ServiceManager"
             element={<ProjectService />}
@@ -53,16 +69,45 @@ const SiteRouter = () => {
             element={<ProjectRequirementsReadonly />}
           />
           <Route path="project/:id/member" element={<ProjectMember />} />
+          <Route
+            path="project/:id/merges"
+            element={
+              <ProjectRDTS>
+                <UIMerge />
+              </ProjectRDTS>
+            }
+          />
+          <Route
+            path="project/:id/issues"
+            element={
+              <ProjectRDTS>
+                <UIIssue />
+              </ProjectRDTS>
+            }
+          />
+          <Route
+            path="project/:id/commits"
+            element={
+              <ProjectRDTS>
+                <UICommit />
+              </ProjectRDTS>
+            }
+          />{" "}
+          <Route
+            path="project/:id/analysis"
+            element={
+              <ProjectRDTS>
+                <UIAnalysis />
+              </ProjectRDTS>
+            }
+          />
           <Route path="project/:id/iteration" element={<ProjectIteration />} />
-          <Route path="project/:id/analyse" element={<ProjectAnalyse />} />
           <Route path="project/:id/settings" element={<ProjectSetting />} />
           <Route path="project/:id" element={<Project />} />
           <Route path="projects" element={<ProjectList />} />
-
           {/* Dev Paths */}
           <Route path="SR_List" element={<ProjectSR />} />
-          <Route path="test" element={<Test />} />
-
+          <Route path="dev/test" element={<Test />} />
           <Route
             path={"dev/loading"}
             element={

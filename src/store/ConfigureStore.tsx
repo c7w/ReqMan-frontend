@@ -10,6 +10,9 @@ import ProjectSliceReducer from "./slices/ProjectSlice";
 import ProjectServiceReducer from "./slices/ServiceSlice";
 import IterationReducer from "./slices/IterationSlice";
 import CalendarReducer from "./slices/CalendarSlice";
+import RepoReducer from "./slices/RepoSlice";
+import IssueReducer from "./slices/IssueSlice";
+import SRChangeLogReducer from "./slices/SRChangeLogSlice";
 import { Service } from "../components/rms/UIServiceReadonly";
 
 interface SRCardProps {
@@ -29,16 +32,28 @@ interface SRCardProps {
   readonly service: Service | number;
 }
 
-interface IRCard {
+interface SRChangelog {
+  readonly id: number;
+  readonly project: number;
+  readonly SRId: number;
+  readonly description: string;
+  readonly formerState: string; // "TODO", "WIP", "Reviewing", "Done"
+  readonly formerDescription: string;
+  readonly changedBy: number;
+  readonly changedAt: number;
+}
+
+interface IRCardProps {
   readonly id: number; // id
   readonly project: number; // the project belongs to
   readonly title: string; // title
   readonly description: string; // description
   readonly rank: number;
-  readonly createdBy: string; // somebody
+  readonly createdBy?: string; // somebody
   readonly createdAt: number; // sometime
-  readonly disabled: boolean;
+  readonly disabled?: boolean;
   readonly progress: number;
+  readonly iter: Iteration[];
 }
 
 interface IRSRAssociation {
@@ -105,6 +120,64 @@ interface UserSRAssociationProps {
   readonly sr: number;
 }
 
+interface MergeRequestProps {
+  authoredAt: number;
+  authoredByEmail: string;
+  authoredByUserName: string;
+  description: string;
+  disabled: boolean;
+  id: number;
+  merge_id: number;
+  repo: number;
+  reviewedAt: number;
+  reviewedByEmail: string;
+  reviewedByUserName: string;
+  state: "merged" | "opened" | "closed";
+  title: string;
+  url: string;
+  user_authored: number;
+  user_reviewed: number;
+}
+
+interface CommitProps {
+  additions: number;
+  commiter_email: string;
+  commiter_name: string;
+  createdAt: number;
+  deletions: number;
+  diff: string;
+  disabled: boolean;
+  hash_id: string;
+  id: number;
+  message: string;
+  repo: number;
+  title: string;
+  url: string;
+  user_committer: number;
+}
+
+interface IssueProps {
+  assigneeUserName: string;
+  authoredAt: number;
+  authoredByUserName: string;
+  closedAt: number;
+  closedByUserName: string;
+  description: string;
+  disabled: boolean;
+  id: number;
+  is_bug: boolean;
+  issue_id: number;
+  labels: string;
+  repo: number;
+  state: "opened" | "closed";
+  title: string;
+  updatedAt: number;
+  url: string;
+  user_assignee: number;
+  user_authored: number;
+  user_closed: number;
+}
+
 const { createReduxHistory, routerMiddleware, routerReducer } =
   createReduxHistoryContext({ history: createBrowserHistory() });
 
@@ -119,6 +192,9 @@ export const store = configureStore({
     iteration_store: IterationReducer,
     calendar_store: CalendarReducer,
     user_sr_store: UserSRReducer,
+    repo_store: RepoReducer,
+    issue_store: IssueReducer,
+    sr_changelog_store: SRChangeLogReducer,
     // rest of your reducers
   }),
   middleware: [routerMiddleware],
@@ -126,8 +202,9 @@ export const store = configureStore({
 
 export const history = createReduxHistory(store);
 export type {
-  IRCard,
+  IRCardProps,
   SRCardProps,
+  SRChangelog,
   IRSRAssociation,
   UserIteration,
   IRIteration,
@@ -137,4 +214,7 @@ export type {
   Iteration,
   SRService,
   UserSRAssociationProps,
+  MergeRequestProps,
+  IssueProps,
+  CommitProps,
 };

@@ -1,9 +1,11 @@
 import { Breadcrumb, Avatar } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { Redirect } from "../../utils/Navigation";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import "./UIProject.css";
 import Calendar from "./Calendar";
+import { getProjectStore } from "../../store/slices/ProjectSlice";
+import CryptoJS from "crypto-js";
 
 interface UIProjectProps {
   id: number;
@@ -17,6 +19,22 @@ interface UIProjectProps {
 
 const UIProject = (props: UIProjectProps) => {
   const dispatcher = useDispatch();
+  const projectStore = useSelector(getProjectStore);
+  const allUserInfo = JSON.parse(projectStore).data.users;
+  const avatarList: any = [];
+  allUserInfo.forEach((user: any) => {
+    avatarList.push(
+      <Avatar
+        className="ui-project-avatar"
+        key={user.id}
+        src={
+          user.avatar.length < 5
+            ? `https://www.gravatar.com/avatar/${CryptoJS.MD5(user.email)}`
+            : user.avatar
+        }
+      />
+    );
+  });
   return (
     <>
       <div className="ui-project">
@@ -38,28 +56,9 @@ const UIProject = (props: UIProjectProps) => {
           <div className="ui-project-info-right">收藏+点赞</div>
         </div>
         <Avatar.Group className="ui-project-avatar-group">
-          <Avatar
-            className="ui-project-avatar"
-            src="https://joeschmoe.io/api/v1/random"
-          />
-          <Avatar
-            className="ui-project-avatar"
-            style={{ backgroundColor: "#f56a00" }}
-          >
-            K
-          </Avatar>
-          <Avatar
-            className="ui-project-avatar"
-            style={{ backgroundColor: "#87d068" }}
-            icon={<UserOutlined />}
-          />
-          <Avatar
-            className="ui-project-avatar"
-            style={{ backgroundColor: "#1890ff" }}
-            icon={<UserOutlined />}
-          />
+          {avatarList}
         </Avatar.Group>
-        <Calendar userInfo={props.userInfo} />
+        <Calendar userInfo={props.userInfo} inProject={true} />
       </div>
     </>
   );

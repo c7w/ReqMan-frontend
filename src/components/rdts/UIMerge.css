@@ -1,0 +1,37 @@
+.merge-card {
+  width: 80vw;
+  min-height: 80vh;
+  background-color: rgba(251, 251, 251);
+  margin: 2rem auto 1rem;
+  padding: 3rem;
+  border-radius: 1rem;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.issuable-info-container {
+  border-color: #f0f0f0;
+  font-size: 0.875rem;
+  line-height: 1.5rem;
+  color: #303030;
+  word-break: break-word;
+  padding: 1.2rem 2rem 1.2rem 2rem;
+  display: flex;
+  width: 90%;
+  border-bottom: 1px solid #eee;
+}
+
+.issuable-main-info {
+  flex: 1 auto;
+  margin-right: 10px;
+  min-width: 0;
+}
+
+.issuable-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  flex: 1 0 auto;
+}

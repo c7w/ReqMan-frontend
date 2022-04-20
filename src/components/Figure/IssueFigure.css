@@ -1,0 +1,8 @@
+.issueChart {
+  height: auto;
+  width: 90%;
+  border: 5px solid deepskyblue;
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 2rem;
+}

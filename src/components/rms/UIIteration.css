@@ -80,7 +80,9 @@
   position: sticky;
   left: 0;
   z-index: 2;
-
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   text-align: left;
 
   width: 10rem;
@@ -115,7 +117,7 @@
 }
 
 .iteration-table-unit-wip {
-  background-color: #ea4238;
+  background-color: #52fac8;
 }
 
 .iteration-table-unit-todo {
@@ -123,9 +125,9 @@
 }
 
 .iteration-table-unit-reviewing {
-  background-color: #99ff00;
+  background-color: #c7f336;
 }
 
 .iteration-table-unit-done {
-  background-color: #4bac00;
+  background-color: #99ff00;
 }

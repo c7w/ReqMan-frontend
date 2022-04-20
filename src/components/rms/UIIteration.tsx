@@ -24,7 +24,7 @@ import {
   updateIterationInfo,
 } from "../../store/functions/RMS";
 import {
-  IRCard,
+  IRCardProps,
   Iteration,
   SRCardProps,
   SRIteration,
@@ -487,7 +487,7 @@ const UIIteration = () => {
                 >
                   &nbsp;
                 </div>
-                {JSON.parse(IRStore).data.map((ir: IRCard) => {
+                {JSON.parse(IRStore).data.map((ir: IRCardProps) => {
                   return (
                     <div key={ir.id}>
                       <div
@@ -501,13 +501,31 @@ const UIIteration = () => {
                             setDetail(JSON.stringify(det));
                           }
                         }}
-                        style={{ cursor: "pointer", fontWeight: "bold" }}
+                        style={{
+                          cursor: "pointer",
+                          fontWeight: "bold",
+                          display: "flex",
+                          flexDirection: "row",
+                          justifyContent: "start",
+                        }}
                         key={ir.id}
                       >
-                        <span id={`iteration-table-ir-control-${ir.id}`}>
+                        <span
+                          id={`iteration-table-ir-control-${ir.id}`}
+                          style={{ display: "inline-block" }}
+                        >
                           　　{JSON.parse(detail).includes(ir.id) ? "-" : "+"}
                         </span>
-                        <span>　{ir.title}</span>
+                        <span
+                          style={{
+                            whiteSpace: "nowrap",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            display: "inline-block",
+                          }}
+                        >
+                          　{ir.title}
+                        </span>
                       </div>
                       {oneIR2AllSR(ir.id, IRSRAssociation, SRStore).map(
                         (sr: SRCardProps) => (
@@ -554,7 +572,7 @@ const UIIteration = () => {
                     .data.sort((a: Iteration, b: Iteration) => a.sid - b.sid)
                     .map((data: Iteration) => (
                       <div key={data.id}>
-                        {JSON.parse(IRStore).data.map((ir: IRCard) => {
+                        {JSON.parse(IRStore).data.map((ir: IRCardProps) => {
                           return (
                             <div key={ir.id}>
                               <div
@@ -570,6 +588,7 @@ const UIIteration = () => {
                               {oneIR2AllSR(ir.id, IRSRAssociation, SRStore).map(
                                 (sr: SRCardProps) => (
                                   <div
+                                    key={sr.id}
                                     style={{
                                       height: JSON.parse(detail).includes(ir.id)
                                         ? "2.0rem"
