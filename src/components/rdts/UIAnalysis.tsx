@@ -91,6 +91,7 @@ const UIAnalysis = () => {
   if (recentSeven === "" || overall === "") {
     return <Loading />;
   }
+  console.log(JSON.parse(overall));
 
   let active_list_7 = [];
   const issue_list_7 = [];
@@ -172,8 +173,6 @@ const UIAnalysis = () => {
       authoredAt: mr.authoredAt,
     });
   });
-  // console.log(mergeStore);
-  console.log(MRReviewList);
   return (
     <div className={"merge-card"}>
       <IssueFigure
