@@ -1,0 +1,61 @@
+.UserCard-small {
+  height: 100px;
+  max-width: 20vw;
+  margin: 5px 5px 20px 5px;
+  padding: 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  background: #fff;
+  box-shadow: 1px 1px 2px #aaaaaa;
+  transition: color 0.5s ease 0.5s;
+}
+
+/*.modal {*/
+/*  background: white;*/
+/*  height: 1px;*/
+/*  overflow: hidden;*/
+/*  position: fixed;*/
+/*  top: 50%;*/
+/*  left: 50%;*/
+/*  border-radius: 20px;*/
+/*  transform: translate(-50%, -50%);*/
+/*  transition: width 0.5s ease 0.5s, height 0.5s;*/
+/*  width: 0;*/
+/*}*/
+
+.UserCard-small:hover {
+  background: rgb(244, 245, 247);
+}
+
+.UserCard-small-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.UserCard-small-header-left {
+  font-weight: bold;
+  font-size: 18px;
+  white-space:nowrap;          /* 不换行 */
+  overflow:hidden;               /* 内容超出宽度时隐藏超出内容*/
+  text-overflow:ellipsis;         /* 当对象内文本溢出时显示省略标记(...) ；需与overflow:hidden;一起使用。*/
+}
+
+.UserCard-small-header-right {
+}
+
+.UserCard-small-description {
+  overflow-wrap: normal;
+}
+
+.UserCard-small-down {
+  padding: 5px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.UserCard-small-avatar {
+  margin-right: 5px;
+  cursor: pointer;
+}

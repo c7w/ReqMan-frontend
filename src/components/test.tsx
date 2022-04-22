@@ -39,7 +39,7 @@ import {
   userId2UserInfo,
 } from "../utils/Association";
 import { getProjectStore } from "../store/slices/ProjectSlice";
-import { updateProjectInfo } from "../store/functions/UMS";
+import { updateProjectInfo, updateUserInfo } from "../store/functions/UMS";
 import Loading from "../layout/components/Loading";
 import {
   getIRListStore,
@@ -73,9 +73,13 @@ import { compressBase64Image } from "../utils/ImageCompressor";
 import request_json from "../utils/Network";
 import API from "../utils/APIList";
 import { ToastMessage } from "../utils/Navigation";
+import { UIUserCard, UIUserCardPreview } from "./ums/UIUserCard";
+import { getUserStore } from "../store/slices/UserSlice";
 
 const Test = () => {
   const dispatcher = useDispatch();
+
+  const userStore = useSelector(getUserStore);
 
   const repoStore = useSelector(getRepoStore);
   const issueStore = useSelector(getIssueStore);
@@ -137,9 +141,8 @@ const Test = () => {
     getSRListInfo(dispatcher, 2);
     updateServiceInfo(dispatcher, 2);
     getIterationInfo(dispatcher, 2);
-    getRDTSInfo(dispatcher, 2).then((data) => {
-      console.log(data);
-    });
+    getRDTSInfo(dispatcher, 2);
+    updateUserInfo(dispatcher);
   }, []);
 
   const handleOnClick = () => {
@@ -158,16 +161,18 @@ const Test = () => {
     repoStore === "" ||
     issueStore === "" ||
     mergeStore === "" ||
-    commitStore === ""
+    commitStore === "" ||
+    userStore === ""
   ) {
   } else {
-    console.debug(JSON.parse(repoStore));
-    console.debug(JSON.parse(issueStore));
-    console.debug(JSON.parse(commitStore));
-    console.debug(JSON.parse(mergeStore));
+    // console.debug(JSON.parse(repoStore));
+    // console.debug(JSON.parse(issueStore));
+    // console.debug(JSON.parse(commitStore));
+    // console.debug(JSON.parse(mergeStore));
     return (
       <>
         <p>I am test page</p>
+        <UIUserCardPreview />
         <Button type="primary" onClick={() => handleOnClick()}>
           Primary Button
         </Button>
