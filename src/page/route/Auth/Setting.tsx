@@ -20,6 +20,7 @@ import moment from "moment";
 import { deleteRepoInfo, getRepoInfo } from "../../../store/functions/RDTS";
 import Loading from "../../../layout/components/Loading";
 import { compressBase64Image } from "../../../utils/ImageCompressor";
+import getUserAvatar from "../../../utils/UserAvatar";
 
 const PersonalSetting = () => {
   const userStore = useSelector(getUserStore);
@@ -62,20 +63,6 @@ const PersonalSetting = () => {
     ToastMessage("error", "未确认登录态", "即将跳转回登录界面");
     Redirect(dispatcher, "/login");
   }
-
-  const getUserAvatar = (userStore: string): string => {
-    if (userStore === "" || JSON.parse(userStore).code !== 0) {
-      return "";
-    }
-    const userInfo = JSON.parse(userStore);
-    if (userInfo.data.user.avatar.length < 5) {
-      return `https://www.gravatar.com/avatar/${CryptoJS.MD5(
-        userInfo.data.user.email
-      )}`;
-    } else {
-      return userInfo.data.user.avatar;
-    }
-  };
 
   const onChange = ({ fileList: newFileList }: any) => {
     setFileList(newFileList);
@@ -145,7 +132,7 @@ const PersonalSetting = () => {
               className="setting-card"
               style={{ display: "flex", flexDirection: "row" }}
             >
-              <Avatar src={getUserAvatar(userStore)} size={100}></Avatar>
+              <Avatar src={getUserAvatar(userStore)} size={100} />
               <div
                 style={{
                   marginLeft: "1rem",

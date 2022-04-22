@@ -2,7 +2,10 @@ import React, { useState } from "react";
 import "./UIUserCard.css";
 import { useSelector } from "react-redux";
 import { getUserStore } from "../../store/slices/UserSlice";
-import { Modal } from "antd";
+import { Avatar, Modal, Space, Tag, Typography } from "antd";
+import { state2ChineseState, state2Color } from "../../utils/SRStateConvert";
+import getUserAvatar from "../../utils/UserAvatar";
+import moment from "moment";
 
 // 上层逻辑组件保证 userStore 已更新
 
@@ -35,6 +38,18 @@ const UIUserCardPreview = () => {
   return (
     <>
       <UIUserCard visible={visible} close={() => setVisible(false)} />
+      <div
+        className="UserCard-small"
+        onClick={() => {
+          setVisible(true);
+        }}
+      >
+        <Avatar
+          className="UserCard-small-avatar"
+          size="small"
+          src={getUserAvatar(userStore)}
+        />
+      </div>
     </>
   );
 };

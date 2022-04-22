@@ -170,27 +170,35 @@ const Test = () => {
     // console.debug(JSON.parse(commitStore));
     // console.debug(JSON.parse(mergeStore));
     return (
-      <>
+      <div
+        style={{
+          width: "100%",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
         <p>I am test page</p>
         <UIUserCardPreview />
-        <Button type="primary" onClick={() => handleOnClick()}>
-          Primary Button
-        </Button>
-        <div id={"test-id"} />
-        <Upload
-          action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-          listType="text"
-          showUploadList={false}
-          beforeUpload={onBeforeUpload}
-          fileList={fileList}
-          onChange={onChange}
-          onPreview={onPreview as any}
-          id={"setting-upload"}
-          className={"setting-upload"}
-        >
-          <Button type={"primary"}>修改头像</Button>
-        </Upload>
-      </>
+        {/*<Button type="primary" onClick={() => handleOnClick()}>*/}
+        {/*  Primary Button*/}
+        {/*</Button>*/}
+        {/*<div id={"test-id"} />*/}
+        {/*<Upload*/}
+        {/*  action="https://www.mocky.io/v2/5cc8019d300000980a055e76"*/}
+        {/*  listType="text"*/}
+        {/*  showUploadList={false}*/}
+        {/*  beforeUpload={onBeforeUpload}*/}
+        {/*  fileList={fileList}*/}
+        {/*  onChange={onChange}*/}
+        {/*  onPreview={onPreview as any}*/}
+        {/*  id={"setting-upload"}*/}
+        {/*  className={"setting-upload"}*/}
+        {/*>*/}
+        {/*  <Button type={"primary"}>修改头像</Button>*/}
+        {/*</Upload>*/}
+      </div>
     );
   }
   return (
