@@ -6,3 +6,29 @@
 .UserCard-small-avatar:hover {
   opacity: 0.8;
 }
+
+.UserCard-modal {
+
+}
+
+.UserCard-modal-up {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.UserCard-modal-down {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.UserCard-modal-down-left {
+  background: #7ec1ff;
+  flex-grow: 2;
+}
+
+.UserCard-modal-down-right {
+  background: #7ee787;
+  flex-grow: 5;
+}

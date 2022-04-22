@@ -180,7 +180,7 @@ const Test = () => {
         }}
       >
         <p>I am test page</p>
-        <UIUserCardPreview />
+        <UIUserCardPreview userStore={userStore} />
         {/*<Button type="primary" onClick={() => handleOnClick()}>*/}
         {/*  Primary Button*/}
         {/*</Button>*/}
