@@ -11,6 +11,15 @@ import {
   updateIssueSRAssociationStore,
 } from "../slices/IssueSlice";
 
+// 获得某个用户的所有 rdts 信息
+const getAllRDTSInfo = async (dispatcher: any, userStore: string) => {
+  const promise_list: any[] = [];
+  JSON.parse(userStore).data.projects.forEach((project: any) => {
+    promise_list.push(getRDTSInfo(dispatcher, project.id));
+  });
+  return Promise.all(promise_list);
+};
+
 const getRDTSInfo = async (dispatcher: any, project_id: number) => {
   return getRepoInfo(dispatcher, project_id).then((repo_data: any) => {
     const promise_list = [];
@@ -428,6 +437,7 @@ const deleteMRIssueAssociation = async (
 };
 
 export {
+  getAllRDTSInfo,
   getRepoInfo,
   createRepoInfo,
   deleteRepoInfo,

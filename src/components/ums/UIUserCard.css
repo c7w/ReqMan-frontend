@@ -23,12 +23,12 @@
   justify-content: space-between;
 }
 
-.UserCard-modal-down-left {
-  background: #7ec1ff;
-  flex-grow: 2;
+.UserCard-activity {
+  flex-grow: 1;
 }
 
-.UserCard-modal-down-right {
+.UserCard-projects {
   background: #7ee787;
-  flex-grow: 5;
+  flex-grow: 1;
 }
+

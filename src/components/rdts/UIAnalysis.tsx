@@ -173,6 +173,9 @@ const UIAnalysis = () => {
       authoredAt: mr.authoredAt,
     });
   });
+
+  console.log(commitStore); // 传给 qc 三幅图的东东
+
   return (
     <div className={"merge-card"}>
       <IssueFigure

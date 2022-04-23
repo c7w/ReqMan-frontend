@@ -7,6 +7,8 @@ import moment from "moment";
 import { getCommitCountInfo } from "../../store/functions/UMS";
 import { useDispatch } from "react-redux";
 import Loading from "../../layout/components/Loading";
+import { getAllRDTSInfo } from "../../store/functions/RDTS";
+import UserActivityType from "../../utils/UserActivityType";
 
 interface UIUserCardProps {
   readonly userStore: string;
@@ -17,6 +19,7 @@ interface UIUserCardProps {
 const UIUserCard = (props: UIUserCardProps) => {
   const userInfo = JSON.parse(props.userStore).data;
   const [commitInfo, setCommitInfo] = useState("");
+  const [allRDTSInfo, setAllRDTSInfo] = useState("");
   const dispatcher = useDispatch();
 
   const date = new Date(); // 当前时间
@@ -46,7 +49,6 @@ const UIUserCard = (props: UIUserCardProps) => {
 
   useEffect(() => {
     getCommitCountInfo(dispatcher, props.userStore).then((data: any) => {
-      console.log(data);
       const date = new Date(); // 当前时间
       const date_now = date.getTime();
       date.setFullYear(date.getFullYear() - 1); // 去年时间
@@ -60,14 +62,43 @@ const UIUserCard = (props: UIUserCardProps) => {
       });
       setCommitInfo(JSON.stringify(commitData));
     });
+    getAllRDTSInfo(dispatcher, props.userStore).then((data: any) => {
+      const myActivities: any = {
+        activities: Array<{
+          type: UserActivityType;
+          timestamp: number;
+          info: any;
+        }>(),
+      };
+      data.forEach((project: any) => {
+        const issueInfo = project[0].data;
+        const MRInfo = project[2].data;
+        // 加入 open issue 和 close issue 两个
+        issueInfo.forEach((issue: any) => {
+          myActivities.activities.push({
+            type: UserActivityType.OPEN_ISSUE,
+            timestamp: issue.authoredAt,
+            info: issue,
+          });
+          myActivities.activities.push({
+            type: UserActivityType.CLOSE_ISSUE,
+            timestamp: issue.closedAt,
+            info: issue,
+          });
+        });
+      });
+      setAllRDTSInfo(JSON.stringify(data));
+    });
   }, []);
 
-  if (commitInfo === "") return <Loading />;
+  if (commitInfo === "" || allRDTSInfo === "") return <Loading />;
 
   const commitDataObj = JSON.parse(commitInfo);
   const keys = Object.keys(commitDataObj);
   const values = Object.values(commitDataObj);
   const commitData = keys.map((key: string, index) => [key, values[index]]);
+
+  console.log(JSON.parse(allRDTSInfo));
 
   const option = {
     title: {
@@ -88,10 +119,14 @@ const UIUserCard = (props: UIUserCardProps) => {
     visualMap: {
       min: 0,
       max: 20,
-      type: "piecewise",
+      type: "continuous",
       orient: "horizontal",
       left: "center",
-      top: 65,
+      calculable: true,
+      top: 50,
+      inRange: {
+        color: ["#ffffff", "#ff7f50"],
+      },
     },
     calendar: {
       top: 120,
@@ -151,9 +186,15 @@ const UIUserCard = (props: UIUserCardProps) => {
           <ReactEcharts option={option} style={{ width: "100%" }} />
         </div>
         <div className="UserCard-modal-down">
-          <div className="UserCard-modal-down-left">left</div>
+          <div className="UserCard-activity">
+            <div className="UserCard-activity-header">
+              <span style={{ fontWeight: "bold", fontSize: "1.5rem" }}>
+                我的动态
+              </span>
+            </div>
+          </div>
           <Divider type="vertical" />
-          <div className="UserCard-modal-down-right">right</div>
+          <div className="UserCard-projects">right</div>
         </div>
       </div>
     </Modal>
