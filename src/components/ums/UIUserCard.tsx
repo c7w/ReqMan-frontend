@@ -9,6 +9,7 @@ import { useDispatch } from "react-redux";
 import Loading from "../../layout/components/Loading";
 import { getAllRDTSInfo } from "../../store/functions/RDTS";
 import UserActivityType from "../../utils/UserActivityType";
+import UIUserActivityList from "./UIUserActivityList";
 
 interface UIUserCardProps {
   readonly userStore: string;
@@ -108,6 +109,14 @@ const UIUserCard = (props: UIUserCardProps) => {
           }
         });
       });
+      // 按时间戳倒序，将最新活动放在前面
+      myActivities.activities.sort((value1: any, value2: any) => {
+        return value1.timestamp < value2.timestamp
+          ? 1
+          : value1.timestamp === value2.timestamp
+          ? 0
+          : -1;
+      });
       setActivities(JSON.stringify(myActivities));
     });
   }, []);
@@ -118,17 +127,6 @@ const UIUserCard = (props: UIUserCardProps) => {
   const keys = Object.keys(commitDataObj);
   const values = Object.values(commitDataObj);
   const commitData = keys.map((key: string, index) => [key, values[index]]);
-
-  const activities = JSON.parse(myActivities).activities;
-  // 按时间戳倒序，将最新活动放在前面
-  activities.sort((value1: any, value2: any) => {
-    return value1.timestamp < value2.timestamp
-      ? 1
-      : value1.timestamp === value2.timestamp
-      ? 0
-      : -1;
-  });
-  console.log(activities);
 
   const option = {
     title: {
@@ -221,6 +219,7 @@ const UIUserCard = (props: UIUserCardProps) => {
               <span style={{ fontWeight: "bold", fontSize: "1.5rem" }}>
                 我的动态
               </span>
+              <UIUserActivityList myActivities={myActivities} />
             </div>
           </div>
           <Divider type="vertical" />
