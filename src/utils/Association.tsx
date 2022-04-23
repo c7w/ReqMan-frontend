@@ -50,6 +50,13 @@ const projId2ProjInfo = (projectId: number, projectInfo: string) => {
   console.log(projectInfo);
   return JSON.parse(projectInfo).data.project;
 };
+// 传入 repo 的 Id，返回其详细信息，同时需传入该项目的 repoInfo (getProjectStore 而来) 字符串（未解析）
+const repoId2RepoInfo = (repoId: number, repoInfo: string) => {
+  // console.log("============ Get repoInfo By repoId ============== ");
+  const repoData = JSON.parse(repoInfo).data;
+  const repo = repoData.filter((repo: any) => repo.id === repoId);
+  return repo.length > 0 ? repo[0] : "not found";
+};
 /*
   传入需要查询的 IR 的 Id，返回其所对应的所有 SR
   同时需要传入该项目的 IRSRAssociation (getIRSRStore 而来)（未解析）
@@ -297,6 +304,7 @@ export {
   itId2ItInfo,
   servId2ServInfo,
   projId2ProjInfo,
+  repoId2RepoInfo,
   oneIR2AllSR,
   oneSR2AllIR,
   MR2SR,

@@ -64,14 +64,17 @@ const UIUserCard = (props: UIUserCardProps) => {
       setCommitInfo(JSON.stringify(commitData));
     });
     getAllRDTSInfo(dispatcher, props.userStore).then((data: any) => {
+      // console.log(data);
       const myActivities: any = {
         activities: Array<{
           type: UserActivityType;
           timestamp: number;
           info: any;
+          project: number;
         }>(),
       };
       data.forEach((project: any) => {
+        const project_id = project.project;
         const issueInfo = project[0].data;
         const MRInfo = project[2].data;
         // 加入 open issue 和 close issue 两个活动
@@ -81,6 +84,7 @@ const UIUserCard = (props: UIUserCardProps) => {
               type: UserActivityType.OPEN_ISSUE,
               timestamp: issue.authoredAt,
               info: issue,
+              project: project_id,
             });
           }
           if (issue.user_closed === userInfo.user.id) {
@@ -88,6 +92,7 @@ const UIUserCard = (props: UIUserCardProps) => {
               type: UserActivityType.CLOSE_ISSUE,
               timestamp: issue.closedAt,
               info: issue,
+              project: project_id,
             });
           }
         });
@@ -98,6 +103,7 @@ const UIUserCard = (props: UIUserCardProps) => {
               type: UserActivityType.OPEN_MR,
               timestamp: mr.authoredAt,
               info: mr,
+              project: project_id,
             });
           }
           if (mr.user_reviewed === userInfo.user.id) {
@@ -105,6 +111,7 @@ const UIUserCard = (props: UIUserCardProps) => {
               type: UserActivityType.REVIEW_MR,
               timestamp: mr.reviewedAt,
               info: mr,
+              project: project_id,
             });
           }
         });
@@ -219,7 +226,10 @@ const UIUserCard = (props: UIUserCardProps) => {
               <span style={{ fontWeight: "bold", fontSize: "1.5rem" }}>
                 我的动态
               </span>
-              <UIUserActivityList myActivities={myActivities} />
+              <UIUserActivityList
+                myActivities={myActivities}
+                userStore={props.userStore}
+              />
             </div>
           </div>
           <Divider type="vertical" />

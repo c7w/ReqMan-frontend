@@ -3,6 +3,7 @@ import UIUserActivity from "./UIUserActivity";
 
 interface UIUserActivityListProps {
   myActivities: string;
+  userStore: string;
 }
 
 const UIUserActivityList = (props: UIUserActivityListProps) => {
@@ -15,12 +16,16 @@ const UIUserActivityList = (props: UIUserActivityListProps) => {
         maxWidth: "50vw",
         overflowY: "scroll",
         maxHeight: "70vh",
-        paddingTop: "1rem",
+        paddingTop: "2rem",
         paddingRight: "1rem",
       }}
     >
       {myActivities.activities.map((activity: any, index: number) => (
-        <UIUserActivity key={index} activity={JSON.stringify(activity)} />
+        <UIUserActivity
+          key={index}
+          activity={JSON.stringify(activity)}
+          userStore={props.userStore}
+        />
       ))}
     </div>
   );
