@@ -51,7 +51,7 @@ const Navbar = () => {
           <div
             className="header-item"
             onClick={() =>
-              Redirect(dispatcher, "https://doc-undefined.app.secoder.net/", 0)
+              window.open("https://doc-undefined.app.secoder.net/")
             }
           >
             开发者文档
