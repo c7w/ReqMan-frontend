@@ -8,7 +8,6 @@
 }
 
 .UserCard-modal {
-
 }
 
 .UserCard-modal-up {
@@ -24,11 +23,13 @@
 }
 
 .UserCard-activity {
+  margin-left: 1rem;
+  margin-right: 1rem;
   flex-grow: 1;
 }
 
 .UserCard-projects {
-  background: #7ee787;
+  margin-left: 1rem;
+  margin-right: 1rem;
   flex-grow: 1;
 }
-

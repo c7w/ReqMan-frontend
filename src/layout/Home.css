@@ -55,7 +55,7 @@
 * {
   /* firefox */
   scrollbar-color: rgba(16, 31, 28, 0.05) rgba(144, 147, 153, 0.1);
-  scrollbar-width:thin;
+  scrollbar-width: thin;
 }
 
 .layout-footer {

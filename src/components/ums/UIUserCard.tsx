@@ -10,6 +10,7 @@ import Loading from "../../layout/components/Loading";
 import { getAllRDTSInfo } from "../../store/functions/RDTS";
 import UserActivityType from "../../utils/UserActivityType";
 import UIUserActivityList from "./UIUserActivityList";
+import UIProjectList from "../rms/UIProjectList";
 
 interface UIUserCardProps {
   readonly userStore: string;
@@ -222,18 +223,22 @@ const UIUserCard = (props: UIUserCardProps) => {
         </div>
         <div className="UserCard-modal-down">
           <div className="UserCard-activity">
-            <div className="UserCard-activity-header">
+            <div className="UserCard-activity-header" style={{ width: "100%" }}>
               <span style={{ fontWeight: "bold", fontSize: "1.5rem" }}>
                 我的动态
               </span>
-              <UIUserActivityList
-                myActivities={myActivities}
-                userStore={props.userStore}
-              />
             </div>
+            <UIUserActivityList
+              myActivities={myActivities}
+              userStore={props.userStore}
+            />
           </div>
-          <Divider type="vertical" />
-          <div className="UserCard-projects">right</div>
+          <div className="UserCard-projects">
+            <span style={{ fontWeight: "bold", fontSize: "1.5rem" }}>
+              我的项目
+            </span>
+            <UIProjectList userInfo={props.userStore} justDisplay={true} />
+          </div>
         </div>
       </div>
     </Modal>
