@@ -88,9 +88,6 @@ const LinesChanged = (props: LinesChangedProps) => {
     title: {
       text: props.title,
     },
-    tooltip: {
-      trigger: "axis",
-    },
     legend: {
       data: ["更改行数统计", "增加行数统计", "减少行数统计"],
     },
