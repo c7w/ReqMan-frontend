@@ -85,6 +85,7 @@ import getUserAvatar from "../../utils/UserAvatar";
 import UISRChangeLogList from "./UISRChangeLogList";
 import { state2Color, state2ChineseState } from "../../utils/SRStateConvert";
 import MRCard from "../rdts/MRCard";
+import { UIUserCardPreview } from "../ums/UIUserCard";
 const { Text } = Typography;
 
 const SRCard = (props: SRCardProps) => {
@@ -399,13 +400,7 @@ const SRCard = (props: SRCardProps) => {
             <div className="SRModal-content-left-middle">
               <div style={{ display: "flex", flexDirection: "row" }}>
                 <p>负责人：</p>
-                <Avatar.Group>
-                  <Avatar
-                    className="SRCard-small-avatar"
-                    size="small"
-                    src={getUserAvatar(userInfo)}
-                  />
-                </Avatar.Group>
+                <UIUserCardPreview userStore={userInfo} />
               </div>
               <div>
                 <b>创建时间:</b>

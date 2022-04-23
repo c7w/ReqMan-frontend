@@ -4,12 +4,30 @@ import request_json from "../../utils/Network";
 import API from "../../utils/APIList";
 import { updateRepoStore } from "../slices/RepoSlice";
 import {
-  updateIssueStore,
   updateCommitStore,
+  updateIssueSRAssociationStore,
+  updateIssueStore,
   updateMergeStore,
   updateMRSRAssociationStore,
-  updateIssueSRAssociationStore,
 } from "../slices/IssueSlice";
+
+// 获得某个用户的所有 rdts 信息
+const getAllRDTSInfo = async (dispatcher: any, userStore: string) => {
+  const promise_list: any[] = [];
+  const project_id_list: any[] = [];
+  JSON.parse(userStore).data.projects.forEach((project: any) => {
+    promise_list.push(getRDTSInfo(dispatcher, project.id));
+    project_id_list.push(project.id);
+  });
+  return Promise.all(promise_list).then((data: any) => {
+    return data.map((obj: any, index: number) => {
+      return {
+        ...obj,
+        project: project_id_list[index],
+      };
+    });
+  });
+};
 
 const getRDTSInfo = async (dispatcher: any, project_id: number) => {
   return getRepoInfo(dispatcher, project_id).then((repo_data: any) => {
@@ -428,6 +446,7 @@ const deleteMRIssueAssociation = async (
 };
 
 export {
+  getAllRDTSInfo,
   getRepoInfo,
   createRepoInfo,
   deleteRepoInfo,

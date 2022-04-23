@@ -43,6 +43,7 @@ import {
   getIterationStore,
 } from "../../store/slices/IterationSlice";
 import SRCard from "./SRCard";
+import getUserAvatar from "../../utils/UserAvatar";
 
 const IRCard = (props: IRCardProps) => {
   const dispatcher = useDispatch();
@@ -135,21 +136,6 @@ const IRCard = (props: IRCardProps) => {
     setDescription(props.description);
     setProgress(props.progress);
     setModalVisible(false);
-  };
-
-  // 获取用户头像
-  const getUserAvatar = (userStore: string): string => {
-    if (userStore === "" || JSON.parse(userStore).code !== 0) {
-      return "";
-    }
-    const userInfo = JSON.parse(userStore);
-    if (userInfo.data.user.avatar.length < 5) {
-      return `https://www.gravatar.com/avatar/${CryptoJS.MD5(
-        userInfo.data.user.email
-      )}`;
-    } else {
-      return userInfo.data.user.avatar;
-    }
   };
 
   return (

@@ -26,6 +26,7 @@ const { TextArea } = Input;
 
 interface ProjectListProps {
   readonly userInfo: string;
+  readonly justDisplay: boolean; // 是否只是展示，不需要新建项目和加入项目
 }
 
 const UIProjectList = (props: ProjectListProps) => {
@@ -130,10 +131,16 @@ const UIProjectList = (props: ProjectListProps) => {
 
   return (
     <div>
-      <Breadcrumb style={{ margin: "1rem 0" }}>
-        <Breadcrumb.Item>Home</Breadcrumb.Item>
-        <Breadcrumb.Item>项目列表</Breadcrumb.Item>
-      </Breadcrumb>
+      {(() => {
+        if (!props.justDisplay) {
+          return (
+            <Breadcrumb style={{ margin: "1rem 0" }}>
+              <Breadcrumb.Item>Home</Breadcrumb.Item>
+              <Breadcrumb.Item>项目列表</Breadcrumb.Item>
+            </Breadcrumb>
+          );
+        }
+      })()}
       <div
         className={"prjlist"}
         id="scrollableDiv"
@@ -144,21 +151,25 @@ const UIProjectList = (props: ProjectListProps) => {
         }}
       >
         <ProList<ProjectInfo>
-          toolBarRender={() => {
-            return [
-              <Button
-                onClick={() => setJoinModal(true)}
-                key={"join"}
-                type={"primary"}
-              >
-                加入项目
-              </Button>,
+          toolBarRender={
+            props.justDisplay
+              ? false
+              : () => {
+                  return [
+                    <Button
+                      onClick={() => setJoinModal(true)}
+                      key={"join"}
+                      type={"primary"}
+                    >
+                      加入项目
+                    </Button>,
 
-              <Button onClick={showModal} key="add" type="primary">
-                新建项目
-              </Button>,
-            ];
-          }}
+                    <Button onClick={showModal} key="add" type="primary">
+                      新建项目
+                    </Button>,
+                  ];
+                }
+          }
           onRow={(record: ProjectInfo) => {
             return {
               onClick: () => {
@@ -168,7 +179,7 @@ const UIProjectList = (props: ProjectListProps) => {
             };
           }}
           rowKey="id"
-          headerTitle="项目列表"
+          headerTitle={props.justDisplay ? "" : "项目列表"}
           bordered={true}
           split={true}
           scroll={{ y: 350 }}
@@ -227,22 +238,25 @@ const UIProjectList = (props: ProjectListProps) => {
               },
             },
             content: {
-              render: (record: ReactNode, item: ProjectInfo) => (
-                <div
-                  style={{
-                    width: "100%",
-                    marginLeft: "200px",
-                    fontSize: "15px",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                    display: "flex",
-                    maxWidth: "30rem",
-                  }}
-                >
-                  <ReactMarkdown children={item.description} />
-                </div>
-              ),
+              render: (record: ReactNode, item: ProjectInfo) =>
+                props.justDisplay ? (
+                  <div style={{ width: "15vw" }} />
+                ) : (
+                  <div
+                    style={{
+                      width: "100%",
+                      marginLeft: "200px",
+                      fontSize: "15px",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                      display: "flex",
+                      maxWidth: "30rem",
+                    }}
+                  >
+                    <ReactMarkdown children={item.description} />
+                  </div>
+                ),
             },
             actions: {
               render: (record: ReactNode, item: ProjectInfo) => {
@@ -250,6 +264,16 @@ const UIProjectList = (props: ProjectListProps) => {
               },
             },
           }}
+          style={
+            props.justDisplay
+              ? {
+                  maxWidth: "35vw",
+                  overflowY: "scroll",
+                  maxHeight: "70vh",
+                  paddingRight: "1rem",
+                }
+              : {}
+          }
         />
         <Modal
           title="添加新项目"

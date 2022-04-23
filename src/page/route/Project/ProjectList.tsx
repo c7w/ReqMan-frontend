@@ -27,7 +27,7 @@ const ProjectList = () => {
     return (
       <Home sidebar={false}>
         <div>
-          <UIProjectList userInfo={userInfo} />
+          <UIProjectList userInfo={userInfo} justDisplay={false} />
         </div>
       </Home>
     );

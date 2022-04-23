@@ -41,6 +41,10 @@
   cursor: default;
 }
 
+.small-avatar:hover {
+  opacity: 0.8;
+}
+
 .avatar-wrapper {
   background-color: rgba(255, 255, 255, 0.5);
 }
