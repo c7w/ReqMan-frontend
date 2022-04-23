@@ -19,7 +19,7 @@ interface UIUserCardProps {
 const UIUserCard = (props: UIUserCardProps) => {
   const userInfo = JSON.parse(props.userStore).data;
   const [commitInfo, setCommitInfo] = useState("");
-  const [allRDTSInfo, setAllRDTSInfo] = useState("");
+  const [myActivities, setActivities] = useState("");
   const dispatcher = useDispatch();
 
   const date = new Date(); // 当前时间
@@ -73,32 +73,62 @@ const UIUserCard = (props: UIUserCardProps) => {
       data.forEach((project: any) => {
         const issueInfo = project[0].data;
         const MRInfo = project[2].data;
-        // 加入 open issue 和 close issue 两个
+        // 加入 open issue 和 close issue 两个活动
         issueInfo.forEach((issue: any) => {
-          myActivities.activities.push({
-            type: UserActivityType.OPEN_ISSUE,
-            timestamp: issue.authoredAt,
-            info: issue,
-          });
-          myActivities.activities.push({
-            type: UserActivityType.CLOSE_ISSUE,
-            timestamp: issue.closedAt,
-            info: issue,
-          });
+          if (issue.user_authored === userInfo.user.id) {
+            myActivities.activities.push({
+              type: UserActivityType.OPEN_ISSUE,
+              timestamp: issue.authoredAt,
+              info: issue,
+            });
+          }
+          if (issue.user_closed === userInfo.user.id) {
+            myActivities.activities.push({
+              type: UserActivityType.CLOSE_ISSUE,
+              timestamp: issue.closedAt,
+              info: issue,
+            });
+          }
+        });
+        // 加入 open MR 和 close MR 两个活动
+        MRInfo.forEach((mr: any) => {
+          if (mr.user_authored === userInfo.user.id) {
+            myActivities.activities.push({
+              type: UserActivityType.OPEN_MR,
+              timestamp: mr.authoredAt,
+              info: mr,
+            });
+          }
+          if (mr.user_reviewed === userInfo.user.id) {
+            myActivities.activities.push({
+              type: UserActivityType.REVIEW_MR,
+              timestamp: mr.reviewedAt,
+              info: mr,
+            });
+          }
         });
       });
-      setAllRDTSInfo(JSON.stringify(data));
+      setActivities(JSON.stringify(myActivities));
     });
   }, []);
 
-  if (commitInfo === "" || allRDTSInfo === "") return <Loading />;
+  if (commitInfo === "" || myActivities === "") return <Loading />;
 
   const commitDataObj = JSON.parse(commitInfo);
   const keys = Object.keys(commitDataObj);
   const values = Object.values(commitDataObj);
   const commitData = keys.map((key: string, index) => [key, values[index]]);
 
-  console.log(JSON.parse(allRDTSInfo));
+  const activities = JSON.parse(myActivities).activities;
+  // 按时间戳倒序，将最新活动放在前面
+  activities.sort((value1: any, value2: any) => {
+    return value1.timestamp < value2.timestamp
+      ? 1
+      : value1.timestamp === value2.timestamp
+      ? 0
+      : -1;
+  });
+  console.log(activities);
 
   const option = {
     title: {
