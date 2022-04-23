@@ -34,7 +34,6 @@ import {
 } from "./route/Auth/ResetPassword";
 import { getCookie } from "../utils/CookieOperation";
 import { Redirect, ToastMessage } from "../utils/Navigation";
-import CommitFigure from "../components/Figure/CommitFigure";
 
 const SiteRouter = () => {
   // See if sessionId in place
