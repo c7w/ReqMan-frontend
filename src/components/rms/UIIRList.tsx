@@ -345,7 +345,7 @@ const UIIRList = (props: UIIRListProps) => {
           defaultSize={"small"}
           dataSource={dataIRList}
           rowKey="id"
-          pagination={false}
+          pagination={{ pageSize: 10 }}
           // scroll={{ y: 600 }}
           tableStyle={{ padding: "1rem 1rem 2rem" }}
           dateFormatter="string"
@@ -482,8 +482,8 @@ const UIIRList = (props: UIIRListProps) => {
           expandable={{ expandedRowRender }}
           dataSource={dataIRList}
           rowKey="id"
-          pagination={false}
-          // scroll={{ y: 400 }}
+          pagination={{ pageSize: 10 }}
+          scroll={{ y: 400 }}
           tableStyle={{ padding: "1rem 1rem 2rem" }}
           dateFormatter="string"
           search={false}
