@@ -35,6 +35,7 @@ import {
 import { getCookie } from "../utils/CookieOperation";
 import { Redirect, ToastMessage } from "../utils/Navigation";
 import CommitFigure from "../components/Figure/CommitFigure";
+import LinesChanged from "../components/Figure/LinesChanged";
 
 const SiteRouter = () => {
   // See if sessionId in place
@@ -56,6 +57,10 @@ const SiteRouter = () => {
           <Route path="settings" element={<PersonalSetting />} />
           <Route path="project/:id/IRManager" element={<ProjectIR />} />
           <Route path="project/:id/SRManager" element={<ProjectSR />} />
+          <Route
+            path="figure"
+            element={<LinesChanged title={"代码修改行数统计"} text={"-"} />}
+          />
           <Route
             path="project/:id/ServiceManager"
             element={<ProjectService />}

@@ -1,57 +1,17 @@
 import ReactEcharts from "echarts-for-react";
 import React, { Component } from "react";
-import "./CommitFigure.css";
+import "./LinesChanged.css";
 
-interface CommitFigureProps {
+interface LinesChangedProps {
   text: string; // text for parsing
   title: string; // chart title
 }
 
-const CommitFigure = (props: CommitFigureProps) => {
-  const data = JSON.parse(props.text).data;
-  // const data = JSON.parse(props.text);
-  const all_commit: number[] = [];
-  data.forEach((value: any) => {
-    const times = value.commit_times;
-    times.forEach((value1: any) => {
-      all_commit.push(value1);
-    });
-  });
-  function compare(value1: number, value2: number) {
-    if (value1 < value2) {
-      return -1;
-    } else if (value1 > value2) {
-      return 1;
-    } else {
-      return 0;
-    }
-  }
-  all_commit.sort(compare);
-  const commit_num = [];
-  const commit_acc: number[] = [];
-  const commit_time = [];
-  for (let i = 0; i < all_commit.length; i++) {
-    if (i === 0) {
-      commit_num.push(1);
-      commit_acc.push(1);
-      commit_time.push(all_commit[i]);
-    } else {
-      if (all_commit[i] === all_commit[i - 1]) {
-        commit_num[commit_num.length - 1] += 1;
-        commit_acc[commit_num.length - 1] += 1;
-      } else {
-        commit_num.push(1);
-        commit_acc.push(commit_acc[commit_acc.length - 1] + 1);
-        commit_time.push(all_commit[i]);
-      }
-    }
-  }
-  const series1 = [];
-  const series2 = [];
-  for (let i = 0; i < commit_time.length; i++) {
-    series1.push([commit_time[i] * 1000, commit_num[i]]);
-    series2.push([commit_time[i] * 1000, commit_acc[i]]);
-  }
+const LinesChanged = (props: LinesChangedProps) => {
+  // const data = JSON.parse(props.text).data;
+  const test =
+    '{"data":[{"commiter_name":"hxj","additions":10,"deletions":20},{"commiter_name":"glb","additions":20,"deletions":10},{"commiter_name":"wxy","additions":70,"deletions":0},{"commiter_name":"glb","additions":50,"deletions":30}]}';
+  const data = JSON.parse(test).data;
 
   const option = {
     title: {
@@ -64,8 +24,11 @@ const CommitFigure = (props: CommitFigureProps) => {
       data: ["累计commit数量"],
     },
     xAxis: {
-      type: "time",
-      name: "时间",
+      type: "value",
+      min: 10,
+      max: 100,
+      interval: 20,
+      name: "\n\n行数",
     },
     yAxis: {
       type: "value",
@@ -74,18 +37,23 @@ const CommitFigure = (props: CommitFigureProps) => {
     series: [
       {
         name: "累计commit数量",
-        type: "line",
-        data: series2,
+        type: "bar",
+        data: [
+          [12, 1],
+          [17, 1],
+          [42, 2],
+          [31, 1],
+        ],
         smooth: true,
       },
     ],
   };
 
   return (
-    <div className={"commitChart"}>
+    <div className={"LinesChangedChart"}>
       <ReactEcharts option={option} />
     </div>
   );
 };
 
-export default CommitFigure;
+export default LinesChanged;
