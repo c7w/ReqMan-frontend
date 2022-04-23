@@ -54,8 +54,36 @@ const LinesChanged = (props: LinesChangedProps) => {
       add_data.push(new_item);
     }
   });
-  
-
+  const del_data: any = [];
+  all_del.forEach((value: number) => {
+    value = Math.floor(value / 50) * 50 + 25;
+    let exist = false;
+    del_data.forEach((item: any) => {
+      if (item[0] === value) {
+        item[1] += 1;
+        exist = true;
+      }
+    });
+    if (exist === false) {
+      const new_item = [value, 1];
+      del_data.push(new_item);
+    }
+  });
+  const change_data: any = [];
+  all_change.forEach((value: number) => {
+    value = Math.floor(value / 50) * 50 + 25;
+    let exist = false;
+    change_data.forEach((item: any) => {
+      if (item[0] === value) {
+        item[1] += 1;
+        exist = true;
+      }
+    });
+    if (exist === false) {
+      const new_item = [value, 1];
+      change_data.push(new_item);
+    }
+  });
   const option = {
     title: {
       text: props.title,
@@ -64,7 +92,7 @@ const LinesChanged = (props: LinesChangedProps) => {
       trigger: "axis",
     },
     legend: {
-      data: ["累计commit数量"],
+      data: ["更改行数统计", "增加行数统计", "减少行数统计"],
     },
     xAxis: {
       type: "value",
@@ -79,15 +107,19 @@ const LinesChanged = (props: LinesChangedProps) => {
     },
     series: [
       {
-        name: "累计commit数量",
+        name: "更改行数统计",
         type: "bar",
-        data: [
-          [12, 1],
-          [17, 1],
-          [42, 2],
-          [31, 1],
-        ],
-        smooth: true,
+        data: change_data,
+      },
+      {
+        name: "增加行数统计",
+        type: "bar",
+        data: add_data,
+      },
+      {
+        name: "减少行数统计",
+        type: "bar",
+        data: del_data,
       },
     ],
   };
