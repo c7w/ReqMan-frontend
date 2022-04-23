@@ -2,14 +2,16 @@ let RDTSTimer: NodeJS.Timeout | null;
 
 const removeRDTSTimer = () => {
   if (RDTSTimer) {
-    clearTimeout(RDTSTimer);
+    console.debug("Removing timer...");
+    clearInterval(RDTSTimer);
     RDTSTimer = null;
   }
 };
 
 const addRDTSTimer = (callback: () => void) => {
   removeRDTSTimer();
-  RDTSTimer = setTimeout(() => {
+  console.debug("Adding timer...");
+  RDTSTimer = setInterval(() => {
     callback();
   }, 20000);
 };

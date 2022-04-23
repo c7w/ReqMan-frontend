@@ -1,8 +1,8 @@
 import "./UIMerge.css";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import moment from "moment";
 import { IRCardProps, MergeRequestProps } from "../../store/ConfigureStore";
-import { Button, Popconfirm, Progress } from "antd";
+import { Button, Popconfirm, Progress, Typography } from "antd";
 import ProTable, { ProColumns } from "@ant-design/pro-table";
 import ReactMarkdown from "react-markdown";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,6 +15,10 @@ import { SRId2SRInfo, userId2UserInfo } from "../../utils/Association";
 import { getProjectStore } from "../../store/slices/ProjectSlice";
 import { UIMergeCardPreview } from "./UIMergeCard";
 import { getSRListStore } from "../../store/slices/IRSRSlice";
+import { addRDTSTimer } from "../../utils/Timer";
+import { getRDTSInfo } from "../../store/functions/RDTS";
+import { useParams } from "react-router-dom";
+import { ReloadOutlined, SyncOutlined } from "@ant-design/icons";
 
 const UIMerge = () => {
   const dispatcher = useDispatch();
@@ -25,6 +29,24 @@ const UIMerge = () => {
 
   const SRListStore = useSelector(getSRListStore);
   const MRSRAssoStore = useSelector(getMRSRAssociationStore);
+
+  // Get project_id
+  const params = useParams();
+  const project_id = Number(params.id);
+
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [lastUpdate, setLastUpdate] = useState(moment());
+
+  useEffect(() => {
+    // Add RDTS Timer
+    addRDTSTimer(() => {
+      setIsUpdating(true);
+      getRDTSInfo(dispatcher, project_id).then(() => {
+        setIsUpdating(false);
+        setLastUpdate(moment());
+      });
+    });
+  }, []);
 
   const getBackgroundColor = (state: "closed" | "merged" | "opened") => {
     switch (state) {
@@ -131,7 +153,31 @@ const UIMerge = () => {
       <ProTable<MergeRequestProps>
         headerTitle="项目合并请求查看"
         toolBarRender={() => {
-          return [];
+          return [
+            <div style={{ minWidth: "15rem" }}>
+              <Typography.Text style={{ width: "10rem", marginRight: "1rem" }}>
+                上次更新：{lastUpdate.fromNow()}
+              </Typography.Text>
+              <Typography.Link
+                style={{ marginRight: "10px" }}
+                onClick={() => {
+                  if (!isUpdating) {
+                    setIsUpdating(true);
+                    getRDTSInfo(dispatcher, project_id)
+                      .then((data: any) => {
+                        setIsUpdating(false);
+                        setLastUpdate(moment());
+                      })
+                      .catch((err: any) => {
+                        setIsUpdating(false);
+                      });
+                  }
+                }}
+              >
+                {isUpdating ? <SyncOutlined spin={true} /> : <ReloadOutlined />}
+              </Typography.Link>
+            </div>,
+          ];
         }}
         cardBordered={true}
         columns={columns}

@@ -1,5 +1,5 @@
 import "./UIMerge.css";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getProjectStore } from "../../store/slices/ProjectSlice";
 import { getRepoStore } from "../../store/slices/RepoSlice";
@@ -13,6 +13,7 @@ import { getRDTSInfo } from "../../store/functions/RDTS";
 import { useParams } from "react-router-dom";
 import { SyncOutlined, ReloadOutlined } from "@ant-design/icons";
 import moment from "moment";
+import { addRDTSTimer } from "../../utils/Timer";
 
 const UIIssue = () => {
   const dispatcher = useDispatch();
@@ -21,12 +22,23 @@ const UIIssue = () => {
   const repoStore = useSelector(getRepoStore);
   const issueStore = useSelector(getIssueStore);
 
-  const [isUpdating, setIsUpdating] = useState(false);
-  const [lastUpdate, setLastUpdate] = useState(moment());
-
   // Get project_id
   const params = useParams();
   const project_id = Number(params.id);
+
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [lastUpdate, setLastUpdate] = useState(moment());
+
+  useEffect(() => {
+    // Add RDTS Timer
+    addRDTSTimer(() => {
+      setIsUpdating(true);
+      getRDTSInfo(dispatcher, project_id).then(() => {
+        setIsUpdating(false);
+        setLastUpdate(moment());
+      });
+    });
+  }, []);
 
   const getBackgroundColor = (state: "closed" | "opened") => {
     switch (state) {
