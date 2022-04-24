@@ -1,6 +1,8 @@
 import ReactEcharts from "echarts-for-react";
-import React, { Component } from "react";
+import React from "react";
 import "./MemberCommit.css";
+import { useSelector } from "react-redux";
+import { getProjectStore } from "../../store/slices/ProjectSlice";
 
 interface MemberCommitProps {
   text: string; // text for parsing
@@ -8,23 +10,26 @@ interface MemberCommitProps {
 }
 
 const MemberCommit = (props: MemberCommitProps) => {
-  const ori_data = JSON.parse(props.text).data;
-  // const test =
-  //   '{"data":[{"commiter_name":"hxj","additions":10,"deletions":20},{"commiter_name":"glb","additions":20,"deletions":10},{"commiter_name":"wxy","additions":70,"deletions":0},{"commiter_name":"glb","additions":50,"deletions":30}]}';
-  const data = JSON.parse(ori_data).data;
-  const all_data: any = [];
+  const data = JSON.parse(props.text).data;
+  const all_data: number[] = [];
+  const projectStore = useSelector(getProjectStore);
+  const allUserInfo = JSON.parse(projectStore).data.users;
+  const all_name_id: number[] = [];
+  const all_names: string[] = [];
+  allUserInfo.forEach((value: any) => {
+    all_name_id.push(value.id);
+    all_names.push(value.name);
+  });
+  for (let i = 0; i < all_name_id.length; i++) {
+    all_data.push(0);
+  }
   data.forEach((item: any) => {
-    const name = item.commiter_name;
-    let exist = -1;
-    for (let i = 0; i < all_data.length; i++) {
-      if (all_data[i][0] === name) {
-        all_data[i][1] += 1;
-        exist = 1;
+    const id = item.user_committer;
+    for (let i = 0; i < all_name_id.length; i++) {
+      if (all_name_id[i] === id) {
+        all_data[i] += 1;
         break;
       }
-    }
-    if (exist === -1) {
-      all_data.push([name, 1]);
     }
   });
   const option = {
@@ -33,11 +38,12 @@ const MemberCommit = (props: MemberCommitProps) => {
     },
     tooltip: {},
     legend: {
-      data: ["个人commit次数"],
+      data: ["个人提交次数"],
     },
     xAxis: {
       type: "category",
       name: "\n\n姓名",
+      data: all_names,
     },
     yAxis: {
       type: "value",
@@ -45,7 +51,7 @@ const MemberCommit = (props: MemberCommitProps) => {
     },
     series: [
       {
-        name: "个人commit次数",
+        name: "个人提交次数",
         type: "bar",
         data: all_data,
       },

@@ -1,6 +1,8 @@
 import ReactEcharts from "echarts-for-react";
 import React, { Component } from "react";
 import "./MemberLines.css";
+import { useSelector } from "react-redux";
+import { getProjectStore } from "../../store/slices/ProjectSlice";
 
 interface MemberLinesProps {
   text: string; // text for parsing
@@ -8,60 +10,39 @@ interface MemberLinesProps {
 }
 
 const MemberLines = (props: MemberLinesProps) => {
-  const ori_data = JSON.parse(props.text).data;
-  // const test =
-  //   '{"data":[{"commiter_name":"hxj","additions":10,"deletions":20},{"commiter_name":"glb","additions":20,"deletions":10},{"commiter_name":"wxy","additions":70,"deletions":0},{"commiter_name":"glb","additions":50,"deletions":30}]}';
-  const data = JSON.parse(ori_data).data;
+  const data = JSON.parse(props.text).data;
+  const projectStore = useSelector(getProjectStore);
+  const allUserInfo = JSON.parse(projectStore).data.users;
+  const all_name_id: number[] = [];
+  const all_name: string[] = [];
+  allUserInfo.forEach((value: any) => {
+    all_name.push(value.name);
+    all_name_id.push(value.id);
+  });
   const all_change: any = [];
   const all_add: any = [];
   const all_del: any = [];
-  const all_name: string[] = [];
-  data.forEach((item: any) => {
-    const name = item.commiter_name;
-    let exist = -1;
-    for (let i = 0; i < all_name.length; i++) {
-      if (name === all_name[i]) {
-        exist = i;
-        break;
-      }
-    }
-    if (exist === -1) {
-      all_name.push(name);
-      const new_item = [item.additions + item.deletions];
-      all_change.push(new_item);
-    } else {
-      all_change[exist].push(item.additions + item.deletions);
-    }
-  });
   const len = all_name.length;
   for (let i = 0; i < len; i++) {
     all_add.push([]);
     all_del.push([]);
+    all_change.push([]);
   }
   data.forEach((item: any) => {
-    const name = item.commiter_name;
-    let exist = -1;
-    for (let i = 0; i < all_name.length; i++) {
-      if (name === all_name[i]) {
-        exist = i;
-        break;
+    const id = item.user_committer;
+    for (let i = 0; i < all_name_id.length; i++) {
+      if (all_name_id[i] === id) {
+        all_change[i].push(item.additions + item.deletions);
+        all_del[i].push(item.deletions);
+        all_add[i].push(item.additions);
       }
     }
-    all_del[exist].push(item.deletions);
-    all_add[exist].push(item.additions);
   });
-
-  console.log(all_add);
-  console.log(all_del);
-  console.log(all_change);
 
   const option = {
     title: {
       text: props.title,
       left: "left",
-    },
-    legend: {
-      data: ["平均增加行数", "平均减少行数", "平均修改行数"],
     },
     dataset: [
       {
@@ -121,7 +102,7 @@ const MemberLines = (props: MemberLinesProps) => {
       right: "10%",
       bottom: "15%",
     },
-    yAxis: {
+    xAxis: {
       type: "category",
       boundaryGap: true,
       nameGap: 30,
@@ -132,7 +113,7 @@ const MemberLines = (props: MemberLinesProps) => {
         show: false,
       },
     },
-    xAxis: {
+    yAxis: {
       type: "value",
       name: "修改行数",
       splitArea: {

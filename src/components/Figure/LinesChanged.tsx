@@ -8,10 +8,7 @@ interface LinesChangedProps {
 }
 
 const LinesChanged = (props: LinesChangedProps) => {
-  const ori_data = JSON.parse(props.text).data;
-  // const test =
-  //   '{"data":[{"commiter_name":"hxj","additions":10,"deletions":20},{"commiter_name":"glb","additions":20,"deletions":10},{"commiter_name":"wxy","additions":70,"deletions":0},{"commiter_name":"glb","additions":50,"deletions":30}]}';
-  const data = JSON.parse(ori_data).data;
+  const data = JSON.parse(props.text).data;
   const all_add: number[] = [];
   const all_del: number[] = [];
   const all_change: number[] = [];
@@ -40,61 +37,103 @@ const LinesChanged = (props: LinesChangedProps) => {
   min_del = Math.floor(min_del / 50) * 50;
   min_change = Math.floor(min_change / 50) * 50;
   const add_data: any = [];
+  let add_out = 0;
+  let del_out = 0;
+  let change_out = 0;
   all_add.forEach((value: number) => {
     value = Math.floor(value / 50) * 50 + 25;
-    let exist = false;
-    add_data.forEach((item: any) => {
-      if (item[0] === value) {
-        item[1] += 1;
-        exist = true;
+    let if_continue = 0;
+    if (value > 500) {
+      add_out += 1;
+      if_continue = 1;
+    }
+    if (if_continue === 0) {
+      let exist = false;
+      add_data.forEach((item: any) => {
+        if (item[0] === value) {
+          item[1] += 1;
+          exist = true;
+        }
+      });
+      if (exist === false) {
+        const new_item = [value, 1];
+        add_data.push(new_item);
       }
-    });
-    if (exist === false) {
-      const new_item = [value, 1];
-      add_data.push(new_item);
     }
   });
   const del_data: any = [];
   all_del.forEach((value: number) => {
     value = Math.floor(value / 50) * 50 + 25;
-    let exist = false;
-    del_data.forEach((item: any) => {
-      if (item[0] === value) {
-        item[1] += 1;
-        exist = true;
+    let if_continue = 0;
+    if (value > 500) {
+      del_out += 1;
+      if_continue = 1;
+    }
+    if (if_continue === 0) {
+      let exist = false;
+      del_data.forEach((item: any) => {
+        if (item[0] === value) {
+          item[1] += 1;
+          exist = true;
+        }
+      });
+      if (exist === false) {
+        const new_item = [value, 1];
+        del_data.push(new_item);
       }
-    });
-    if (exist === false) {
-      const new_item = [value, 1];
-      del_data.push(new_item);
     }
   });
   const change_data: any = [];
   all_change.forEach((value: number) => {
     value = Math.floor(value / 50) * 50 + 25;
-    let exist = false;
-    change_data.forEach((item: any) => {
-      if (item[0] === value) {
-        item[1] += 1;
-        exist = true;
+    let if_continue = 0;
+    if (value > 500) {
+      change_out += 1;
+      if_continue = 1;
+    }
+    if (if_continue === 0) {
+      let exist = false;
+      change_data.forEach((item: any) => {
+        if (item[0] === value) {
+          item[1] += 1;
+          exist = true;
+        }
+      });
+      if (exist === false) {
+        const new_item = [value, 1];
+        change_data.push(new_item);
       }
-    });
-    if (exist === false) {
-      const new_item = [value, 1];
-      change_data.push(new_item);
     }
   });
   const option = {
-    title: {
-      text: props.title,
-    },
+    title: [
+      {
+        text: props.title,
+      },
+      {
+        subtext:
+          "代码更改行数共 " +
+          change_out +
+          " 次 >500 行； " +
+          "代码增加行数共 " +
+          add_out +
+          " 次 >500 行； " +
+          "代码减少行数共 " +
+          del_out +
+          " 次 >500 行",
+        left: "50%",
+        top: "85%",
+        textAlign: "center",
+      },
+    ],
+    tooltip: {},
     legend: {
       data: ["更改行数统计", "增加行数统计", "减少行数统计"],
     },
     xAxis: {
       type: "value",
       min: Math.min(min_add, min_del),
-      max: max_change,
+      max: 500,
       interval: 50,
       name: "\n\n行数",
     },
