@@ -209,6 +209,7 @@ const UIAnalysis = () => {
         text={JSON.stringify(MRReviewList)}
         title={"MR数量统计表"}
       />
+      <CommitFigure title={"Commit数量统计表"} text={overall} />
       {/*<CountDistributionFigure*/}
       {/*  title={"MR,commit及Issue数量分析"}*/}
       {/*  text={overall}*/}
@@ -216,7 +217,6 @@ const UIAnalysis = () => {
       <LinesChanged text={commitStore} title={"代码变化行数统计"} />
       <MemberCommit text={commitStore} title={"个人提交次数分布统计"} />
       <MemberLines text={commitStore} title={"个人代码行数修改统计"} />
-      <CommitFigure title={"Commit数量统计表"} text={overall} />
     </div>
   );
 };

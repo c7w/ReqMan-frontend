@@ -14,7 +14,7 @@ const MemberCommit = (props: MemberCommitProps) => {
   const all_data: number[] = [];
   const projectStore = useSelector(getProjectStore);
   const allUserInfo = JSON.parse(projectStore).data.users;
-  const all_name_id: string[] = [];
+  const all_name_id: number[] = [];
   const all_names: string[] = [];
   allUserInfo.forEach((value: any) => {
     all_name_id.push(value.id);
