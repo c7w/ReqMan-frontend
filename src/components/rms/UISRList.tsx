@@ -946,7 +946,7 @@ const UISRList = (props: UISRListProps) => {
             </Space>
           )}
           dataSource={dataSRList}
-          pagination={{ pageSize: 10 }}
+          pagination={{ pageSize: 5 }}
           // scroll={{ y: 300 }}
           search={false}
           rowKey="id"
