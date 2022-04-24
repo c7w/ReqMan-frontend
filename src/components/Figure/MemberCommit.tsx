@@ -14,17 +14,19 @@ const MemberCommit = (props: MemberCommitProps) => {
   const all_data: number[] = [];
   const projectStore = useSelector(getProjectStore);
   const allUserInfo = JSON.parse(projectStore).data.users;
+  const all_name_id: string[] = [];
   const all_names: string[] = [];
   allUserInfo.forEach((value: any) => {
+    all_name_id.push(value.id);
     all_names.push(value.name);
   });
-  for (let i = 0; i < all_names.length; i++) {
+  for (let i = 0; i < all_name_id.length; i++) {
     all_data.push(0);
   }
   data.forEach((item: any) => {
-    const name = item.commiter_name;
-    for (let i = 0; i < all_names.length; i++) {
-      if (all_names[i] === name) {
+    const id = item.user_committer;
+    for (let i = 0; i < all_name_id.length; i++) {
+      if (all_name_id[i] === id) {
         all_data[i] += 1;
         break;
       }

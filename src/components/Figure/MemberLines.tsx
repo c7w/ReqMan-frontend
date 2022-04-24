@@ -1,6 +1,8 @@
 import ReactEcharts from "echarts-for-react";
 import React, { Component } from "react";
 import "./MemberLines.css";
+import {useSelector} from "react-redux";
+import {getProjectStore} from "../../store/slices/ProjectSlice";
 
 interface MemberLinesProps {
   text: string; // text for parsing
@@ -9,6 +11,12 @@ interface MemberLinesProps {
 
 const MemberLines = (props: MemberLinesProps) => {
   const data = JSON.parse(props.text).data;
+  const projectStore = useSelector(getProjectStore);
+  const allUserInfo = JSON.parse(projectStore).data.users;
+  const all_names: string[] = [];
+  allUserInfo.forEach((value: any) => {
+    all_names.push(value.name);
+  });
   const all_change: any = [];
   const all_add: any = [];
   const all_del: any = [];
@@ -48,17 +56,10 @@ const MemberLines = (props: MemberLinesProps) => {
     all_add[exist].push(item.additions);
   });
 
-  console.log(all_add);
-  console.log(all_del);
-  console.log(all_change);
-
   const option = {
     title: {
       text: props.title,
       left: "left",
-    },
-    legend: {
-      data: ["平均增加行数", "平均减少行数", "平均修改行数"],
     },
     dataset: [
       {
