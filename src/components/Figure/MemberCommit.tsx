@@ -8,10 +8,10 @@ interface MemberCommitProps {
 }
 
 const MemberCommit = (props: MemberCommitProps) => {
-  const ori_data = JSON.parse(props.text).data;
+  // const ori_data = JSON.parse(props.text).data;
   // const test =
   //   '{"data":[{"commiter_name":"hxj","additions":10,"deletions":20},{"commiter_name":"glb","additions":20,"deletions":10},{"commiter_name":"wxy","additions":70,"deletions":0},{"commiter_name":"glb","additions":50,"deletions":30}]}';
-  const data = JSON.parse(ori_data).data;
+  const data = JSON.parse(props.text).data;
   const all_data: any = [];
   data.forEach((item: any) => {
     const name = item.commiter_name;
