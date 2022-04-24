@@ -1,5 +1,5 @@
 import ReactEcharts from "echarts-for-react";
-import React, { Component } from "react";
+import React from "react";
 import "./MemberCommit.css";
 import { useSelector } from "react-redux";
 import { getProjectStore } from "../../store/slices/ProjectSlice";
