@@ -13,12 +13,18 @@ import UIUserActivityList from "./UIUserActivityList";
 import UIProjectList from "../rms/UIProjectList";
 
 interface UIUserCardProps {
-  readonly userStore: string;
+  readonly userStore: string; // 展示他人的就发 {}
+  // readonly yourSelf: boolean; // 是否是自己的
+  // readonly userId: number;
+  // readonly projectStore: string;
   readonly visible: boolean;
   readonly close: () => void;
 }
 
 const UIUserCard = (props: UIUserCardProps) => {
+  // const userInfo = JSON.parse(props.projectStore).data.users.filter(
+  //   (user: any) => user.id === props.userId
+  // )[0];
   const userInfo = JSON.parse(props.userStore).data;
   const [commitInfo, setCommitInfo] = useState("");
   const [myActivities, setActivities] = useState("");
@@ -230,13 +236,22 @@ const UIUserCard = (props: UIUserCardProps) => {
             </div>
             <UIUserActivityList
               myActivities={myActivities}
-              userStore={props.userStore}
+              userInfo={JSON.stringify(userInfo)}
             />
           </div>
           <div className="UserCard-projects">
             <span style={{ fontWeight: "bold", fontSize: "1.5rem" }}>
               我的项目
             </span>
+            {/*{() => {*/}
+            {/*  if (props.yourSelf)*/}
+            {/*    return (*/}
+            {/*      <UIProjectList*/}
+            {/*        userInfo={props.userStore}*/}
+            {/*        justDisplay={true}*/}
+            {/*      />*/}
+            {/*    );*/}
+            {/*}}*/}
             <UIProjectList userInfo={props.userStore} justDisplay={true} />
           </div>
         </div>
@@ -246,7 +261,10 @@ const UIUserCard = (props: UIUserCardProps) => {
 };
 
 interface UIUserCardPreviewProps {
-  readonly userStore: string; // 保证非空
+  readonly userStore: string;
+  // readonly projectStore: string;
+  // readonly userId: number;
+  // readonly yourSelf: boolean;
 }
 
 const UIUserCardPreview = (props: UIUserCardPreviewProps) => {
@@ -257,6 +275,9 @@ const UIUserCardPreview = (props: UIUserCardPreviewProps) => {
         visible={visible}
         close={() => setVisible(false)}
         userStore={props.userStore}
+        // userId={props.userId}
+        // projectStore={props.projectStore}
+        // yourSelf={props.yourSelf}
       />
       <div
         className="UserCard-small"

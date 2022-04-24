@@ -44,6 +44,7 @@ import {
 } from "../../store/slices/IterationSlice";
 import SRCard from "./SRCard";
 import getUserAvatar from "../../utils/UserAvatar";
+import { UIUserCardPreview } from "../ums/UIUserCard";
 
 const IRCard = (props: IRCardProps) => {
   const dispatcher = useDispatch();
@@ -120,7 +121,12 @@ const IRCard = (props: IRCardProps) => {
             title={value.title}
             description={value.description}
             priority={value.priority}
+            rank={value.rank}
             currState={value.currState}
+            stateColor={value.stateColor}
+            createdBy={value.createdBy}
+            createdAt={value.createdAt}
+            disabled={value.disabled}
             iter={value.iter}
             chargedBy={value.chargedBy}
             service={value.service}
@@ -231,13 +237,7 @@ const IRCard = (props: IRCardProps) => {
           <div className="IRModal-content-middle">
             <div style={{ display: "flex", flexDirection: "row" }}>
               <p>负责人：</p>
-              <Avatar.Group>
-                <Avatar
-                  className="IRCard-small-avatar"
-                  size="small"
-                  src={getUserAvatar(userInfo)}
-                />
-              </Avatar.Group>
+              <UIUserCardPreview userStore={userInfo} />
             </div>
             <div>
               <b>创建时间:</b>

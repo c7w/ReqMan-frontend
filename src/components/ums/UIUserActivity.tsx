@@ -22,18 +22,17 @@ import { getMRSRAssociationStore } from "../../store/slices/IssueSlice";
 
 interface UIUserActivityProps {
   activity: string;
-  userStore: string;
+  userInfo: string;
   // { type: UserActivityType; timestamp: number; info: any }
 }
 
 const UIUserActivity = (props: UIUserActivityProps) => {
   const activity = JSON.parse(props.activity);
-  const userInfo = JSON.parse(props.userStore).data;
+  const userInfo = JSON.parse(props.userInfo);
   const repoStore = useSelector(getRepoStore);
   const SRListStore = useSelector(getSRListStore);
   const MRSRAssoStore = useSelector(getMRSRAssociationStore);
   const dispatcher = useDispatch();
-  console.log(activity);
 
   const timeFromNow = (dateTimeStamp: number) => {
     // dateTimeStamp是一个时间毫秒，注意时间戳是秒的形式，在这个毫秒的基础上除以 1000，就是十位数的时间戳。13位数的都是时间毫秒。
@@ -44,7 +43,6 @@ const UIUserActivity = (props: UIUserActivityProps) => {
     const halfamonth = day * 15;
     const month = day * 30;
     const now = new Date().getTime(); //获取当前时间毫秒
-    console.log(now);
     const diffValue = now - dateTimeStamp; //时间差
     let result = "";
     if (diffValue < 0) {
@@ -55,10 +53,10 @@ const UIUserActivity = (props: UIUserActivityProps) => {
     const dayC = diffValue / day;
     const weekC = diffValue / week;
     const monthC = diffValue / month;
-    //此处考虑小数情况，感谢 情非得已https://blog.csdn.net/weixin_48495574 指正
+    //此处考虑小数情况
     if (monthC >= 1 && monthC < 4) {
-      result = " " + Math.floor(monthC) + " 月前";
-    } else if (weekC >= 1 && weekC < 4) {
+      result = " " + Math.floor(monthC) + " 个月前";
+    } else if (weekC >= 1 && weekC < 5) {
       result = " " + Math.floor(weekC) + " 周前";
     } else if (dayC >= 1 && dayC < 7) {
       result = " " + Math.floor(dayC) + " 天前";
@@ -162,7 +160,7 @@ const UIUserActivity = (props: UIUserActivityProps) => {
             }}
           >
             <span style={{ fontWeight: "bold", fontSize: "1rem" }}>
-              {"@ " + userInfo.user.name}
+              {"@ " + userInfo.name}
             </span>
             <span>{timeFromNow(activity.timestamp * 1000)}</span>
           </div>

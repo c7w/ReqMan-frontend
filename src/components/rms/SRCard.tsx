@@ -48,7 +48,7 @@ import {
 import CryptoJS from "crypto-js";
 import { getUserStore } from "../../store/slices/UserSlice";
 import { getProjectStore } from "../../store/slices/ProjectSlice";
-import { updateProjectInfo } from "../../store/functions/UMS";
+import { updateProjectInfo, updateUserInfo } from "../../store/functions/UMS";
 import Loading from "../../layout/components/Loading";
 import { Option } from "antd/es/mentions";
 import Paragraph from "antd/es/typography/Paragraph";
@@ -205,6 +205,8 @@ const SRCard = (props: SRCardProps) => {
         // console.log(data);
       }
     );
+    // updateUserInfo(dispatcher);
+    // updateProjectInfo(dispatcher, props.project);
   };
 
   const handleOK = () => {
@@ -284,6 +286,9 @@ const SRCard = (props: SRCardProps) => {
       <Menu.Item key="已完成">已完成</Menu.Item>
     </Menu>
   );
+
+  // if (userInfo === "" || projectStore === "") return <Loading />;
+
   return (
     <>
       <div
@@ -400,7 +405,12 @@ const SRCard = (props: SRCardProps) => {
             <div className="SRModal-content-left-middle">
               <div style={{ display: "flex", flexDirection: "row" }}>
                 <p>负责人：</p>
-                <UIUserCardPreview userStore={userInfo} />
+                <UIUserCardPreview
+                  userStore={userInfo}
+                  // userId={Number(props.createdBy)}
+                  // projectStore={projectStore}
+                  // yourSelf={false}
+                />
               </div>
               <div>
                 <b>创建时间:</b>

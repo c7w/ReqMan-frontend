@@ -27,6 +27,9 @@ import MRTimeFigure from "../Figure/MRTimeFigure";
 import CountDistribution from "../Figure/CountDistribution";
 import CountDistributionFigure from "../Figure/CountDistribution";
 import CommitFigure from "../Figure/CommitFigure";
+import LinesChanged from "../Figure/LinesChanged";
+import MemberCommit from "../Figure/MemberCommit";
+import MemberLines from "../Figure/MemberLines";
 
 const UIAnalysis = () => {
   const [recentSeven, setRecentSeven] = useState("");
@@ -91,7 +94,6 @@ const UIAnalysis = () => {
   if (recentSeven === "" || overall === "") {
     return <Loading />;
   }
-  console.log(JSON.parse(overall));
 
   let active_list_7 = [];
   const issue_list_7 = [];
@@ -174,7 +176,7 @@ const UIAnalysis = () => {
     });
   });
 
-  console.log(commitStore); // 传给 qc 三幅图的东东
+  console.log(JSON.parse(commitStore));
 
   return (
     <div className={"merge-card"}>
@@ -211,6 +213,9 @@ const UIAnalysis = () => {
       {/*  text={overall}*/}
       {/*/>*/}
       <CommitFigure title={"Commit数量统计表"} text={overall} />
+      <LinesChanged text={commitStore} title={"行数统计"} />
+      <MemberCommit text={commitStore} title={"贡献次数"} />
+      <MemberLines text={commitStore} title={"成员行数统计"} />
     </div>
   );
 };

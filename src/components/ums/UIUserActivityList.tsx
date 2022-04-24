@@ -3,12 +3,11 @@ import UIUserActivity from "./UIUserActivity";
 
 interface UIUserActivityListProps {
   myActivities: string;
-  userStore: string;
+  userInfo: string;
 }
 
 const UIUserActivityList = (props: UIUserActivityListProps) => {
   const myActivities = JSON.parse(props.myActivities);
-  console.log(myActivities);
   return (
     <div
       className="user-activity-list"
@@ -24,7 +23,7 @@ const UIUserActivityList = (props: UIUserActivityListProps) => {
         <UIUserActivity
           key={index}
           activity={JSON.stringify(activity)}
-          userStore={props.userStore}
+          userInfo={props.userInfo}
         />
       ))}
     </div>
