@@ -41,6 +41,7 @@ import {
 } from "../../store/functions/RMS";
 import {
   oneIR2AllSR,
+  oneSR2AllCommit,
   oneSR2AllIR,
   oneSR2AllMR,
   projId2ProjInfo,
@@ -89,6 +90,7 @@ import { state2Color, state2ChineseState } from "../../utils/SRStateConvert";
 import MRCard from "../rdts/MRCard";
 import { UIUserCardPreview } from "../ums/UIUserCard";
 import IssueCard from "../rdts/IssueCard";
+import UICommitList from "../rdts/UICommitList";
 const { Text } = Typography;
 
 const SRCard = (props: SRCardProps) => {
@@ -151,6 +153,17 @@ const SRCard = (props: SRCardProps) => {
         data[1]: SRList
         data[2]: ProjectInfo
       */
+      console.log(data);
+      const assoCommitListData = oneSR2AllCommit(
+        props.id,
+        JSON.stringify(data[0][5]),
+        JSON.stringify(data[0][1])
+      );
+      assoCommitListData.sort(
+        (commit_1: any, commit_2: any) =>
+          commit_1.createdAt - commit_2.createdAt
+      );
+      setAssoCommitList(assoCommitListData);
       const assoIssueListData = SR2Issue(
         props.id,
         JSON.stringify(data[0][4]),
@@ -442,6 +455,19 @@ const SRCard = (props: SRCardProps) => {
                 marginBottom: "1rem",
               }}
             >
+              提交记录
+            </div>
+            <UICommitList
+              commitListData={JSON.stringify(assoCommitList)}
+              userInfo={userInfo}
+            />
+            <div
+              style={{
+                fontWeight: "bold",
+                fontSize: "1.5rem",
+                marginBottom: "1rem",
+              }}
+            >
               更改记录
             </div>
             <UISRChangeLogList
@@ -507,10 +533,6 @@ const SRCard = (props: SRCardProps) => {
                   {assoIssueCardList}
                 </QueueAnim>
               )}
-            </div>
-            <div className="SRWrap SR-commit-related">
-              <div className="SR-title-related">关联提交</div>
-              <div className="SR-content-related">i am commit</div>
             </div>
             <div className="SRWrap SR-iteration-related">
               <div className="SR-title-related">关联迭代</div>

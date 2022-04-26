@@ -93,7 +93,6 @@ const IRCard = (props: IRCardProps) => {
 
   // 更新打开的 modal 对应的 SR 的所有关系
   const updateAssociation = () => {
-    console.log("updating !");
     Promise.all([
       getIRSRInfo(dispatcher, props.project),
       getSRListInfo(dispatcher, props.project),

@@ -34,9 +34,15 @@ const MRId2MRInfo = (MRId: number, MRList: string) => {
 const issueId2IssueInfo = (issueId: number, issueList: string) => {
   // console.log("==================== Get issueInfo By IssueId ===================");
   const issueListData = JSON.parse(issueList).data;
-  // console.log(issueListData);
   const issue = issueListData.filter((obj: any) => obj.id === issueId);
   return issue.length > 0 ? issue[0] : "not found";
+};
+// 传入 commit 的 Id，返回其详细信息，同时需要传入该项目的 commitList (getCommitStore 而来) （未解析）
+const commitId2CommitInfo = (commitId: number, commitList: string) => {
+  // console.log("==================== Get commitInfo By CommitId ===================");
+  const commitListData = JSON.parse(commitList).data;
+  const commit = commitListData.filter((obj: any) => obj.id === commitId);
+  return commit.length > 0 ? commit[0] : "not found";
 };
 // 传入 iteration 的 Id, 返回其详细信息，同时需要传入该项目的 iterationInfo (getIterationInfo 而来) （未解析）
 const itId2ItInfo = (iterationId: number, iterationInfo: string) => {
@@ -228,7 +234,25 @@ const SR2Issue = (SRId: number, SRIssueAsso: string, issueInfo: string) => {
   // console.log(SRIssueData);
   return SRIssueData.filter((obj: any) => obj.SR === SRId).map((obj: any) =>
     issueId2IssueInfo(obj.issue, issueInfo)
-  ); // 直接返回匹配的 issueId 列表，要么空要么只有一个元素
+  );
+};
+/*
+传入需要查询的 SRId，返回其对应的所有提交 commit
+还需传入 SRCommitAsso ( 对每个 repo， getCommitSRAssociationStore 而来，并拼接在一起！) 传入 string
+同时需要传入该项目的 commitInfo (getCommitStore 而来) （未解析）
+返回未排序
+ */
+const oneSR2AllCommit = (
+  SRId: number,
+  SRCommitAsso: string,
+  commitInfo: string
+) => {
+  // console.log("================ Get Commit By SR ===============");
+  const SRCommitData = JSON.parse(SRCommitAsso).data;
+  // console.log(SRCommitData);
+  return SRCommitData.filter((obj: any) => obj.SR === SRId).map((obj: any) =>
+    commitId2CommitInfo(obj.commit, commitInfo)
+  );
 };
 /*
 传入需要查询的 SRId，返回其对应的服务 service(unique)
@@ -311,6 +335,7 @@ export {
   MRId2MRInfo,
   itId2ItInfo,
   issueId2IssueInfo,
+  commitId2CommitInfo,
   servId2ServInfo,
   projId2ProjInfo,
   repoId2RepoInfo,
@@ -318,6 +343,7 @@ export {
   oneSR2AllIR,
   MR2SR,
   oneSR2AllMR,
+  oneSR2AllCommit,
   IR2Iteration,
   Iteration2IR,
   SR2Iteration,
