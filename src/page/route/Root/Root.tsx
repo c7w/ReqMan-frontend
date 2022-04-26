@@ -14,53 +14,60 @@ import { immediateToast } from "izitoast-react";
 import { useDispatch } from "react-redux";
 import { updateUserStore } from "../../../store/slices/UserSlice";
 import { push } from "redux-first-history";
+import { Progress } from "rsup-progress";
 
 const Root = () => {
-  // const dispatcher = useDispatch();
-  //
-  // // Set cookies if not exist
-  // const cookie = getCookie("sessionId", "");
-  // if (cookie === "") {
-  //   setCookie("sessionId", generateRandomString(32));
-  // }
-  //
-  // // Get user
-  // useEffect(() => {
-  //   request_json(API.GET_USER)
-  //     .then((data) => {
-  //       if (data.code === 0) {
-  //         dispatcher(updateUserStore(JSON.stringify(data))); // Maybe use UMS better
-  //         const username = data.data.user.name;
-  //         console.debug(data);
-  //         immediateToast("success", {
-  //           title: "连接成功",
-  //           message: `欢迎回来，${username}！`,
-  //           position: "topRight",
-  //           timeout: 1000,
-  //         });
-  //         // setTimeout(() => {
-  //         //   dispatcher(push("/dashboard")); // Use this way to redirect
-  //         // }, 1000);
-  //       } else {
-  //         immediateToast("success", {
-  //           title: "连接成功",
-  //           message: "欢迎来到 ReqMan，请登录！",
-  //           position: "topRight",
-  //           timeout: 1000,
-  //         });
-  //         // setTimeout(() => {
-  //         //   dispatcher(push("/login"));
-  //         // }, 1000);
-  //       }
-  //     })
-  //     .catch(() => {
-  //       immediateToast("error", {
-  //         title: "连接错误",
-  //         message: "网络开小差啦...",
-  //         position: "topRight",
-  //       });
-  //     });
-  // }, []);
+  const dispatcher = useDispatch();
+
+  // Set cookies if not exist
+  const cookie = getCookie("sessionId", "");
+  if (cookie === "") {
+    setCookie("sessionId", generateRandomString(32));
+  }
+
+  // Get user
+  useEffect(() => {
+    const loadingProgress = new Progress({
+      height: "2px",
+      color: "#b91f1f",
+    });
+    loadingProgress.start();
+    request_json(API.GET_USER)
+      .then((data) => {
+        loadingProgress.end();
+        if (data.code === 0) {
+          dispatcher(updateUserStore(JSON.stringify(data))); // Maybe use UMS better
+          const username = data.data.user.name;
+          console.debug(data);
+          immediateToast("success", {
+            title: "连接成功",
+            message: `欢迎回来，${username}！`,
+            position: "topRight",
+            timeout: 1000,
+          });
+          // setTimeout(() => {
+          //   dispatcher(push("/dashboard")); // Use this way to redirect
+          // }, 1000);
+        } else {
+          immediateToast("success", {
+            title: "连接成功",
+            message: "欢迎来到 ReqMan，请登录！",
+            position: "topRight",
+            timeout: 1000,
+          });
+          // setTimeout(() => {
+          //   dispatcher(push("/login"));
+          // }, 1000);
+        }
+      })
+      .catch(() => {
+        immediateToast("error", {
+          title: "连接错误",
+          message: "网络开小差啦...",
+          position: "topRight",
+        });
+      });
+  }, []);
   // useEffect Hook: Would be executed when the variables in the dependence list are initialized or changed value.
   // If you define an empty list as variable dependence, this function would just execute for once, just like didMount().
 
