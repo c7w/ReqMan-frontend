@@ -227,6 +227,7 @@ const SRCard = (props: SRCardProps) => {
       assoIterData.forEach((value: any) => {
         newAssoIterList.push(
           <div
+            key={value.id}
             style={{
               margin: "1rem",
               display: "flex",
@@ -280,7 +281,6 @@ const SRCard = (props: SRCardProps) => {
       getSRServiceInfo(dispatcher, props.project),
       updateServiceInfo(dispatcher, props.project),
     ]).then((data: any) => {
-      console.log(data);
       const assoServiceData = SR2Service(
         props.id,
         JSON.stringify(data[0]),
@@ -650,13 +650,7 @@ const SRCard = (props: SRCardProps) => {
                   }}
                 />
               ) : (
-                <QueueAnim
-                  className="SR-iteration-content-related"
-                  type="right"
-                  ease="[.42,0,.58,1, .42,0,.58,1]"
-                >
-                  {assoIterList}
-                </QueueAnim>
+                <>{assoIterList}</>
               )}
             </div>
             <div className="SRWrap SR-service-related">

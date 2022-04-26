@@ -19,6 +19,7 @@ import {
   Avatar,
   Breadcrumb,
   Divider,
+  Empty,
   Modal,
   Select,
   Space,
@@ -45,6 +46,8 @@ import {
 import SRCard from "./SRCard";
 import getUserAvatar from "../../utils/UserAvatar";
 import { UIUserCardPreview } from "../ums/UIUserCard";
+import { ClockCircleTwoTone } from "@ant-design/icons";
+import QueueAnim from "rc-queue-anim";
 
 const IRCard = (props: IRCardProps) => {
   const dispatcher = useDispatch();
@@ -59,7 +62,7 @@ const IRCard = (props: IRCardProps) => {
   const [progress, setProgress] = useState<number>(props.progress);
   const [description, setDescription] = useState<string>(props.description);
   const [assoSRCardList, setAssoSRCardList] = useState([]);
-  const [assoIterCardList, setAssoIterList] = useState([]);
+  const [assoIterList, setAssoIterList] = useState([]);
 
   const handleOK = () => {
     if (
@@ -105,11 +108,65 @@ const IRCard = (props: IRCardProps) => {
         JSON.stringify(data[1])
       );
       // to do: iteration card
-      const assoIterListData = IR2Iteration(
+      const assoIterData = IR2Iteration(
         props.id,
         JSON.stringify(data[2]),
         JSON.stringify(data[3])
       );
+      const newAssoIterList: any = [];
+      assoIterData.forEach((value: any) => {
+        if (value !== "not found") {
+          newAssoIterList.push(
+            <div
+              key={value.id}
+              style={{
+                margin: "1rem",
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <ClockCircleTwoTone
+                twoToneColor="#52c41a"
+                style={{ fontSize: "1.5rem" }}
+              />
+              <span
+                style={{
+                  fontWeight: "bold",
+                  fontSize: "1rem",
+                  margin: "0.5rem",
+                }}
+              >
+                {value.title}
+              </span>
+              <span
+                style={{
+                  fontWeight: "bold",
+                  margin: "0.5rem",
+                }}
+              >
+                开始时间：
+              </span>
+              <span>
+                {moment(value.begin * 1000).format("YYYY-MM-DD HH:mm:ss")}
+              </span>
+              &nbsp;&nbsp;&nbsp;
+              <span
+                style={{
+                  fontWeight: "bold",
+                  margin: "0.5rem",
+                }}
+              >
+                结束时间：
+              </span>
+              <span>
+                {moment(value.end * 1000).format("YYYY-MM-DD HH:mm:ss")}
+              </span>
+            </div>
+          );
+        }
+      });
+      setAssoIterList(newAssoIterList);
       const newAssoSRCardList: any = [];
       assoSRListData.forEach((value: SRCardProps) => {
         newAssoSRCardList.push(
@@ -253,9 +310,16 @@ const IRCard = (props: IRCardProps) => {
             </div>
             <div className="IR-iteration-related IRWrap">
               <div className="IR-title-related">关联迭代</div>
-              <div className="IR-content-related">
-                {JSON.stringify(assoIterCardList)}
-              </div>
+              {assoIterList.length === 0 ? (
+                <Empty
+                  image={Empty.PRESENTED_IMAGE_SIMPLE}
+                  style={{
+                    width: "100%",
+                  }}
+                />
+              ) : (
+                <>{assoIterList}</>
+              )}
             </div>
           </div>
         </div>

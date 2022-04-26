@@ -108,6 +108,9 @@
   grid-template-columns: repeat(3, 33.33%);
 }
 
+.IR-iteration-content-related {
+}
+
 .IRWrap .IR-title-related {
   position: absolute;
   top: -1em;
