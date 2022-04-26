@@ -48,6 +48,9 @@ const getRDTSInfo = async (dispatcher: any, project_id: number) => {
     promise_list.push(
       getIssueSRAssociation(dispatcher, project_id, JSON.stringify(repo_data))
     );
+    promise_list.push(
+      getCommitSRAssociation(dispatcher, project_id, JSON.stringify(repo_data))
+    );
     return Promise.all(promise_list);
   });
 };

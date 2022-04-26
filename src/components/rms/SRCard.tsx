@@ -27,6 +27,7 @@ import QueueAnim from "rc-queue-anim";
 import { Draggable } from "react-beautiful-dnd";
 import {
   IRCardProps,
+  IssueProps,
   Iteration,
   MergeRequestProps,
   SRCardProps,
@@ -43,6 +44,7 @@ import {
   oneSR2AllIR,
   oneSR2AllMR,
   projId2ProjInfo,
+  SR2Issue,
   SRId2SRInfo,
 } from "../../utils/Association";
 import CryptoJS from "crypto-js";
@@ -143,9 +145,20 @@ const SRCard = (props: SRCardProps) => {
         data[0][1]: commit
         data[0][2]: merge
         data[0][3]: mr-sr
+        data[0][4]: issue-sr
+        data[0][5]: commit-sr
         data[1]: SRList
         data[2]: ProjectInfo
       */
+      const assoIssueListData = SR2Issue(
+        props.id,
+        JSON.stringify(data[0][4]),
+        JSON.stringify(data[0][0])
+      );
+      const newAssoIssueList: any = [];
+      assoIssueListData.forEach((value: IssueProps) => {
+        newAssoIssueList.push();
+      });
       const assoMRListData = oneSR2AllMR(
         props.id,
         JSON.stringify(data[0][3]),
