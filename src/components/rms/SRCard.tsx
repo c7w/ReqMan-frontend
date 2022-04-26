@@ -472,7 +472,7 @@ const SRCard = (props: SRCardProps) => {
             </div>
             <UISRChangeLogList
               SRChangeLogListInfo={SRChangeLogStore}
-              userInfo={userInfo}
+              projectStore={projectStore}
             />
           </div>
           <Divider type="vertical" style={{ width: "5px", height: "auto" }} />

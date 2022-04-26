@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import { Empty, Space, Tag, Timeline } from "antd";
 import moment from "moment";
 import { state2ChineseState, state2Color } from "../../utils/SRStateConvert";
+import { userId2UserInfo } from "../../utils/Association";
 
 interface SRChangeLogListProps {
   SRChangeLogListInfo: string;
-  userInfo: string;
+  projectStore: string;
 }
 
 const UISRChangeLogList = (props: SRChangeLogListProps) => {
@@ -15,14 +16,31 @@ const UISRChangeLogList = (props: SRChangeLogListProps) => {
     if (props.SRChangeLogListInfo !== "") {
       const newSRChangeLogList: any = [];
       const SRChangeLogList = JSON.parse(props.SRChangeLogListInfo).data;
+      console.log(SRChangeLogList);
       if (SRChangeLogList && SRChangeLogList !== []) {
         for (let i = SRChangeLogList.length - 1; i >= 0; i--) {
+          const userInfo = userId2UserInfo(
+            SRChangeLogList[i].changedBy,
+            props.projectStore
+          );
           newSRChangeLogList.push(
             <Timeline.Item
               key={SRChangeLogList[i].id}
-              label={moment(SRChangeLogList[i].changedAt * 1000).format(
-                "YYYY-MM-DD HH:mm:ss"
-              )}
+              label={
+                <>
+                  <span style={{ fontWeight: "bold" }}>
+                    {"@" +
+                      (userInfo === "not found" ? "anonymous" : userInfo.name) +
+                      " "}
+                  </span>
+                  &nbsp;&nbsp;
+                  <span>
+                    {moment(SRChangeLogList[i].changedAt * 1000).format(
+                      "YYYY-MM-DD HH:mm:ss"
+                    )}
+                  </span>
+                </>
+              }
             >
               <Space>
                 <Tag
@@ -47,7 +65,7 @@ const UISRChangeLogList = (props: SRChangeLogListProps) => {
       style={{
         maxWidth: "50vw",
         overflowY: "scroll",
-        maxHeight: "70vh",
+        maxHeight: "35vh",
         paddingTop: "1rem",
         paddingRight: "1rem",
       }}

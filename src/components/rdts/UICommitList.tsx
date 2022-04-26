@@ -9,19 +9,29 @@ interface UICommitListProps {
 
 const UICommitList = (props: UICommitListProps) => {
   const [commitListData, setCommitListData] = useState([]);
-
   useEffect(() => {
     if (props.commitListData !== "") {
       const newCommitListData: any = [];
       const commitList = JSON.parse(props.commitListData);
+      console.log(commitList);
       if (commitList && commitList !== []) {
         for (let i = commitList.length - 1; i >= 0; i--) {
           newCommitListData.push(
             <Timeline.Item
               key={commitList[i].id}
-              label={moment(commitList[i].createdAt * 1000).format(
-                "YYYY-MM-DD HH:mm:ss"
-              )}
+              label={
+                <>
+                  <span style={{ fontWeight: "bold" }}>
+                    {"@" + commitList[i].commiter_name + " "}
+                  </span>
+                  &nbsp;&nbsp;
+                  <span>
+                    {moment(commitList[i].createdAt * 1000).format(
+                      "YYYY-MM-DD HH:mm:ss"
+                    )}
+                  </span>
+                </>
+              }
             >
               <span>{commitList[i].title}</span>
             </Timeline.Item>
@@ -38,7 +48,7 @@ const UICommitList = (props: UICommitListProps) => {
       style={{
         maxWidth: "50vw",
         overflowY: "scroll",
-        maxHeight: "70vh",
+        maxHeight: "35vh",
         paddingTop: "1rem",
         paddingRight: "1rem",
       }}
