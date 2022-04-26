@@ -39,6 +39,9 @@
 .header-right {
   padding-right: 20px;
   cursor: default;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .small-avatar:hover {
