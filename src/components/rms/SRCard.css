@@ -145,11 +145,6 @@
 .SR-content-related {
   display: grid;
   grid-template-columns: repeat(3, 33.33%);
-}
-
-.SR-MR-content-related {
-  display: grid;
-  grid-template-columns: repeat(3, 33.33%);
   box-sizing: content-box;
 }
 

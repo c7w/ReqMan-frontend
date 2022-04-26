@@ -11,7 +11,6 @@ interface IssueCardProps {
 
 const IssueCard = (props: IssueCardProps) => {
   const data: IssueProps = JSON.parse(props.data);
-  console.log(data);
   const [visible, setVisible] = useState(false);
 
   const getBackgroundColor = (state: "closed" | "opened") => {

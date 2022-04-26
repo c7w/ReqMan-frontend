@@ -30,6 +30,14 @@ const MRId2MRInfo = (MRId: number, MRList: string) => {
   const MR = MRListData.filter((obj: any) => obj.id === MRId);
   return MR.length > 0 ? MR[0] : "not found";
 };
+// 传入 Issue 的 Id，返回其详细信息，同时需要传入该项目的 issueList (getIssueStore 而来) （未解析）
+const issueId2IssueInfo = (issueId: number, issueList: string) => {
+  // console.log("==================== Get issueInfo By IssueId ===================");
+  const issueListData = JSON.parse(issueList).data;
+  // console.log(issueListData);
+  const issue = issueListData.filter((obj: any) => obj.id === issueId);
+  return issue.length > 0 ? issue[0] : "not found";
+};
 // 传入 iteration 的 Id, 返回其详细信息，同时需要传入该项目的 iterationInfo (getIterationInfo 而来) （未解析）
 const itId2ItInfo = (iterationId: number, iterationInfo: string) => {
   // console.log("============ Get iterationInfo By iterationId ============== ");
@@ -218,8 +226,8 @@ const SR2Issue = (SRId: number, SRIssueAsso: string, issueInfo: string) => {
   // console.log("================ Get Issue By SR ===============");
   const SRIssueData = JSON.parse(SRIssueAsso).data;
   // console.log(SRIssueData);
-  return SRIssueData.filter((obj: any) => obj.SR === SRId).map(
-    (obj: any) => obj.issue
+  return SRIssueData.filter((obj: any) => obj.SR === SRId).map((obj: any) =>
+    issueId2IssueInfo(obj.issue, issueInfo)
   ); // 直接返回匹配的 issueId 列表，要么空要么只有一个元素
 };
 /*
@@ -302,6 +310,7 @@ export {
   SRId2SRInfo,
   MRId2MRInfo,
   itId2ItInfo,
+  issueId2IssueInfo,
   servId2ServInfo,
   projId2ProjInfo,
   repoId2RepoInfo,

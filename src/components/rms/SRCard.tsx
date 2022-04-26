@@ -88,6 +88,7 @@ import UISRChangeLogList from "./UISRChangeLogList";
 import { state2Color, state2ChineseState } from "../../utils/SRStateConvert";
 import MRCard from "../rdts/MRCard";
 import { UIUserCardPreview } from "../ums/UIUserCard";
+import IssueCard from "../rdts/IssueCard";
 const { Text } = Typography;
 
 const SRCard = (props: SRCardProps) => {
@@ -136,7 +137,7 @@ const SRCard = (props: SRCardProps) => {
   // 更新打开的 modal 对应的 SR 的所有关系
   const updateAssociation = () => {
     Promise.all([
-      getRDTSInfo(dispatcher, 2),
+      getRDTSInfo(dispatcher, props.project),
       getSRListInfo(dispatcher, props.project),
       updateProjectInfo(dispatcher, props.project),
     ]).then((data) => {
@@ -156,9 +157,14 @@ const SRCard = (props: SRCardProps) => {
         JSON.stringify(data[0][0])
       );
       const newAssoIssueList: any = [];
-      assoIssueListData.forEach((value: IssueProps) => {
-        newAssoIssueList.push();
+      assoIssueListData.forEach((value: any) => {
+        if (value !== "not found") {
+          newAssoIssueList.push(
+            <IssueCard data={JSON.stringify(value)} key={value.id} />
+          );
+        }
       });
+      setAssoIssueCardList(newAssoIssueList);
       const assoMRListData = oneSR2AllMR(
         props.id,
         JSON.stringify(data[0][3]),
@@ -475,7 +481,7 @@ const SRCard = (props: SRCardProps) => {
                 />
               ) : (
                 <QueueAnim
-                  className="SR-MR-content-related"
+                  className="SR-content-related"
                   type="right"
                   ease="[.42,0,.58,1, .42,0,.58,1]"
                 >
@@ -485,7 +491,22 @@ const SRCard = (props: SRCardProps) => {
             </div>
             <div className="SRWrap SR-issue-related">
               <div className="SR-title-related">关联缺陷</div>
-              <div className="SR-content-related">i am issue</div>
+              {assoIssueCardList.length === 0 ? (
+                <Empty
+                  image={Empty.PRESENTED_IMAGE_SIMPLE}
+                  style={{
+                    width: "100%",
+                  }}
+                />
+              ) : (
+                <QueueAnim
+                  className="SR-content-related"
+                  type="right"
+                  ease="[.42,0,.58,1, .42,0,.58,1]"
+                >
+                  {assoIssueCardList}
+                </QueueAnim>
+              )}
             </div>
             <div className="SRWrap SR-commit-related">
               <div className="SR-title-related">关联提交</div>
