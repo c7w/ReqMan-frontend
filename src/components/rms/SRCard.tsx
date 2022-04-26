@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./SRCard.css";
 import "../rdts/UIMergeCard.css";
+import { ClockCircleTwoTone } from "@ant-design/icons";
 import {
   Avatar,
   Typography,
@@ -35,7 +36,9 @@ import {
 import {
   getIRListInfo,
   getIRSRInfo,
+  getIterationInfo,
   getSRChangeLogInfo,
+  getSRIterationInfo,
   getSRListInfo,
   updateSRInfo,
 } from "../../store/functions/RMS";
@@ -46,6 +49,7 @@ import {
   oneSR2AllMR,
   projId2ProjInfo,
   SR2Issue,
+  SR2Iteration,
   SRId2SRInfo,
 } from "../../utils/Association";
 import CryptoJS from "crypto-js";
@@ -153,7 +157,6 @@ const SRCard = (props: SRCardProps) => {
         data[1]: SRList
         data[2]: ProjectInfo
       */
-      console.log(data);
       const assoCommitListData = oneSR2AllCommit(
         props.id,
         JSON.stringify(data[0][5]),
@@ -195,6 +198,68 @@ const SRCard = (props: SRCardProps) => {
         );
       });
       setAssoMRCardList(newAssoMRCardList);
+    });
+    Promise.all([
+      getSRIterationInfo(dispatcher, props.project),
+      getIterationInfo(dispatcher, props.project),
+    ]).then((data: any) => {
+      console.log(data);
+      const assoIterData = SR2Iteration(
+        props.id,
+        JSON.stringify(data[0]),
+        JSON.stringify(data[1])
+      );
+      const newAssoIterList: any = [];
+      assoIterData.forEach((value: any) => {
+        newAssoIterList.push(
+          <div
+            style={{
+              margin: "1rem",
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <ClockCircleTwoTone
+              twoToneColor="#52c41a"
+              style={{ fontSize: "1.5rem" }}
+            />
+            <span
+              style={{
+                fontWeight: "bold",
+                fontSize: "1rem",
+                margin: "0.5rem",
+              }}
+            >
+              {value.title}
+            </span>
+            <span
+              style={{
+                fontWeight: "bold",
+                margin: "0.5rem",
+              }}
+            >
+              开始时间：
+            </span>
+            <span>
+              {moment(value.begin * 1000).format("YYYY-MM-DD HH:mm:ss")}
+            </span>
+            &nbsp;&nbsp;&nbsp;
+            <span
+              style={{
+                fontWeight: "bold",
+                margin: "0.5rem",
+              }}
+            >
+              结束时间：
+            </span>
+            <span>
+              {moment(value.end * 1000).format("YYYY-MM-DD HH:mm:ss")}
+            </span>
+          </div>
+        );
+      });
+      setAssoIterList(newAssoIterList);
     });
     // update IR SR Association
     Promise.all([
@@ -536,7 +601,22 @@ const SRCard = (props: SRCardProps) => {
             </div>
             <div className="SRWrap SR-iteration-related">
               <div className="SR-title-related">关联迭代</div>
-              <div className="SR-content-related">i am iteration</div>
+              {assoIterList.length === 0 ? (
+                <Empty
+                  image={Empty.PRESENTED_IMAGE_SIMPLE}
+                  style={{
+                    width: "100%",
+                  }}
+                />
+              ) : (
+                <QueueAnim
+                  className="SR-iteration-content-related"
+                  type="right"
+                  ease="[.42,0,.58,1, .42,0,.58,1]"
+                >
+                  {assoIterList}
+                </QueueAnim>
+              )}
             </div>
           </div>
         </div>

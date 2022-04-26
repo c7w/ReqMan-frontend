@@ -13,7 +13,6 @@ const UICommitList = (props: UICommitListProps) => {
     if (props.commitListData !== "") {
       const newCommitListData: any = [];
       const commitList = JSON.parse(props.commitListData);
-      console.log(commitList);
       if (commitList && commitList !== []) {
         for (let i = commitList.length - 1; i >= 0; i--) {
           newCommitListData.push(

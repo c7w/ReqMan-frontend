@@ -508,10 +508,15 @@ const getSRIterationInfo = async (
     project: project_id,
     type: "sr-iteration",
   };
-  const SRIteration_data = await request_json(API.GET_RMS, {
-    getParams: myParams,
-  });
-  dispatcher(updateSRIterationStore(JSON.stringify(SRIteration_data)));
+  return request_json(API.GET_RMS, { getParams: myParams }).then(
+    (SRIteration_data) => {
+      // console.log(SRList_data.code);
+      if (SRIteration_data.code === 0) {
+        dispatcher(updateSRIterationStore(JSON.stringify(SRIteration_data)));
+      }
+      return SRIteration_data;
+    }
+  );
 };
 
 const createSRIteration = async (

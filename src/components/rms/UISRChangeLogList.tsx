@@ -16,7 +16,6 @@ const UISRChangeLogList = (props: SRChangeLogListProps) => {
     if (props.SRChangeLogListInfo !== "") {
       const newSRChangeLogList: any = [];
       const SRChangeLogList = JSON.parse(props.SRChangeLogListInfo).data;
-      console.log(SRChangeLogList);
       if (SRChangeLogList && SRChangeLogList !== []) {
         for (let i = SRChangeLogList.length - 1; i >= 0; i--) {
           const userInfo = userId2UserInfo(
