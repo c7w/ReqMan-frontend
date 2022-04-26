@@ -152,6 +152,11 @@
 
 }
 
+.SR-service-content-related {
+  margin-left: 5rem;
+  margin-right: 5rem;
+}
+
 .SRWrap .SR-title-related {
   position: absolute;
   top: -1em;

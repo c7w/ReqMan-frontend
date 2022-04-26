@@ -13,7 +13,7 @@ const UISRChangeLogList = (props: SRChangeLogListProps) => {
   const [SRChangeLogListData, setSRChangeLogListData] = useState([]);
 
   useEffect(() => {
-    if (props.SRChangeLogListInfo !== "") {
+    if (props.SRChangeLogListInfo !== "" && props.projectStore !== "") {
       const newSRChangeLogList: any = [];
       const SRChangeLogList = JSON.parse(props.SRChangeLogListInfo).data;
       if (SRChangeLogList && SRChangeLogList !== []) {
@@ -56,7 +56,7 @@ const UISRChangeLogList = (props: SRChangeLogListProps) => {
       }
       setSRChangeLogListData(newSRChangeLogList);
     }
-  }, [props.SRChangeLogListInfo]);
+  }, [props.SRChangeLogListInfo, props.projectStore]);
 
   return (
     <div

@@ -40,6 +40,8 @@ import {
   getSRChangeLogInfo,
   getSRIterationInfo,
   getSRListInfo,
+  getSRServiceInfo,
+  updateServiceInfo,
   updateSRInfo,
 } from "../../store/functions/RMS";
 import {
@@ -50,6 +52,7 @@ import {
   projId2ProjInfo,
   SR2Issue,
   SR2Iteration,
+  SR2Service,
   SRId2SRInfo,
 } from "../../utils/Association";
 import CryptoJS from "crypto-js";
@@ -59,7 +62,7 @@ import { updateProjectInfo, updateUserInfo } from "../../store/functions/UMS";
 import Loading from "../../layout/components/Loading";
 import { Option } from "antd/es/mentions";
 import Paragraph from "antd/es/typography/Paragraph";
-import { Service } from "./UIServiceReadonly";
+import { Service, ServiceReadonlyModal } from "./UIServiceReadonly";
 import { ToastMessage } from "../../utils/Navigation";
 import { set } from "husky";
 import {
@@ -95,6 +98,8 @@ import MRCard from "../rdts/MRCard";
 import { UIUserCardPreview } from "../ums/UIUserCard";
 import IssueCard from "../rdts/IssueCard";
 import UICommitList from "../rdts/UICommitList";
+import { getServiceStore } from "../../store/slices/ServiceSlice";
+import { ProjectServiceCard } from "./UIService";
 const { Text } = Typography;
 
 const SRCard = (props: SRCardProps) => {
@@ -105,6 +110,8 @@ const SRCard = (props: SRCardProps) => {
   const IRSRAssoStore = useSelector(getIRSRStore);
   const IRListStore = useSelector(getIRListStore);
   const SRListStore = useSelector(getSRListStore);
+  const serviceStore = useSelector(getServiceStore);
+  const SRServiceStore = useSelector(getServiceStore);
   const SRCommitStore = useSelector(getCommitSRAssociationStore);
   const SRIssueStore = useSelector(getIssueSRAssociationStore);
   const SRIterAssoStore = useSelector(getSRIterationStore);
@@ -134,11 +141,16 @@ const SRCard = (props: SRCardProps) => {
     bottom: 0,
     right: 0,
   });
+  // SR 关联信息
   const [assoIRCardList, setAssoIRCardList] = useState([]);
   const [assoMRCardList, setAssoMRCardList] = useState([]);
   const [assoIssueCardList, setAssoIssueCardList] = useState([]);
   const [assoCommitList, setAssoCommitList] = useState([]);
   const [assoIterList, setAssoIterList] = useState([]);
+  const [assoService, setAssoService] = useState([]);
+  // 关联 service 的附带状态
+  const [cached, setCached] = useState("");
+  const [modal, setModal] = useState(false);
 
   // 更新打开的 modal 对应的 SR 的所有关系
   const updateAssociation = () => {
@@ -146,6 +158,7 @@ const SRCard = (props: SRCardProps) => {
       getRDTSInfo(dispatcher, props.project),
       getSRListInfo(dispatcher, props.project),
       updateProjectInfo(dispatcher, props.project),
+      getSRChangeLogInfo(dispatcher, props.project, props.id),
     ]).then((data) => {
       /*
         data[0][0]: issue
@@ -156,6 +169,7 @@ const SRCard = (props: SRCardProps) => {
         data[0][5]: commit-sr
         data[1]: SRList
         data[2]: ProjectInfo
+        data[3]: SRChangeLogInfo
       */
       const assoCommitListData = oneSR2AllCommit(
         props.id,
@@ -199,11 +213,11 @@ const SRCard = (props: SRCardProps) => {
       });
       setAssoMRCardList(newAssoMRCardList);
     });
+
     Promise.all([
       getSRIterationInfo(dispatcher, props.project),
       getIterationInfo(dispatcher, props.project),
     ]).then((data: any) => {
-      console.log(data);
       const assoIterData = SR2Iteration(
         props.id,
         JSON.stringify(data[0]),
@@ -261,6 +275,33 @@ const SRCard = (props: SRCardProps) => {
       });
       setAssoIterList(newAssoIterList);
     });
+
+    Promise.all([
+      getSRServiceInfo(dispatcher, props.project),
+      updateServiceInfo(dispatcher, props.project),
+    ]).then((data: any) => {
+      console.log(data);
+      const assoServiceData = SR2Service(
+        props.id,
+        JSON.stringify(data[0]),
+        JSON.stringify(data[1])
+      );
+      const newAssoService: any = [];
+      assoServiceData.forEach((value: any) => {
+        newAssoService.push(
+          <ProjectServiceCard
+            key={value.id}
+            data={JSON.stringify(value)}
+            modal={(raw) => {
+              setCached(raw);
+              setModal(true);
+            }}
+          />
+        );
+      });
+      setAssoService(newAssoService);
+    });
+
     // update IR SR Association
     Promise.all([
       getIRSRInfo(dispatcher, props.project), // 该项目所有 IR SR
@@ -616,6 +657,36 @@ const SRCard = (props: SRCardProps) => {
                 >
                   {assoIterList}
                 </QueueAnim>
+              )}
+            </div>
+            <div className="SRWrap SR-service-related">
+              <div className="SR-title-related">关联服务</div>
+              {assoService.length === 0 ? (
+                <Empty
+                  image={Empty.PRESENTED_IMAGE_SIMPLE}
+                  style={{
+                    width: "100%",
+                  }}
+                />
+              ) : (
+                <>
+                  <div className="SR-service-content-related">
+                    {assoService}
+                  </div>
+                  <Modal
+                    title={"服务查看"}
+                    footer={null}
+                    visible={modal}
+                    width={"70vw"}
+                    onCancel={() => setModal(false)}
+                    destroyOnClose={true}
+                  >
+                    <ServiceReadonlyModal
+                      data={cached}
+                      close={() => setModal(false)}
+                    />
+                  </Modal>
+                </>
               )}
             </div>
           </div>
