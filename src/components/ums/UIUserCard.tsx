@@ -62,6 +62,7 @@ const UIUserCard = (props: UIUserCardProps) => {
       date.setFullYear(date.getFullYear() - 1); // 去年时间
       const date_past = date.getTime();
       const commitData = getAllDay(date_past, date_now);
+      console.log(data);
       data.forEach((activity: any) => {
         const commitTimes = activity.data[0].commit_times;
         commitTimes.forEach((commitTime: any) => {

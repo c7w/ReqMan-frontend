@@ -50,9 +50,9 @@ const MemberLines = (props: MemberLinesProps) => {
     all_add[exist].push(item.additions);
   });
 
-  console.log(all_add);
-  console.log(all_del);
-  console.log(all_change);
+  // console.log(all_add);
+  // console.log(all_del);
+  // console.log(all_change);
 
   const option = {
     title: {

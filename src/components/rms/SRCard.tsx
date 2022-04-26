@@ -96,6 +96,8 @@ const SRCard = (props: SRCardProps) => {
   const IRSRAssoStore = useSelector(getIRSRStore);
   const IRListStore = useSelector(getIRListStore);
   const SRListStore = useSelector(getSRListStore);
+  const SRCommitStore = useSelector(getCommitSRAssociationStore);
+  const SRIssueStore = useSelector(getIssueSRAssociationStore);
   const SRIterAssoStore = useSelector(getSRIterationStore);
   const iterationStore = useSelector(getIterationStore);
   const SRChangeLogStore = useSelector(getSRChangeLogStore);
@@ -125,19 +127,10 @@ const SRCard = (props: SRCardProps) => {
   });
   const [assoIRCardList, setAssoIRCardList] = useState([]);
   const [assoMRCardList, setAssoMRCardList] = useState([]);
+  const [assoIssueCardList, setAssoIssueCardList] = useState([]);
+  const [assoCommitList, setAssoCommitList] = useState([]);
+  const [assoIterList, setAssoIterList] = useState([]);
 
-  // let descriptionInner;
-  // let descriptionContainer;
-  // const addClickListener = () => {
-  //   descriptionContainer = document.getElementById("description-container");
-  //   descriptionInner = document.getElementById("description-inner");
-  //   descriptionContainer?.addEventListener("click", (event) => {
-  //     setDescEditing(false);
-  //   });
-  //   descriptionInner?.addEventListener("click", (event) => {
-  //     event.stopPropagation(); // chromium内核
-  //   });
-  // };
   // 更新打开的 modal 对应的 SR 的所有关系
   const updateAssociation = () => {
     Promise.all([

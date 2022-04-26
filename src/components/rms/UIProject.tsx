@@ -53,7 +53,7 @@ const UIProject = (props: UIProjectProps) => {
           <div className="ui-project-info-left">
             {props.title.toUpperCase()} 工作面板
           </div>
-          <div className="ui-project-info-right">收藏+点赞</div>
+          <div className="ui-project-info-right"></div>
         </div>
         <Avatar.Group className="ui-project-avatar-group">
           {avatarList}

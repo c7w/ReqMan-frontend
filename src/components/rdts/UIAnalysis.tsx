@@ -176,7 +176,7 @@ const UIAnalysis = () => {
     });
   });
 
-  console.log(JSON.parse(commitStore));
+  // console.log(JSON.parse(commitStore));
 
   return (
     <div className={"merge-card"}>
