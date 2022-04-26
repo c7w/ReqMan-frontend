@@ -66,7 +66,9 @@ const Root = () => {
 
   return (
     <div className={"root-screen"}>
-      <div id="progress" />
+      <div id="loading-progress">
+        <span id="loading-progress-thumb" />
+      </div>
       <div className={"root-proj-name"}>
         <img src={logo} width={800} height={400} alt="logo" />
       </div>
