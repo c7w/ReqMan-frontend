@@ -34,7 +34,9 @@ const MRId2MRInfo = (MRId: number, MRList: string) => {
 const issueId2IssueInfo = (issueId: number, issueList: string) => {
   // console.log("==================== Get issueInfo By IssueId ===================");
   const issueListData = JSON.parse(issueList).data;
-  const issue = issueListData.filter((obj: any) => obj.id === issueId);
+  const issue = issueListData.filter(
+    (obj: any) => obj.id === issueId && obj.is_bug
+  );
   return issue.length > 0 ? issue[0] : "not found";
 };
 // 传入 commit 的 Id，返回其详细信息，同时需要传入该项目的 commitList (getCommitStore 而来) （未解析）

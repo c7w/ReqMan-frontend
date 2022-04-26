@@ -160,7 +160,8 @@ const UIAnalysis = () => {
     iter_issue_sr_list.all_sr_count.push(assoSRList.length);
     let counter = 0;
     assoSRList.forEach((sr: any) => {
-      if (SR2Issue(sr.id, issueSRStore, issueStore).length > 0) counter++;
+      const issue = SR2Issue(sr.id, issueSRStore, issueStore);
+      if (issue.length > 0 && issue[0] !== "not found") counter++;
     });
     iter_issue_sr_list.issues.push(counter);
   });
