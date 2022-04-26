@@ -145,12 +145,15 @@
 .SR-content-related {
   display: grid;
   grid-template-columns: repeat(3, 33.33%);
+  box-sizing: content-box;
 }
 
-.SR-MR-content-related {
-  display: grid;
-  grid-template-columns: repeat(3, 33.33%);
-  box-sizing: content-box;
+.SR-iteration-content-related {
+}
+
+.SR-service-content-related {
+  margin-left: 5rem;
+  margin-right: 5rem;
 }
 
 .SRWrap .SR-title-related {

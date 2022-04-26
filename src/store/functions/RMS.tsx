@@ -131,9 +131,14 @@ const deleteIRInfo = async (
 };
 
 const updateServiceInfo = async (dispatcher: any, project_id: number) => {
-  request_json(API.GET_RMS, {
+  return request_json(API.GET_RMS, {
     getParams: { project: project_id, type: "service" },
-  }).then((data) => dispatcher(updateServiceStore(JSON.stringify(data))));
+  }).then((data) => {
+    if (data.code === 0) {
+      dispatcher(updateServiceStore(JSON.stringify(data)));
+    }
+    return data;
+  });
 };
 
 const doUpdateServiceInfo = async (
@@ -508,10 +513,15 @@ const getSRIterationInfo = async (
     project: project_id,
     type: "sr-iteration",
   };
-  const SRIteration_data = await request_json(API.GET_RMS, {
-    getParams: myParams,
-  });
-  dispatcher(updateSRIterationStore(JSON.stringify(SRIteration_data)));
+  return request_json(API.GET_RMS, { getParams: myParams }).then(
+    (SRIteration_data) => {
+      // console.log(SRList_data.code);
+      if (SRIteration_data.code === 0) {
+        dispatcher(updateSRIterationStore(JSON.stringify(SRIteration_data)));
+      }
+      return SRIteration_data;
+    }
+  );
 };
 
 const createSRIteration = async (
@@ -623,10 +633,15 @@ const getSRServiceInfo = async (
     project: project_id,
     type: "service-sr",
   };
-  const SRService_data = await request_json(API.GET_RMS, {
-    getParams: myParams,
-  });
-  dispatcher(updateSRServiceStore(JSON.stringify(SRService_data)));
+  return request_json(API.GET_RMS, { getParams: myParams }).then(
+    (SRService_data) => {
+      // console.log(SRList_data.code);
+      if (SRService_data.code === 0) {
+        dispatcher(updateSRServiceStore(JSON.stringify(SRService_data)));
+      }
+      return SRService_data;
+    }
+  );
 };
 
 const createSRService = async (

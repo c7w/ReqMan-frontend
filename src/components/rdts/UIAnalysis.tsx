@@ -94,7 +94,6 @@ const UIAnalysis = () => {
   if (recentSeven === "" || overall === "") {
     return <Loading />;
   }
-  console.log(JSON.parse(overall));
 
   let active_list_7 = [];
   const issue_list_7 = [];
@@ -177,7 +176,7 @@ const UIAnalysis = () => {
     });
   });
 
-  console.log(commitStore); // 传给 qc 三幅图的东东
+  // console.log(JSON.parse(commitStore));
 
   return (
     <div className={"merge-card"}>

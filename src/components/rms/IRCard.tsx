@@ -19,6 +19,7 @@ import {
   Avatar,
   Breadcrumb,
   Divider,
+  Empty,
   Modal,
   Select,
   Space,
@@ -44,6 +45,9 @@ import {
 } from "../../store/slices/IterationSlice";
 import SRCard from "./SRCard";
 import getUserAvatar from "../../utils/UserAvatar";
+import { UIUserCardPreview } from "../ums/UIUserCard";
+import { ClockCircleTwoTone } from "@ant-design/icons";
+import QueueAnim from "rc-queue-anim";
 
 const IRCard = (props: IRCardProps) => {
   const dispatcher = useDispatch();
@@ -58,7 +62,7 @@ const IRCard = (props: IRCardProps) => {
   const [progress, setProgress] = useState<number>(props.progress);
   const [description, setDescription] = useState<string>(props.description);
   const [assoSRCardList, setAssoSRCardList] = useState([]);
-  const [assoIterCardList, setAssoIterList] = useState([]);
+  const [assoIterList, setAssoIterList] = useState([]);
 
   const handleOK = () => {
     if (
@@ -92,7 +96,6 @@ const IRCard = (props: IRCardProps) => {
 
   // 更新打开的 modal 对应的 SR 的所有关系
   const updateAssociation = () => {
-    console.log("updating !");
     Promise.all([
       getIRSRInfo(dispatcher, props.project),
       getSRListInfo(dispatcher, props.project),
@@ -105,11 +108,65 @@ const IRCard = (props: IRCardProps) => {
         JSON.stringify(data[1])
       );
       // to do: iteration card
-      const assoIterListData = IR2Iteration(
+      const assoIterData = IR2Iteration(
         props.id,
         JSON.stringify(data[2]),
         JSON.stringify(data[3])
       );
+      const newAssoIterList: any = [];
+      assoIterData.forEach((value: any) => {
+        if (value !== "not found") {
+          newAssoIterList.push(
+            <div
+              key={value.id}
+              style={{
+                margin: "1rem",
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <ClockCircleTwoTone
+                twoToneColor="#52c41a"
+                style={{ fontSize: "1.5rem" }}
+              />
+              <span
+                style={{
+                  fontWeight: "bold",
+                  fontSize: "1rem",
+                  margin: "0.5rem",
+                }}
+              >
+                {value.title}
+              </span>
+              <span
+                style={{
+                  fontWeight: "bold",
+                  margin: "0.5rem",
+                }}
+              >
+                开始时间：
+              </span>
+              <span>
+                {moment(value.begin * 1000).format("YYYY-MM-DD HH:mm:ss")}
+              </span>
+              &nbsp;&nbsp;&nbsp;
+              <span
+                style={{
+                  fontWeight: "bold",
+                  margin: "0.5rem",
+                }}
+              >
+                结束时间：
+              </span>
+              <span>
+                {moment(value.end * 1000).format("YYYY-MM-DD HH:mm:ss")}
+              </span>
+            </div>
+          );
+        }
+      });
+      setAssoIterList(newAssoIterList);
       const newAssoSRCardList: any = [];
       assoSRListData.forEach((value: SRCardProps) => {
         newAssoSRCardList.push(
@@ -120,7 +177,12 @@ const IRCard = (props: IRCardProps) => {
             title={value.title}
             description={value.description}
             priority={value.priority}
+            rank={value.rank}
             currState={value.currState}
+            stateColor={value.stateColor}
+            createdBy={value.createdBy}
+            createdAt={value.createdAt}
+            disabled={value.disabled}
             iter={value.iter}
             chargedBy={value.chargedBy}
             service={value.service}
@@ -231,13 +293,7 @@ const IRCard = (props: IRCardProps) => {
           <div className="IRModal-content-middle">
             <div style={{ display: "flex", flexDirection: "row" }}>
               <p>负责人：</p>
-              <Avatar.Group>
-                <Avatar
-                  className="IRCard-small-avatar"
-                  size="small"
-                  src={getUserAvatar(userInfo)}
-                />
-              </Avatar.Group>
+              <UIUserCardPreview userStore={userInfo} />
             </div>
             <div>
               <b>创建时间:</b>
@@ -254,9 +310,16 @@ const IRCard = (props: IRCardProps) => {
             </div>
             <div className="IR-iteration-related IRWrap">
               <div className="IR-title-related">关联迭代</div>
-              <div className="IR-content-related">
-                {JSON.stringify(assoIterCardList)}
-              </div>
+              {assoIterList.length === 0 ? (
+                <Empty
+                  image={Empty.PRESENTED_IMAGE_SIMPLE}
+                  style={{
+                    width: "100%",
+                  }}
+                />
+              ) : (
+                <>{assoIterList}</>
+              )}
             </div>
           </div>
         </div>

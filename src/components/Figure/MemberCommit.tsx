@@ -11,8 +11,9 @@ interface MemberCommitProps {
 
 const MemberCommit = (props: MemberCommitProps) => {
   const data = JSON.parse(props.text).data;
-  const all_data: number[] = [];
   const projectStore = useSelector(getProjectStore);
+
+  const all_data: any = [];
   const allUserInfo = JSON.parse(projectStore).data.users;
   const all_name_id: number[] = [];
   const all_names: string[] = [];
@@ -23,6 +24,7 @@ const MemberCommit = (props: MemberCommitProps) => {
   for (let i = 0; i < all_name_id.length; i++) {
     all_data.push(0);
   }
+
   data.forEach((item: any) => {
     const id = item.user_committer;
     for (let i = 0; i < all_name_id.length; i++) {
