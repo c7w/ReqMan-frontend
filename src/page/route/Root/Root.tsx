@@ -118,112 +118,128 @@ const Root = () => {
   };
 
   return (
-    <div className={"root-screen"}>
-      <div className="combined">
-        <div className="combined-shape">
-          <div className="shape-left">
-            <TweenOne
-              animation={[
-                {
-                  x: "20vw",
-                  type: "from",
-                  ease: "easeInOutQuint",
-                  duration: 600,
-                },
-                {
-                  x: "-20vw",
-                  ease: "easeInOutQuart",
-                  duration: 450,
-                  delay: -150,
-                },
-              ]}
-            />
+    <div className="root-screen">
+      <div className={"root-wrapper"}>
+        <div className="combined">
+          <div className="combined-shape">
+            <div className="shape-left">
+              <TweenOne
+                animation={[
+                  {
+                    x: "20vw",
+                    type: "from",
+                    ease: "easeInOutQuint",
+                    duration: 600,
+                  },
+                  {
+                    x: "-20vw",
+                    ease: "easeInOutQuart",
+                    duration: 450,
+                    delay: -150,
+                  },
+                ]}
+              />
+            </div>
+            <div className="shape-right">
+              <TweenOne
+                animation={[
+                  {
+                    x: "-20vw",
+                    type: "from",
+                    ease: "easeInOutQuint",
+                    duration: 600,
+                  },
+                  {
+                    x: "20vw",
+                    ease: "easeInOutQuart",
+                    duration: 450,
+                    delay: -150,
+                  },
+                ]}
+              />
+            </div>
           </div>
-          <div className="shape-right">
-            <TweenOne
-              animation={[
+          <Texty
+            className="title"
+            type="mask-top"
+            delay={400}
+            enter={getEnter}
+            interval={getInterval}
+            component={TweenOne}
+            componentProps={{
+              animation: [
+                { x: 200, type: "set" },
+                { x: 100, delay: 500, duration: 450 },
                 {
-                  x: "-20vw",
-                  type: "from",
+                  ease: "easeOutQuart",
+                  duration: 300,
+                  x: 0,
+                },
+                {
+                  letterSpacing: 0,
+                  delay: -300,
+                  scale: 0.9,
                   ease: "easeInOutQuint",
-                  duration: 600,
+                  duration: 1000,
                 },
                 {
-                  x: "20vw",
-                  ease: "easeInOutQuart",
-                  duration: 450,
-                  delay: -150,
+                  scale: 1,
+                  width: "100%",
+                  delay: -300,
+                  duration: 1000,
+                  ease: "easeInOutQuint",
                 },
-              ]}
-            />
+              ],
+            }}
+          >
+            ReqMan
+          </Texty>
+          <TweenOne
+            className="combined-bar"
+            animation={{
+              delay: 2000,
+              width: 0,
+              x: "10vw",
+              type: "from",
+              ease: "easeInOutExpo",
+            }}
+          />
+          <Texty
+            className="content"
+            type="bottom"
+            split={getSplit}
+            delay={2200}
+            interval={30}
+          >
+            Your Requirement Management Servant
+          </Texty>
+        </div>
+        <div id="loading-progress">
+          <span id="loading-progress-thumb" />
+        </div>
+        {/*<div className={"root-loading"}>*/}
+        {/*  <Loading3QuartersOutlined*/}
+        {/*    style={{ fontSize: "72px", color: "black" }}*/}
+        {/*    className={"root-spinner"}*/}
+        {/*  />*/}
+        {/*</div>*/}
+        <div className="root-features">
+          <div className="root-feature-card root-feature-card1">
+            <div className="root-feature-title">title</div>
+            <div className="root-feature-content">content</div>
+          </div>
+          <div className="root-feature-card root-feature-card2">
+            <div className="root-feature-title">title</div>
+            <div className="root-feature-content">content</div>
+          </div>
+          <div className="root-feature-card root-feature-card3">
+            <div className="root-feature-title">title</div>
+            <div className="root-feature-content">content</div>
           </div>
         </div>
-        <Texty
-          className="title"
-          type="mask-top"
-          delay={400}
-          enter={getEnter}
-          interval={getInterval}
-          component={TweenOne}
-          componentProps={{
-            animation: [
-              { x: 200, type: "set" },
-              { x: 100, delay: 500, duration: 450 },
-              {
-                ease: "easeOutQuart",
-                duration: 300,
-                x: 0,
-              },
-              {
-                letterSpacing: 0,
-                delay: -300,
-                scale: 0.9,
-                ease: "easeInOutQuint",
-                duration: 1000,
-              },
-              {
-                scale: 1,
-                width: "100%",
-                delay: -300,
-                duration: 1000,
-                ease: "easeInOutQuint",
-              },
-            ],
-          }}
-        >
-          ReqMan
-        </Texty>
-        <TweenOne
-          className="combined-bar"
-          animation={{
-            delay: 2000,
-            width: 0,
-            x: "10vw",
-            type: "from",
-            ease: "easeInOutExpo",
-          }}
-        />
-        <Texty
-          className="content"
-          type="bottom"
-          split={getSplit}
-          delay={2200}
-          interval={30}
-        >
-          Your Requirement Management Servant
-        </Texty>
-      </div>
-      <div id="loading-progress">
-        <span id="loading-progress-thumb" />
-      </div>
-      <div className={"root-loading"}>
-        <Loading3QuartersOutlined
-          style={{ fontSize: "72px", color: "black" }}
-          className={"root-spinner"}
-        />
-      </div>
-      <div className={"root-footer"}>
-        © 2022 undefined. All rights reserved.
+        <div className={"root-footer"}>
+          © 2022 undefined. All rights reserved.
+        </div>
       </div>
     </div>
   );
