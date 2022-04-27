@@ -8,7 +8,6 @@ import { getUserStore } from "../../../store/slices/UserSlice";
 import { useEffect } from "react";
 import { push } from "redux-first-history";
 import { Redirect, ToastMessage } from "../../../utils/Navigation";
-import Texty from "rc-texty";
 
 const Login = () => {
   const dispatcher = useDispatch();

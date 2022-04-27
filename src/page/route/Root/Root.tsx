@@ -13,9 +13,9 @@ import { immediateToast } from "izitoast-react";
 import { useDispatch } from "react-redux";
 import { updateUserStore } from "../../../store/slices/UserSlice";
 import { push } from "redux-first-history";
-import { Progress } from "rsup-progress";
-import Texty from "rc-texty";
+// import { Progress } from "rsup-progress";
 import TweenOne from "rc-tween-one";
+import AnimatedText from "react-animated-text-content";
 
 const Root = () => {
   const dispatcher = useDispatch();
@@ -27,15 +27,15 @@ const Root = () => {
   }
 
   // Get user
-  useEffect(() => {
-    const loadingProgress = new Progress({
-      height: "2px",
-      color: "#b91f1f",
-    });
-    loadingProgress.start();
+  const toLogin = () => {
+    // const loadingProgress = new Progress({
+    //   height: "2px",
+    //   color: "#b91f1f",
+    // });
+    // loadingProgress.start();
     request_json(API.GET_USER)
       .then((data) => {
-        loadingProgress.end();
+        // loadingProgress.end();
         if (data.code === 0) {
           dispatcher(updateUserStore(JSON.stringify(data))); // Maybe use UMS better
           const username = data.data.user.name;
@@ -46,12 +46,9 @@ const Root = () => {
             position: "topRight",
             timeout: 1000,
           });
-          // setTimeout(() => {
-          //   dispatcher(push("/dashboard")); // Use this way to redirect
-          // }, 1000);
-          // setTimeout(() => {
-          //   dispatcher(push("/login")); // Use this way to redirect
-          // }, 1000);
+          setTimeout(() => {
+            dispatcher(push("/dashboard")); // Use this way to redirect
+          }, 1000);
         } else {
           immediateToast("success", {
             title: "连接成功",
@@ -59,9 +56,9 @@ const Root = () => {
             position: "topRight",
             timeout: 1000,
           });
-          // setTimeout(() => {
-          //   dispatcher(push("/login"));
-          // }, 1000);
+          setTimeout(() => {
+            dispatcher(push("/login"));
+          }, 1000);
         }
       })
       .catch(() => {
@@ -71,7 +68,7 @@ const Root = () => {
           position: "topRight",
         });
       });
-  }, []);
+  };
   // useEffect Hook: Would be executed when the variables in the dependence list are initialized or changed value.
   // If you define an empty list as variable dependence, this function would just execute for once, just like didMount().
 
@@ -138,98 +135,87 @@ const Root = () => {
       </nav>
       <div className={"root-wrapper"}>
         <div className="combined">
-          <div className="combined-shape">
-            <div className="shape-left">
-              <TweenOne
-                animation={[
-                  {
-                    x: "20vw",
-                    type: "from",
-                    ease: "easeInOutQuint",
-                    duration: 600,
-                  },
-                  {
-                    x: "-20vw",
-                    ease: "easeInOutQuart",
-                    duration: 450,
-                    delay: -150,
-                  },
-                ]}
-              />
-            </div>
-            <div className="shape-right">
-              <TweenOne
-                animation={[
-                  {
-                    x: "-20vw",
-                    type: "from",
-                    ease: "easeInOutQuint",
-                    duration: 600,
-                  },
-                  {
-                    x: "20vw",
-                    ease: "easeInOutQuart",
-                    duration: 450,
-                    delay: -150,
-                  },
-                ]}
-              />
-            </div>
-          </div>
-          <Texty
-            className="title"
-            type="mask-top"
-            delay={400}
-            enter={getEnter}
-            interval={getInterval}
-            component={TweenOne}
-            componentProps={{
-              animation: [
-                { x: 200, type: "set" },
-                { x: 100, delay: 500, duration: 450 },
-                {
-                  ease: "easeOutQuart",
-                  duration: 300,
-                  x: 0,
-                },
-                {
-                  letterSpacing: 0,
-                  delay: -300,
-                  scale: 0.9,
-                  ease: "easeInOutQuint",
-                  duration: 1000,
-                },
-                {
-                  scale: 1,
-                  width: "100%",
-                  delay: -300,
-                  duration: 1000,
-                  ease: "easeInOutQuint",
-                },
-              ],
+          {/*<div className="combined-shape">*/}
+          {/*  <div className="shape-left">*/}
+          {/*    <TweenOne*/}
+          {/*      animation={[*/}
+          {/*        {*/}
+          {/*          x: "20vw",*/}
+          {/*          type: "from",*/}
+          {/*          ease: "easeInOutQuint",*/}
+          {/*          duration: 600,*/}
+          {/*        },*/}
+          {/*        {*/}
+          {/*          x: "-20vw",*/}
+          {/*          ease: "easeInOutQuart",*/}
+          {/*          duration: 450,*/}
+          {/*          delay: -150,*/}
+          {/*        },*/}
+          {/*      ]}*/}
+          {/*    />*/}
+          {/*  </div>*/}
+          {/*  <div className="shape-right">*/}
+          {/*    <TweenOne*/}
+          {/*      animation={[*/}
+          {/*        {*/}
+          {/*          x: "-20vw",*/}
+          {/*          type: "from",*/}
+          {/*          ease: "easeInOutQuint",*/}
+          {/*          duration: 600,*/}
+          {/*        },*/}
+          {/*        {*/}
+          {/*          x: "20vw",*/}
+          {/*          ease: "easeInOutQuart",*/}
+          {/*          duration: 450,*/}
+          {/*          delay: -150,*/}
+          {/*        },*/}
+          {/*      ]}*/}
+          {/*    />*/}
+          {/*  </div>*/}
+          {/*</div>*/}
+          <AnimatedText
+            type="chars" // animate words or chars
+            animation={{
+              x: "200px",
+              y: "-20px",
+              scale: 1.1,
+              ease: "ease-in-out",
             }}
+            animationType="float"
+            interval={0}
+            duration={0.8}
+            tag="p"
+            className="title"
+            includeWhiteSpaces
+            threshold={0.1}
+            rootMargin="20%"
           >
             ReqMan
-          </Texty>
+          </AnimatedText>
+          ;
           <TweenOne
             className="combined-bar"
             animation={{
-              delay: 2000,
+              delay: 1400,
               width: 0,
               x: "10vw",
               type: "from",
               ease: "easeInOutExpo",
             }}
           />
-          <Texty
+          <AnimatedText
+            type="chars"
             className="content"
-            type="bottom"
-            split={getSplit}
-            delay={2200}
-            interval={30}
+            interval={0.03}
+            duration={0.1}
+            animation={{
+              y: "15px",
+              ease: "ease",
+              scale: 2.39,
+            }}
           >
             Your Requirement Management Servant
-          </Texty>
+          </AnimatedText>
         </div>
         <div id="loading-progress">
           <span id="loading-progress-thumb" />
@@ -240,14 +226,7 @@ const Root = () => {
         {/*    className={"root-spinner"}*/}
         {/*  />*/}
         {/*</div>*/}
-        <div
-          className="root-to-login"
-          onClick={() =>
-            setTimeout(() => {
-              dispatcher(push("/login"));
-            }, 1000)
-          }
-        >
+        <div className="root-to-login" onClick={toLogin}>
           开启您的项目
         </div>
         <div className="root-features">
