@@ -181,12 +181,7 @@ const Test = () => {
         }}
       >
         <p>I am test page</p>
-        <UIUserCardPreview
-          userStore={userStore}
-          // projectStore={projectInfo}
-          // yourSelf={true}
-          // userId={17}
-        />
+        <UIUserCardPreview projectStore={projectInfo} userId={17} />
         {/*<Button type="primary" onClick={() => handleOnClick()}>*/}
         {/*  Primary Button*/}
         {/*</Button>*/}

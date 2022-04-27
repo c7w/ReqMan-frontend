@@ -44,10 +44,11 @@ import {
   getIterationStore,
 } from "../../store/slices/IterationSlice";
 import SRCard from "./SRCard";
-import getUserAvatar from "../../utils/UserAvatar";
+import { getUserAvatar } from "../../utils/UserAvatar";
 import { UIUserCardPreview } from "../ums/UIUserCard";
 import { ClockCircleTwoTone } from "@ant-design/icons";
 import QueueAnim from "rc-queue-anim";
+import { updateProjectInfo } from "../../store/functions/UMS";
 
 const IRCard = (props: IRCardProps) => {
   const dispatcher = useDispatch();
@@ -101,6 +102,7 @@ const IRCard = (props: IRCardProps) => {
       getSRListInfo(dispatcher, props.project),
       getIRIterationInfo(dispatcher, props.project),
       getIterationInfo(dispatcher, props.project),
+      updateProjectInfo(dispatcher, props.project),
     ]).then((data) => {
       const assoSRListData = oneIR2AllSR(
         props.id,
@@ -293,7 +295,11 @@ const IRCard = (props: IRCardProps) => {
           <div className="IRModal-content-middle">
             <div style={{ display: "flex", flexDirection: "row" }}>
               <p>负责人：</p>
-              <UIUserCardPreview userStore={userInfo} />
+              <UIUserCardPreview
+                userId={Number(props.createdBy)}
+                projectStore={projectInfo}
+                // yourSelf={false}
+              />
             </div>
             <div>
               <b>创建时间:</b>

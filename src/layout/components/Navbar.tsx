@@ -9,7 +9,7 @@ import { push } from "redux-first-history";
 import { Redirect } from "../../utils/Navigation";
 import { getUserStore } from "../../store/slices/UserSlice";
 import CryptoJS from "crypto-js";
-import getUserAvatar from "../../utils/UserAvatar";
+import { getUserAvatar } from "../../utils/UserAvatar";
 
 const { Header } = Layout;
 

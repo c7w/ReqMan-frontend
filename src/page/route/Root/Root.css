@@ -131,7 +131,17 @@ nav .root-menu .root-menu_icon:hover .icon:after {
   padding: 0 0;
   min-height: 75vh;
   animation: change-background-color 16.8s infinite;
-  background: linear-gradient(0deg,#d5eaff,#fff);
+  background: linear-gradient(0deg, #d5eaff, #fff);
+}
+
+@keyframes shineLight {
+  0% {
+    box-shadow: 0 0 0 0 rgba(32, 160, 255, 1);/* 添加开始阴影并设置透明度 */
+  }
+
+  100% {
+    box-shadow: 0 0 0 12px rgba(255, 255, 255, 0);/* 添加结束阴影并设置透明度 */
+  }
 }
 
 .root-to-login {
@@ -158,6 +168,10 @@ nav .root-menu .root-menu_icon:hover .icon:after {
   background-position: 0 0;
   background-size: 400% 100%;
   background-image: radial-gradient(circle farthest-corner at 100% 0,#f09c33 0,#f59234 4%,#f98736 7%,#fd7b38 10%,#ff6e3c 14%,#ff5f41 18%,#ff4e46 21%,#ff384b 25%,#fd1851 29%,#f90059 32%,#f50062 36%,#f0006c 39%,#e90077 43%,#e10083 46%,#d70090 50%, #20a0ff 75%, #20a0ff 100%);
+
+  animation-name: shineLight;
+  animation-delay: 2s;
+  animation-duration: 1s;
 }
 
 .root-to-login:hover {
@@ -185,7 +199,7 @@ nav .root-menu .root-menu_icon:hover .icon:after {
 .combined-shape > * > * {
   width: 100%;
   height: 100%;
-  background: lightskyblue;
+  background-image: linear-gradient(to top, #a8edea 0%, #fed6e3 100%);
 }
 .combined-shape .shape-left {
   left: 0;

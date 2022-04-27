@@ -54,6 +54,7 @@ import {
   SR2Iteration,
   SR2Service,
   SRId2SRInfo,
+  userId2UserInfo,
 } from "../../utils/Association";
 import CryptoJS from "crypto-js";
 import { getUserStore } from "../../store/slices/UserSlice";
@@ -89,9 +90,8 @@ import {
   getRepoInfo,
 } from "../../store/functions/RDTS";
 import { getRepoStore } from "../../store/slices/RepoSlice";
-import { UIMergeCard, UIMergeCardPreview } from "../rdts/UIMergeCard";
 import { getSRChangeLogStore } from "../../store/slices/SRChangeLogSlice";
-import getUserAvatar from "../../utils/UserAvatar";
+import { userId2Avatar } from "../../utils/UserAvatar";
 import UISRChangeLogList from "./UISRChangeLogList";
 import { state2Color, state2ChineseState } from "../../utils/SRStateConvert";
 import MRCard from "../rdts/MRCard";
@@ -454,7 +454,7 @@ const SRCard = (props: SRCardProps) => {
             <Avatar
               className="SRCard-small-avatar"
               size="small"
-              src={getUserAvatar(userInfo)}
+              src={userId2Avatar(Number(props.createdBy), projectStore)}
             />
           </Avatar.Group>
           <div>
@@ -537,9 +537,8 @@ const SRCard = (props: SRCardProps) => {
               <div style={{ display: "flex", flexDirection: "row" }}>
                 <p>负责人：</p>
                 <UIUserCardPreview
-                  userStore={userInfo}
-                  // userId={Number(props.createdBy)}
-                  // projectStore={projectStore}
+                  userId={Number(props.createdBy)}
+                  projectStore={projectStore}
                   // yourSelf={false}
                 />
               </div>
