@@ -135,6 +135,7 @@ const SRCard = (props: SRCardProps) => {
   const [chargedBy, setChargedBy] = useState(props.createdBy);
   const [service, setService] = useState(props.service);
   const [descEditing, setDescEditing] = useState<boolean>(false);
+  const [userAvatar, setUserAvatar] = useState<string>("");
   const [bounds, setBounds] = useState({
     left: 0,
     top: 0,
@@ -331,14 +332,21 @@ const SRCard = (props: SRCardProps) => {
       });
       setAssoIRCardList(newAssoIRCardList);
     });
-    getSRChangeLogInfo(dispatcher, props.project, props.id).then(
-      (data: any) => {
-        // console.log(data);
-      }
-    );
-    // updateUserInfo(dispatcher);
-    // updateProjectInfo(dispatcher, props.project);
   };
+
+  useEffect(() => {
+    updateProjectInfo(dispatcher, props.project).then((data) => {
+      // console.log(data);
+      const userInfo = data.data.users.filter(
+        (user: any) => user.id === props.createdBy
+      )[0];
+      const avatar =
+        userInfo.avatar.length < 5
+          ? `https://www.gravatar.com/avatar/${CryptoJS.MD5(userInfo.email)}`
+          : userInfo.avatar;
+      setUserAvatar(avatar);
+    });
+  }, []);
 
   const handleOK = () => {
     if (
@@ -454,7 +462,7 @@ const SRCard = (props: SRCardProps) => {
             <Avatar
               className="SRCard-small-avatar"
               size="small"
-              src={userId2Avatar(Number(props.createdBy), projectStore)}
+              src={userAvatar}
             />
           </Avatar.Group>
           <div>
@@ -534,8 +542,17 @@ const SRCard = (props: SRCardProps) => {
               </Typography>
             </div>
             <div className="SRModal-content-left-middle">
-              <div style={{ display: "flex", flexDirection: "row" }}>
-                <p>负责人：</p>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-around",
+                  alignItems: "center",
+                }}
+              >
+                <span style={{ fontWeight: "bold", marginRight: "1rem" }}>
+                  负责人：
+                </span>
                 <UIUserCardPreview
                   userId={Number(props.createdBy)}
                   projectStore={projectStore}

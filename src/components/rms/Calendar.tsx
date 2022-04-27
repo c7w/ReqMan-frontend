@@ -52,9 +52,9 @@ const Calendar = (props: CalendarProps) => {
     }
     for (const project_id of projectIdList) {
       getSRListInfo(dispatcher, project_id).then((data: any) => {
-        const todo_arr = todoSR(JSON.stringify(data));
-        const wip_arr = wipSR(JSON.stringify(data));
-        const review_arr = reviewSR(JSON.stringify(data));
+        const todo_arr = todoSR(JSON.stringify(data), userData.user.id);
+        const wip_arr = wipSR(JSON.stringify(data), userData.user.id);
+        const review_arr = reviewSR(JSON.stringify(data), userData.user.id);
         todo_arr.forEach((value: any) => {
           todoSRListData.push(value);
           allSRListData.push(value);

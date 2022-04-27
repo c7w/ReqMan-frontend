@@ -26,11 +26,11 @@ const UIUserCard = (props: UIUserCardProps) => {
   //   (user: any) => user.id === props.userId
   // )[0];
   const projectInfo = JSON.parse(props.projectStore).data;
-  console.log(projectInfo);
+  // console.log(projectInfo);
   const userInfo = projectInfo.users.filter(
     (user: any) => user.id === props.userId
   )[0];
-  console.log(userInfo);
+  // console.log(userInfo);
   const [commitInfo, setCommitInfo] = useState("");
   const [myActivities, setActivities] = useState("");
   const dispatcher = useDispatch();
@@ -67,7 +67,7 @@ const UIUserCard = (props: UIUserCardProps) => {
       date.setFullYear(date.getFullYear() - 1); // 去年时间
       const date_past = date.getTime();
       const commitData = getAllDay(date_past, date_now);
-      console.log(data);
+      // console.log(data);
       const commitTimes = data.data.commit_times;
       commitTimes.forEach((commitTime: any) => {
         commitData[moment(commitTime * 1000).format("YYYY-MM-DD")]++;
@@ -75,7 +75,7 @@ const UIUserCard = (props: UIUserCardProps) => {
       setCommitInfo(JSON.stringify(commitData));
     });
     getRDTSInfo(dispatcher, projectInfo.project.id).then((data: any) => {
-      console.log(data);
+      // console.log(data);
       const myActivities: any = {
         activities: Array<{
           type: UserActivityType;
@@ -137,7 +137,7 @@ const UIUserCard = (props: UIUserCardProps) => {
     });
   }, []);
 
-  if (commitInfo === "" || myActivities === "") return <Loading />;
+  if (commitInfo === "" || myActivities === "") return <></>;
 
   const commitDataObj = JSON.parse(commitInfo);
   const keys = Object.keys(commitDataObj);
