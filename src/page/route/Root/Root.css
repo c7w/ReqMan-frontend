@@ -11,20 +11,19 @@ nav .root-menu {
   position: absolute;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 5%;
+  justify-content: start;
+  padding: 0 2%;
   box-sizing: border-box;
   z-index: 3;
 }
 nav .root-menu .root-menu-logo {
-  color: #695681;
   font-weight: 600;
-  font-size: 20px;
+  font-size: 1.5rem;
   letter-spacing: 1px;
   background: white;
   padding: 4px 8px;
   border-radius: 2px;
-  opacity: 0.5;
+  opacity: 0.8;
   transition: all 0.4s ease;
   cursor: pointer;
 }
@@ -45,9 +44,9 @@ nav .root-menu .root-menu_links:hover {
 }
 nav .root-menu .root-menu_links .root-menu-link {
   color: black;
-  text-transform: uppercase;
-  font-weight: 500;
-  margin-right: 50px;
+  font-size: 1rem;
+  font-weight: bold;
+  margin-left: 50px;
   letter-spacing: 2px;
   position: relative;
   transition: all 0.3s 0.2s ease;
@@ -116,6 +115,14 @@ nav .root-menu .root-menu_icon:hover .icon:before {
 }
 nav .root-menu .root-menu_icon:hover .icon:after {
   transform: translateY(10px);
+}
+
+.undefined {
+  width: 300px;
+  height: 100px;
+  margin-bottom: 4px;
+  text-align: center;
+  user-select: none;
 }
 
 .root-wrapper {

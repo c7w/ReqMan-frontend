@@ -1,10 +1,9 @@
 import React, { useEffect } from "react";
 import "./Root.css";
-import logo from "../../../assets/Reqman-1.svg";
 import { Loading3QuartersOutlined } from "@ant-design/icons";
 import request_json from "../../../utils/Network";
 import API from "../../../utils/APIList";
-
+import logo from "../../../assets/ReqMan.png";
 import {
   generateRandomString,
   getCookie,
@@ -121,20 +120,19 @@ const Root = () => {
     <div className="root-screen">
       <nav>
         <div className="root-menu">
-          <p className="root-menu-logo">LOGO</p>
-          <div className="root-menu_links">
-            <a href="" className="root-menu-link">
-              about
-            </a>
-            <a href="" className="root-menu-link">
-              projects
-            </a>
-            <a href="" className="root-menu-link">
-              contacts
-            </a>
+          <div className="root-menu-logo">
+            <img src={logo} alt="undefined" width={200} height={55} />
           </div>
-          <div className="root-menu_icon">
-            <span className="icon"></span>
+          <div className="root-menu_links">
+            <a
+              href="https://doc-undefined.app.secoder.net/"
+              className="root-menu-link"
+            >
+              开发者文档
+            </a>
+            {/*<a href="" className="root-menu-link">*/}
+            {/*  联系我们*/}
+            {/*</a>*/}
           </div>
         </div>
       </nav>
