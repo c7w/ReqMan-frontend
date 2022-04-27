@@ -203,8 +203,10 @@ const UISRList = (props: UISRListProps) => {
   const [iter, setIter] = useState<number[]>([]);
   const [chargedBy, setChargedBy] = useState<number>(-1);
   const [service, setService] = useState<number>(-1);
+  const [ifok, setIfok] = useState<boolean>(true);
 
   const showEditModal = (record: SRCardProps) => {
+    setIfok(false);
     setId(record.id);
     setTitle(record.title);
     setDesc(record.description);
@@ -334,6 +336,7 @@ const UISRList = (props: UISRListProps) => {
         ToastMessage("error", "修改失败", "您的功能需求修改失败");
       }
     });
+    setIfok(true);
   };
 
   const handleEditCancel = () => {
@@ -346,6 +349,7 @@ const UISRList = (props: UISRListProps) => {
     setIter([]);
     setChargedBy(-1);
     setService(-1);
+    setIfok(true);
   };
 
   const showCreateModal = () => {
@@ -382,6 +386,7 @@ const UISRList = (props: UISRListProps) => {
         ToastMessage("error", "创建失败", "您的功能需求创建失败");
       }
     });
+    setIfok(true);
   };
 
   // Handle create cancel
@@ -395,6 +400,7 @@ const UISRList = (props: UISRListProps) => {
     setIter([]);
     setChargedBy(-1);
     setService(-1);
+    setIfok(true);
   };
 
   // Handle delete
@@ -704,7 +710,7 @@ const UISRList = (props: UISRListProps) => {
           rowKey="id"
           columns={columns}
           dataSource={dataSRList}
-          pagination={false}
+          pagination={{ pageSize: 10 }}
           options={{
             fullScreen: false,
             reload: false,
@@ -723,6 +729,7 @@ const UISRList = (props: UISRListProps) => {
           onCancel={handleCreateCancel}
           width={"70%"}
           destroyOnClose={true}
+          okButtonProps={{ disabled: ifok }}
         >
           <p
             style={{
@@ -735,6 +742,12 @@ const UISRList = (props: UISRListProps) => {
           <Input
             value={title}
             onChange={(e) => {
+              if (e.target.value === "") {
+                setIfok(true);
+              }
+              if (e.target.value !== "") {
+                setIfok(false);
+              }
               setTitle(e.target.value);
             }}
           />
@@ -809,6 +822,7 @@ const UISRList = (props: UISRListProps) => {
           onCancel={handleEditCancel}
           width={"70%"}
           destroyOnClose={true}
+          okButtonProps={{ disabled: ifok }}
         >
           <p
             style={{
@@ -821,6 +835,12 @@ const UISRList = (props: UISRListProps) => {
           <Input
             value={title}
             onChange={(e) => {
+              if (e.target.value === "") {
+                setIfok(true);
+              }
+              if (e.target.value !== "") {
+                setIfok(false);
+              }
               setTitle(e.target.value);
             }}
           />
@@ -946,7 +966,7 @@ const UISRList = (props: UISRListProps) => {
             </Space>
           )}
           dataSource={dataSRList}
-          pagination={false}
+          pagination={{ pageSize: 5 }}
           // scroll={{ y: 300 }}
           search={false}
           rowKey="id"
@@ -964,7 +984,7 @@ const UISRList = (props: UISRListProps) => {
           rowKey="id"
           columns={showColumn}
           dataSource={showSRList}
-          pagination={false}
+          pagination={{ pageSize: 10 }}
           options={{
             fullScreen: false,
             reload: false,

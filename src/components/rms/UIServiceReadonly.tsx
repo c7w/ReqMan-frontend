@@ -34,7 +34,10 @@ export interface Service {
   createdAt: number;
 }
 
-const ServiceReadonlyModal = (props: { data: string; close: () => void }) => {
+export const ServiceReadonlyModal = (props: {
+  data: string;
+  close: () => void;
+}) => {
   const data = JSON.parse(props.data);
 
   const serviceSRStore = useSelector(getSRServiceStore);

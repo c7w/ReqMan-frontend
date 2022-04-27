@@ -1,6 +1,6 @@
 .IRCard-small {
   height: 100px;
-  max-width: 20vw;
+  max-width: 15vw;
   padding: 12px;
   margin: 5px 5px 5px 5px;
   border-radius: 5px;
@@ -23,9 +23,9 @@
 .IRCard-small-header-left {
   font-weight: bold;
   font-size: 18px;
-  white-space:nowrap;          /* 不换行 */
-  overflow:hidden;               /* 内容超出宽度时隐藏超出内容*/
-  text-overflow:ellipsis;         /* 当对象内文本溢出时显示省略标记(...) ；需与overflow:hidden;一起使用。*/
+  white-space: nowrap; /* 不换行 */
+  overflow: hidden; /* 内容超出宽度时隐藏超出内容*/
+  text-overflow: ellipsis; /* 当对象内文本溢出时显示省略标记(...) ；需与overflow:hidden;一起使用。*/
 }
 
 .IRCard-small-header-right {
@@ -106,6 +106,9 @@
 .IR-content-related {
   display: grid;
   grid-template-columns: repeat(3, 33.33%);
+}
+
+.IR-iteration-content-related {
 }
 
 .IRWrap .IR-title-related {

@@ -1,5 +1,5 @@
 import "./UIMerge.css";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getProjectStore } from "../../store/slices/ProjectSlice";
 import { getRepoStore } from "../../store/slices/RepoSlice";
@@ -7,6 +7,12 @@ import { getCommitStore, getIssueStore } from "../../store/slices/IssueSlice";
 import ProTable, { ProColumns } from "@ant-design/pro-table";
 import { CommitProps, IssueProps } from "../../store/ConfigureStore";
 import { userId2UserInfo } from "../../utils/Association";
+import { useParams } from "react-router-dom";
+import moment from "moment";
+import { addRDTSTimer } from "../../utils/Timer";
+import { getRDTSInfo } from "../../store/functions/RDTS";
+import { Typography } from "antd";
+import { ReloadOutlined, SyncOutlined } from "@ant-design/icons";
 
 const UICommit = () => {
   const dispatcher = useDispatch();
@@ -14,6 +20,24 @@ const UICommit = () => {
   const projectStore = useSelector(getProjectStore);
   const repoStore = useSelector(getRepoStore);
   const commitStore = useSelector(getCommitStore);
+
+  // Get project_id
+  const params = useParams();
+  const project_id = Number(params.id);
+
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [lastUpdate, setLastUpdate] = useState(moment());
+
+  useEffect(() => {
+    // Add RDTS Timer
+    addRDTSTimer(() => {
+      setIsUpdating(true);
+      getRDTSInfo(dispatcher, project_id).then(() => {
+        setIsUpdating(false);
+        setLastUpdate(moment());
+      });
+    });
+  }, []);
 
   const getBackgroundColor = (changed_lines: number) => {
     if (changed_lines < 50) {
@@ -94,7 +118,31 @@ const UICommit = () => {
       <ProTable<CommitProps>
         headerTitle="项目贡献查看"
         toolBarRender={() => {
-          return [];
+          return [
+            <div style={{ minWidth: "15rem" }}>
+              <Typography.Text style={{ width: "10rem", marginRight: "1rem" }}>
+                上次更新：{lastUpdate.fromNow()}
+              </Typography.Text>
+              <Typography.Link
+                style={{ marginRight: "10px" }}
+                onClick={() => {
+                  if (!isUpdating) {
+                    setIsUpdating(true);
+                    getRDTSInfo(dispatcher, project_id)
+                      .then((data: any) => {
+                        setIsUpdating(false);
+                        setLastUpdate(moment());
+                      })
+                      .catch((err: any) => {
+                        setIsUpdating(false);
+                      });
+                  }
+                }}
+              >
+                {isUpdating ? <SyncOutlined spin={true} /> : <ReloadOutlined />}
+              </Typography.Link>
+            </div>,
+          ];
         }}
         cardBordered={true}
         columns={columns}

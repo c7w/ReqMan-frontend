@@ -159,8 +159,8 @@ const UIIssueCard = (props: UIIssueCardProps) => {
 
   const image_front_url = data.url.slice(0, indices[indices.length - 3]);
 
-  data.description = data.description.replace(
-    /!\[image\]\((.*?)\)/,
+  data.description = data.description.replaceAll(
+    /!\[image\]\((.*?)\)/g,
     `<img src='${image_front_url}/$1' style="width: auto; height: auto; max-width: 90%"></img>`
   );
 

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./SRCard.css";
 import "../rdts/UIMergeCard.css";
+import { ClockCircleTwoTone } from "@ant-design/icons";
 import {
   Avatar,
   Typography,
@@ -27,6 +28,7 @@ import QueueAnim from "rc-queue-anim";
 import { Draggable } from "react-beautiful-dnd";
 import {
   IRCardProps,
+  IssueProps,
   Iteration,
   MergeRequestProps,
   SRCardProps,
@@ -34,25 +36,33 @@ import {
 import {
   getIRListInfo,
   getIRSRInfo,
+  getIterationInfo,
   getSRChangeLogInfo,
+  getSRIterationInfo,
   getSRListInfo,
+  getSRServiceInfo,
+  updateServiceInfo,
   updateSRInfo,
 } from "../../store/functions/RMS";
 import {
   oneIR2AllSR,
+  oneSR2AllCommit,
   oneSR2AllIR,
   oneSR2AllMR,
   projId2ProjInfo,
+  SR2Issue,
+  SR2Iteration,
+  SR2Service,
   SRId2SRInfo,
 } from "../../utils/Association";
 import CryptoJS from "crypto-js";
 import { getUserStore } from "../../store/slices/UserSlice";
 import { getProjectStore } from "../../store/slices/ProjectSlice";
-import { updateProjectInfo } from "../../store/functions/UMS";
+import { updateProjectInfo, updateUserInfo } from "../../store/functions/UMS";
 import Loading from "../../layout/components/Loading";
 import { Option } from "antd/es/mentions";
 import Paragraph from "antd/es/typography/Paragraph";
-import { Service } from "./UIServiceReadonly";
+import { Service, ServiceReadonlyModal } from "./UIServiceReadonly";
 import { ToastMessage } from "../../utils/Navigation";
 import { set } from "husky";
 import {
@@ -85,6 +95,11 @@ import getUserAvatar from "../../utils/UserAvatar";
 import UISRChangeLogList from "./UISRChangeLogList";
 import { state2Color, state2ChineseState } from "../../utils/SRStateConvert";
 import MRCard from "../rdts/MRCard";
+import { UIUserCardPreview } from "../ums/UIUserCard";
+import IssueCard from "../rdts/IssueCard";
+import UICommitList from "../rdts/UICommitList";
+import { getServiceStore } from "../../store/slices/ServiceSlice";
+import { ProjectServiceCard } from "./UIService";
 const { Text } = Typography;
 
 const SRCard = (props: SRCardProps) => {
@@ -95,6 +110,10 @@ const SRCard = (props: SRCardProps) => {
   const IRSRAssoStore = useSelector(getIRSRStore);
   const IRListStore = useSelector(getIRListStore);
   const SRListStore = useSelector(getSRListStore);
+  const serviceStore = useSelector(getServiceStore);
+  const SRServiceStore = useSelector(getServiceStore);
+  const SRCommitStore = useSelector(getCommitSRAssociationStore);
+  const SRIssueStore = useSelector(getIssueSRAssociationStore);
   const SRIterAssoStore = useSelector(getSRIterationStore);
   const iterationStore = useSelector(getIterationStore);
   const SRChangeLogStore = useSelector(getSRChangeLogStore);
@@ -122,36 +141,60 @@ const SRCard = (props: SRCardProps) => {
     bottom: 0,
     right: 0,
   });
+  // SR 关联信息
   const [assoIRCardList, setAssoIRCardList] = useState([]);
   const [assoMRCardList, setAssoMRCardList] = useState([]);
+  const [assoIssueCardList, setAssoIssueCardList] = useState([]);
+  const [assoCommitList, setAssoCommitList] = useState([]);
+  const [assoIterList, setAssoIterList] = useState([]);
+  const [assoService, setAssoService] = useState([]);
+  // 关联 service 的附带状态
+  const [cached, setCached] = useState("");
+  const [modal, setModal] = useState(false);
 
-  // let descriptionInner;
-  // let descriptionContainer;
-  // const addClickListener = () => {
-  //   descriptionContainer = document.getElementById("description-container");
-  //   descriptionInner = document.getElementById("description-inner");
-  //   descriptionContainer?.addEventListener("click", (event) => {
-  //     setDescEditing(false);
-  //   });
-  //   descriptionInner?.addEventListener("click", (event) => {
-  //     event.stopPropagation(); // chromium内核
-  //   });
-  // };
   // 更新打开的 modal 对应的 SR 的所有关系
   const updateAssociation = () => {
     Promise.all([
-      getRDTSInfo(dispatcher, 2),
+      getRDTSInfo(dispatcher, props.project),
       getSRListInfo(dispatcher, props.project),
       updateProjectInfo(dispatcher, props.project),
+      getSRChangeLogInfo(dispatcher, props.project, props.id),
     ]).then((data) => {
       /*
         data[0][0]: issue
         data[0][1]: commit
         data[0][2]: merge
         data[0][3]: mr-sr
+        data[0][4]: issue-sr
+        data[0][5]: commit-sr
         data[1]: SRList
         data[2]: ProjectInfo
+        data[3]: SRChangeLogInfo
       */
+      const assoCommitListData = oneSR2AllCommit(
+        props.id,
+        JSON.stringify(data[0][5]),
+        JSON.stringify(data[0][1])
+      );
+      assoCommitListData.sort(
+        (commit_1: any, commit_2: any) =>
+          commit_1.createdAt - commit_2.createdAt
+      );
+      setAssoCommitList(assoCommitListData);
+      const assoIssueListData = SR2Issue(
+        props.id,
+        JSON.stringify(data[0][4]),
+        JSON.stringify(data[0][0])
+      );
+      const newAssoIssueList: any = [];
+      assoIssueListData.forEach((value: any) => {
+        if (value !== "not found") {
+          newAssoIssueList.push(
+            <IssueCard data={JSON.stringify(value)} key={value.id} />
+          );
+        }
+      });
+      setAssoIssueCardList(newAssoIssueList);
       const assoMRListData = oneSR2AllMR(
         props.id,
         JSON.stringify(data[0][3]),
@@ -170,6 +213,95 @@ const SRCard = (props: SRCardProps) => {
       });
       setAssoMRCardList(newAssoMRCardList);
     });
+
+    Promise.all([
+      getSRIterationInfo(dispatcher, props.project),
+      getIterationInfo(dispatcher, props.project),
+    ]).then((data: any) => {
+      const assoIterData = SR2Iteration(
+        props.id,
+        JSON.stringify(data[0]),
+        JSON.stringify(data[1])
+      );
+      const newAssoIterList: any = [];
+      assoIterData.forEach((value: any) => {
+        newAssoIterList.push(
+          <div
+            key={value.id}
+            style={{
+              margin: "1rem",
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <ClockCircleTwoTone
+              twoToneColor="#52c41a"
+              style={{ fontSize: "1.5rem" }}
+            />
+            <span
+              style={{
+                fontWeight: "bold",
+                fontSize: "1rem",
+                margin: "0.5rem",
+              }}
+            >
+              {value.title}
+            </span>
+            <span
+              style={{
+                fontWeight: "bold",
+                margin: "0.5rem",
+              }}
+            >
+              开始时间：
+            </span>
+            <span>
+              {moment(value.begin * 1000).format("YYYY-MM-DD HH:mm:ss")}
+            </span>
+            &nbsp;&nbsp;&nbsp;
+            <span
+              style={{
+                fontWeight: "bold",
+                margin: "0.5rem",
+              }}
+            >
+              结束时间：
+            </span>
+            <span>
+              {moment(value.end * 1000).format("YYYY-MM-DD HH:mm:ss")}
+            </span>
+          </div>
+        );
+      });
+      setAssoIterList(newAssoIterList);
+    });
+
+    Promise.all([
+      getSRServiceInfo(dispatcher, props.project),
+      updateServiceInfo(dispatcher, props.project),
+    ]).then((data: any) => {
+      const assoServiceData = SR2Service(
+        props.id,
+        JSON.stringify(data[0]),
+        JSON.stringify(data[1])
+      );
+      const newAssoService: any = [];
+      assoServiceData.forEach((value: any) => {
+        newAssoService.push(
+          <ProjectServiceCard
+            key={value.id}
+            data={JSON.stringify(value)}
+            modal={(raw) => {
+              setCached(raw);
+              setModal(true);
+            }}
+          />
+        );
+      });
+      setAssoService(newAssoService);
+    });
+
     // update IR SR Association
     Promise.all([
       getIRSRInfo(dispatcher, props.project), // 该项目所有 IR SR
@@ -204,6 +336,8 @@ const SRCard = (props: SRCardProps) => {
         // console.log(data);
       }
     );
+    // updateUserInfo(dispatcher);
+    // updateProjectInfo(dispatcher, props.project);
   };
 
   const handleOK = () => {
@@ -283,6 +417,9 @@ const SRCard = (props: SRCardProps) => {
       <Menu.Item key="已完成">已完成</Menu.Item>
     </Menu>
   );
+
+  // if (userInfo === "" || projectStore === "") return <Loading />;
+
   return (
     <>
       <div
@@ -399,13 +536,12 @@ const SRCard = (props: SRCardProps) => {
             <div className="SRModal-content-left-middle">
               <div style={{ display: "flex", flexDirection: "row" }}>
                 <p>负责人：</p>
-                <Avatar.Group>
-                  <Avatar
-                    className="SRCard-small-avatar"
-                    size="small"
-                    src={getUserAvatar(userInfo)}
-                  />
-                </Avatar.Group>
+                <UIUserCardPreview
+                  userStore={userInfo}
+                  // userId={Number(props.createdBy)}
+                  // projectStore={projectStore}
+                  // yourSelf={false}
+                />
               </div>
               <div>
                 <b>创建时间:</b>
@@ -425,11 +561,24 @@ const SRCard = (props: SRCardProps) => {
                 marginBottom: "1rem",
               }}
             >
+              提交记录
+            </div>
+            <UICommitList
+              commitListData={JSON.stringify(assoCommitList)}
+              userInfo={userInfo}
+            />
+            <div
+              style={{
+                fontWeight: "bold",
+                fontSize: "1.5rem",
+                marginBottom: "1rem",
+              }}
+            >
               更改记录
             </div>
             <UISRChangeLogList
               SRChangeLogListInfo={SRChangeLogStore}
-              userInfo={userInfo}
+              projectStore={projectStore}
             />
           </div>
           <Divider type="vertical" style={{ width: "5px", height: "auto" }} />
@@ -464,7 +613,7 @@ const SRCard = (props: SRCardProps) => {
                 />
               ) : (
                 <QueueAnim
-                  className="SR-MR-content-related"
+                  className="SR-content-related"
                   type="right"
                   ease="[.42,0,.58,1, .42,0,.58,1]"
                 >
@@ -474,15 +623,65 @@ const SRCard = (props: SRCardProps) => {
             </div>
             <div className="SRWrap SR-issue-related">
               <div className="SR-title-related">关联缺陷</div>
-              <div className="SR-content-related">i am issue</div>
-            </div>
-            <div className="SRWrap SR-commit-related">
-              <div className="SR-title-related">关联提交</div>
-              <div className="SR-content-related">i am commit</div>
+              {assoIssueCardList.length === 0 ? (
+                <Empty
+                  image={Empty.PRESENTED_IMAGE_SIMPLE}
+                  style={{
+                    width: "100%",
+                  }}
+                />
+              ) : (
+                <QueueAnim
+                  className="SR-content-related"
+                  type="right"
+                  ease="[.42,0,.58,1, .42,0,.58,1]"
+                >
+                  {assoIssueCardList}
+                </QueueAnim>
+              )}
             </div>
             <div className="SRWrap SR-iteration-related">
               <div className="SR-title-related">关联迭代</div>
-              <div className="SR-content-related">i am iteration</div>
+              {assoIterList.length === 0 ? (
+                <Empty
+                  image={Empty.PRESENTED_IMAGE_SIMPLE}
+                  style={{
+                    width: "100%",
+                  }}
+                />
+              ) : (
+                <>{assoIterList}</>
+              )}
+            </div>
+            <div className="SRWrap SR-service-related">
+              <div className="SR-title-related">关联服务</div>
+              {assoService.length === 0 ? (
+                <Empty
+                  image={Empty.PRESENTED_IMAGE_SIMPLE}
+                  style={{
+                    width: "100%",
+                  }}
+                />
+              ) : (
+                <>
+                  <div className="SR-service-content-related">
+                    {assoService}
+                  </div>
+                  <Modal
+                    title={"服务查看"}
+                    footer={null}
+                    visible={modal}
+                    width={"70vw"}
+                    onCancel={() => setModal(false)}
+                    destroyOnClose={true}
+                  >
+                    <ServiceReadonlyModal
+                      data={cached}
+                      close={() => setModal(false)}
+                    />
+                  </Modal>
+                </>
+              )}
             </div>
           </div>
         </div>

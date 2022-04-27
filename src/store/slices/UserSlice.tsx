@@ -4,6 +4,7 @@ export const UserSlice = createSlice({
   name: "user_slice",
   initialState: {
     user: "",
+    // activity: "", // 个人动态，包括 mr、commit、issue、SR 等等
   },
   reducers: {
     updateUserStore: (state, action) => {

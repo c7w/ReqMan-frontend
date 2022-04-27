@@ -27,6 +27,9 @@ import MRTimeFigure from "../Figure/MRTimeFigure";
 import CountDistribution from "../Figure/CountDistribution";
 import CountDistributionFigure from "../Figure/CountDistribution";
 import CommitFigure from "../Figure/CommitFigure";
+import LinesChanged from "../Figure/LinesChanged";
+import MemberCommit from "../Figure/MemberCommit";
+import MemberLines from "../Figure/MemberLines";
 
 const UIAnalysis = () => {
   const [recentSeven, setRecentSeven] = useState("");
@@ -157,7 +160,8 @@ const UIAnalysis = () => {
     iter_issue_sr_list.all_sr_count.push(assoSRList.length);
     let counter = 0;
     assoSRList.forEach((sr: any) => {
-      if (SR2Issue(sr.id, issueSRStore, issueStore).length > 0) counter++;
+      const issue = SR2Issue(sr.id, issueSRStore, issueStore);
+      if (issue.length > 0 && issue[0] !== "not found") counter++;
     });
     iter_issue_sr_list.issues.push(counter);
   });
@@ -172,8 +176,9 @@ const UIAnalysis = () => {
       authoredAt: mr.authoredAt,
     });
   });
-  // console.log(mergeStore);
-  console.log(MRReviewList);
+
+  // console.log(JSON.parse(commitStore));
+
   return (
     <div className={"merge-card"}>
       <IssueFigure
@@ -204,11 +209,14 @@ const UIAnalysis = () => {
         text={JSON.stringify(MRReviewList)}
         title={"MR数量统计表"}
       />
+      <CommitFigure title={"Commit数量统计表"} text={overall} />
       {/*<CountDistributionFigure*/}
       {/*  title={"MR,commit及Issue数量分析"}*/}
       {/*  text={overall}*/}
       {/*/>*/}
-      <CommitFigure title={"Commit数量统计表"} text={overall} />
+      <LinesChanged text={commitStore} title={"代码变化行数统计"} />
+      <MemberCommit text={commitStore} title={"个人提交次数分布统计"} />
+      <MemberLines text={commitStore} title={"个人代码行数修改统计"} />
     </div>
   );
 };

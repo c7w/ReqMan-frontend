@@ -39,7 +39,7 @@ import {
   userId2UserInfo,
 } from "../utils/Association";
 import { getProjectStore } from "../store/slices/ProjectSlice";
-import { updateProjectInfo } from "../store/functions/UMS";
+import { updateProjectInfo, updateUserInfo } from "../store/functions/UMS";
 import Loading from "../layout/components/Loading";
 import {
   getIRListStore,
@@ -73,9 +73,14 @@ import { compressBase64Image } from "../utils/ImageCompressor";
 import request_json from "../utils/Network";
 import API from "../utils/APIList";
 import { ToastMessage } from "../utils/Navigation";
+import { UIUserCard, UIUserCardPreview } from "./ums/UIUserCard";
+import { getUserStore } from "../store/slices/UserSlice";
+import UIUserActivity from "./ums/UIUserActivity";
 
 const Test = () => {
   const dispatcher = useDispatch();
+
+  const userStore = useSelector(getUserStore);
 
   const repoStore = useSelector(getRepoStore);
   const issueStore = useSelector(getIssueStore);
@@ -137,9 +142,8 @@ const Test = () => {
     getSRListInfo(dispatcher, 2);
     updateServiceInfo(dispatcher, 2);
     getIterationInfo(dispatcher, 2);
-    getRDTSInfo(dispatcher, 2).then((data) => {
-      console.log(data);
-    });
+    getRDTSInfo(dispatcher, 2);
+    updateUserInfo(dispatcher);
   }, []);
 
   const handleOnClick = () => {
@@ -158,34 +162,49 @@ const Test = () => {
     repoStore === "" ||
     issueStore === "" ||
     mergeStore === "" ||
-    commitStore === ""
+    commitStore === "" ||
+    userStore === ""
   ) {
   } else {
-    console.debug(JSON.parse(repoStore));
-    console.debug(JSON.parse(issueStore));
-    console.debug(JSON.parse(commitStore));
-    console.debug(JSON.parse(mergeStore));
+    // console.debug(JSON.parse(repoStore));
+    // console.debug(JSON.parse(issueStore));
+    // console.debug(JSON.parse(commitStore));
+    // console.debug(JSON.parse(mergeStore));
     return (
-      <>
+      <div
+        style={{
+          width: "100%",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
         <p>I am test page</p>
-        <Button type="primary" onClick={() => handleOnClick()}>
-          Primary Button
-        </Button>
-        <div id={"test-id"} />
-        <Upload
-          action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-          listType="text"
-          showUploadList={false}
-          beforeUpload={onBeforeUpload}
-          fileList={fileList}
-          onChange={onChange}
-          onPreview={onPreview as any}
-          id={"setting-upload"}
-          className={"setting-upload"}
-        >
-          <Button type={"primary"}>修改头像</Button>
-        </Upload>
-      </>
+        <UIUserCardPreview
+          userStore={userStore}
+          // projectStore={projectInfo}
+          // yourSelf={true}
+          // userId={17}
+        />
+        {/*<Button type="primary" onClick={() => handleOnClick()}>*/}
+        {/*  Primary Button*/}
+        {/*</Button>*/}
+        {/*<div id={"test-id"} />*/}
+        {/*<Upload*/}
+        {/*  action="https://www.mocky.io/v2/5cc8019d300000980a055e76"*/}
+        {/*  listType="text"*/}
+        {/*  showUploadList={false}*/}
+        {/*  beforeUpload={onBeforeUpload}*/}
+        {/*  fileList={fileList}*/}
+        {/*  onChange={onChange}*/}
+        {/*  onPreview={onPreview as any}*/}
+        {/*  id={"setting-upload"}*/}
+        {/*  className={"setting-upload"}*/}
+        {/*>*/}
+        {/*  <Button type={"primary"}>修改头像</Button>*/}
+        {/*</Upload>*/}
+      </div>
     );
   }
   return (

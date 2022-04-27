@@ -30,6 +30,22 @@ const MRId2MRInfo = (MRId: number, MRList: string) => {
   const MR = MRListData.filter((obj: any) => obj.id === MRId);
   return MR.length > 0 ? MR[0] : "not found";
 };
+// 传入 Issue 的 Id，返回其详细信息，同时需要传入该项目的 issueList (getIssueStore 而来) （未解析）
+const issueId2IssueInfo = (issueId: number, issueList: string) => {
+  // console.log("==================== Get issueInfo By IssueId ===================");
+  const issueListData = JSON.parse(issueList).data;
+  const issue = issueListData.filter(
+    (obj: any) => obj.id === issueId && obj.is_bug
+  );
+  return issue.length > 0 ? issue[0] : "not found";
+};
+// 传入 commit 的 Id，返回其详细信息，同时需要传入该项目的 commitList (getCommitStore 而来) （未解析）
+const commitId2CommitInfo = (commitId: number, commitList: string) => {
+  // console.log("==================== Get commitInfo By CommitId ===================");
+  const commitListData = JSON.parse(commitList).data;
+  const commit = commitListData.filter((obj: any) => obj.id === commitId);
+  return commit.length > 0 ? commit[0] : "not found";
+};
 // 传入 iteration 的 Id, 返回其详细信息，同时需要传入该项目的 iterationInfo (getIterationInfo 而来) （未解析）
 const itId2ItInfo = (iterationId: number, iterationInfo: string) => {
   // console.log("============ Get iterationInfo By iterationId ============== ");
@@ -49,6 +65,13 @@ const projId2ProjInfo = (projectId: number, projectInfo: string) => {
   console.log("============ Get projectInfo By projectId ============== ");
   console.log(projectInfo);
   return JSON.parse(projectInfo).data.project;
+};
+// 传入 repo 的 Id，返回其详细信息，同时需传入该项目的 repoInfo (getProjectStore 而来) 字符串（未解析）
+const repoId2RepoInfo = (repoId: number, repoInfo: string) => {
+  // console.log("============ Get repoInfo By repoId ============== ");
+  const repoData = JSON.parse(repoInfo).data;
+  const repo = repoData.filter((repo: any) => repo.id === repoId);
+  return repo.length > 0 ? repo[0] : "not found";
 };
 /*
   传入需要查询的 IR 的 Id，返回其所对应的所有 SR
@@ -211,9 +234,27 @@ const SR2Issue = (SRId: number, SRIssueAsso: string, issueInfo: string) => {
   // console.log("================ Get Issue By SR ===============");
   const SRIssueData = JSON.parse(SRIssueAsso).data;
   // console.log(SRIssueData);
-  return SRIssueData.filter((obj: any) => obj.SR === SRId).map(
-    (obj: any) => obj.issue
-  ); // 直接返回匹配的 issueId 列表，要么空要么只有一个元素
+  return SRIssueData.filter((obj: any) => obj.SR === SRId).map((obj: any) =>
+    issueId2IssueInfo(obj.issue, issueInfo)
+  );
+};
+/*
+传入需要查询的 SRId，返回其对应的所有提交 commit
+还需传入 SRCommitAsso ( 对每个 repo， getCommitSRAssociationStore 而来，并拼接在一起！) 传入 string
+同时需要传入该项目的 commitInfo (getCommitStore 而来) （未解析）
+返回未排序
+ */
+const oneSR2AllCommit = (
+  SRId: number,
+  SRCommitAsso: string,
+  commitInfo: string
+) => {
+  // console.log("================ Get Commit By SR ===============");
+  const SRCommitData = JSON.parse(SRCommitAsso).data;
+  // console.log(SRCommitData);
+  return SRCommitData.filter((obj: any) => obj.SR === SRId).map((obj: any) =>
+    commitId2CommitInfo(obj.commit, commitInfo)
+  );
 };
 /*
 传入需要查询的 SRId，返回其对应的服务 service(unique)
@@ -295,12 +336,16 @@ export {
   SRId2SRInfo,
   MRId2MRInfo,
   itId2ItInfo,
+  issueId2IssueInfo,
+  commitId2CommitInfo,
   servId2ServInfo,
   projId2ProjInfo,
+  repoId2RepoInfo,
   oneIR2AllSR,
   oneSR2AllIR,
   MR2SR,
   oneSR2AllMR,
+  oneSR2AllCommit,
   IR2Iteration,
   Iteration2IR,
   SR2Iteration,

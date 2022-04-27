@@ -9,26 +9,13 @@ import { push } from "redux-first-history";
 import { Redirect } from "../../utils/Navigation";
 import { getUserStore } from "../../store/slices/UserSlice";
 import CryptoJS from "crypto-js";
+import getUserAvatar from "../../utils/UserAvatar";
 
 const { Header } = Layout;
 
 const Navbar = () => {
   const userStore = useSelector(getUserStore);
   const dispatcher = useDispatch();
-
-  const getUserAvatar = (userStore: string): string => {
-    if (userStore === "" || JSON.parse(userStore).code !== 0) {
-      return "";
-    }
-    const userInfo = JSON.parse(userStore);
-    if (userInfo.data.user.avatar.length < 5) {
-      return `https://www.gravatar.com/avatar/${CryptoJS.MD5(
-        userInfo.data.user.email
-      )}`;
-    } else {
-      return userInfo.data.user.avatar;
-    }
-  };
 
   const menu = (
     <Menu>
@@ -64,7 +51,7 @@ const Navbar = () => {
           <div
             className="header-item"
             onClick={() =>
-              Redirect(dispatcher, "https://doc-undefined.app.secoder.net/", 0)
+              window.open("https://doc-undefined.app.secoder.net/")
             }
           >
             开发者文档
@@ -92,7 +79,7 @@ const Navbar = () => {
             arrow={{ pointAtCenter: true }}
           >
             <Avatar
-              className="ant-dropdown-link"
+              className={"ant-dropdown-link small-avatar"}
               size="large"
               style={{ cursor: "pointer" }}
               icon={<UserOutlined />}

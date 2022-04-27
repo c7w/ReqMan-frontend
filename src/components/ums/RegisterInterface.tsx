@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./RegisterInterface.css";
 import "crypto-js";
 import { message, Input, Button, Popover, Tooltip } from "antd";
@@ -45,6 +45,13 @@ const RegisterInterface = (props: RegisterInterfaceProps) => {
   const [password, setPassword] = useState("");
   const [doubleCheckError, setDoubleCheckError] = useState("");
   const [doubleCheck, setDoubleCheck] = useState(false);
+  const [doublePass, setDoublePass] = useState("");
+
+  useEffect(() => {
+    if (password !== "") {
+      check({ target: { value: doublePass } });
+    }
+  }, [password]);
 
   const dispatcher = useDispatch();
 
@@ -144,6 +151,7 @@ const RegisterInterface = (props: RegisterInterfaceProps) => {
 
   // 密码校验判断 (from doubleCheck to check)
   const check = (event: { target: { value: string } }) => {
+    setDoublePass(event.target.value);
     const _password = event.target.value;
     if (_password !== password) {
       setDoubleCheckError("与第一次密码输入不符，请检查");

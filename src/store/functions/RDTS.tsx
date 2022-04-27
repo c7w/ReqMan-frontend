@@ -4,12 +4,31 @@ import request_json from "../../utils/Network";
 import API from "../../utils/APIList";
 import { updateRepoStore } from "../slices/RepoSlice";
 import {
-  updateIssueStore,
+  updateCommitSRAssociationStore,
   updateCommitStore,
+  updateIssueSRAssociationStore,
+  updateIssueStore,
   updateMergeStore,
   updateMRSRAssociationStore,
-  updateIssueSRAssociationStore,
 } from "../slices/IssueSlice";
+
+// 获得某个用户的所有 rdts 信息
+const getAllRDTSInfo = async (dispatcher: any, userStore: string) => {
+  const promise_list: any[] = [];
+  const project_id_list: any[] = [];
+  JSON.parse(userStore).data.projects.forEach((project: any) => {
+    promise_list.push(getRDTSInfo(dispatcher, project.id));
+    project_id_list.push(project.id);
+  });
+  return Promise.all(promise_list).then((data: any) => {
+    return data.map((obj: any, index: number) => {
+      return {
+        ...obj,
+        project: project_id_list[index],
+      };
+    });
+  });
+};
 
 const getRDTSInfo = async (dispatcher: any, project_id: number) => {
   return getRepoInfo(dispatcher, project_id).then((repo_data: any) => {
@@ -28,6 +47,9 @@ const getRDTSInfo = async (dispatcher: any, project_id: number) => {
     );
     promise_list.push(
       getIssueSRAssociation(dispatcher, project_id, JSON.stringify(repo_data))
+    );
+    promise_list.push(
+      getCommitSRAssociation(dispatcher, project_id, JSON.stringify(repo_data))
     );
     return Promise.all(promise_list);
   });
@@ -389,6 +411,92 @@ const deleteIssueSRAssociation = async (
   });
 };
 
+const getCommitSRAssociation = async (
+  dispatcher: any,
+  project_id: number,
+  RepoStore: string
+): Promise<any> => {
+  const promise_list: any[] = [];
+  JSON.parse(RepoStore).data.forEach((repo: any) => {
+    const myParams = {
+      repo: repo.id,
+      type: "commit-sr",
+    };
+    const promise = request_json(API.GET_RDTS, {
+      getParams: myParams,
+    });
+    promise_list.push(promise);
+  });
+
+  return Promise.all(promise_list).then((data: any) => {
+    const all_commit_sr_asso: any[] = [];
+
+    data.forEach((repo_commit_sr_asso: any) => {
+      repo_commit_sr_asso.data.forEach((commit_sr_asso: any) => {
+        all_commit_sr_asso.push(commit_sr_asso);
+      });
+    });
+
+    const res = {
+      code: 0,
+      data: all_commit_sr_asso,
+    };
+
+    dispatcher(updateCommitSRAssociationStore(JSON.stringify(res)));
+    return res;
+  });
+};
+
+const createCommitSRAssociation = async (
+  dispatcher: any,
+  project_id: number,
+  commit_id: number,
+  sr_id: number,
+  repoStore: string
+) => {
+  const myBody = {
+    project: project_id,
+    type: "commit-sr",
+    operation: "create",
+    data: {
+      updateData: {
+        commitId: commit_id,
+        SRId: sr_id,
+      },
+    },
+  };
+  return request_json(API.POST_RDTS, { body: myBody }).then((data) => {
+    if (data.code === 0) {
+      getCommitSRAssociation(dispatcher, project_id, repoStore);
+    }
+    return data;
+  });
+};
+
+const deleteCommitSRAssociation = async (
+  dispatcher: any,
+  project_id: number,
+  commit_id: number,
+  sr_id: number,
+  repoStore: string
+) => {
+  const myBody = {
+    project: project_id,
+    type: "commit-sr",
+    operation: "delete",
+    data: {
+      commitId: commit_id,
+      SRId: sr_id,
+    },
+  };
+  return request_json(API.POST_RDTS, { body: myBody }).then((data) => {
+    if (data.code === 0) {
+      getCommitSRAssociation(dispatcher, project_id, repoStore);
+    }
+    return data;
+  });
+};
+
 const createMRIssueAssociation = async (
   dispatcher: any,
   project_id: number,
@@ -428,6 +536,7 @@ const deleteMRIssueAssociation = async (
 };
 
 export {
+  getAllRDTSInfo,
   getRepoInfo,
   createRepoInfo,
   deleteRepoInfo,
@@ -441,6 +550,9 @@ export {
   getIssueSRAssociation,
   createIssueSRAssociation,
   deleteIssueSRAssociation,
+  getCommitSRAssociation,
+  createCommitSRAssociation,
+  deleteCommitSRAssociation,
   createMRIssueAssociation,
   deleteMRIssueAssociation,
 };

@@ -1,5 +1,5 @@
 import "./UIMerge.css";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getProjectStore } from "../../store/slices/ProjectSlice";
 import { getRepoStore } from "../../store/slices/RepoSlice";
@@ -8,6 +8,12 @@ import ProTable, { ProColumns } from "@ant-design/pro-table";
 import { IssueProps, MergeRequestProps } from "../../store/ConfigureStore";
 import { userId2UserInfo } from "../../utils/Association";
 import { UIIssueCardPreview } from "./UIIssueCard";
+import { Typography } from "antd";
+import { getRDTSInfo } from "../../store/functions/RDTS";
+import { useParams } from "react-router-dom";
+import { SyncOutlined, ReloadOutlined } from "@ant-design/icons";
+import moment from "moment";
+import { addRDTSTimer } from "../../utils/Timer";
 
 const UIIssue = () => {
   const dispatcher = useDispatch();
@@ -15,6 +21,24 @@ const UIIssue = () => {
   const projectStore = useSelector(getProjectStore);
   const repoStore = useSelector(getRepoStore);
   const issueStore = useSelector(getIssueStore);
+
+  // Get project_id
+  const params = useParams();
+  const project_id = Number(params.id);
+
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [lastUpdate, setLastUpdate] = useState(moment());
+
+  useEffect(() => {
+    // Add RDTS Timer
+    addRDTSTimer(() => {
+      setIsUpdating(true);
+      getRDTSInfo(dispatcher, project_id).then(() => {
+        setIsUpdating(false);
+        setLastUpdate(moment());
+      });
+    });
+  }, []);
 
   const getBackgroundColor = (state: "closed" | "opened") => {
     switch (state) {
@@ -47,7 +71,7 @@ const UIIssue = () => {
       ),
     },
     {
-      title: "项目缺陷信息",
+      title: "项目缺陷信息（项目缺陷指远端仓库中带有 bug 标记的 Issue）",
       ellipsis: true,
       width: "61%",
       dataIndex: "description",
@@ -112,15 +136,39 @@ const UIIssue = () => {
       <ProTable<IssueProps>
         headerTitle="项目缺陷查看"
         toolBarRender={() => {
-          return [];
+          return [
+            <div style={{ minWidth: "15rem" }}>
+              <Typography.Text style={{ width: "10rem", marginRight: "1rem" }}>
+                上次更新：{lastUpdate.fromNow()}
+              </Typography.Text>
+              <Typography.Link
+                style={{ marginRight: "10px" }}
+                onClick={() => {
+                  if (!isUpdating) {
+                    setIsUpdating(true);
+                    getRDTSInfo(dispatcher, project_id)
+                      .then((data: any) => {
+                        setIsUpdating(false);
+                        setLastUpdate(moment());
+                      })
+                      .catch((err: any) => {
+                        setIsUpdating(false);
+                      });
+                  }
+                }}
+              >
+                {isUpdating ? <SyncOutlined spin={true} /> : <ReloadOutlined />}
+              </Typography.Link>
+            </div>,
+          ];
         }}
         cardBordered={true}
         columns={columns}
         options={{
           fullScreen: false,
-          reload: false,
           setting: true,
           density: true,
+          reload: false,
         }}
         // request={() => {
         //   return Promise.resolve({
