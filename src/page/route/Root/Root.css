@@ -14,13 +14,64 @@
   background: linear-gradient(0deg,#d5eaff,#fff);
 }
 
+.root-to-login {
+  position: absolute;
+  z-index: 1;
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+  top: 45vh;
+  left: 15vw;
+  max-width: 240px;
+  max-height: 66px;
+  padding: 22px 40px;
+  overflow: hidden;
+  font-size: 1rem;
+  font-weight: bold;
+  text-align: center;
+  white-space: nowrap;
+  border-radius: 2rem;
+  cursor: pointer;
+  color: #fff;
+  background-color: #20a0ff;
+  background-position: 0 0;
+  background-size: 400% 100%;
+  background-image: radial-gradient(circle farthest-corner at 100% 0,#f09c33 0,#f59234 4%,#f98736 7%,#fd7b38 10%,#ff6e3c 14%,#ff5f41 18%,#ff4e46 21%,#ff384b 25%,#fd1851 29%,#f90059 32%,#f50062 36%,#f0006c 39%,#e90077 43%,#e10083 46%,#d70090 50%, #20a0ff 75%, #20a0ff 100%);
+}
+
+/*.root-to-login:before {*/
+/*  position: absolute;*/
+/*  top: 0;*/
+/*  right: 0;*/
+/*  bottom: 0;*/
+/*  left: 0;*/
+/*  z-index: -1;*/
+/*  content: "";*/
+/*  background-color: #20a0ff;*/
+/*  background-image: radial-gradient(circle farthest-corner at 100% 0,#f09c33 0,#f59234 4%,#f98736 7%,#fd7b38 10%,#ff6e3c 14%,#ff5f41 18%,#ff4e46 21%,#ff384b 25%,#fd1851 29%,#f90059 32%,#f50062 36%,#f0006c 39%,#e90077 43%,#e10083 46%,#d70090 50%, #20a0ff 75%, #20a0ff 100%);*/
+/*  background-position: 0 0;*/
+/*  background-size: 400% 100%;*/
+/*  border-radius: inherit;*/
+/*  transition: background-position 1s cubic-bezier(.35,.35,0,1);*/
+/*}*/
+
+.root-to-login:hover {
+  /*background: #ff384b;*/
+  /*-moz-transition: background .4s; !* Firefox 4 *!*/
+  /*-webkit-transition: background .4s; !* Safari and Chrome *!*/
+  /*-o-transition: background .4s; !* Opera *!*/
+  /*transition: all 2s;*/
+  background-position: 100%, 100%;
+  transition: background-position 1s cubic-bezier(.35,.35,0,1);
+}
+
 .combined {
   color: #fff;
   width: 40vw;
   height: 40vh;
   position: absolute;
-  top: 30vh;
-  left: 10vw;
+  top: 20vh;
+  left: 15vw;
 }
 .combined-shape {
   position: relative;
@@ -128,9 +179,9 @@
 
 .root-features {
   position: absolute;
-  right: 0;
+  right: 5vw;
   top: 67vh;
-  left: 0;
+  left: 5vw;
   z-index: 1;
   padding: 30px 40px;
   margin: -30px auto;
@@ -155,7 +206,7 @@
 .root-feature-card {
   width: 25vw;
   height: 16vh;
-  padding: 30px 20px;
+  padding: 20px 20px;
   box-shadow: 0 2px 30px 0 rgb(0 0 0 / 10%);
   border-radius: 0.5rem;
   background: #fff;
@@ -179,16 +230,16 @@
 }
 
 .root-feature-title {
-  font-size: 18px;
-  font-weight: 500;
+  font-size: 1.3rem;
+  font-weight: bold;
   line-height: 1.34;
   color: #222;
 }
 
 .root-feature-content {
-  max-width: 256px;
+  max-width: 20vw;
   margin: 8px 0 0;
-  font-size: 14px;
+  font-size: 1rem;
   line-height: 1.72;
   color: #666;
   white-space: normal;

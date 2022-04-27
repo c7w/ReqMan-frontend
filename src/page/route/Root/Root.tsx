@@ -223,18 +223,34 @@ const Root = () => {
         {/*    className={"root-spinner"}*/}
         {/*  />*/}
         {/*</div>*/}
+        <div
+          className="root-to-login"
+          onClick={() =>
+            setTimeout(() => {
+              dispatcher(push("/login"));
+            }, 1000)
+          }
+        >
+          开启您的项目
+        </div>
         <div className="root-features">
           <div className="root-feature-card root-feature-card1">
-            <div className="root-feature-title">title</div>
-            <div className="root-feature-content">content</div>
+            <div className="root-feature-title">智能规划</div>
+            <div className="root-feature-content">
+              合理安排迭代周期，一键管理开发日程
+            </div>
           </div>
           <div className="root-feature-card root-feature-card2">
-            <div className="root-feature-title">title</div>
-            <div className="root-feature-content">content</div>
+            <div className="root-feature-title">需求管理</div>
+            <div className="root-feature-content">
+              精准划分原始需求，查看关联软件服务
+            </div>
           </div>
           <div className="root-feature-card root-feature-card3">
-            <div className="root-feature-title">title</div>
-            <div className="root-feature-content">content</div>
+            <div className="root-feature-title">缺陷跟踪</div>
+            <div className="root-feature-content">
+              实时获取项目缺陷，查看缺陷修复情况
+            </div>
           </div>
         </div>
         <div className={"root-footer"}>
