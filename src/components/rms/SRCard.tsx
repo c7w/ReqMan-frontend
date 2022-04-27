@@ -478,7 +478,7 @@ const SRCard = (props: SRCardProps) => {
         visible={modalVisible}
         onOk={handleOK}
         onCancel={handleCancel}
-        width={"90%"}
+        width={"95%"}
       >
         <div className="SRModal-header">
           <div
@@ -595,6 +595,8 @@ const SRCard = (props: SRCardProps) => {
             <UISRChangeLogList
               SRChangeLogListInfo={SRChangeLogStore}
               projectStore={projectStore}
+              currState={props.currState}
+              description={props.description}
             />
           </div>
           <Divider type="vertical" style={{ width: "5px", height: "auto" }} />
