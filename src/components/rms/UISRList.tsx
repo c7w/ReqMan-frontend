@@ -710,7 +710,7 @@ const UISRList = (props: UISRListProps) => {
           rowKey="id"
           columns={columns}
           dataSource={dataSRList}
-          pagination={false}
+          pagination={{ pageSize: 10 }}
           options={{
             fullScreen: false,
             reload: false,
@@ -966,7 +966,7 @@ const UISRList = (props: UISRListProps) => {
             </Space>
           )}
           dataSource={dataSRList}
-          pagination={false}
+          pagination={{ pageSize: 5 }}
           // scroll={{ y: 300 }}
           search={false}
           rowKey="id"
@@ -984,7 +984,7 @@ const UISRList = (props: UISRListProps) => {
           rowKey="id"
           columns={showColumn}
           dataSource={showSRList}
-          pagination={false}
+          pagination={{ pageSize: 10 }}
           options={{
             fullScreen: false,
             reload: false,

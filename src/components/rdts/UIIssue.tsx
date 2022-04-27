@@ -71,7 +71,7 @@ const UIIssue = () => {
       ),
     },
     {
-      title: "项目缺陷信息",
+      title: "项目缺陷信息（项目缺陷指远端仓库中带有 bug 标记的 Issue）",
       ellipsis: true,
       width: "61%",
       dataIndex: "description",

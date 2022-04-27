@@ -12,6 +12,9 @@ import {
   deleteMRSRAssociation,
 } from "../../store/functions/RDTS";
 import { getRepoStore } from "../../store/slices/RepoSlice";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import rehypeRaw from "rehype-raw";
 
 interface UIMergeCardProps {
   data: string;
@@ -106,6 +109,22 @@ const UIMergeCard = (props: UIMergeCardProps) => {
     }
   };
 
+  // Picture prefix website
+  const indices = [];
+  let idx = data.url.indexOf("/");
+  while (idx != -1) {
+    indices.push(idx);
+    idx = data.url.indexOf("/", idx + 1);
+  }
+
+  const image_front_url = data.url.slice(0, indices[indices.length - 3]);
+
+  data.description = data.description.replaceAll(
+    /!\[image\]\((.*?)\)/g,
+    `<img src='${image_front_url}/$1' style="width: auto; height: auto; max-width: 90%"></img>`
+  );
+  console.debug(data.description);
+
   return (
     <Modal
       centered={true}
@@ -120,9 +139,14 @@ const UIMergeCard = (props: UIMergeCardProps) => {
         <Typography.Title level={4}>{data.title}</Typography.Title>
         <div>
           <span className={"meta-data-label"}>合并请求描述</span>
-          <p style={{ marginLeft: "1rem" }}>
-            {data.description === "" ? data.title : data.description}
-          </p>
+          <div style={{ marginTop: "1rem", marginLeft: "2rem" }}>
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              rehypePlugins={[rehypeRaw]}
+            >
+              {data.description === "" ? data.title : data.description}
+            </ReactMarkdown>
+          </div>
         </div>
         <div>
           <span className={"meta-data-label"}>合并请求状态</span>
