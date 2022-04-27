@@ -20,7 +20,7 @@ import moment from "moment";
 import { deleteRepoInfo, getRepoInfo } from "../../../store/functions/RDTS";
 import Loading from "../../../layout/components/Loading";
 import { compressBase64Image } from "../../../utils/ImageCompressor";
-import getUserAvatar from "../../../utils/UserAvatar";
+import { getUserAvatar } from "../../../utils/UserAvatar";
 
 const PersonalSetting = () => {
   const userStore = useSelector(getUserStore);

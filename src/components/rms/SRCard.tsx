@@ -54,6 +54,7 @@ import {
   SR2Iteration,
   SR2Service,
   SRId2SRInfo,
+  userId2UserInfo,
 } from "../../utils/Association";
 import CryptoJS from "crypto-js";
 import { getUserStore } from "../../store/slices/UserSlice";
@@ -89,9 +90,8 @@ import {
   getRepoInfo,
 } from "../../store/functions/RDTS";
 import { getRepoStore } from "../../store/slices/RepoSlice";
-import { UIMergeCard, UIMergeCardPreview } from "../rdts/UIMergeCard";
 import { getSRChangeLogStore } from "../../store/slices/SRChangeLogSlice";
-import getUserAvatar from "../../utils/UserAvatar";
+import { userId2Avatar } from "../../utils/UserAvatar";
 import UISRChangeLogList from "./UISRChangeLogList";
 import { state2Color, state2ChineseState } from "../../utils/SRStateConvert";
 import MRCard from "../rdts/MRCard";
@@ -135,6 +135,7 @@ const SRCard = (props: SRCardProps) => {
   const [chargedBy, setChargedBy] = useState(props.createdBy);
   const [service, setService] = useState(props.service);
   const [descEditing, setDescEditing] = useState<boolean>(false);
+  const [userAvatar, setUserAvatar] = useState<string>("");
   const [bounds, setBounds] = useState({
     left: 0,
     top: 0,
@@ -331,14 +332,21 @@ const SRCard = (props: SRCardProps) => {
       });
       setAssoIRCardList(newAssoIRCardList);
     });
-    getSRChangeLogInfo(dispatcher, props.project, props.id).then(
-      (data: any) => {
-        // console.log(data);
-      }
-    );
-    // updateUserInfo(dispatcher);
-    // updateProjectInfo(dispatcher, props.project);
   };
+
+  useEffect(() => {
+    updateProjectInfo(dispatcher, props.project).then((data) => {
+      // console.log(data);
+      const userInfo = data.data.users.filter(
+        (user: any) => user.id === props.createdBy
+      )[0];
+      const avatar =
+        userInfo.avatar.length < 5
+          ? `https://www.gravatar.com/avatar/${CryptoJS.MD5(userInfo.email)}`
+          : userInfo.avatar;
+      setUserAvatar(avatar);
+    });
+  }, []);
 
   const handleOK = () => {
     if (
@@ -454,7 +462,7 @@ const SRCard = (props: SRCardProps) => {
             <Avatar
               className="SRCard-small-avatar"
               size="small"
-              src={getUserAvatar(userInfo)}
+              src={userAvatar}
             />
           </Avatar.Group>
           <div>
@@ -470,7 +478,7 @@ const SRCard = (props: SRCardProps) => {
         visible={modalVisible}
         onOk={handleOK}
         onCancel={handleCancel}
-        width={"90%"}
+        width={"95%"}
       >
         <div className="SRModal-header">
           <div
@@ -534,12 +542,20 @@ const SRCard = (props: SRCardProps) => {
               </Typography>
             </div>
             <div className="SRModal-content-left-middle">
-              <div style={{ display: "flex", flexDirection: "row" }}>
-                <p>负责人：</p>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-around",
+                  alignItems: "center",
+                }}
+              >
+                <span style={{ fontWeight: "bold", marginRight: "1rem" }}>
+                  负责人：
+                </span>
                 <UIUserCardPreview
-                  userStore={userInfo}
-                  // userId={Number(props.createdBy)}
-                  // projectStore={projectStore}
+                  userId={Number(props.createdBy)}
+                  projectStore={projectStore}
                   // yourSelf={false}
                 />
               </div>
@@ -579,6 +595,8 @@ const SRCard = (props: SRCardProps) => {
             <UISRChangeLogList
               SRChangeLogListInfo={SRChangeLogStore}
               projectStore={projectStore}
+              currState={props.currState}
+              description={props.description}
             />
           </div>
           <Divider type="vertical" style={{ width: "5px", height: "auto" }} />

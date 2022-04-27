@@ -1,15 +1,8 @@
 import React, { useState } from "react";
 import { UIMergeCard } from "./UIMergeCard";
 import { Avatar, Space, Tag, Typography } from "antd";
-import { state2ChineseState, state2Color } from "../../utils/SRStateConvert";
-import getUserAvatar from "../../utils/UserAvatar";
 import "./MRCard.css";
-import moment from "moment";
 import Text from "antd/es/typography/Text";
-import { useSelector } from "react-redux";
-import { getUserStore } from "../../store/slices/UserSlice";
-import { userId2UserInfo } from "../../utils/Association";
-import { getProjectStore } from "../../store/slices/ProjectSlice";
 
 interface MRCardProps {
   SRListStore: string;
