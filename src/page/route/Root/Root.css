@@ -5,6 +5,119 @@
   height: 100vh;
 }
 
+nav .root-menu {
+  width: 100%;
+  height: 80px;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 5%;
+  box-sizing: border-box;
+  z-index: 3;
+}
+nav .root-menu .root-menu-logo {
+  color: #695681;
+  font-weight: 600;
+  font-size: 20px;
+  letter-spacing: 1px;
+  background: white;
+  padding: 4px 8px;
+  border-radius: 2px;
+  opacity: 0.5;
+  transition: all 0.4s ease;
+  cursor: pointer;
+}
+nav .root-menu .root-menu-logo:hover {
+  opacity: 1;
+}
+nav .root-menu .root-menu_links {
+  transition: all 0.4s ease;
+  opacity: 0.5;
+}
+nav .root-menu .root-menu_links:hover {
+  opacity: 1;
+}
+@media screen and (max-width: 799px) {
+  nav .root-menu .root-menu_links {
+    display: none;
+  }
+}
+nav .root-menu .root-menu_links .root-menu-link {
+  color: black;
+  text-transform: uppercase;
+  font-weight: 500;
+  margin-right: 50px;
+  letter-spacing: 2px;
+  position: relative;
+  transition: all 0.3s 0.2s ease;
+}
+nav .root-menu .root-menu_links .root-menu-link:last-child {
+  margin-right: 0;
+}
+nav .root-menu .root-menu_links .root-menu-link:before {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #FFEDC0 0%, #FF9D87 100%);
+  bottom: -10px;
+  border-radius: 4px;
+  transition: all 0.4s cubic-bezier(0.82, 0.02, 0.13, 1.26);
+  left: 100%;
+}
+nav .root-menu .root-menu_links .root-menu-link:hover {
+  opacity: 1;
+  color: #FB8A8A;
+}
+nav .root-menu .root-menu_links .root-menu-link:hover:before {
+  width: 40px;
+  left: 0;
+}
+nav .root-menu .root-menu_icon {
+  width: 40px;
+  height: 40px;
+  position: relative;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+@media screen and (max-width: 799px) {
+  nav .root-menu .root-menu_icon {
+    display: flex;
+  }
+}
+nav .root-menu .root-menu_icon .icon {
+  width: 24px;
+  height: 2px;
+  background: white;
+  position: absolute;
+}
+nav .root-menu .root-menu_icon .icon:before, nav .root-menu .root-menu_icon .icon:after {
+  content: "";
+  width: 100%;
+  height: 100%;
+  background: inherit;
+  position: absolute;
+  transition: all 0.3s cubic-bezier(0.49, 0.04, 0, 1.55);
+}
+nav .root-menu .root-menu_icon .icon:before {
+  transform: translateY(-8px);
+}
+nav .root-menu .root-menu_icon .icon:after {
+  transform: translateY(8px);
+}
+nav .root-menu .root-menu_icon:hover .icon {
+  background: #FFEDC0;
+}
+nav .root-menu .root-menu_icon:hover .icon:before {
+  transform: translateY(-10px);
+}
+nav .root-menu .root-menu_icon:hover .icon:after {
+  transform: translateY(10px);
+}
+
 .root-wrapper {
   position: relative;
   width: 100%;
@@ -21,9 +134,10 @@
   display: block;
   width: 100%;
   top: 45vh;
-  left: 15vw;
-  max-width: 240px;
-  max-height: 66px;
+  left: 17vw;
+  letter-spacing: 2px;
+  max-width: 18vw;
+  max-height: 8vh;
   padding: 22px 40px;
   overflow: hidden;
   font-size: 1rem;
@@ -39,28 +153,7 @@
   background-image: radial-gradient(circle farthest-corner at 100% 0,#f09c33 0,#f59234 4%,#f98736 7%,#fd7b38 10%,#ff6e3c 14%,#ff5f41 18%,#ff4e46 21%,#ff384b 25%,#fd1851 29%,#f90059 32%,#f50062 36%,#f0006c 39%,#e90077 43%,#e10083 46%,#d70090 50%, #20a0ff 75%, #20a0ff 100%);
 }
 
-/*.root-to-login:before {*/
-/*  position: absolute;*/
-/*  top: 0;*/
-/*  right: 0;*/
-/*  bottom: 0;*/
-/*  left: 0;*/
-/*  z-index: -1;*/
-/*  content: "";*/
-/*  background-color: #20a0ff;*/
-/*  background-image: radial-gradient(circle farthest-corner at 100% 0,#f09c33 0,#f59234 4%,#f98736 7%,#fd7b38 10%,#ff6e3c 14%,#ff5f41 18%,#ff4e46 21%,#ff384b 25%,#fd1851 29%,#f90059 32%,#f50062 36%,#f0006c 39%,#e90077 43%,#e10083 46%,#d70090 50%, #20a0ff 75%, #20a0ff 100%);*/
-/*  background-position: 0 0;*/
-/*  background-size: 400% 100%;*/
-/*  border-radius: inherit;*/
-/*  transition: background-position 1s cubic-bezier(.35,.35,0,1);*/
-/*}*/
-
 .root-to-login:hover {
-  /*background: #ff384b;*/
-  /*-moz-transition: background .4s; !* Firefox 4 *!*/
-  /*-webkit-transition: background .4s; !* Safari and Chrome *!*/
-  /*-o-transition: background .4s; !* Opera *!*/
-  /*transition: all 2s;*/
   background-position: 100%, 100%;
   transition: background-position 1s cubic-bezier(.35,.35,0,1);
 }

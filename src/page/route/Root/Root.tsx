@@ -119,6 +119,25 @@ const Root = () => {
 
   return (
     <div className="root-screen">
+      <nav>
+        <div className="root-menu">
+          <p className="root-menu-logo">LOGO</p>
+          <div className="root-menu_links">
+            <a href="" className="root-menu-link">
+              about
+            </a>
+            <a href="" className="root-menu-link">
+              projects
+            </a>
+            <a href="" className="root-menu-link">
+              contacts
+            </a>
+          </div>
+          <div className="root-menu_icon">
+            <span className="icon"></span>
+          </div>
+        </div>
+      </nav>
       <div className={"root-wrapper"}>
         <div className="combined">
           <div className="combined-shape">
