@@ -25,7 +25,7 @@ const UISRChangeLogList = (props: SRChangeLogListProps) => {
     if (currentSRChangeLog.formerState !== formerSRState.currState) {
       resState = (
         <>
-          <span>Changed from&nbsp;</span>
+          <span>状态从&nbsp;</span>
           <Space>
             <Tag
               color={state2Color.get(currentSRChangeLog.formerState)}
@@ -34,7 +34,7 @@ const UISRChangeLogList = (props: SRChangeLogListProps) => {
               {state2ChineseState.get(currentSRChangeLog.formerState)}
             </Tag>
           </Space>
-          <span>to&nbsp;</span>
+          <span>修改为&nbsp;</span>
           <Space>
             <Tag
               color={state2Color.get(formerSRState.currState)}
@@ -49,11 +49,11 @@ const UISRChangeLogList = (props: SRChangeLogListProps) => {
     if (currentSRChangeLog.formerDescription !== formerSRState.description) {
       resDescription = (
         <>
-          <span>Changed from&nbsp;</span>
+          <span>将描述&nbsp;</span>
           <span style={{ background: "orange" }}>
             {currentSRChangeLog.formerDescription}
           </span>
-          <span>&nbsp;to&nbsp;</span>
+          <span>&nbsp;修改为&nbsp;</span>
           <span style={{ background: "lightblue" }}>
             {formerSRState.description}
           </span>
@@ -68,7 +68,7 @@ const UISRChangeLogList = (props: SRChangeLogListProps) => {
         </>
       );
     } else {
-      return currentSRChangeLog.description;
+      return 0; // 表示无变化
     }
   };
 
@@ -89,6 +89,7 @@ const UISRChangeLogList = (props: SRChangeLogListProps) => {
           const description = getDescription(SRChangeLogList[i], formerSRState);
           formerSRState.description = SRChangeLogList[i].formerDescription;
           formerSRState.currState = SRChangeLogList[i].formerState;
+          if (description === 0) continue;
           newSRChangeLogList.push(
             <Timeline.Item
               key={SRChangeLogList[i].id}

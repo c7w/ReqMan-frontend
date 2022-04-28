@@ -36,7 +36,7 @@ const request_json = async (config: APIConfig, settings: Settings = {}) => {
     Object.entries(getParams_)
       .map((key) => key[0] + "=" + key[1])
       .join("&");
-  // console.log(getParams_.sessionId);
+  console.log(getParams_.sessionId);
   let initRequest: RequestInit;
   if (config.method === "post") {
     initRequest = {

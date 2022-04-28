@@ -118,7 +118,7 @@ nav .root-menu .root-menu_icon:hover .icon:after {
   transform: translateY(10px);
 }
 
-.undefined {
+.root-undefined {
   width: 300px;
   height: 100px;
   margin-bottom: 4px;

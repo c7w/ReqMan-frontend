@@ -33,7 +33,7 @@ const Navbar = () => {
     <div>
       <Header className="header">
         <div className="header-left">
-          <div className="undefined">
+          <div className="dashboard-undefined">
             <img src={logo} alt="undefined" width={133} height={36} />
           </div>
           <div
