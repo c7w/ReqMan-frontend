@@ -65,6 +65,8 @@ const IRCard = (props: IRCardProps) => {
   const [assoSRCardList, setAssoSRCardList] = useState([]);
   const [assoIterList, setAssoIterList] = useState([]);
 
+  console.log(props);
+
   const handleOK = () => {
     if (
       title === props.title &&

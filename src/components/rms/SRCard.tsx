@@ -325,6 +325,7 @@ const SRCard = (props: SRCardProps) => {
             description={value.description}
             rank={value.rank}
             createdAt={value.createdAt}
+            createdBy={value.createdBy}
             progress={value.progress}
             iter={value.iter}
           />
