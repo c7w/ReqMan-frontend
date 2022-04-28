@@ -72,47 +72,6 @@ const Root = () => {
   // useEffect Hook: Would be executed when the variables in the dependence list are initialized or changed value.
   // If you define an empty list as variable dependence, this function would just execute for once, just like didMount().
 
-  const getInterval = (e: any) => {
-    switch (e.index) {
-      case 0:
-        return 0;
-      case 1:
-        return 0;
-      case 2:
-        return 150;
-      case 3:
-      case 4:
-      case 5:
-      case 6:
-        return 150 + 450 + (e.index - 2) * 10;
-      default:
-        return 150 + 450 + (e.index - 6) * 150;
-    }
-  };
-  const getEnter = (e: any) => {
-    const t = {
-      opacity: 0,
-      scale: 0.8,
-      y: "-100%",
-    };
-    if (e.index >= 2 && e.index <= 6) {
-      return { ...t, y: "-30%", duration: 150 };
-    }
-    return t;
-  };
-
-  const getSplit = (e: any) => {
-    const t = e.split(" ");
-    const c: any = [];
-    t.forEach((str: any, i: any) => {
-      c.push(<span key={`${str}-${i}`}>{str}</span>);
-      if (i < t.length - 1) {
-        c.push(<span key={` -${i}`}> </span>);
-      }
-    });
-    return c;
-  };
-
   return (
     <div className="root-screen">
       <nav>

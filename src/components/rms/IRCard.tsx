@@ -65,6 +65,8 @@ const IRCard = (props: IRCardProps) => {
   const [assoSRCardList, setAssoSRCardList] = useState([]);
   const [assoIterList, setAssoIterList] = useState([]);
 
+  // console.log(props);
+
   const handleOK = () => {
     if (
       title === props.title &&
@@ -170,7 +172,8 @@ const IRCard = (props: IRCardProps) => {
       });
       setAssoIterList(newAssoIterList);
       const newAssoSRCardList: any = [];
-      assoSRListData.forEach((value: SRCardProps) => {
+      console.log(assoSRListData);
+      assoSRListData.forEach((value: any) => {
         newAssoSRCardList.push(
           <SRCard
             id={value.id}
@@ -180,7 +183,7 @@ const IRCard = (props: IRCardProps) => {
             description={value.description}
             priority={value.priority}
             rank={value.rank}
-            currState={value.currState}
+            currState={value.state}
             stateColor={value.stateColor}
             createdBy={value.createdBy}
             createdAt={value.createdAt}

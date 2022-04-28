@@ -267,9 +267,12 @@ interface UIUserCardPreviewProps {
 const UIUserCardPreview = (props: UIUserCardPreviewProps) => {
   const [visible, setVisible] = useState(false);
   const projectInfo = JSON.parse(props.projectStore).data;
+  // console.log(projectInfo);
+  // console.log(props.userId);
   const userInfo = projectInfo.users.filter(
     (user: any) => user.id === props.userId
   )[0];
+  // console.log(userInfo);
   return (
     <>
       <UIUserCard
