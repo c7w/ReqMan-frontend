@@ -14,6 +14,7 @@ const UICommitList = (props: UICommitListProps) => {
       const newCommitListData: any = [];
       const commitList = JSON.parse(props.commitListData);
       if (commitList && commitList !== []) {
+        // console.log(commitList);
         for (let i = commitList.length - 1; i >= 0; i--) {
           newCommitListData.push(
             <Timeline.Item

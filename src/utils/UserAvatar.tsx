@@ -16,6 +16,7 @@ const getUserAvatar = (userStore: string): string => {
 };
 const userId2Avatar = (userId: number, projectStore: string) => {
   const userInfo = userId2UserInfo(userId, projectStore);
+  // console.log(userInfo);
   if (userInfo.avatar.length < 5) {
     return `https://www.gravatar.com/avatar/${CryptoJS.MD5(userInfo.email)}`;
   } else {

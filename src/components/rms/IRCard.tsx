@@ -70,6 +70,8 @@ const IRCard = (props: IRCardProps) => {
   const [assoSRCardList, setAssoSRCardList] = useState([]);
   const [assoIterList, setAssoIterList] = useState([]);
 
+  const [createdByAvatar, setCreatedByAvatar] = useState<string>("");
+
   // console.log(props);
 
   const handleOK = () => {
@@ -101,6 +103,20 @@ const IRCard = (props: IRCardProps) => {
     // 关闭模态框
     setModalVisible(false);
   };
+
+  useEffect(() => {
+    updateProjectInfo(dispatcher, props.project).then((data) => {
+      // console.log(data);
+      const userInfo = data.data.users.filter(
+        (user: any) => user.id === props.createdBy
+      )[0];
+      const createdByAvatar =
+        userInfo.avatar.length < 5
+          ? `https://www.gravatar.com/avatar/${CryptoJS.MD5(userInfo.email)}`
+          : userInfo.avatar;
+      setCreatedByAvatar(createdByAvatar);
+    });
+  }, []);
 
   // 更新打开的 modal 对应的 SR 的所有关系
   const updateAssociation = () => {
@@ -247,13 +263,11 @@ const IRCard = (props: IRCardProps) => {
           </Typography>
         </div>
         <div className="IRCard-small-down">
-          <Avatar.Group>
-            <Avatar
-              className="IRCard-small-avatar"
-              size="small"
-              src={userId2Avatar(Number(props.createdBy), projectInfo)}
-            />
-          </Avatar.Group>
+          <Avatar
+            className="SRCard-small-avatar"
+            size="small"
+            src={createdByAvatar}
+          />
           <div>
             {props.createdAt
               ? moment(props.createdAt * 1000).format("YYYY-MM-DD HH:mm:ss")
