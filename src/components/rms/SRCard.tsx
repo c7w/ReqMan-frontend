@@ -478,11 +478,11 @@ const SRCard = (props: SRCardProps) => {
               />
             ) : undefined}
           </Avatar.Group>
-          <div>
+          <Text ellipsis={true}>
             {props.createdAt
               ? moment(props.createdAt * 1000).format("YYYY-MM-DD HH:mm:ss")
               : "无创建时间记录"}
-          </div>
+          </Text>
         </div>
       </div>
       {/*<input className="card-input" id="button" type="checkbox" />*/}
@@ -578,12 +578,14 @@ const SRCard = (props: SRCardProps) => {
               </div>
               <div>
                 <b>创建时间:</b>
-                {"   " +
-                  (props.createdAt
+                <Text ellipsis={true}>
+                  &nbsp;&nbsp;
+                  {props.createdAt
                     ? moment(props.createdAt * 1000).format(
                         "YYYY-MM-DD HH:mm:ss"
                       )
-                    : "无创建时间记录")}
+                    : "无创建时间记录"}
+                </Text>
               </div>
             </div>
             <Divider />

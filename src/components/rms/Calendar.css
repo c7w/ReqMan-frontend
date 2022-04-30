@@ -2,8 +2,9 @@
   position: relative;
   margin: 0;
   display: flex;
+  width: 80vw;
   flex-direction: row;
   background: rgb(250, 250, 250);
   justify-content: center;
-  min-height: 80vh;
+  min-height: 75vh;
 }
