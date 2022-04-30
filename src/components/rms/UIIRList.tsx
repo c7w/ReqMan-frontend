@@ -16,6 +16,7 @@ import ReactMarkdown from "react-markdown";
 import { SRId2SRInfo, userId2UserInfo } from "../../utils/Association";
 import { getProjectStore } from "../../store/slices/ProjectSlice";
 import { UIUserCardPreview } from "../ums/UIUserCard";
+import IRCard from "./IRCard";
 const { TextArea } = Input;
 
 interface UIIRListProps {
@@ -71,12 +72,14 @@ const UIIRList = (props: UIIRListProps) => {
   const [isCreateModalVisible, setIsCreateModalVisible] =
     useState<boolean>(false);
   const [isSRModalVisible, setIsSRModalVisible] = useState<boolean>(false);
+  const [isCardModalVisible, setIsCardModalVisible] = useState<boolean>(false);
 
   const [id, setId] = useState<number>(-1);
   const [title, setTitle] = useState<string>("");
   const [desc, setDesc] = useState<string>("");
   const [rank, setRank] = useState<number>(1);
   const [ifok, setIfok] = useState<boolean>(true);
+  const [IRCardRecord, setIRCardRecord] = useState<IRCardProps>(IRListData[0]);
 
   const showSRModal = (record: IRCardProps) => {
     setId(record.id);
@@ -202,6 +205,19 @@ const UIIRList = (props: UIIRListProps) => {
     });
   }
 
+  const showCardModal = (record: IRCardProps) => {
+    setIsCardModalVisible(true);
+    setIRCardRecord(record);
+  };
+
+  const handleCardCancel = () => {
+    setIsCardModalVisible(false);
+  };
+
+  const handleCardOk = () => {
+    setIsCardModalVisible(false);
+  };
+
   const columns: ProColumns<IRCardProps>[] = [
     {
       title: "原始需求标题",
@@ -216,7 +232,9 @@ const UIIRList = (props: UIIRListProps) => {
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
+            cursor: "pointer",
           }}
+          onClick={() => showCardModal(record)}
         >
           {record.title}
         </div>
@@ -325,17 +343,10 @@ const UIIRList = (props: UIIRListProps) => {
             setting: true,
             density: true,
           }}
-          // request={() => {
-          //   return Promise.resolve({
-          //     data: tableListDataSource,
-          //     success: true,
-          //   });
-          // }}
           defaultSize={"small"}
           dataSource={dataIRList}
           rowKey="id"
           pagination={{ pageSize: 10 }}
-          // scroll={{ y: 600 }}
           tableStyle={{ padding: "1rem 1rem 2rem" }}
           dateFormatter="string"
           search={false}
@@ -403,17 +414,6 @@ const UIIRList = (props: UIIRListProps) => {
               setDesc(e.target.value);
             }}
           />
-          {/*<p*/}
-          {/*  style={{ paddingTop: "10px", marginBottom: "5px", fontSize: "16px" }}*/}
-          {/*>*/}
-          {/*  项目重要性*/}
-          {/*</p>*/}
-          {/*<InputNumber*/}
-          {/*  value={rank}*/}
-          {/*  onChange={(e: number) => {*/}
-          {/*    setRank(e);*/}
-          {/*  }}*/}
-          {/*/>*/}
         </Modal>
 
         <Modal
@@ -462,6 +462,32 @@ const UIIRList = (props: UIIRListProps) => {
             onChange={(e) => {
               setDesc(e.target.value);
             }}
+          />
+        </Modal>
+
+        <Modal
+          title="IRCard展示"
+          centered={true}
+          visible={isCardModalVisible}
+          onCancel={handleCardCancel}
+          footer={[
+            <Button key="confirm" onClick={handleCardOk}>
+              确认
+            </Button>,
+          ]}
+          width={"40%"}
+          destroyOnClose={true}
+        >
+          <IRCard
+            title={IRCardRecord.title}
+            iter={IRCardRecord.iter}
+            id={IRCardRecord.id}
+            project={IRCardRecord.project}
+            description={IRCardRecord.description}
+            progress={IRCardRecord.progress}
+            createdAt={IRCardRecord.createdAt}
+            createdBy={IRCardRecord.createdBy}
+            rank={IRCardRecord.rank}
           />
         </Modal>
       </div>
