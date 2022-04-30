@@ -136,6 +136,7 @@ const SRCard = (props: SRCardProps) => {
   const [service, setService] = useState(props.service);
   const [descEditing, setDescEditing] = useState<boolean>(false);
   const [userAvatar, setUserAvatar] = useState<string>("");
+  const [createdByAvatar, setCreatedByAvatar] = useState<string>("");
   const [bounds, setBounds] = useState({
     left: 0,
     top: 0,
@@ -339,7 +340,7 @@ const SRCard = (props: SRCardProps) => {
     updateProjectInfo(dispatcher, props.project).then((data) => {
       // console.log(data);
       const userInfo = data.data.users.filter(
-        (user: any) => user.id === props.createdBy
+        (user: any) => user.id === props.chargedBy
       )[0];
       const avatar =
         userInfo.avatar.length < 5
@@ -460,6 +461,11 @@ const SRCard = (props: SRCardProps) => {
         </div>
         <div className="SRCard-small-down">
           <Avatar.Group>
+            <Avatar
+              className="SRCard-small-avatar"
+              size="small"
+              src={userAvatar}
+            />
             <Avatar
               className="SRCard-small-avatar"
               size="small"

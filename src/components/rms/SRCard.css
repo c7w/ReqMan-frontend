@@ -88,6 +88,7 @@
 }
 
 .SRModal-content-left {
+  max-height: 70vh;
 }
 
 .SRModal-content-left-up {
@@ -95,6 +96,8 @@
 
 .SRModal-content-right {
   margin-left: 1rem;
+  max-height: 70vh;
+  overflow-y: scroll;
 }
 
 .SRModal-content-desc {

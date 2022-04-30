@@ -47,7 +47,7 @@ const UICommitList = (props: UICommitListProps) => {
       style={{
         maxWidth: "50vw",
         overflowY: "scroll",
-        maxHeight: "35vh",
+        maxHeight: "25vh",
         paddingTop: "1rem",
         paddingRight: "1rem",
       }}
