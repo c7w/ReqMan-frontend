@@ -74,7 +74,6 @@ const IssueFigure = (props: IssueFigureProps) => {
         name: "数量",
         min: 0,
         max: maxNum + 2,
-        interval: 2,
         axisLabel: {
           formatter: "{value}",
         },
@@ -84,7 +83,6 @@ const IssueFigure = (props: IssueFigureProps) => {
         name: "错误率",
         min: 0,
         max: 100,
-        interval: 20,
         axisLabel: {
           formatter: "{value} %",
         },
