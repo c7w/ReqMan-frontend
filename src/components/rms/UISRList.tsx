@@ -1,7 +1,7 @@
-import React, { ReactElement, useEffect, useState } from "react";
+import React, { useState } from "react";
 import type { ProColumns } from "@ant-design/pro-table";
 import ReactMarkdown from "react-markdown";
-import ProTable, { ProColumnType } from "@ant-design/pro-table";
+import ProTable from "@ant-design/pro-table";
 import {
   Button,
   Input,
@@ -18,7 +18,6 @@ import {
   IRSRAssociation,
   Iteration,
   SRCardProps,
-  SRService,
 } from "../../store/ConfigureStore";
 import {
   createIRSR,
@@ -355,6 +354,7 @@ const UISRList = (props: UISRListProps) => {
 
   const showCreateModal = () => {
     setIsCreateModalVisible(true);
+    setIfok(true);
   };
 
   // Handle create

@@ -56,6 +56,8 @@ const UIProjectList = (props: ProjectListProps) => {
 
   const [joinModal, setJoinModal] = useState(false);
   const [invitationCode, setInvitationCode] = useState("");
+  const [ifok, setIfok] = useState<boolean>(true);
+
   const onJoin = () => {
     const reg = /^[A-Z0-9]{8}$/;
     if (!reg.test(invitationCode)) {
@@ -82,6 +84,7 @@ const UIProjectList = (props: ProjectListProps) => {
 
   const showModal = () => {
     setIsModalVisible(true);
+    setIfok(true);
   };
 
   const handleOk = () => {
@@ -104,10 +107,12 @@ const UIProjectList = (props: ProjectListProps) => {
       }
     });
     setIsModalVisible(false);
+    setIfok(true);
   };
 
   const handleCancel = () => {
     setIsModalVisible(false);
+    setIfok(true);
   };
 
   const getRoleName = (role: string) => {
@@ -282,6 +287,8 @@ const UIProjectList = (props: ProjectListProps) => {
           visible={isModalVisible}
           onOk={handleOk}
           onCancel={handleCancel}
+          okButtonProps={{ disabled: ifok }}
+          destroyOnClose={true}
         >
           <p
             style={{
@@ -294,6 +301,12 @@ const UIProjectList = (props: ProjectListProps) => {
           </p>
           <Input
             onChange={(e) => {
+              if (e.target.value === "") {
+                setIfok(true);
+              }
+              if (e.target.value !== "") {
+                setIfok(false);
+              }
               setNewTitle(e.target.value);
             }}
           />
@@ -323,6 +336,7 @@ const UIProjectList = (props: ProjectListProps) => {
             setJoinModal(false);
             setInvitationCode("");
           }}
+          destroyOnClose={true}
         >
           <p
             style={{

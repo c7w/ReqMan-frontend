@@ -1,21 +1,8 @@
-import React, { ReactElement, useEffect, useState } from "react";
+import React, { useState } from "react";
 import type { ProColumns } from "@ant-design/pro-table";
 import ProTable from "@ant-design/pro-table";
-import {
-  Input,
-  Button,
-  Modal,
-  Progress,
-  InputNumber,
-  Popconfirm,
-  message,
-  Space,
-} from "antd";
-import {
-  IRCardProps,
-  IRSRAssociation,
-  SRCardProps,
-} from "../../store/ConfigureStore";
+import { Input, Button, Modal, Progress, Popconfirm } from "antd";
+import { IRCardProps, IRSRAssociation } from "../../store/ConfigureStore";
 import "./UIIRList.css";
 import SRList from "./UISRList";
 import { useDispatch, useSelector } from "react-redux";
@@ -26,20 +13,7 @@ import {
 } from "../../store/functions/RMS";
 import { ToastMessage } from "../../utils/Navigation";
 import ReactMarkdown from "react-markdown";
-import {
-  IR2Iteration,
-  Iteration2SR,
-  oneIR2AllSR,
-  SR2Iteration,
-  SRId2SRInfo,
-  userId2UserInfo,
-} from "../../utils/Association";
-import {
-  getIRIterationStore,
-  getIterationStore,
-  getSRIterationStore,
-} from "../../store/slices/IterationSlice";
-import { getSRListStore } from "../../store/slices/IRSRSlice";
+import { SRId2SRInfo, userId2UserInfo } from "../../utils/Association";
 import { getProjectStore } from "../../store/slices/ProjectSlice";
 import { UIUserCardPreview } from "../ums/UIUserCard";
 const { TextArea } = Input;
@@ -60,8 +34,6 @@ const UIIRList = (props: UIIRListProps) => {
   const project = props.project_id;
   const dataIRList: IRCardProps[] = [];
   const projectInfo = useSelector(getProjectStore);
-  const iterationStore = useSelector(getIterationStore);
-  const iterIRAssoStore = useSelector(getIRIterationStore);
 
   IRListData.forEach((value: IRCardProps) => {
     const user = userId2UserInfo(Number(value.createdBy), projectInfo);
@@ -95,7 +67,6 @@ const UIIRList = (props: UIIRListProps) => {
       iter: [],
     });
   });
-  // const [tableListDataSource] = useState<IRCard[]>(dataIRList);
   const [isEditModalVisible, setIsEditModalVisible] = useState<boolean>(false);
   const [isCreateModalVisible, setIsCreateModalVisible] =
     useState<boolean>(false);
@@ -105,6 +76,7 @@ const UIIRList = (props: UIIRListProps) => {
   const [title, setTitle] = useState<string>("");
   const [desc, setDesc] = useState<string>("");
   const [rank, setRank] = useState<number>(1);
+  const [ifok, setIfok] = useState<boolean>(true);
 
   const showSRModal = (record: IRCardProps) => {
     setId(record.id);
@@ -125,6 +97,7 @@ const UIIRList = (props: UIIRListProps) => {
   };
 
   const showEditModal = (record: IRCardProps) => {
+    setIfok(false);
     setId(record.id);
     setTitle(record.title);
     setDesc(record.description);
@@ -158,6 +131,7 @@ const UIIRList = (props: UIIRListProps) => {
         ToastMessage("error", "修改失败", "您的原始需求修改失败");
       }
     });
+    setIfok(true);
   };
 
   const handleEditCancel = () => {
@@ -166,10 +140,12 @@ const UIIRList = (props: UIIRListProps) => {
     setDesc("");
     setRank(1);
     setIsEditModalVisible(false);
+    setIfok(true);
   };
 
   const showCreateModal = () => {
     setIsCreateModalVisible(true);
+    setIfok(true);
   };
 
   const handleCreateOk = () => {
@@ -198,6 +174,7 @@ const UIIRList = (props: UIIRListProps) => {
         ToastMessage("error", "创建失败", "您的原始需求创建失败");
       }
     });
+    setIfok(true);
   };
 
   const handleCreateCancel = () => {
@@ -206,6 +183,7 @@ const UIIRList = (props: UIIRListProps) => {
     setDesc("");
     setRank(1);
     setIsCreateModalVisible(false);
+    setIfok(true);
   };
 
   function confirmDelete(record: IRCardProps) {
@@ -393,11 +371,18 @@ const UIIRList = (props: UIIRListProps) => {
           onOk={handleCreateOk}
           onCancel={handleCreateCancel}
           width={"60vw"}
+          okButtonProps={{ disabled: ifok }}
         >
           <p style={{ marginBottom: "5px", fontSize: "16px" }}>原始需求名称</p>
           <Input
             value={title}
             onChange={(e) => {
+              if (e.target.value === "") {
+                setIfok(true);
+              }
+              if (e.target.value !== "") {
+                setIfok(false);
+              }
               setTitle(e.target.value);
             }}
           />
@@ -438,6 +423,7 @@ const UIIRList = (props: UIIRListProps) => {
           onOk={handleEditOk}
           onCancel={handleEditCancel}
           width={"70%"}
+          okButtonProps={{ disabled: ifok }}
         >
           <p
             style={{
@@ -451,6 +437,12 @@ const UIIRList = (props: UIIRListProps) => {
           <Input
             value={title}
             onChange={(e) => {
+              if (e.target.value === "") {
+                setIfok(true);
+              }
+              if (e.target.value !== "") {
+                setIfok(false);
+              }
               setTitle(e.target.value);
             }}
           />
