@@ -355,6 +355,7 @@ const UISRList = (props: UISRListProps) => {
 
   const showCreateModal = () => {
     setIsCreateModalVisible(true);
+    setIfok(true);
   };
 
   // Handle create

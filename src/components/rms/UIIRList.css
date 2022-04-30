@@ -14,13 +14,11 @@
 
 .showIRTable {
   width: 100%;
-  padding-top: 8px;
-  padding-bottom: 1rem;
-  padding-left: 2rem;
+  padding-top: 2rem;
+  margin-right: 1rem;
+  padding-bottom: 2rem;
   padding-right: 2rem;
-  margin-top: 1rem;
-  min-height: 80vh;
-  border-radius: 2rem;
+  border-radius: 1rem;
   background-color: #ffffff;
 }
 
