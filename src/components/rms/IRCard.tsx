@@ -70,6 +70,8 @@ const IRCard = (props: IRCardProps) => {
   const [assoSRCardList, setAssoSRCardList] = useState([]);
   const [assoIterList, setAssoIterList] = useState([]);
 
+  const [createdByAvatar, setCreatedByAvatar] = useState<string>("");
+
   // console.log(props);
 
   const handleOK = () => {
@@ -101,6 +103,20 @@ const IRCard = (props: IRCardProps) => {
     // 关闭模态框
     setModalVisible(false);
   };
+
+  useEffect(() => {
+    updateProjectInfo(dispatcher, props.project).then((data) => {
+      // console.log(data);
+      const userInfo = data.data.users.filter(
+        (user: any) => user.id === props.createdBy
+      )[0];
+      const createdByAvatar =
+        userInfo.avatar.length < 5
+          ? `https://www.gravatar.com/avatar/${CryptoJS.MD5(userInfo.email)}`
+          : userInfo.avatar;
+      setCreatedByAvatar(createdByAvatar);
+    });
+  }, []);
 
   // 更新打开的 modal 对应的 SR 的所有关系
   const updateAssociation = () => {
@@ -247,18 +263,16 @@ const IRCard = (props: IRCardProps) => {
           </Typography>
         </div>
         <div className="IRCard-small-down">
-          <Avatar.Group>
-            <Avatar
-              className="IRCard-small-avatar"
-              size="small"
-              src={userId2Avatar(Number(props.createdBy), projectInfo)}
-            />
-          </Avatar.Group>
-          <div>
+          <Avatar
+            className="SRCard-small-avatar"
+            size="small"
+            src={createdByAvatar}
+          />
+          <Text ellipsis={true}>
             {props.createdAt
               ? moment(props.createdAt * 1000).format("YYYY-MM-DD HH:mm:ss")
               : "无创建时间记录"}
-          </div>
+          </Text>
         </div>
       </div>
       {/*<input className="card-input" id="button" type="checkbox" />*/}
@@ -330,10 +344,12 @@ const IRCard = (props: IRCardProps) => {
             </div>
             <div>
               <b>创建时间:</b>
-              {"   " +
-                (props.createdAt
+              <Text ellipsis={true}>
+                &nbsp;&nbsp;
+                {props.createdAt
                   ? moment(props.createdAt * 1000).format("YYYY-MM-DD HH:mm:ss")
-                  : "无创建时间记录")}
+                  : "无创建时间记录"}
+              </Text>
             </div>
           </div>
           <div className="IRModal-content-bottom">

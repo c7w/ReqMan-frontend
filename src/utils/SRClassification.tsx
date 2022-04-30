@@ -110,7 +110,7 @@ const expandSRList = (
       priority: value.priority,
       currState: value.state,
       createdBy: value.createdBy,
-      createdAt: value.createdAt * 1000,
+      createdAt: value.createdAt,
       iter: SR2Iteration(value.id, iterSRAssoStore, iterationStore),
       chargedBy:
         SR2ChargedUser(value.id, userSRStore, projectInfo).length > 0
