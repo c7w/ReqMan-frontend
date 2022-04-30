@@ -136,12 +136,6 @@ const SRCard = (props: SRCardProps) => {
   const [service, setService] = useState(props.service);
   const [descEditing, setDescEditing] = useState<boolean>(false);
   const [userAvatar, setUserAvatar] = useState<string>("");
-  const [bounds, setBounds] = useState({
-    left: 0,
-    top: 0,
-    bottom: 0,
-    right: 0,
-  });
   // SR 关联信息
   const [assoIRCardList, setAssoIRCardList] = useState([]);
   const [assoMRCardList, setAssoMRCardList] = useState([]);
@@ -314,6 +308,7 @@ const SRCard = (props: SRCardProps) => {
         JSON.stringify(data[0]),
         JSON.stringify(data[1])
       );
+      console.log(assoIRListData);
       const newAssoIRCardList: any = [];
       assoIRListData.forEach((value: IRCardProps) => {
         newAssoIRCardList.push(

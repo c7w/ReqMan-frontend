@@ -14,6 +14,7 @@ import { useParams } from "react-router-dom";
 import { SyncOutlined, ReloadOutlined } from "@ant-design/icons";
 import moment from "moment";
 import { addRDTSTimer } from "../../utils/Timer";
+import { UIUserCardPreview } from "../ums/UIUserCard";
 
 const UIIssue = () => {
   const dispatcher = useDispatch();
@@ -94,14 +95,22 @@ const UIIssue = () => {
       dataIndex: "createdBy",
       align: "center",
       render: (_, record) => {
-        let user = record.assigneeUserName;
+        const user = record.assigneeUserName;
         if (record.user_assignee > 0) {
           const find_result = userId2UserInfo(
             record.user_assignee,
             projectStore
           );
           if (find_result !== "not_found") {
-            user = find_result.name;
+            return (
+              <div style={{}}>
+                <UIUserCardPreview
+                  projectStore={projectStore}
+                  userId={find_result.id}
+                />
+                {/*<span>{"@" + find_result.name}</span>*/}
+              </div>
+            );
           }
         }
         return <div style={{}}>{user}</div>;
@@ -114,14 +123,21 @@ const UIIssue = () => {
       dataIndex: "authoredBy",
       align: "center",
       render: (_, record) => {
-        let user = record.authoredByUserName;
+        const user = record.authoredByUserName;
         if (record.user_authored > 0) {
           const find_result = userId2UserInfo(
             record.user_authored,
             projectStore
           );
           if (find_result !== "not_found") {
-            user = find_result.name;
+            return (
+              <div style={{}}>
+                <UIUserCardPreview
+                  projectStore={projectStore}
+                  userId={find_result.id}
+                />
+              </div>
+            );
           }
         }
         return <div style={{}}>{user}</div>;

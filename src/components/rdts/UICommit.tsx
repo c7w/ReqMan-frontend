@@ -13,6 +13,7 @@ import { addRDTSTimer } from "../../utils/Timer";
 import { getRDTSInfo } from "../../store/functions/RDTS";
 import { Typography } from "antd";
 import { ReloadOutlined, SyncOutlined } from "@ant-design/icons";
+import { UIUserCardPreview } from "../ums/UIUserCard";
 
 const UICommit = () => {
   const dispatcher = useDispatch();
@@ -96,14 +97,21 @@ const UICommit = () => {
       dataIndex: "createdBy",
       align: "center",
       render: (_, record) => {
-        let user = record.commiter_email;
+        const user = record.commiter_email;
         if (record.user_committer > 0) {
           const find_result = userId2UserInfo(
             record.user_committer,
             projectStore
           );
           if (find_result !== "not_found") {
-            user = find_result.name;
+            return (
+              <div style={{}}>
+                <UIUserCardPreview
+                  projectStore={projectStore}
+                  userId={find_result.id}
+                />
+              </div>
+            );
           }
         }
         return <div style={{}}>{user}</div>;

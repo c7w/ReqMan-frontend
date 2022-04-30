@@ -118,14 +118,19 @@ const projectRmUser = async (
 };
 
 // userInfo: getUserStore 而来
-const getCommitCountInfo = async (dispatcher: any, project_id: number) => {
+const getCommitCountInfo = async (
+  dispatcher: any,
+  project_id: number,
+  user_id: number
+) => {
   const myBody = {
     project: project_id,
+    dev_id: [user_id],
     digest: true,
     limit: -1,
   };
 
-  return request_json(API.GET_USER_ACTIVITY, {
+  return request_json(API.GET_RECENT_ACTIVITY, {
     body: myBody,
   }).then((data: any) => {
     return data;

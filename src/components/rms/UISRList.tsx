@@ -52,6 +52,7 @@ import {
 import { difference } from "underscore";
 import { Service } from "./UIServiceReadonly";
 import { getUserSRStore } from "../../store/slices/UserSRSlice";
+import { UIUserCardPreview } from "../ums/UIUserCard";
 const { TextArea } = Input;
 const { Option } = Select;
 
@@ -126,7 +127,7 @@ const UISRList = (props: UISRListProps) => {
       priority: value.priority,
       currState: state,
       stateColor: color,
-      createdBy: user.name,
+      createdBy: user.id,
       createdAt: value.createdAt * 1000,
       iter: SR2Iteration(value.id, iterSRAssoStore, iterationStore),
       chargedBy:
@@ -453,7 +454,7 @@ const UISRList = (props: UISRListProps) => {
   );
 
   function handleChargedByChange(value: number) {
-    console.log(value);
+    // console.log(value);
     setChargedBy(value);
   }
 
@@ -550,15 +551,22 @@ const UISRList = (props: UISRListProps) => {
     align: "center",
     render: (text, record, _, action) => [
       <div>
-        {record.chargedBy === -1
-          ? "-"
-          : JSON.parse(projectInfo).data.users.filter(
-              (user: any) => user.id === record.chargedBy
-            ).length > 0
-          ? JSON.parse(projectInfo).data.users.filter(
-              (user: any) => user.id === record.chargedBy
-            )[0].name
-          : "-"}
+        {record.chargedBy === -1 ? (
+          "-"
+        ) : JSON.parse(projectInfo).data.users.filter(
+            (user: any) => user.id === record.chargedBy
+          ).length > 0 ? (
+          <UIUserCardPreview
+            projectStore={projectInfo}
+            userId={
+              JSON.parse(projectInfo).data.users.filter(
+                (user: any) => user.id === record.chargedBy
+              )[0].id
+            }
+          />
+        ) : (
+          "-"
+        )}
       </div>,
     ],
   };
