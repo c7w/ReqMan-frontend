@@ -12,8 +12,96 @@ const todoSR = (
   const SRListData = JSON.parse(SRListInfo).filter(
     (obj: any) => obj.state === "TODO"
   );
-  console.log(SRListData);
-  return SRListData.map((value: any) => {
+  return expandSRList(
+    JSON.stringify(SRListData),
+    iterSRAssoStore,
+    iterationStore,
+    userSRStore,
+    projectInfo,
+    SRServiceStore,
+    serviceStore
+  );
+};
+
+const wipSR = (
+  SRListInfo: string,
+  iterSRAssoStore: string,
+  iterationStore: string,
+  userSRStore: string,
+  projectInfo: string,
+  SRServiceStore: string,
+  serviceStore: string
+) => {
+  const SRListData = JSON.parse(SRListInfo).filter(
+    (obj: any) => obj.state === "WIP"
+  );
+  return expandSRList(
+    JSON.stringify(SRListData),
+    iterSRAssoStore,
+    iterationStore,
+    userSRStore,
+    projectInfo,
+    SRServiceStore,
+    serviceStore
+  );
+};
+
+const reviewSR = (
+  SRListInfo: string,
+  iterSRAssoStore: string,
+  iterationStore: string,
+  userSRStore: string,
+  projectInfo: string,
+  SRServiceStore: string,
+  serviceStore: string
+) => {
+  const SRListData = JSON.parse(SRListInfo).filter(
+    (obj: any) => obj.state === "Reviewing"
+  );
+  return expandSRList(
+    JSON.stringify(SRListData),
+    iterSRAssoStore,
+    iterationStore,
+    userSRStore,
+    projectInfo,
+    SRServiceStore,
+    serviceStore
+  );
+};
+
+const doneSR = (
+  SRListInfo: string,
+  iterSRAssoStore: string,
+  iterationStore: string,
+  userSRStore: string,
+  projectInfo: string,
+  SRServiceStore: string,
+  serviceStore: string
+) => {
+  const SRListData = JSON.parse(SRListInfo).filter(
+    (obj: any) => obj.state === "Done"
+  );
+  return expandSRList(
+    JSON.stringify(SRListData),
+    iterSRAssoStore,
+    iterationStore,
+    userSRStore,
+    projectInfo,
+    SRServiceStore,
+    serviceStore
+  );
+};
+// 将后端得到的 sr 扩展为前端展示的 SRCardProps 类型
+const expandSRList = (
+  SRListInfo: string,
+  iterSRAssoStore: string,
+  iterationStore: string,
+  userSRStore: string,
+  projectInfo: string,
+  SRServiceStore: string,
+  serviceStore: string
+) => {
+  return JSON.parse(SRListInfo).map((value: any) => {
     return {
       id: value.id,
       project: value.project,
@@ -34,21 +122,6 @@ const todoSR = (
           : -1,
     };
   });
-};
-
-const wipSR = (SRListInfo: string, userId: string) => {
-  const SRListData = JSON.parse(SRListInfo);
-  return SRListData.filter((obj: any) => obj.state === "WIP");
-};
-
-const reviewSR = (SRListInfo: string, userId: string) => {
-  const SRListData = JSON.parse(SRListInfo);
-  return SRListData.filter((obj: any) => obj.state === "Reviewing");
-};
-
-const doneSR = (SRListInfo: string, userId: string) => {
-  const SRListData = JSON.parse(SRListInfo).data;
-  return SRListData.filter((obj: any) => obj.state === "Done");
 };
 
 export { todoSR, wipSR, reviewSR, doneSR };

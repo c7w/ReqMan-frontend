@@ -103,6 +103,7 @@ import { ProjectServiceCard } from "./UIService";
 const { Text } = Typography;
 
 const SRCard = (props: SRCardProps) => {
+  console.log(props);
   const dispatcher = useDispatch();
   const userInfo = useSelector(getUserStore);
   const projectStore = useSelector(getProjectStore);
@@ -339,14 +340,22 @@ const SRCard = (props: SRCardProps) => {
   useEffect(() => {
     updateProjectInfo(dispatcher, props.project).then((data) => {
       // console.log(data);
-      const userInfo = data.data.users.filter(
-        (user: any) => user.id === props.chargedBy
+      let userInfo = data.data.users.filter(
+        (user: any) => user.id === props.createdBy
       )[0];
       const avatar =
         userInfo.avatar.length < 5
           ? `https://www.gravatar.com/avatar/${CryptoJS.MD5(userInfo.email)}`
           : userInfo.avatar;
       setUserAvatar(avatar);
+      userInfo = data.data.users.filter(
+        (user: any) => user.id === props.chargedBy
+      )[0];
+      const createdByAvatar =
+        userInfo.avatar.length < 5
+          ? `https://www.gravatar.com/avatar/${CryptoJS.MD5(userInfo.email)}`
+          : userInfo.avatar;
+      setCreatedByAvatar(createdByAvatar);
     });
   }, []);
 
@@ -469,7 +478,7 @@ const SRCard = (props: SRCardProps) => {
             <Avatar
               className="SRCard-small-avatar"
               size="small"
-              src={userAvatar}
+              src={createdByAvatar}
             />
           </Avatar.Group>
           <div>
@@ -561,7 +570,7 @@ const SRCard = (props: SRCardProps) => {
                   负责人：
                 </span>
                 <UIUserCardPreview
-                  userId={Number(props.createdBy)}
+                  userId={Number(props.chargedBy)}
                   projectStore={projectStore}
                   // yourSelf={false}
                 />

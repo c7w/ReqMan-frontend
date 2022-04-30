@@ -93,10 +93,23 @@ const Calendar = (props: CalendarProps) => {
           JSON.stringify(data[5]),
           JSON.stringify(data[6])
         );
-        const wip_arr = wipSR(JSON.stringify(assoSRList), userData.user.id);
+        const wip_arr = wipSR(
+          JSON.stringify(assoSRList),
+          JSON.stringify(data[2]),
+          JSON.stringify(data[3]),
+          JSON.stringify(data[1]),
+          JSON.stringify(data[4]),
+          JSON.stringify(data[5]),
+          JSON.stringify(data[6])
+        );
         const review_arr = reviewSR(
           JSON.stringify(assoSRList),
-          userData.user.id
+          JSON.stringify(data[2]),
+          JSON.stringify(data[3]),
+          JSON.stringify(data[1]),
+          JSON.stringify(data[4]),
+          JSON.stringify(data[5]),
+          JSON.stringify(data[6])
         );
         todo_arr.forEach((value: any) => {
           todoSRListData.push(value);
