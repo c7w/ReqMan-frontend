@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ReactEcharts from "echarts-for-react";
 import "./UIUserCard.css";
-import { Avatar, Divider, Modal } from "antd";
+import { Avatar, Divider, Modal, Tooltip } from "antd";
 import moment from "moment";
 import { getCommitCountInfo } from "../../store/functions/UMS";
 import { useDispatch } from "react-redux";
@@ -280,24 +280,26 @@ const UIUserCardPreview = (props: UIUserCardPreviewProps) => {
         // projectStore={props.projectStore}
         // yourSelf={props.yourSelf}
       />
-      <div
-        className="UserCard-small"
-        onClick={() => {
-          setVisible(true);
-        }}
-      >
-        <Avatar
-          className="UserCard-small-avatar"
-          size="small"
-          src={
-            userInfo.avatar.length < 5
-              ? `https://www.gravatar.com/avatar/${CryptoJS.MD5(
-                  userInfo.email
-                )}`
-              : userInfo.avatar
-          }
-        />
-      </div>
+      <Tooltip title={userInfo.name}>
+        <div
+          className="UserCard-small"
+          onClick={() => {
+            setVisible(true);
+          }}
+        >
+          <Avatar
+            className="UserCard-small-avatar"
+            size="small"
+            src={
+              userInfo.avatar.length < 5
+                ? `https://www.gravatar.com/avatar/${CryptoJS.MD5(
+                    userInfo.email
+                  )}`
+                : userInfo.avatar
+            }
+          />
+        </div>
+      </Tooltip>
     </>
   );
 };

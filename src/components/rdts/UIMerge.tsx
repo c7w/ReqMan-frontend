@@ -19,6 +19,7 @@ import { addRDTSTimer } from "../../utils/Timer";
 import { getRDTSInfo } from "../../store/functions/RDTS";
 import { useParams } from "react-router-dom";
 import { ReloadOutlined, SyncOutlined } from "@ant-design/icons";
+import { UIUserCardPreview } from "../ums/UIUserCard";
 
 const UIMerge = () => {
   const dispatcher = useDispatch();
@@ -108,14 +109,22 @@ const UIMerge = () => {
       dataIndex: "createdBy",
       align: "center",
       render: (_, record) => {
-        let user = record.authoredByUserName;
+        const user = record.authoredByUserName;
         if (record.user_authored > 0) {
           const find_result = userId2UserInfo(
             record.user_authored,
             projectStore
           );
           if (find_result !== "not_found") {
-            user = find_result.name;
+            return (
+              <div style={{}}>
+                <UIUserCardPreview
+                  projectStore={projectStore}
+                  userId={find_result.id}
+                />
+                {/*<span>{"@" + find_result.name}</span>*/}
+              </div>
+            );
           }
         }
         return <div style={{}}>{user}</div>;

@@ -41,6 +41,7 @@ import {
 } from "../../store/slices/IterationSlice";
 import { getSRListStore } from "../../store/slices/IRSRSlice";
 import { getProjectStore } from "../../store/slices/ProjectSlice";
+import { UIUserCardPreview } from "../ums/UIUserCard";
 const { TextArea } = Input;
 
 interface UIIRListProps {
@@ -87,7 +88,7 @@ const UIIRList = (props: UIIRListProps) => {
       title: value.title,
       description: value.description,
       rank: value.rank,
-      createdBy: user.name,
+      createdBy: user.id,
       createdAt: value.createdAt * 1000,
       disabled: value.disabled,
       progress: curProgress,
@@ -264,8 +265,18 @@ const UIIRList = (props: UIIRListProps) => {
       title: "创建者",
       width: "12%",
       ellipsis: true,
-      dataIndex: "createdBy",
       align: "center",
+      render: (_, record) => {
+        // console.log(record);
+        return (
+          <div style={{}}>
+            <UIUserCardPreview
+              projectStore={projectInfo}
+              userId={Number(record.createdBy)}
+            />
+          </div>
+        );
+      },
     },
     {
       title: "创建时间",
