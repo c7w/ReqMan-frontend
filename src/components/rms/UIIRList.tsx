@@ -1,21 +1,8 @@
-import React, { ReactElement, useEffect, useState } from "react";
+import React, { useState } from "react";
 import type { ProColumns } from "@ant-design/pro-table";
 import ProTable from "@ant-design/pro-table";
-import {
-  Input,
-  Button,
-  Modal,
-  Progress,
-  InputNumber,
-  Popconfirm,
-  message,
-  Space,
-} from "antd";
-import {
-  IRCardProps,
-  IRSRAssociation,
-  SRCardProps,
-} from "../../store/ConfigureStore";
+import { Input, Button, Modal, Progress, Popconfirm } from "antd";
+import { IRCardProps, IRSRAssociation } from "../../store/ConfigureStore";
 import "./UIIRList.css";
 import SRList from "./UISRList";
 import { useDispatch, useSelector } from "react-redux";
@@ -26,20 +13,7 @@ import {
 } from "../../store/functions/RMS";
 import { ToastMessage } from "../../utils/Navigation";
 import ReactMarkdown from "react-markdown";
-import {
-  IR2Iteration,
-  Iteration2SR,
-  oneIR2AllSR,
-  SR2Iteration,
-  SRId2SRInfo,
-  userId2UserInfo,
-} from "../../utils/Association";
-import {
-  getIRIterationStore,
-  getIterationStore,
-  getSRIterationStore,
-} from "../../store/slices/IterationSlice";
-import { getSRListStore } from "../../store/slices/IRSRSlice";
+import { SRId2SRInfo, userId2UserInfo } from "../../utils/Association";
 import { getProjectStore } from "../../store/slices/ProjectSlice";
 import { UIUserCardPreview } from "../ums/UIUserCard";
 const { TextArea } = Input;
@@ -60,8 +34,6 @@ const UIIRList = (props: UIIRListProps) => {
   const project = props.project_id;
   const dataIRList: IRCardProps[] = [];
   const projectInfo = useSelector(getProjectStore);
-  const iterationStore = useSelector(getIterationStore);
-  const iterIRAssoStore = useSelector(getIRIterationStore);
 
   IRListData.forEach((value: IRCardProps) => {
     const user = userId2UserInfo(Number(value.createdBy), projectInfo);
@@ -95,7 +67,6 @@ const UIIRList = (props: UIIRListProps) => {
       iter: [],
     });
   });
-  // const [tableListDataSource] = useState<IRCard[]>(dataIRList);
   const [isEditModalVisible, setIsEditModalVisible] = useState<boolean>(false);
   const [isCreateModalVisible, setIsCreateModalVisible] =
     useState<boolean>(false);
