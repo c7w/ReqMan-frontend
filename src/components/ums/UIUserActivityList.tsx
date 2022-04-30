@@ -12,7 +12,7 @@ const UIUserActivityList = (props: UIUserActivityListProps) => {
     <div
       className="user-activity-list"
       style={{
-        maxWidth: "35vw",
+        width: "100%",
         overflowY: "scroll",
         maxHeight: "80vh",
         paddingTop: "2rem",

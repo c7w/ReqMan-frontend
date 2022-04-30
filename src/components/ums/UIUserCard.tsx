@@ -61,19 +61,21 @@ const UIUserCard = (props: UIUserCardProps) => {
   };
 
   useEffect(() => {
-    getCommitCountInfo(dispatcher, projectInfo.project.id).then((data: any) => {
-      const date = new Date(); // 当前时间
-      const date_now = date.getTime();
-      date.setFullYear(date.getFullYear() - 1); // 去年时间
-      const date_past = date.getTime();
-      const commitData = getAllDay(date_past, date_now);
-      // console.log(data);
-      const commitTimes = data.data.commit_times;
-      commitTimes.forEach((commitTime: any) => {
-        commitData[moment(commitTime * 1000).format("YYYY-MM-DD")]++;
-      });
-      setCommitInfo(JSON.stringify(commitData));
-    });
+    getCommitCountInfo(dispatcher, projectInfo.project.id, props.userId).then(
+      (data: any) => {
+        const date = new Date(); // 当前时间
+        const date_now = date.getTime();
+        date.setFullYear(date.getFullYear() - 1); // 去年时间
+        const date_past = date.getTime();
+        const commitData = getAllDay(date_past, date_now);
+        // console.log(data);
+        const commitTimes = data.data[0].commit_times;
+        commitTimes.forEach((commitTime: any) => {
+          commitData[moment(commitTime * 1000).format("YYYY-MM-DD")]++;
+        });
+        setCommitInfo(JSON.stringify(commitData));
+      }
+    );
     getRDTSInfo(dispatcher, projectInfo.project.id).then((data: any) => {
       // console.log(data);
       const myActivities: any = {
@@ -162,7 +164,7 @@ const UIUserCard = (props: UIUserCardProps) => {
     },
     visualMap: {
       min: 0,
-      max: 20,
+      max: 30,
       type: "continuous",
       orient: "horizontal",
       left: "center",
@@ -247,11 +249,6 @@ const UIUserCard = (props: UIUserCardProps) => {
               userInfo={JSON.stringify(userInfo)}
             />
           </div>
-          {/*<div className="UserCard-projects">*/}
-          {/*  <span style={{ fontWeight: "bold", fontSize: "1.5rem" }}>*/}
-          {/*    我的项目*/}
-          {/*  </span>*/}
-          {/*</div>*/}
         </div>
       </div>
     </Modal>
