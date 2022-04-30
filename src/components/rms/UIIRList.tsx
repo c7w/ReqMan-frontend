@@ -251,7 +251,7 @@ const UIIRList = (props: UIIRListProps) => {
     },
     {
       title: "进度",
-      width: "13%",
+      width: "12%",
       align: "center",
       render: (_, record) => (
         <Progress className={"prgressProp"} percent={record.progress} />
@@ -259,7 +259,7 @@ const UIIRList = (props: UIIRListProps) => {
     },
     {
       title: "创建者",
-      width: "12%",
+      width: "8%",
       ellipsis: true,
       align: "center",
       render: (_, record) => {
@@ -285,7 +285,7 @@ const UIIRList = (props: UIIRListProps) => {
     },
     {
       title: "操作",
-      width: "20%",
+      width: "25%",
       valueType: "option",
       align: "center",
       render: (text, record, _, action) => [
@@ -485,7 +485,7 @@ const UIIRList = (props: UIIRListProps) => {
             project={IRCardRecord.project}
             description={IRCardRecord.description}
             progress={IRCardRecord.progress}
-            createdAt={IRCardRecord.createdAt}
+            createdAt={Number(IRCardRecord.createdAt) / 1000}
             createdBy={IRCardRecord.createdBy}
             rank={IRCardRecord.rank}
           />
@@ -517,6 +517,31 @@ const UIIRList = (props: UIIRListProps) => {
           dateFormatter="string"
           search={false}
         />
+        <Modal
+          title="IRCard展示"
+          centered={true}
+          visible={isCardModalVisible}
+          onCancel={handleCardCancel}
+          footer={[
+            <Button key="confirm" onClick={handleCardOk}>
+              确认
+            </Button>,
+          ]}
+          width={"40%"}
+          destroyOnClose={true}
+        >
+          <IRCard
+            title={IRCardRecord.title}
+            iter={IRCardRecord.iter}
+            id={IRCardRecord.id}
+            project={IRCardRecord.project}
+            description={IRCardRecord.description}
+            progress={IRCardRecord.progress}
+            createdAt={Number(IRCardRecord.createdAt) / 1000}
+            createdBy={IRCardRecord.createdBy}
+            rank={IRCardRecord.rank}
+          />
+        </Modal>
       </div>
     );
   }
