@@ -44,7 +44,7 @@ import {
   getIterationStore,
 } from "../../store/slices/IterationSlice";
 import SRCard from "./SRCard";
-import { getUserAvatar } from "../../utils/UserAvatar";
+import { getUserAvatar, userId2Avatar } from "../../utils/UserAvatar";
 import { UIUserCardPreview } from "../ums/UIUserCard";
 import { ClockCircleTwoTone } from "@ant-design/icons";
 import QueueAnim from "rc-queue-anim";
@@ -229,7 +229,7 @@ const IRCard = (props: IRCardProps) => {
             <Avatar
               className="IRCard-small-avatar"
               size="small"
-              src={getUserAvatar(userInfo)}
+              src={userId2Avatar(Number(props.createdBy), projectInfo)}
             />
           </Avatar.Group>
           <div>

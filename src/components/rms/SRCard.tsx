@@ -314,6 +314,7 @@ const SRCard = (props: SRCardProps) => {
         JSON.stringify(data[0]),
         JSON.stringify(data[1])
       );
+      console.log(assoIRListData);
       const newAssoIRCardList: any = [];
       assoIRListData.forEach((value: IRCardProps) => {
         newAssoIRCardList.push(
