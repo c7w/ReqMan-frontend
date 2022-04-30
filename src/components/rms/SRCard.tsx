@@ -103,6 +103,7 @@ import { ProjectServiceCard } from "./UIService";
 const { Text } = Typography;
 
 const SRCard = (props: SRCardProps) => {
+  // console.log(props);
   const dispatcher = useDispatch();
   const userInfo = useSelector(getUserStore);
   const projectStore = useSelector(getProjectStore);
@@ -135,7 +136,8 @@ const SRCard = (props: SRCardProps) => {
   const [chargedBy, setChargedBy] = useState(props.createdBy);
   const [service, setService] = useState(props.service);
   const [descEditing, setDescEditing] = useState<boolean>(false);
-  const [userAvatar, setUserAvatar] = useState<string>("");
+  const [chargedByAvatar, setChargedByAvatar] = useState<string>("");
+  const [createdByAvatar, setCreatedByAvatar] = useState<string>("");
   // SR 关联信息
   const [assoIRCardList, setAssoIRCardList] = useState([]);
   const [assoMRCardList, setAssoMRCardList] = useState([]);
@@ -333,14 +335,22 @@ const SRCard = (props: SRCardProps) => {
   useEffect(() => {
     updateProjectInfo(dispatcher, props.project).then((data) => {
       // console.log(data);
-      const userInfo = data.data.users.filter(
+      let userInfo = data.data.users.filter(
         (user: any) => user.id === props.createdBy
       )[0];
-      const avatar =
+      const createdByAvatar =
         userInfo.avatar.length < 5
           ? `https://www.gravatar.com/avatar/${CryptoJS.MD5(userInfo.email)}`
           : userInfo.avatar;
-      setUserAvatar(avatar);
+      setCreatedByAvatar(createdByAvatar);
+      userInfo = data.data.users.filter(
+        (user: any) => user.id === props.chargedBy
+      )[0];
+      const chargedByAvatar =
+        userInfo.avatar.length < 5
+          ? `https://www.gravatar.com/avatar/${CryptoJS.MD5(userInfo.email)}`
+          : userInfo.avatar;
+      setChargedByAvatar(chargedByAvatar);
     });
   }, []);
 
@@ -458,8 +468,15 @@ const SRCard = (props: SRCardProps) => {
             <Avatar
               className="SRCard-small-avatar"
               size="small"
-              src={userAvatar}
+              src={createdByAvatar}
             />
+            {chargedByAvatar ? (
+              <Avatar
+                className="SRCard-small-avatar"
+                size="small"
+                src={chargedByAvatar}
+              />
+            ) : undefined}
           </Avatar.Group>
           <div>
             {props.createdAt
@@ -549,11 +566,15 @@ const SRCard = (props: SRCardProps) => {
                 <span style={{ fontWeight: "bold", marginRight: "1rem" }}>
                   负责人：
                 </span>
-                <UIUserCardPreview
-                  userId={Number(props.createdBy)}
-                  projectStore={projectStore}
-                  // yourSelf={false}
-                />
+                {props.chargedBy ? (
+                  <UIUserCardPreview
+                    userId={Number(props.chargedBy)}
+                    projectStore={projectStore}
+                    // yourSelf={false}
+                  />
+                ) : (
+                  "暂无指定负责人"
+                )}
               </div>
               <div>
                 <b>创建时间:</b>

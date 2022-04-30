@@ -6,6 +6,7 @@ import {
   getIRSRInfo,
   getIterationInfo,
   getSRListInfo,
+  getUserSRInfo,
   updateIRInfo,
 } from "../../store/functions/RMS";
 import { ToastMessage } from "../../utils/Navigation";
@@ -38,6 +39,7 @@ import {
   IR2Iteration,
   oneIR2AllSR,
   oneSR2AllIR,
+  SRId2SRInfo,
 } from "../../utils/Association";
 import {
   getIRIterationStore,
@@ -49,6 +51,8 @@ import { UIUserCardPreview } from "../ums/UIUserCard";
 import { ClockCircleTwoTone } from "@ant-design/icons";
 import QueueAnim from "rc-queue-anim";
 import { updateProjectInfo } from "../../store/functions/UMS";
+import { expandSRList } from "../../utils/SRClassification";
+import { getUserSRStore } from "../../store/slices/UserSRSlice";
 
 const IRCard = (props: IRCardProps) => {
   const dispatcher = useDispatch();
@@ -58,6 +62,7 @@ const IRCard = (props: IRCardProps) => {
   const IRIterAssoStore = useSelector(getIRIterationStore);
   const iterationStore = useSelector(getIterationStore);
   const SRListStore = useSelector(getSRListStore);
+  const SRUserStore = useSelector(getUserSRStore);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [title, setTitle] = useState<string>(props.title);
   const [progress, setProgress] = useState<number>(props.progress);
@@ -105,7 +110,8 @@ const IRCard = (props: IRCardProps) => {
       getIRIterationInfo(dispatcher, props.project),
       getIterationInfo(dispatcher, props.project),
       updateProjectInfo(dispatcher, props.project),
-    ]).then((data) => {
+      getUserSRInfo(dispatcher, props.project),
+    ]).then((data: any) => {
       const assoSRListData = oneIR2AllSR(
         props.id,
         JSON.stringify(data[0]),
@@ -173,7 +179,21 @@ const IRCard = (props: IRCardProps) => {
       setAssoIterList(newAssoIterList);
       const newAssoSRCardList: any = [];
       console.log(assoSRListData);
+      // const assoSRIdList = data[5].data
+      //   .map((asso: any) => {
+      //     if (asso.user === userInfo.user.id) return asso.sr;
+      //   })
+      //   .filter((asso: any) => asso);
+      // const assoSRList = assoSRIdList.map((sr_id: string) =>
+      //   SRId2SRInfo(Number(sr_id), JSON.stringify(data[0]))
+      // );
       assoSRListData.forEach((value: any) => {
+        const chargedBy = data[5].data
+          .map((asso: any) => {
+            if (asso.sr === value.id) return asso.user;
+          })
+          .filter((asso: any) => asso)[0];
+        console.log(chargedBy);
         newAssoSRCardList.push(
           <SRCard
             id={value.id}
@@ -189,7 +209,7 @@ const IRCard = (props: IRCardProps) => {
             createdAt={value.createdAt}
             disabled={value.disabled}
             iter={value.iter}
-            chargedBy={value.chargedBy}
+            chargedBy={chargedBy}
             service={value.service}
           />
         );
@@ -216,7 +236,9 @@ const IRCard = (props: IRCardProps) => {
         }}
       >
         <div className="IRCard-small-header">
-          <div className="IRCard-small-header-left">{title}</div>
+          <div className="IRCard-small-header-left">
+            {!title || title === "" ? "[暂无标题]" : title}
+          </div>
           <div className="IRCard-small-header-right"></div>
         </div>
         <div className="IRCard-small-description">
@@ -259,7 +281,9 @@ const IRCard = (props: IRCardProps) => {
                 paddingRight: "1rem",
               }}
             >
-              <Breadcrumb.Item>{props.title}</Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {!title || title === "" ? "[暂无标题]" : title}
+              </Breadcrumb.Item>
             </Breadcrumb>
           </div>
           <div className="IRModal-header-right"></div>

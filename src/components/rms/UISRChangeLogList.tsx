@@ -125,7 +125,7 @@ const UISRChangeLogList = (props: SRChangeLogListProps) => {
       style={{
         maxWidth: "50vw",
         overflowY: "scroll",
-        maxHeight: "35vh",
+        maxHeight: "23vh",
         paddingTop: "1rem",
         paddingRight: "1rem",
       }}

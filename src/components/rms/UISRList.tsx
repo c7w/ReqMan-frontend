@@ -659,11 +659,11 @@ const UISRList = (props: UISRListProps) => {
       };
       if (selected) {
         createIRSR(dispatcher, props.project_id, IRSR).then((data: any) => {
-          console.log(data);
+          // console.log(data);
         });
       } else if (!selected) {
         deleteIRSR(dispatcher, props.project_id, IRSR).then((data: any) => {
-          console.log(data);
+          // console.log(data);
         });
       }
     },
