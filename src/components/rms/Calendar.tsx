@@ -67,7 +67,7 @@ const Calendar = (props: CalendarProps) => {
         getSRServiceInfo(dispatcher, project_id),
         updateServiceInfo(dispatcher, project_id),
       ]).then((data: any) => {
-        console.log(data);
+        // console.log(data);
         // data[0]: SRList
         // data[1]: user-sr association
         // data[2]: sr-iteration

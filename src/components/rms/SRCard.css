@@ -88,17 +88,12 @@
 }
 
 .SRModal-content-left {
-  /*max-height: 70vh;*/
+  max-height: 70vh;
 }
 
 .SRModal-content-left-up {
 }
 
-.SRModal-content-right {
-  margin-left: 1rem;
-  /*max-height: 70vh;*/
-  overflow-y: scroll;
-}
 
 .SRModal-content-desc {
   border-radius: 5px;
@@ -123,10 +118,9 @@
 }
 
 .SRModal-content-right {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  margin-left: 1rem;
+  max-height: 70vh;
+  overflow-y: scroll;
 }
 
 /* 方法一 start */

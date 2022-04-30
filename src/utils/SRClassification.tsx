@@ -124,4 +124,4 @@ const expandSRList = (
   });
 };
 
-export { todoSR, wipSR, reviewSR, doneSR };
+export { todoSR, wipSR, reviewSR, doneSR, expandSRList };
