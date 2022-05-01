@@ -38,12 +38,6 @@ const Navbar = () => {
           </div>
           <div
             className="header-item"
-            onClick={() => Redirect(dispatcher, "/dashboard", 1)}
-          >
-            我的日程
-          </div>
-          <div
-            className="header-item"
             onClick={() => Redirect(dispatcher, "/projects", 1)}
           >
             我的项目
