@@ -47,7 +47,7 @@ const SiteRouter = () => {
       <Router history={history}>
         <Routes>
           <Route path="/" element={<Root />}></Route>
-          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="dashboard" element={<ProjectList />} />
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
           <Route path="resetpass/:hash" element={<ResetPasswordWithHash />} />

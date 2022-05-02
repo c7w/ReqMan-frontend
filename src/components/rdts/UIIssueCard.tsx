@@ -51,11 +51,13 @@ const UIIssueCard = (props: UIIssueCardProps) => {
   const data: IssueProps = JSON.parse(props.data);
 
   useEffect(() => {
-    request_json(API.GET_RDTS, {
-      getParams: { repo: data.repo, type: "issue-mr", issueId: data.id },
-    }).then((data: any) => {
-      setMRIssueAssociation(JSON.stringify(data.data));
-    });
+    if (reload > 0) {
+      request_json(API.GET_RDTS, {
+        getParams: { repo: data.repo, type: "issue-mr", issueId: data.id },
+      }).then((data: any) => {
+        setMRIssueAssociation(JSON.stringify(data.data));
+      });
+    }
   }, [reload]);
 
   const getBackgroundColor = (state: "closed" | "opened") => {
@@ -192,6 +194,12 @@ const UIIssueCard = (props: UIIssueCardProps) => {
       setMRBindDisabled(false);
     });
   };
+
+  useEffect(() => {
+    if (props.visible) {
+      setReload(reload + 1);
+    }
+  }, [props.visible]);
 
   return (
     <Modal

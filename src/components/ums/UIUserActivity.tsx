@@ -93,13 +93,18 @@ const UIUserActivity = (props: UIUserActivityProps) => {
     return result;
   };
 
+  // Frankly speaking, why the f**king UI component here is requesting for data???
   useEffect(() => {
-    getRDTSInfo(dispatcher, activity.project).then((data: any) => {
-      return;
-    });
+    // getRDTSInfo(dispatcher, activity.project).then((data: any) => {
+    //   return;
+    // });
   }, []);
-  if (repoStore === "" || MRSRAssoStore === "" || SRListStore === "")
+
+  if (repoStore === "" || MRSRAssoStore === "" || SRListStore === "") {
+    console.debug("Information needed...");
     return <Loading />;
+  }
+
   return (
     <>
       <div

@@ -4,13 +4,15 @@ import "./UIUserCard.css";
 import { Avatar, Divider, Modal, Tooltip } from "antd";
 import moment from "moment";
 import { getCommitCountInfo } from "../../store/functions/UMS";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Loading from "../../layout/components/Loading";
 import { getRDTSInfo } from "../../store/functions/RDTS";
 import UserActivityType from "../../utils/UserActivityType";
 import UIUserActivityList from "./UIUserActivityList";
 import UIProjectList from "../rms/UIProjectList";
 import CryptoJS from "crypto-js";
+import { getIssueStore, getMergeStore } from "../../store/slices/IssueSlice";
+import { data } from "jquery";
 
 interface UIUserCardProps {
   readonly projectStore: string;
@@ -30,9 +32,14 @@ const UIUserCard = (props: UIUserCardProps) => {
   const userInfo = projectInfo.users.filter(
     (user: any) => user.id === props.userId
   )[0];
+
+  const issueStore = useSelector(getIssueStore);
+  const mergeStore = useSelector(getMergeStore);
+
   // console.log(userInfo);
   const [commitInfo, setCommitInfo] = useState("");
   const [myActivities, setActivities] = useState("");
+  const [reload, setReload] = useState(0);
   const dispatcher = useDispatch();
 
   const date = new Date(); // 当前时间
@@ -61,23 +68,24 @@ const UIUserCard = (props: UIUserCardProps) => {
   };
 
   useEffect(() => {
-    getCommitCountInfo(dispatcher, projectInfo.project.id, props.userId).then(
-      (data: any) => {
-        const date = new Date(); // 当前时间
-        const date_now = date.getTime();
-        date.setFullYear(date.getFullYear() - 1); // 去年时间
-        const date_past = date.getTime();
-        const commitData = getAllDay(date_past, date_now);
-        // console.log(data);
-        const commitTimes = data.data[0].commit_times;
-        commitTimes.forEach((commitTime: any) => {
-          commitData[moment(commitTime * 1000).format("YYYY-MM-DD")]++;
-        });
-        setCommitInfo(JSON.stringify(commitData));
-      }
-    );
-    getRDTSInfo(dispatcher, projectInfo.project.id).then((data: any) => {
-      // console.log(data);
+    if (reload > 0) {
+      getCommitCountInfo(dispatcher, projectInfo.project.id, props.userId).then(
+        (data: any) => {
+          const date = new Date(); // 当前时间
+          const date_now = date.getTime();
+          date.setFullYear(date.getFullYear() - 1); // 去年时间
+          const date_past = date.getTime();
+
+          const commitData = getAllDay(date_past, date_now);
+          // console.log(data);
+          const commitTimes = data.data[0].commit_times;
+          commitTimes.forEach((commitTime: any) => {
+            commitData[moment(commitTime * 1000).format("YYYY-MM-DD")]++;
+          });
+          setCommitInfo(JSON.stringify(commitData));
+        }
+      );
+
       const myActivities: any = {
         activities: Array<{
           type: UserActivityType;
@@ -87,8 +95,8 @@ const UIUserCard = (props: UIUserCardProps) => {
         }>(),
       };
       const project_id = projectInfo.project.id;
-      const issueInfo = data[0].data;
-      const MRInfo = data[2].data;
+      const issueInfo = JSON.parse(issueStore).data;
+      const MRInfo = JSON.parse(mergeStore).data;
       // 加入 open issue 和 close issue 两个活动
       issueInfo.forEach((issue: any) => {
         if (issue.user_authored === props.userId) {
@@ -136,10 +144,48 @@ const UIUserCard = (props: UIUserCardProps) => {
           : -1;
       });
       setActivities(JSON.stringify(myActivities));
-    });
-  }, []);
+    }
+  }, [reload]);
+  useEffect(() => {
+    if (props.visible) {
+      setReload(reload + 1);
+    }
+  }, [props.visible]);
 
-  if (commitInfo === "" || myActivities === "") return <></>;
+  if (issueStore === "" || mergeStore === "") {
+    return (
+      <Modal
+        centered={true}
+        footer={null}
+        destroyOnClose={true}
+        visible={props.visible}
+        onCancel={() => props.close()}
+        width={"80%"}
+        title={"个人信息"}
+      >
+        <div>
+          <Loading />
+        </div>
+      </Modal>
+    );
+  }
+
+  if (commitInfo === "" || myActivities === "")
+    return (
+      <Modal
+        centered={true}
+        footer={null}
+        destroyOnClose={true}
+        visible={props.visible}
+        onCancel={() => props.close()}
+        width={"80%"}
+        title={"个人信息"}
+      >
+        <div>
+          <Loading />
+        </div>
+      </Modal>
+    );
 
   const commitDataObj = JSON.parse(commitInfo);
   const keys = Object.keys(commitDataObj);
