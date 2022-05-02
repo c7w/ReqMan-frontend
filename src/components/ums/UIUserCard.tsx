@@ -86,66 +86,64 @@ const UIUserCard = (props: UIUserCardProps) => {
         }
       );
 
-      getRDTSInfo(dispatcher, projectInfo.project.id).then((data: any) => {
-        const myActivities: any = {
-          activities: Array<{
-            type: UserActivityType;
-            timestamp: number;
-            info: any;
-            project: number;
-          }>(),
-        };
-        const project_id = projectInfo.project.id;
-        const issueInfo = JSON.parse(issueStore).data;
-        const MRInfo = JSON.parse(mergeStore).data;
-        // 加入 open issue 和 close issue 两个活动
-        issueInfo.forEach((issue: any) => {
-          if (issue.user_authored === props.userId) {
-            myActivities.activities.push({
-              type: UserActivityType.OPEN_ISSUE,
-              timestamp: issue.authoredAt,
-              info: issue,
-              project: project_id,
-            });
-          }
-          if (issue.user_closed === props.userId) {
-            myActivities.activities.push({
-              type: UserActivityType.CLOSE_ISSUE,
-              timestamp: issue.closedAt,
-              info: issue,
-              project: project_id,
-            });
-          }
-        });
-        // 加入 open MR 和 close MR 两个活动
-        MRInfo.forEach((mr: any) => {
-          if (mr.user_authored === props.userId) {
-            myActivities.activities.push({
-              type: UserActivityType.OPEN_MR,
-              timestamp: mr.authoredAt,
-              info: mr,
-              project: project_id,
-            });
-          }
-          if (mr.user_reviewed === props.userId) {
-            myActivities.activities.push({
-              type: UserActivityType.REVIEW_MR,
-              timestamp: mr.reviewedAt,
-              info: mr,
-              project: project_id,
-            });
-          }
-        });
-        // 按时间戳倒序，将最新活动放在前面
-        myActivities.activities.sort((value1: any, value2: any) => {
-          return value1.timestamp < value2.timestamp
-            ? 1
-            : value1.timestamp === value2.timestamp
-            ? 0
-            : -1;
-        });
-        setActivities(JSON.stringify(myActivities));
+      const myActivities: any = {
+        activities: Array<{
+          type: UserActivityType;
+          timestamp: number;
+          info: any;
+          project: number;
+        }>(),
+      };
+      const project_id = projectInfo.project.id;
+      const issueInfo = JSON.parse(issueStore).data;
+      const MRInfo = JSON.parse(mergeStore).data;
+      // 加入 open issue 和 close issue 两个活动
+      issueInfo.forEach((issue: any) => {
+        if (issue.user_authored === props.userId) {
+          myActivities.activities.push({
+            type: UserActivityType.OPEN_ISSUE,
+            timestamp: issue.authoredAt,
+            info: issue,
+            project: project_id,
+          });
+        }
+        if (issue.user_closed === props.userId) {
+          myActivities.activities.push({
+            type: UserActivityType.CLOSE_ISSUE,
+            timestamp: issue.closedAt,
+            info: issue,
+            project: project_id,
+          });
+        }
       });
+      // 加入 open MR 和 close MR 两个活动
+      MRInfo.forEach((mr: any) => {
+        if (mr.user_authored === props.userId) {
+          myActivities.activities.push({
+            type: UserActivityType.OPEN_MR,
+            timestamp: mr.authoredAt,
+            info: mr,
+            project: project_id,
+          });
+        }
+        if (mr.user_reviewed === props.userId) {
+          myActivities.activities.push({
+            type: UserActivityType.REVIEW_MR,
+            timestamp: mr.reviewedAt,
+            info: mr,
+            project: project_id,
+          });
+        }
+      });
+      // 按时间戳倒序，将最新活动放在前面
+      myActivities.activities.sort((value1: any, value2: any) => {
+        return value1.timestamp < value2.timestamp
+          ? 1
+          : value1.timestamp === value2.timestamp
+          ? 0
+          : -1;
+      });
+      setActivities(JSON.stringify(myActivities));
     }
   }, [reload]);
   useEffect(() => {
