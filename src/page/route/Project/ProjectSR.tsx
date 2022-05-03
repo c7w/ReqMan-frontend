@@ -31,6 +31,7 @@ import {
   getSRServiceStore,
 } from "../../../store/slices/ServiceSlice";
 import { getUserSRStore } from "../../../store/slices/UserSRSlice";
+import { getRDTSInfo } from "../../../store/functions/RDTS";
 
 const ProjectSR = () => {
   // Judge if project list in user state
@@ -61,6 +62,8 @@ const ProjectSR = () => {
     getSRIterationInfo(dispatcher, project_id);
     getSRServiceInfo(dispatcher, project_id);
     getUserSRInfo(dispatcher, project_id);
+
+    getRDTSInfo(dispatcher, project_id);
   }, []);
 
   if (
