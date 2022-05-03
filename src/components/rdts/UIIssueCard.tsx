@@ -56,6 +56,7 @@ const UIIssueCard = (props: UIIssueCardProps) => {
         getParams: { repo: data.repo, type: "issue-mr", issueId: data.id },
       }).then((data: any) => {
         setMRIssueAssociation(JSON.stringify(data.data));
+        console.debug("MR-Issue has been reset");
       });
     }
   }, [reload]);
@@ -273,9 +274,7 @@ const UIIssueCard = (props: UIIssueCardProps) => {
             disabled={MRBindDisabled}
             optionFilterProp="children"
             onChange={onSelectionChange}
-            defaultValue={JSON.parse(MRIssueAssociation).map(
-              (asso: any) => asso.MR
-            )}
+            value={JSON.parse(MRIssueAssociation).map((asso: any) => asso.MR)}
             filterOption={(input, option: any) =>
               option.children.indexOf(input.toLowerCase()) >= 0
             }

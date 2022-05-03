@@ -491,6 +491,7 @@ const SRCard = (props: SRCardProps) => {
         visible={modalVisible}
         onOk={handleOK}
         onCancel={handleCancel}
+        destroyOnClose={true}
         width={"95%"}
       >
         <div className="SRModal-header">
