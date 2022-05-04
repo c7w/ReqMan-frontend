@@ -94,44 +94,6 @@ const Root = () => {
       </nav>
       <div className={"root-wrapper"}>
         <div className="combined">
-          {/*<div className="combined-shape">*/}
-          {/*  <div className="shape-left">*/}
-          {/*    <TweenOne*/}
-          {/*      animation={[*/}
-          {/*        {*/}
-          {/*          x: "20vw",*/}
-          {/*          type: "from",*/}
-          {/*          ease: "easeInOutQuint",*/}
-          {/*          duration: 600,*/}
-          {/*        },*/}
-          {/*        {*/}
-          {/*          x: "-20vw",*/}
-          {/*          ease: "easeInOutQuart",*/}
-          {/*          duration: 450,*/}
-          {/*          delay: -150,*/}
-          {/*        },*/}
-          {/*      ]}*/}
-          {/*    />*/}
-          {/*  </div>*/}
-          {/*  <div className="shape-right">*/}
-          {/*    <TweenOne*/}
-          {/*      animation={[*/}
-          {/*        {*/}
-          {/*          x: "-20vw",*/}
-          {/*          type: "from",*/}
-          {/*          ease: "easeInOutQuint",*/}
-          {/*          duration: 600,*/}
-          {/*        },*/}
-          {/*        {*/}
-          {/*          x: "20vw",*/}
-          {/*          ease: "easeInOutQuart",*/}
-          {/*          duration: 450,*/}
-          {/*          delay: -150,*/}
-          {/*        },*/}
-          {/*      ]}*/}
-          {/*    />*/}
-          {/*  </div>*/}
-          {/*</div>*/}
           <AnimatedText
             type="chars" // animate words or chars
             animation={{
@@ -143,7 +105,6 @@ const Root = () => {
             animationType="float"
             interval={0}
             duration={0.8}
-            tag="p"
             className="title"
             includeWhiteSpaces
             threshold={0.1}
@@ -151,9 +112,9 @@ const Root = () => {
           >
             ReqMan
           </AnimatedText>
-          ;
           <TweenOne
             className="combined-bar"
+            style={{ width: "100%" }}
             animation={{
               delay: 1400,
               width: 0,
@@ -175,18 +136,12 @@ const Root = () => {
           >
             Your Requirement Management Servant
           </AnimatedText>
+          <div className="root-to-login" onClick={toLogin}>
+            开启您的项目
+          </div>
         </div>
         <div id="loading-progress">
           <span id="loading-progress-thumb" />
-        </div>
-        {/*<div className={"root-loading"}>*/}
-        {/*  <Loading3QuartersOutlined*/}
-        {/*    style={{ fontSize: "72px", color: "black" }}*/}
-        {/*    className={"root-spinner"}*/}
-        {/*  />*/}
-        {/*</div>*/}
-        <div className="root-to-login" onClick={toLogin}>
-          开启您的项目
         </div>
         <div className="root-features">
           <div className="root-feature-card root-feature-card1">
