@@ -4,6 +4,7 @@ import { Loading3QuartersOutlined } from "@ant-design/icons";
 import request_json from "../../../utils/Network";
 import API from "../../../utils/APIList";
 import logo from "../../../assets/ReqMan.png";
+import { Carousel } from "antd";
 import {
   generateRandomString,
   getCookie,
@@ -72,8 +73,19 @@ const Root = () => {
   // useEffect Hook: Would be executed when the variables in the dependence list are initialized or changed value.
   // If you define an empty list as variable dependence, this function would just execute for once, just like didMount().
 
+  const contentStyle = {
+    height: "160px",
+    color: "#fff",
+    lineHeight: "160px",
+    textAlign: "center",
+    background: "#364d79",
+  };
+
   return (
     <div className="root-screen">
+      <div id="loading-progress">
+        <span id="loading-progress-thumb" />
+      </div>
       <nav>
         <div className="root-menu">
           <div className="root-menu-logo">
@@ -140,9 +152,63 @@ const Root = () => {
             开启您的项目
           </div>
         </div>
-        <div id="loading-progress">
-          <span id="loading-progress-thumb" />
+        <div className="root-carousel">
+          <Carousel autoplay>
+            <div>
+              <h3
+                style={{
+                  height: "160px",
+                  color: "#fff",
+                  lineHeight: "160px",
+                  textAlign: "center",
+                  background: "#364d79",
+                }}
+              >
+                1
+              </h3>
+            </div>
+            <div>
+              <h3
+                style={{
+                  height: "160px",
+                  color: "#fff",
+                  lineHeight: "160px",
+                  textAlign: "center",
+                  background: "#364d79",
+                }}
+              >
+                2
+              </h3>
+            </div>
+            <div>
+              <h3
+                style={{
+                  height: "160px",
+                  color: "#fff",
+                  lineHeight: "160px",
+                  textAlign: "center",
+                  background: "#364d79",
+                }}
+              >
+                3
+              </h3>
+            </div>
+            <div>
+              <h3
+                style={{
+                  height: "160px",
+                  color: "#fff",
+                  lineHeight: "160px",
+                  textAlign: "center",
+                  background: "#364d79",
+                }}
+              >
+                4
+              </h3>
+            </div>
+          </Carousel>
         </div>
+
         <div className="root-features">
           <div className="root-feature-card root-feature-card1">
             <div className="root-feature-title">智能规划</div>

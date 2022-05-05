@@ -215,6 +215,15 @@ nav .root-menu .root-menu_icon:hover .icon:after {
   font-family: Consolas, Geneva, Tahoma, sans-serif;
 }
 
+.root-carousel {
+  color: #fff;
+  width: 40vw;
+  height: 40vh;
+  position: absolute;
+  top: 20vh;
+  right: 10vw;
+}
+
 .root-proj-name {
   position: fixed;
   top: 5vh;
