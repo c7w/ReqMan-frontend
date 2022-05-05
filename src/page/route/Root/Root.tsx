@@ -1,6 +1,12 @@
 import React, { useEffect } from "react";
 import "./Root.css";
 import { Loading3QuartersOutlined } from "@ant-design/icons";
+import projectListPic from "../../../assets/RootPageCarousel/项目列表.png";
+import SRListPic from "../../../assets/RootPageCarousel/SR列表.png";
+import iterationPic from "../../../assets/RootPageCarousel/迭代周期.png";
+import calendarPic from "../../../assets/RootPageCarousel/日程表.png";
+import analysisPic from "../../../assets/RootPageCarousel/项目分析.png";
+import servicePic from "../../../assets/RootPageCarousel/项目服务.png";
 import request_json from "../../../utils/Network";
 import API from "../../../utils/APIList";
 import logo from "../../../assets/ReqMan.png";
@@ -154,58 +160,47 @@ const Root = () => {
         </div>
         <div className="root-carousel">
           <Carousel autoplay>
-            <div>
-              <h3
-                style={{
-                  height: "160px",
-                  color: "#fff",
-                  lineHeight: "160px",
-                  textAlign: "center",
-                  background: "#364d79",
-                }}
-              >
-                1
-              </h3>
-            </div>
-            <div>
-              <h3
-                style={{
-                  height: "160px",
-                  color: "#fff",
-                  lineHeight: "160px",
-                  textAlign: "center",
-                  background: "#364d79",
-                }}
-              >
-                2
-              </h3>
-            </div>
-            <div>
-              <h3
-                style={{
-                  height: "160px",
-                  color: "#fff",
-                  lineHeight: "160px",
-                  textAlign: "center",
-                  background: "#364d79",
-                }}
-              >
-                3
-              </h3>
-            </div>
-            <div>
-              <h3
-                style={{
-                  height: "160px",
-                  color: "#fff",
-                  lineHeight: "160px",
-                  textAlign: "center",
-                  background: "#364d79",
-                }}
-              >
-                4
-              </h3>
-            </div>
+            <img
+              src={calendarPic}
+              alt="开发工程师日程表"
+              width={480}
+              height={270}
+            />
+            <img
+              src={projectListPic}
+              alt="项目列表"
+              width={480}
+              height={270}
+              style={{ borderRadius: "5rem" }}
+            />
+            <img
+              src={servicePic}
+              alt="项目服务"
+              width={480}
+              height={270}
+              style={{ borderRadius: "5rem" }}
+            />
+            <img
+              src={analysisPic}
+              alt="项目分析"
+              width={480}
+              height={270}
+              style={{ borderRadius: "5rem" }}
+            />
+            <img
+              src={SRListPic}
+              alt="功能需求列表"
+              width={480}
+              height={270}
+              style={{ borderRadius: "5rem" }}
+            />
+            <img
+              src={iterationPic}
+              alt="项目迭代周期"
+              width={480}
+              height={270}
+              style={{ borderRadius: "5rem" }}
+            />
           </Carousel>
         </div>
 
