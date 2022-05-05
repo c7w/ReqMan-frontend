@@ -140,7 +140,10 @@ nav .root-menu .root-menu_icon:hover .icon:after {
 .root-to-login {
   z-index: 1;
   box-sizing: border-box;
-  display: block;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
   width: 100%;
   letter-spacing: 2px;
   max-width: 18vw;
@@ -192,11 +195,10 @@ nav .root-menu .root-menu_icon:hover .icon:after {
   color: #fff;
   width: 40vw;
   height: 40vh;
-  position: absolute;
-  top: 20vh;
-  left: 10vw;
+  margin-top: 20vh;
   display: flex;
   flex-direction: column;
+  justify-content: space-around;
 }
 .combined .title {
   font-size: 6rem;
@@ -218,10 +220,7 @@ nav .root-menu .root-menu_icon:hover .icon:after {
 .root-carousel {
   color: #fff;
   width: 40vw;
-  height: 40vh;
-  position: absolute;
-  top: 20vh;
-  right: 5vw;
+  margin-top: 20vh;
 }
 
 .root-proj-name {

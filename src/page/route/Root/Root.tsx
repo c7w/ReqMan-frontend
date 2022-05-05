@@ -10,7 +10,7 @@ import servicePic from "../../../assets/RootPageCarousel/项目服务.png";
 import request_json from "../../../utils/Network";
 import API from "../../../utils/APIList";
 import logo from "../../../assets/ReqMan.png";
-import { Carousel } from "antd";
+import { Carousel, Image } from "antd";
 import {
   generateRandomString,
   getCookie,
@@ -111,97 +111,102 @@ const Root = () => {
         </div>
       </nav>
       <div className={"root-wrapper"}>
-        <div className="combined">
-          <AnimatedText
-            type="chars" // animate words or chars
-            animation={{
-              x: "200px",
-              y: "-20px",
-              scale: 1.1,
-              ease: "ease-in-out",
-            }}
-            animationType="float"
-            interval={0}
-            duration={0.8}
-            className="title"
-            includeWhiteSpaces
-            threshold={0.1}
-            rootMargin="20%"
-          >
-            ReqMan
-          </AnimatedText>
-          <TweenOne
-            className="combined-bar"
-            style={{ width: "100%" }}
-            animation={{
-              delay: 1400,
-              width: 0,
-              x: "10vw",
-              type: "from",
-              ease: "easeInOutExpo",
-            }}
-          />
-          <AnimatedText
-            type="chars"
-            className="content"
-            interval={0.03}
-            duration={0.1}
-            animation={{
-              y: "15px",
-              ease: "ease",
-              scale: 2.39,
-            }}
-          >
-            Your Requirement Management Servant
-          </AnimatedText>
-          <div className="root-to-login" onClick={toLogin}>
-            开启您的项目
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-around",
+            maxHeight: "50vh",
+            paddingLeft: "10%",
+            paddingRight: "5%",
+          }}
+        >
+          <div className="combined">
+            <AnimatedText
+              type="chars" // animate words or chars
+              animation={{
+                x: "200px",
+                y: "-20px",
+                scale: 1.1,
+                ease: "ease-in-out",
+              }}
+              animationType="float"
+              interval={0}
+              duration={0.8}
+              className="title"
+              includeWhiteSpaces
+              threshold={0.1}
+              rootMargin="20%"
+            >
+              ReqMan
+            </AnimatedText>
+            <TweenOne
+              className="combined-bar"
+              animation={{
+                delay: 1400,
+                width: 0,
+                x: "10vw",
+                type: "from",
+                ease: "easeInOutExpo",
+              }}
+            />
+            <AnimatedText
+              type="chars"
+              className="content"
+              interval={0.03}
+              duration={0.1}
+              animation={{
+                y: "15px",
+                ease: "ease",
+                scale: 2.39,
+              }}
+            >
+              Your Requirement Management Servant
+            </AnimatedText>
+            <div className="root-to-login" onClick={toLogin}>
+              <div>开启您的项目</div>
+            </div>
           </div>
-        </div>
-        <div className="root-carousel">
-          <Carousel autoplay>
-            <img
-              src={calendarPic}
-              alt="开发工程师日程表"
-              width={480}
-              height={270}
-            />
-            <img
-              src={projectListPic}
-              alt="项目列表"
-              width={480}
-              height={270}
-              style={{ borderRadius: "5rem" }}
-            />
-            <img
-              src={servicePic}
-              alt="项目服务"
-              width={480}
-              height={270}
-              style={{ borderRadius: "5rem" }}
-            />
-            <img
-              src={analysisPic}
-              alt="项目分析"
-              width={480}
-              height={270}
-              style={{ borderRadius: "5rem" }}
-            />
-            <img
-              src={SRListPic}
-              alt="功能需求列表"
-              width={480}
-              height={270}
-              style={{ borderRadius: "5rem" }}
-            />
-            <img
-              src={iterationPic}
-              alt="项目迭代周期"
-              width={480}
-              height={270}
-              style={{ borderRadius: "5rem" }}
-            />
-          </Carousel>
+          <div className="root-carousel">
+            <Carousel autoplay>
+              <Image
+                src={calendarPic}
+                alt="开发工程师日程表"
+                width="100%"
+                style={{ borderRadius: "2rem" }}
+              />
+              <Image
+                src={projectListPic}
+                alt="项目列表"
+                width="100%"
+                style={{ borderRadius: "2rem" }}
+              />
+              <Image
+                src={servicePic}
+                alt="项目服务"
+                width="100%"
+                style={{ borderRadius: "2rem" }}
+              />
+              <Image
+                src={analysisPic}
+                alt="项目分析"
+                width="100%"
+                style={{ borderRadius: "2rem" }}
+              />
+              <Image
+                src={SRListPic}
+                alt="功能需求列表"
+                width="100%"
+                style={{ borderRadius: "2rem" }}
+              />
+              <Image
+                src={iterationPic}
+                alt="项目迭代周期"
+                width="100%"
+                style={{ borderRadius: "2rem" }}
+              />
+            </Carousel>
+          </div>
         </div>
 
         <div className="root-features">
