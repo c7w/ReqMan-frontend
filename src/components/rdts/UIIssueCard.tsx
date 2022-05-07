@@ -51,11 +51,14 @@ const UIIssueCard = (props: UIIssueCardProps) => {
   const data: IssueProps = JSON.parse(props.data);
 
   useEffect(() => {
-    request_json(API.GET_RDTS, {
-      getParams: { repo: data.repo, type: "issue-mr", issueId: data.id },
-    }).then((data: any) => {
-      setMRIssueAssociation(JSON.stringify(data.data));
-    });
+    if (reload > 0) {
+      request_json(API.GET_RDTS, {
+        getParams: { repo: data.repo, type: "issue-mr", issueId: data.id },
+      }).then((data: any) => {
+        setMRIssueAssociation(JSON.stringify(data.data));
+        console.debug("MR-Issue has been reset");
+      });
+    }
   }, [reload]);
 
   const getBackgroundColor = (state: "closed" | "opened") => {
@@ -193,6 +196,12 @@ const UIIssueCard = (props: UIIssueCardProps) => {
     });
   };
 
+  useEffect(() => {
+    if (props.visible) {
+      setReload(reload + 1);
+    }
+  }, [props.visible]);
+
   return (
     <Modal
       centered={true}
@@ -265,9 +274,7 @@ const UIIssueCard = (props: UIIssueCardProps) => {
             disabled={MRBindDisabled}
             optionFilterProp="children"
             onChange={onSelectionChange}
-            defaultValue={JSON.parse(MRIssueAssociation).map(
-              (asso: any) => asso.MR
-            )}
+            value={JSON.parse(MRIssueAssociation).map((asso: any) => asso.MR)}
             filterOption={(input, option: any) =>
               option.children.indexOf(input.toLowerCase()) >= 0
             }

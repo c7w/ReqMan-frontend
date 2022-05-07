@@ -5,7 +5,8 @@ import { indexOf } from "underscore";
 const userId2UserInfo = (userId: number, projectInfo: string) => {
   // console.log("===================== userId to name ======================= ");
   const userData = JSON.parse(projectInfo).data.users;
-  // console.log(userData);
+  // console.log(JSON.parse(projectInfo));
+  // console.log(userId);
   const user = userData.filter((obj: any) => obj.id === userId);
   return user.length > 0 ? user[0] : "not found";
 };

@@ -1,7 +1,7 @@
-import React, { ReactElement, useEffect, useState } from "react";
+import React, { useState } from "react";
 import type { ProColumns } from "@ant-design/pro-table";
 import ReactMarkdown from "react-markdown";
-import ProTable, { ProColumnType } from "@ant-design/pro-table";
+import ProTable from "@ant-design/pro-table";
 import {
   Button,
   Input,
@@ -15,10 +15,10 @@ import {
 import "./UISRList.css";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  IRCardProps,
   IRSRAssociation,
   Iteration,
   SRCardProps,
-  SRService,
 } from "../../store/ConfigureStore";
 import {
   createIRSR,
@@ -52,6 +52,9 @@ import {
 import { difference } from "underscore";
 import { Service } from "./UIServiceReadonly";
 import { getUserSRStore } from "../../store/slices/UserSRSlice";
+import { UIUserCardPreview } from "../ums/UIUserCard";
+import IRCard from "./IRCard";
+import SRCard from "./SRCard";
 const { TextArea } = Input;
 const { Option } = Select;
 
@@ -126,7 +129,7 @@ const UISRList = (props: UISRListProps) => {
       priority: value.priority,
       currState: state,
       stateColor: color,
-      createdBy: user.name,
+      createdBy: user.id,
       createdAt: value.createdAt * 1000,
       iter: SR2Iteration(value.id, iterSRAssoStore, iterationStore),
       chargedBy:
@@ -195,6 +198,8 @@ const UISRList = (props: UISRListProps) => {
   const [isEditModalVisible, setIsEditModalVisible] = useState<boolean>(false);
   const [isCreateModalVisible, setIsCreateModalVisible] =
     useState<boolean>(false);
+  const [isCardModalVisible, setIsCardModalVisible] = useState<boolean>(false);
+
   const [id, setId] = useState<number>(-1);
   const [title, setTitle] = useState<string>("");
   const [desc, setDesc] = useState<string>("");
@@ -204,6 +209,7 @@ const UISRList = (props: UISRListProps) => {
   const [chargedBy, setChargedBy] = useState<number>(-1);
   const [service, setService] = useState<number>(-1);
   const [ifok, setIfok] = useState<boolean>(true);
+  const [SRCardRecord, setSRCardRecord] = useState<SRCardProps>(SRListData[0]);
 
   const showEditModal = (record: SRCardProps) => {
     setIfok(false);
@@ -354,6 +360,7 @@ const UISRList = (props: UISRListProps) => {
 
   const showCreateModal = () => {
     setIsCreateModalVisible(true);
+    setIfok(true);
   };
 
   // Handle create
@@ -453,9 +460,50 @@ const UISRList = (props: UISRListProps) => {
   );
 
   function handleChargedByChange(value: number) {
-    console.log(value);
+    // console.log(value);
     setChargedBy(value);
   }
+
+  const showCardModal = (record: SRCardProps) => {
+    setIsCardModalVisible(true);
+    let state = "";
+    if (record.currState === "未开始") {
+      state = "TODO";
+    }
+    if (record.currState === "开发中") {
+      state = "WIP";
+    }
+    if (record.currState === "测试中") {
+      state = "Reviewing";
+    }
+    if (record.currState === "已交付") {
+      state = "Done";
+    }
+    const newRecord: SRCardProps = {
+      id: record.id,
+      project: record.project,
+      title: record.title,
+      description: record.description,
+      priority: record.priority,
+      rank: record.rank,
+      currState: state,
+      stateColor: record.stateColor,
+      createdBy: record.createdBy,
+      createdAt: record.createdAt,
+      iter: record.iter,
+      chargedBy: record.chargedBy,
+      service: record.service,
+    };
+    setSRCardRecord(newRecord);
+  };
+
+  const handleCardCancel = () => {
+    setIsCardModalVisible(false);
+  };
+
+  const handleCardOk = () => {
+    setIsCardModalVisible(false);
+  };
 
   const columnTitle1: ProColumns<SRCardProps> = {
     title: "功能需求标题",
@@ -473,7 +521,9 @@ const UISRList = (props: UISRListProps) => {
           overflow: "hidden",
           textOverflow: "ellipsis",
           whiteSpace: "nowrap",
+          cursor: "pointer",
         }}
+        onClick={() => showCardModal(record)}
       >
         {record.title}
       </div>
@@ -495,7 +545,9 @@ const UISRList = (props: UISRListProps) => {
           overflow: "hidden",
           textOverflow: "ellipsis",
           whiteSpace: "nowrap",
+          cursor: "pointer",
         }}
+        onClick={() => showCardModal(record)}
       >
         {record.title}
       </div>
@@ -545,20 +597,27 @@ const UISRList = (props: UISRListProps) => {
     title: "负责人",
     filters: true,
     onFilter: true,
-    width: "12%",
+    width: "8%",
     dataIndex: "chargedBy",
     align: "center",
     render: (text, record, _, action) => [
       <div>
-        {record.chargedBy === -1
-          ? "-"
-          : JSON.parse(projectInfo).data.users.filter(
-              (user: any) => user.id === record.chargedBy
-            ).length > 0
-          ? JSON.parse(projectInfo).data.users.filter(
-              (user: any) => user.id === record.chargedBy
-            )[0].name
-          : "-"}
+        {record.chargedBy === -1 ? (
+          "-"
+        ) : JSON.parse(projectInfo).data.users.filter(
+            (user: any) => user.id === record.chargedBy
+          ).length > 0 ? (
+          <UIUserCardPreview
+            projectStore={projectInfo}
+            userId={
+              JSON.parse(projectInfo).data.users.filter(
+                (user: any) => user.id === record.chargedBy
+              )[0].id
+            }
+          />
+        ) : (
+          "-"
+        )}
       </div>,
     ],
   };
@@ -598,7 +657,7 @@ const UISRList = (props: UISRListProps) => {
   const columnOpration: ProColumns<SRCardProps> = {
     search: false,
     title: "操作",
-    width: "10%",
+    width: "15%",
     valueType: "option",
     align: "center",
     render: (text, record, _, action) => [
@@ -651,11 +710,11 @@ const UISRList = (props: UISRListProps) => {
       };
       if (selected) {
         createIRSR(dispatcher, props.project_id, IRSR).then((data: any) => {
-          console.log(data);
+          // console.log(data);
         });
       } else if (!selected) {
         deleteIRSR(dispatcher, props.project_id, IRSR).then((data: any) => {
-          console.log(data);
+          // console.log(data);
         });
       }
     },
@@ -945,6 +1004,36 @@ const UISRList = (props: UISRListProps) => {
             }}
           />
         </Modal>
+
+        <Modal
+          title="SRCard展示"
+          centered={true}
+          visible={isCardModalVisible}
+          onCancel={handleCardCancel}
+          footer={[
+            <Button key="confirm" onClick={handleCardOk}>
+              确认
+            </Button>,
+          ]}
+          width={"40%"}
+          destroyOnClose={true}
+        >
+          <SRCard
+            id={SRCardRecord.id}
+            project={SRCardRecord.project}
+            title={SRCardRecord.title}
+            description={SRCardRecord.description}
+            priority={SRCardRecord.priority}
+            rank={SRCardRecord.rank}
+            currState={SRCardRecord.currState}
+            stateColor={SRCardRecord.stateColor}
+            createdBy={SRCardRecord.createdBy}
+            createdAt={Number(SRCardRecord.createdAt) / 1000}
+            iter={SRCardRecord.iter}
+            chargedBy={SRCardRecord.chargedBy}
+            service={SRCardRecord.service}
+          />
+        </Modal>
       </div>
     );
   } else if (props.showChoose) {
@@ -973,6 +1062,36 @@ const UISRList = (props: UISRListProps) => {
           dateFormatter="string"
           toolBarRender={false}
         />
+
+        <Modal
+          title="SRCard展示"
+          centered={true}
+          visible={isCardModalVisible}
+          onCancel={handleCardCancel}
+          footer={[
+            <Button key="confirm" onClick={handleCardOk}>
+              确认
+            </Button>,
+          ]}
+          width={"40%"}
+          destroyOnClose={true}
+        >
+          <SRCard
+            id={SRCardRecord.id}
+            project={SRCardRecord.project}
+            title={SRCardRecord.title}
+            description={SRCardRecord.description}
+            priority={SRCardRecord.priority}
+            rank={SRCardRecord.rank}
+            currState={SRCardRecord.currState}
+            stateColor={SRCardRecord.stateColor}
+            createdBy={SRCardRecord.createdBy}
+            createdAt={Number(SRCardRecord.createdAt) / 1000}
+            iter={SRCardRecord.iter}
+            chargedBy={SRCardRecord.chargedBy}
+            service={SRCardRecord.service}
+          />
+        </Modal>
       </div>
     );
   } else {
@@ -995,6 +1114,36 @@ const UISRList = (props: UISRListProps) => {
           search={false}
           dateFormatter="string"
         />
+
+        <Modal
+          title="SRCard展示"
+          centered={true}
+          visible={isCardModalVisible}
+          onCancel={handleCardCancel}
+          footer={[
+            <Button key="confirm" onClick={handleCardOk}>
+              确认
+            </Button>,
+          ]}
+          width={"40%"}
+          destroyOnClose={true}
+        >
+          <SRCard
+            id={SRCardRecord.id}
+            project={SRCardRecord.project}
+            title={SRCardRecord.title}
+            description={SRCardRecord.description}
+            priority={SRCardRecord.priority}
+            rank={SRCardRecord.rank}
+            currState={SRCardRecord.currState}
+            stateColor={SRCardRecord.stateColor}
+            createdBy={SRCardRecord.createdBy}
+            createdAt={Number(SRCardRecord.createdAt) / 1000}
+            iter={SRCardRecord.iter}
+            chargedBy={SRCardRecord.chargedBy}
+            service={SRCardRecord.service}
+          />
+        </Modal>
       </div>
     );
   }

@@ -10,6 +10,8 @@ import { getProjectStore } from "../../../store/slices/ProjectSlice";
 import { useParams } from "react-router-dom";
 import UIProject from "../../../components/rms/UIProject";
 import Loading from "../../../layout/components/Loading";
+import { getRDTSInfo } from "../../../store/functions/RDTS";
+import { useEffect } from "react";
 
 const Project = () => {
   // 1. Judge if user logged in, if not send to `/login`
@@ -22,13 +24,18 @@ const Project = () => {
   const params = useParams<"id">();
   const project_id = params.id;
 
+  useEffect(() => {
+    updateUserInfo(dispatcher);
+    updateProjectInfo(dispatcher, Number(project_id));
+    getRDTSInfo(dispatcher, Number(project_id));
+  }, []);
+
   // 1. User State Judge
   if (userInfo === "") {
     // Re-Query...
-    updateUserInfo(dispatcher);
   } else if (JSON.parse(userInfo).code !== 0) {
     // Redirect to `Root`
-    ToastMessage("error", "未确认登录态", "即将跳转回登录界面");
+    ToastMessage("error", "未登录", "即将跳转回登录界面");
     Redirect(dispatcher, "/login");
   } else {
     // console.debug(JSON.parse(userInfo).data.projects);
@@ -43,7 +50,6 @@ const Project = () => {
       // console.log(JSON.parse(userInfo));
       if (projectInfo === "") {
         // Re-request
-        updateProjectInfo(dispatcher, Number(project_id));
       } else {
         const projectData = JSON.parse(projectInfo);
         // 如果得到的 project 信息跟用户键入的 url 中的 project_id 不符

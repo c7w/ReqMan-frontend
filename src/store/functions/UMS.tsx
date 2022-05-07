@@ -118,23 +118,21 @@ const projectRmUser = async (
 };
 
 // userInfo: getUserStore 而来
-const getCommitCountInfo = async (dispatcher: any, userInfo: string) => {
-  const promise_list: any[] = [];
-  const userData = JSON.parse(userInfo).data;
-  userData.projects.forEach((project: any) => {
-    const myBody = {
-      project: project.id,
-      digest: true,
-      dev_id: [userData.user.id],
-      limit: -1,
-    };
-    const promise = request_json(API.GET_RECENT_ACTIVITY, {
-      body: myBody,
-    });
-    promise_list.push(promise);
-  });
+const getCommitCountInfo = async (
+  dispatcher: any,
+  project_id: number,
+  user_id: number
+) => {
+  const myBody = {
+    project: project_id,
+    dev_id: [user_id],
+    digest: true,
+    limit: -1,
+  };
 
-  return Promise.all(promise_list).then((data: any) => {
+  return request_json(API.GET_RECENT_ACTIVITY, {
+    body: myBody,
+  }).then((data: any) => {
     return data;
   });
 };

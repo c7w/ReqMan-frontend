@@ -699,10 +699,15 @@ const getUserSRInfo = async (
     project: project_id,
     type: "user-sr",
   };
-  const SRService_data = await request_json(API.GET_RMS, {
-    getParams: myParams,
-  });
-  dispatcher(updateUserSRStore(JSON.stringify(SRService_data)));
+  return request_json(API.GET_RMS, { getParams: myParams }).then(
+    (userSRData) => {
+      // console.log(SRList_data.code);
+      if (userSRData.code === 0) {
+        dispatcher(updateUserSRStore(JSON.stringify(userSRData)));
+      }
+      return userSRData;
+    }
+  );
 };
 
 const createUserSRInfo = async (

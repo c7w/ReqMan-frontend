@@ -6,6 +6,7 @@ import {
   getIRSRInfo,
   getIterationInfo,
   getSRListInfo,
+  getUserSRInfo,
   updateIRInfo,
 } from "../../store/functions/RMS";
 import { ToastMessage } from "../../utils/Navigation";
@@ -38,16 +39,20 @@ import {
   IR2Iteration,
   oneIR2AllSR,
   oneSR2AllIR,
+  SRId2SRInfo,
 } from "../../utils/Association";
 import {
   getIRIterationStore,
   getIterationStore,
 } from "../../store/slices/IterationSlice";
 import SRCard from "./SRCard";
-import getUserAvatar from "../../utils/UserAvatar";
+import { getUserAvatar, userId2Avatar } from "../../utils/UserAvatar";
 import { UIUserCardPreview } from "../ums/UIUserCard";
 import { ClockCircleTwoTone } from "@ant-design/icons";
 import QueueAnim from "rc-queue-anim";
+import { updateProjectInfo } from "../../store/functions/UMS";
+import { expandSRList } from "../../utils/SRClassification";
+import { getUserSRStore } from "../../store/slices/UserSRSlice";
 
 const IRCard = (props: IRCardProps) => {
   const dispatcher = useDispatch();
@@ -57,12 +62,17 @@ const IRCard = (props: IRCardProps) => {
   const IRIterAssoStore = useSelector(getIRIterationStore);
   const iterationStore = useSelector(getIterationStore);
   const SRListStore = useSelector(getSRListStore);
+  const SRUserStore = useSelector(getUserSRStore);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [title, setTitle] = useState<string>(props.title);
   const [progress, setProgress] = useState<number>(props.progress);
   const [description, setDescription] = useState<string>(props.description);
   const [assoSRCardList, setAssoSRCardList] = useState([]);
   const [assoIterList, setAssoIterList] = useState([]);
+
+  const [createdByAvatar, setCreatedByAvatar] = useState<string>("");
+
+  // console.log(props);
 
   const handleOK = () => {
     if (
@@ -94,6 +104,20 @@ const IRCard = (props: IRCardProps) => {
     setModalVisible(false);
   };
 
+  useEffect(() => {
+    updateProjectInfo(dispatcher, props.project).then((data) => {
+      // console.log(data);
+      const userInfo = data.data.users.filter(
+        (user: any) => user.id === props.createdBy
+      )[0];
+      const createdByAvatar =
+        userInfo.avatar.length < 5
+          ? `https://www.gravatar.com/avatar/${CryptoJS.MD5(userInfo.email)}`
+          : userInfo.avatar;
+      setCreatedByAvatar(createdByAvatar);
+    });
+  }, []);
+
   // 更新打开的 modal 对应的 SR 的所有关系
   const updateAssociation = () => {
     Promise.all([
@@ -101,7 +125,9 @@ const IRCard = (props: IRCardProps) => {
       getSRListInfo(dispatcher, props.project),
       getIRIterationInfo(dispatcher, props.project),
       getIterationInfo(dispatcher, props.project),
-    ]).then((data) => {
+      updateProjectInfo(dispatcher, props.project),
+      getUserSRInfo(dispatcher, props.project),
+    ]).then((data: any) => {
       const assoSRListData = oneIR2AllSR(
         props.id,
         JSON.stringify(data[0]),
@@ -168,7 +194,22 @@ const IRCard = (props: IRCardProps) => {
       });
       setAssoIterList(newAssoIterList);
       const newAssoSRCardList: any = [];
-      assoSRListData.forEach((value: SRCardProps) => {
+      console.log(assoSRListData);
+      // const assoSRIdList = data[5].data
+      //   .map((asso: any) => {
+      //     if (asso.user === userInfo.user.id) return asso.sr;
+      //   })
+      //   .filter((asso: any) => asso);
+      // const assoSRList = assoSRIdList.map((sr_id: string) =>
+      //   SRId2SRInfo(Number(sr_id), JSON.stringify(data[0]))
+      // );
+      assoSRListData.forEach((value: any) => {
+        const chargedBy = data[5].data
+          .map((asso: any) => {
+            if (asso.sr === value.id) return asso.user;
+          })
+          .filter((asso: any) => asso)[0];
+        console.log(chargedBy);
         newAssoSRCardList.push(
           <SRCard
             id={value.id}
@@ -178,13 +219,13 @@ const IRCard = (props: IRCardProps) => {
             description={value.description}
             priority={value.priority}
             rank={value.rank}
-            currState={value.currState}
+            currState={value.state}
             stateColor={value.stateColor}
             createdBy={value.createdBy}
             createdAt={value.createdAt}
             disabled={value.disabled}
             iter={value.iter}
-            chargedBy={value.chargedBy}
+            chargedBy={chargedBy}
             service={value.service}
           />
         );
@@ -211,7 +252,9 @@ const IRCard = (props: IRCardProps) => {
         }}
       >
         <div className="IRCard-small-header">
-          <div className="IRCard-small-header-left">{title}</div>
+          <div className="IRCard-small-header-left">
+            {!title || title === "" ? "[暂无标题]" : title}
+          </div>
           <div className="IRCard-small-header-right"></div>
         </div>
         <div className="IRCard-small-description">
@@ -220,18 +263,16 @@ const IRCard = (props: IRCardProps) => {
           </Typography>
         </div>
         <div className="IRCard-small-down">
-          <Avatar.Group>
-            <Avatar
-              className="IRCard-small-avatar"
-              size="small"
-              src={getUserAvatar(userInfo)}
-            />
-          </Avatar.Group>
-          <div>
+          <Avatar
+            className="SRCard-small-avatar"
+            size="small"
+            src={createdByAvatar}
+          />
+          <Text ellipsis={true}>
             {props.createdAt
               ? moment(props.createdAt * 1000).format("YYYY-MM-DD HH:mm:ss")
               : "无创建时间记录"}
-          </div>
+          </Text>
         </div>
       </div>
       {/*<input className="card-input" id="button" type="checkbox" />*/}
@@ -254,7 +295,9 @@ const IRCard = (props: IRCardProps) => {
                 paddingRight: "1rem",
               }}
             >
-              <Breadcrumb.Item>{props.title}</Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {!title || title === "" ? "[暂无标题]" : title}
+              </Breadcrumb.Item>
             </Breadcrumb>
           </div>
           <div className="IRModal-header-right"></div>
@@ -293,14 +336,20 @@ const IRCard = (props: IRCardProps) => {
           <div className="IRModal-content-middle">
             <div style={{ display: "flex", flexDirection: "row" }}>
               <p>负责人：</p>
-              <UIUserCardPreview userStore={userInfo} />
+              <UIUserCardPreview
+                userId={Number(props.createdBy)}
+                projectStore={projectInfo}
+                // yourSelf={false}
+              />
             </div>
             <div>
               <b>创建时间:</b>
-              {"   " +
-                (props.createdAt
+              <Text ellipsis={true}>
+                &nbsp;&nbsp;
+                {props.createdAt
                   ? moment(props.createdAt * 1000).format("YYYY-MM-DD HH:mm:ss")
-                  : "无创建时间记录")}
+                  : "无创建时间记录"}
+              </Text>
             </div>
           </div>
           <div className="IRModal-content-bottom">

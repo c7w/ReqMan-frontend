@@ -1,5 +1,6 @@
 // 获取用户头像
 import CryptoJS from "crypto-js";
+import { userId2UserInfo } from "./Association";
 const getUserAvatar = (userStore: string): string => {
   if (userStore === "" || JSON.parse(userStore).code !== 0) {
     return "";
@@ -13,4 +14,13 @@ const getUserAvatar = (userStore: string): string => {
     return userInfo.data.user.avatar;
   }
 };
-export default getUserAvatar;
+const userId2Avatar = (userId: number, projectStore: string) => {
+  const userInfo = userId2UserInfo(userId, projectStore);
+  // console.log(userInfo);
+  if (userInfo.avatar.length < 5) {
+    return `https://www.gravatar.com/avatar/${CryptoJS.MD5(userInfo.email)}`;
+  } else {
+    return userInfo.avatar;
+  }
+};
+export { getUserAvatar, userId2Avatar };

@@ -16,7 +16,7 @@ const MemberCommit = (props: MemberCommitProps) => {
   const all_data: any = [];
   const allUserInfo = JSON.parse(projectStore).data.users;
   const all_name_id: number[] = [];
-  const all_names: string[] = [];
+  const all_names: any = [];
   allUserInfo.forEach((value: any) => {
     all_name_id.push(value.id);
     all_names.push(value.name);
@@ -24,6 +24,19 @@ const MemberCommit = (props: MemberCommitProps) => {
   for (let i = 0; i < all_name_id.length; i++) {
     all_data.push(0);
   }
+  const max_len_per_row = 10;
+  const new_all_names: string[] = [];
+  all_names.forEach((value: string) => {
+    if (value.length > max_len_per_row) {
+      new_all_names.push(
+        value.substring(0, max_len_per_row) +
+          " \n" +
+          value.substring(max_len_per_row)
+      );
+    } else {
+      new_all_names.push(value + " ");
+    }
+  });
 
   data.forEach((item: any) => {
     const id = item.user_committer;
@@ -43,9 +56,12 @@ const MemberCommit = (props: MemberCommitProps) => {
       data: ["个人提交次数"],
     },
     xAxis: {
-      type: "category",
       name: "\n\n姓名",
-      data: all_names,
+      data: new_all_names,
+      axisLabel: {
+        interval: 0,
+        rotate: "30",
+      },
     },
     yAxis: {
       type: "value",

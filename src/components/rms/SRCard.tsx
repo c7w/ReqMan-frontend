@@ -54,6 +54,7 @@ import {
   SR2Iteration,
   SR2Service,
   SRId2SRInfo,
+  userId2UserInfo,
 } from "../../utils/Association";
 import CryptoJS from "crypto-js";
 import { getUserStore } from "../../store/slices/UserSlice";
@@ -89,9 +90,8 @@ import {
   getRepoInfo,
 } from "../../store/functions/RDTS";
 import { getRepoStore } from "../../store/slices/RepoSlice";
-import { UIMergeCard, UIMergeCardPreview } from "../rdts/UIMergeCard";
 import { getSRChangeLogStore } from "../../store/slices/SRChangeLogSlice";
-import getUserAvatar from "../../utils/UserAvatar";
+import { userId2Avatar } from "../../utils/UserAvatar";
 import UISRChangeLogList from "./UISRChangeLogList";
 import { state2Color, state2ChineseState } from "../../utils/SRStateConvert";
 import MRCard from "../rdts/MRCard";
@@ -103,6 +103,7 @@ import { ProjectServiceCard } from "./UIService";
 const { Text } = Typography;
 
 const SRCard = (props: SRCardProps) => {
+  // console.log(props);
   const dispatcher = useDispatch();
   const userInfo = useSelector(getUserStore);
   const projectStore = useSelector(getProjectStore);
@@ -135,12 +136,8 @@ const SRCard = (props: SRCardProps) => {
   const [chargedBy, setChargedBy] = useState(props.createdBy);
   const [service, setService] = useState(props.service);
   const [descEditing, setDescEditing] = useState<boolean>(false);
-  const [bounds, setBounds] = useState({
-    left: 0,
-    top: 0,
-    bottom: 0,
-    right: 0,
-  });
+  const [chargedByAvatar, setChargedByAvatar] = useState<string>("");
+  const [createdByAvatar, setCreatedByAvatar] = useState<string>("");
   // SR 关联信息
   const [assoIRCardList, setAssoIRCardList] = useState([]);
   const [assoMRCardList, setAssoMRCardList] = useState([]);
@@ -313,6 +310,7 @@ const SRCard = (props: SRCardProps) => {
         JSON.stringify(data[0]),
         JSON.stringify(data[1])
       );
+      console.log(assoIRListData);
       const newAssoIRCardList: any = [];
       assoIRListData.forEach((value: IRCardProps) => {
         newAssoIRCardList.push(
@@ -324,6 +322,7 @@ const SRCard = (props: SRCardProps) => {
             description={value.description}
             rank={value.rank}
             createdAt={value.createdAt}
+            createdBy={value.createdBy}
             progress={value.progress}
             iter={value.iter}
           />
@@ -331,14 +330,29 @@ const SRCard = (props: SRCardProps) => {
       });
       setAssoIRCardList(newAssoIRCardList);
     });
-    getSRChangeLogInfo(dispatcher, props.project, props.id).then(
-      (data: any) => {
-        // console.log(data);
-      }
-    );
-    // updateUserInfo(dispatcher);
-    // updateProjectInfo(dispatcher, props.project);
   };
+
+  useEffect(() => {
+    updateProjectInfo(dispatcher, props.project).then((data) => {
+      // console.log(data);
+      let userInfo = data.data.users.filter(
+        (user: any) => user.id === props.createdBy
+      )[0];
+      const createdByAvatar =
+        userInfo.avatar.length < 5
+          ? `https://www.gravatar.com/avatar/${CryptoJS.MD5(userInfo.email)}`
+          : userInfo.avatar;
+      setCreatedByAvatar(createdByAvatar);
+      userInfo = data.data.users.filter(
+        (user: any) => user.id === props.chargedBy
+      )[0];
+      const chargedByAvatar =
+        userInfo.avatar.length < 5
+          ? `https://www.gravatar.com/avatar/${CryptoJS.MD5(userInfo.email)}`
+          : userInfo.avatar;
+      setChargedByAvatar(chargedByAvatar);
+    });
+  }, []);
 
   const handleOK = () => {
     if (
@@ -454,14 +468,21 @@ const SRCard = (props: SRCardProps) => {
             <Avatar
               className="SRCard-small-avatar"
               size="small"
-              src={getUserAvatar(userInfo)}
+              src={createdByAvatar}
             />
+            {chargedByAvatar ? (
+              <Avatar
+                className="SRCard-small-avatar"
+                size="small"
+                src={chargedByAvatar}
+              />
+            ) : undefined}
           </Avatar.Group>
-          <div>
+          <Text ellipsis={true}>
             {props.createdAt
               ? moment(props.createdAt * 1000).format("YYYY-MM-DD HH:mm:ss")
               : "无创建时间记录"}
-          </div>
+          </Text>
         </div>
       </div>
       {/*<input className="card-input" id="button" type="checkbox" />*/}
@@ -470,7 +491,8 @@ const SRCard = (props: SRCardProps) => {
         visible={modalVisible}
         onOk={handleOK}
         onCancel={handleCancel}
-        width={"90%"}
+        destroyOnClose={true}
+        width={"95%"}
       >
         <div className="SRModal-header">
           <div
@@ -534,23 +556,37 @@ const SRCard = (props: SRCardProps) => {
               </Typography>
             </div>
             <div className="SRModal-content-left-middle">
-              <div style={{ display: "flex", flexDirection: "row" }}>
-                <p>负责人：</p>
-                <UIUserCardPreview
-                  userStore={userInfo}
-                  // userId={Number(props.createdBy)}
-                  // projectStore={projectStore}
-                  // yourSelf={false}
-                />
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-around",
+                  alignItems: "center",
+                }}
+              >
+                <span style={{ fontWeight: "bold", marginRight: "1rem" }}>
+                  负责人：
+                </span>
+                {props.chargedBy ? (
+                  <UIUserCardPreview
+                    userId={Number(props.chargedBy)}
+                    projectStore={projectStore}
+                    // yourSelf={false}
+                  />
+                ) : (
+                  "暂无指定负责人"
+                )}
               </div>
               <div>
                 <b>创建时间:</b>
-                {"   " +
-                  (props.createdAt
+                <Text ellipsis={true}>
+                  &nbsp;&nbsp;
+                  {props.createdAt
                     ? moment(props.createdAt * 1000).format(
                         "YYYY-MM-DD HH:mm:ss"
                       )
-                    : "无创建时间记录")}
+                    : "无创建时间记录"}
+                </Text>
               </div>
             </div>
             <Divider />
@@ -579,6 +615,8 @@ const SRCard = (props: SRCardProps) => {
             <UISRChangeLogList
               SRChangeLogListInfo={SRChangeLogStore}
               projectStore={projectStore}
+              currState={props.currState}
+              description={props.description}
             />
           </div>
           <Divider type="vertical" style={{ width: "5px", height: "auto" }} />

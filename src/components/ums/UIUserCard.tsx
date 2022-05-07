@@ -1,21 +1,23 @@
 import React, { useEffect, useState } from "react";
 import ReactEcharts from "echarts-for-react";
 import "./UIUserCard.css";
-import { Avatar, Divider, Modal } from "antd";
-import getUserAvatar from "../../utils/UserAvatar";
+import { Avatar, Divider, Modal, Tooltip } from "antd";
 import moment from "moment";
 import { getCommitCountInfo } from "../../store/functions/UMS";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Loading from "../../layout/components/Loading";
-import { getAllRDTSInfo } from "../../store/functions/RDTS";
+import { getRDTSInfo } from "../../store/functions/RDTS";
 import UserActivityType from "../../utils/UserActivityType";
 import UIUserActivityList from "./UIUserActivityList";
 import UIProjectList from "../rms/UIProjectList";
+import CryptoJS from "crypto-js";
+import { getIssueStore, getMergeStore } from "../../store/slices/IssueSlice";
+import { data } from "jquery";
 
 interface UIUserCardProps {
-  readonly userStore: string; // 展示他人的就发 {}
+  readonly projectStore: string;
   // readonly yourSelf: boolean; // 是否是自己的
-  // readonly userId: number;
+  readonly userId: number;
   // readonly projectStore: string;
   readonly visible: boolean;
   readonly close: () => void;
@@ -25,9 +27,19 @@ const UIUserCard = (props: UIUserCardProps) => {
   // const userInfo = JSON.parse(props.projectStore).data.users.filter(
   //   (user: any) => user.id === props.userId
   // )[0];
-  const userInfo = JSON.parse(props.userStore).data;
+  const projectInfo = JSON.parse(props.projectStore).data;
+  // console.log(projectInfo);
+  const userInfo = projectInfo.users.filter(
+    (user: any) => user.id === props.userId
+  )[0];
+
+  const issueStore = useSelector(getIssueStore);
+  const mergeStore = useSelector(getMergeStore);
+
+  // console.log(userInfo);
   const [commitInfo, setCommitInfo] = useState("");
   const [myActivities, setActivities] = useState("");
+  const [reload, setReload] = useState(0);
   const dispatcher = useDispatch();
 
   const date = new Date(); // 当前时间
@@ -56,22 +68,24 @@ const UIUserCard = (props: UIUserCardProps) => {
   };
 
   useEffect(() => {
-    getCommitCountInfo(dispatcher, props.userStore).then((data: any) => {
-      const date = new Date(); // 当前时间
-      const date_now = date.getTime();
-      date.setFullYear(date.getFullYear() - 1); // 去年时间
-      const date_past = date.getTime();
-      const commitData = getAllDay(date_past, date_now);
-      data.forEach((activity: any) => {
-        const commitTimes = activity.data[0].commit_times;
-        commitTimes.forEach((commitTime: any) => {
-          commitData[moment(commitTime * 1000).format("YYYY-MM-DD")]++;
-        });
-      });
-      setCommitInfo(JSON.stringify(commitData));
-    });
-    getAllRDTSInfo(dispatcher, props.userStore).then((data: any) => {
-      // console.log(data);
+    if (reload > 0) {
+      getCommitCountInfo(dispatcher, projectInfo.project.id, props.userId).then(
+        (data: any) => {
+          const date = new Date(); // 当前时间
+          const date_now = date.getTime();
+          date.setFullYear(date.getFullYear() - 1); // 去年时间
+          const date_past = date.getTime();
+
+          const commitData = getAllDay(date_past, date_now);
+          // console.log(data);
+          const commitTimes = data.data[0].commit_times;
+          commitTimes.forEach((commitTime: any) => {
+            commitData[moment(commitTime * 1000).format("YYYY-MM-DD")]++;
+          });
+          setCommitInfo(JSON.stringify(commitData));
+        }
+      );
+
       const myActivities: any = {
         activities: Array<{
           type: UserActivityType;
@@ -80,48 +94,46 @@ const UIUserCard = (props: UIUserCardProps) => {
           project: number;
         }>(),
       };
-      data.forEach((project: any) => {
-        const project_id = project.project;
-        const issueInfo = project[0].data;
-        const MRInfo = project[2].data;
-        // 加入 open issue 和 close issue 两个活动
-        issueInfo.forEach((issue: any) => {
-          if (issue.user_authored === userInfo.user.id) {
-            myActivities.activities.push({
-              type: UserActivityType.OPEN_ISSUE,
-              timestamp: issue.authoredAt,
-              info: issue,
-              project: project_id,
-            });
-          }
-          if (issue.user_closed === userInfo.user.id) {
-            myActivities.activities.push({
-              type: UserActivityType.CLOSE_ISSUE,
-              timestamp: issue.closedAt,
-              info: issue,
-              project: project_id,
-            });
-          }
-        });
-        // 加入 open MR 和 close MR 两个活动
-        MRInfo.forEach((mr: any) => {
-          if (mr.user_authored === userInfo.user.id) {
-            myActivities.activities.push({
-              type: UserActivityType.OPEN_MR,
-              timestamp: mr.authoredAt,
-              info: mr,
-              project: project_id,
-            });
-          }
-          if (mr.user_reviewed === userInfo.user.id) {
-            myActivities.activities.push({
-              type: UserActivityType.REVIEW_MR,
-              timestamp: mr.reviewedAt,
-              info: mr,
-              project: project_id,
-            });
-          }
-        });
+      const project_id = projectInfo.project.id;
+      const issueInfo = JSON.parse(issueStore).data;
+      const MRInfo = JSON.parse(mergeStore).data;
+      // 加入 open issue 和 close issue 两个活动
+      issueInfo.forEach((issue: any) => {
+        if (issue.user_authored === props.userId) {
+          myActivities.activities.push({
+            type: UserActivityType.OPEN_ISSUE,
+            timestamp: issue.authoredAt,
+            info: issue,
+            project: project_id,
+          });
+        }
+        if (issue.user_closed === props.userId) {
+          myActivities.activities.push({
+            type: UserActivityType.CLOSE_ISSUE,
+            timestamp: issue.closedAt,
+            info: issue,
+            project: project_id,
+          });
+        }
+      });
+      // 加入 open MR 和 close MR 两个活动
+      MRInfo.forEach((mr: any) => {
+        if (mr.user_authored === props.userId) {
+          myActivities.activities.push({
+            type: UserActivityType.OPEN_MR,
+            timestamp: mr.authoredAt,
+            info: mr,
+            project: project_id,
+          });
+        }
+        if (mr.user_reviewed === props.userId) {
+          myActivities.activities.push({
+            type: UserActivityType.REVIEW_MR,
+            timestamp: mr.reviewedAt,
+            info: mr,
+            project: project_id,
+          });
+        }
       });
       // 按时间戳倒序，将最新活动放在前面
       myActivities.activities.sort((value1: any, value2: any) => {
@@ -132,10 +144,48 @@ const UIUserCard = (props: UIUserCardProps) => {
           : -1;
       });
       setActivities(JSON.stringify(myActivities));
-    });
-  }, []);
+    }
+  }, [reload]);
+  useEffect(() => {
+    if (props.visible) {
+      setReload(reload + 1);
+    }
+  }, [props.visible]);
 
-  if (commitInfo === "" || myActivities === "") return <Loading />;
+  if (issueStore === "" || mergeStore === "") {
+    return (
+      <Modal
+        centered={true}
+        footer={null}
+        destroyOnClose={true}
+        visible={props.visible}
+        onCancel={() => props.close()}
+        width={"80%"}
+        title={"个人信息"}
+      >
+        <div>
+          <Loading />
+        </div>
+      </Modal>
+    );
+  }
+
+  if (commitInfo === "" || myActivities === "")
+    return (
+      <Modal
+        centered={true}
+        footer={null}
+        destroyOnClose={true}
+        visible={props.visible}
+        onCancel={() => props.close()}
+        width={"80%"}
+        title={"个人信息"}
+      >
+        <div>
+          <Loading />
+        </div>
+      </Modal>
+    );
 
   const commitDataObj = JSON.parse(commitInfo);
   const keys = Object.keys(commitDataObj);
@@ -148,9 +198,9 @@ const UIUserCard = (props: UIUserCardProps) => {
       left: "center",
       text:
         "@ " +
-        userInfo.user.name +
+        userInfo.name +
         "    加入 ReqMan 于" +
-        moment(userInfo.user.createdAt * 1000).format("YYYY-MM-DD"),
+        moment(userInfo.createdAt * 1000).format("YYYY-MM-DD"),
       textStyle: {
         fontSize: 15,
       },
@@ -160,7 +210,7 @@ const UIUserCard = (props: UIUserCardProps) => {
     },
     visualMap: {
       min: 0,
-      max: 20,
+      max: 30,
       type: "continuous",
       orient: "horizontal",
       left: "center",
@@ -223,7 +273,13 @@ const UIUserCard = (props: UIUserCardProps) => {
           <Avatar
             className="SRCard-small-avatar"
             size={100}
-            src={getUserAvatar(props.userStore)}
+            src={
+              userInfo.avatar.length < 5
+                ? `https://www.gravatar.com/avatar/${CryptoJS.MD5(
+                    userInfo.email
+                  )}`
+                : userInfo.avatar
+            }
           />
           <ReactEcharts option={option} style={{ width: "100%" }} />
         </div>
@@ -239,21 +295,6 @@ const UIUserCard = (props: UIUserCardProps) => {
               userInfo={JSON.stringify(userInfo)}
             />
           </div>
-          <div className="UserCard-projects">
-            <span style={{ fontWeight: "bold", fontSize: "1.5rem" }}>
-              我的项目
-            </span>
-            {/*{() => {*/}
-            {/*  if (props.yourSelf)*/}
-            {/*    return (*/}
-            {/*      <UIProjectList*/}
-            {/*        userInfo={props.userStore}*/}
-            {/*        justDisplay={true}*/}
-            {/*      />*/}
-            {/*    );*/}
-            {/*}}*/}
-            <UIProjectList userInfo={props.userStore} justDisplay={true} />
-          </div>
         </div>
       </div>
     </Modal>
@@ -261,36 +302,56 @@ const UIUserCard = (props: UIUserCardProps) => {
 };
 
 interface UIUserCardPreviewProps {
-  readonly userStore: string;
-  // readonly projectStore: string;
-  // readonly userId: number;
+  readonly projectStore: string;
+  readonly userId: number;
   // readonly yourSelf: boolean;
 }
 
 const UIUserCardPreview = (props: UIUserCardPreviewProps) => {
   const [visible, setVisible] = useState(false);
+  const projectInfo = JSON.parse(props.projectStore).data;
+  // console.log(projectInfo);
+  // console.log(props.userId);
+  const userInfo = projectInfo.users.filter(
+    (user: any) => user.id === props.userId
+  )[0];
+
+  if (userInfo === undefined) {
+    console.debug("???");
+    return <></>;
+  }
+
+  // console.log(userInfo);
   return (
     <>
       <UIUserCard
         visible={visible}
         close={() => setVisible(false)}
-        userStore={props.userStore}
-        // userId={props.userId}
+        projectStore={props.projectStore}
+        userId={props.userId}
         // projectStore={props.projectStore}
         // yourSelf={props.yourSelf}
       />
-      <div
-        className="UserCard-small"
-        onClick={() => {
-          setVisible(true);
-        }}
-      >
-        <Avatar
-          className="UserCard-small-avatar"
-          size="small"
-          src={getUserAvatar(props.userStore)}
-        />
-      </div>
+      <Tooltip title={userInfo.name}>
+        <div
+          className="UserCard-small"
+          onClick={() => {
+            setVisible(true);
+          }}
+        >
+          <Avatar
+            className="UserCard-small-avatar"
+            size="small"
+            src={
+              userInfo.avatar.length < 5
+                ? `https://www.gravatar.com/avatar/${CryptoJS.MD5(
+                    userInfo.email
+                  )}`
+                : userInfo.avatar
+            }
+          />
+        </div>
+      </Tooltip>
     </>
   );
 };

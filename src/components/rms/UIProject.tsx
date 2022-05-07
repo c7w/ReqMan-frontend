@@ -6,6 +6,7 @@ import "./UIProject.css";
 import Calendar from "./Calendar";
 import { getProjectStore } from "../../store/slices/ProjectSlice";
 import CryptoJS from "crypto-js";
+import { UIUserCardPreview } from "../ums/UIUserCard";
 
 interface UIProjectProps {
   id: number;
@@ -24,14 +25,10 @@ const UIProject = (props: UIProjectProps) => {
   const avatarList: any = [];
   allUserInfo.forEach((user: any) => {
     avatarList.push(
-      <Avatar
-        className="ui-project-avatar"
+      <UIUserCardPreview
+        projectStore={projectStore}
+        userId={user.id}
         key={user.id}
-        src={
-          user.avatar.length < 5
-            ? `https://www.gravatar.com/avatar/${CryptoJS.MD5(user.email)}`
-            : user.avatar
-        }
       />
     );
   });

@@ -16,6 +16,7 @@ const List = (props: ListProps) => {
     const tmp_SRList = Array.from(JSON.parse(props.stateSRList));
     const newSRCardList: any = [];
     if (tmp_SRList && tmp_SRList !== []) {
+      console.log(tmp_SRList);
       tmp_SRList.forEach((value: any) => {
         newSRCardList.push(
           <SRCard
@@ -25,14 +26,14 @@ const List = (props: ListProps) => {
             priority={value.priority}
             disabled={value.disabled}
             description={value.description}
-            currState={value.state}
+            currState={value.currState}
             project={value.project}
             rank={value.rank}
             createdBy={value.createdBy}
             createdAt={value.createdAt}
-            chargedBy={-1}
-            service={-1}
-            iter={[]}
+            chargedBy={value.chargedBy}
+            service={value.service}
+            iter={value.iter}
           />
         );
       });

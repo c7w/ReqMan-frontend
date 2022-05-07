@@ -9,7 +9,7 @@ import { push } from "redux-first-history";
 import { Redirect } from "../../utils/Navigation";
 import { getUserStore } from "../../store/slices/UserSlice";
 import CryptoJS from "crypto-js";
-import getUserAvatar from "../../utils/UserAvatar";
+import { getUserAvatar } from "../../utils/UserAvatar";
 
 const { Header } = Layout;
 
@@ -33,14 +33,8 @@ const Navbar = () => {
     <div>
       <Header className="header">
         <div className="header-left">
-          <div className="undefined">
+          <div className="dashboard-undefined">
             <img src={logo} alt="undefined" width={133} height={36} />
-          </div>
-          <div
-            className="header-item"
-            onClick={() => Redirect(dispatcher, "/dashboard", 1)}
-          >
-            我的日程
           </div>
           <div
             className="header-item"

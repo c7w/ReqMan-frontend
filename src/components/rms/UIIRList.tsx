@@ -1,21 +1,8 @@
-import React, { ReactElement, useEffect, useState } from "react";
+import React, { useState } from "react";
 import type { ProColumns } from "@ant-design/pro-table";
 import ProTable from "@ant-design/pro-table";
-import {
-  Input,
-  Button,
-  Modal,
-  Progress,
-  InputNumber,
-  Popconfirm,
-  message,
-  Space,
-} from "antd";
-import {
-  IRCardProps,
-  IRSRAssociation,
-  SRCardProps,
-} from "../../store/ConfigureStore";
+import { Input, Button, Modal, Progress, Popconfirm } from "antd";
+import { IRCardProps, IRSRAssociation } from "../../store/ConfigureStore";
 import "./UIIRList.css";
 import SRList from "./UISRList";
 import { useDispatch, useSelector } from "react-redux";
@@ -26,21 +13,10 @@ import {
 } from "../../store/functions/RMS";
 import { ToastMessage } from "../../utils/Navigation";
 import ReactMarkdown from "react-markdown";
-import {
-  IR2Iteration,
-  Iteration2SR,
-  oneIR2AllSR,
-  SR2Iteration,
-  SRId2SRInfo,
-  userId2UserInfo,
-} from "../../utils/Association";
-import {
-  getIRIterationStore,
-  getIterationStore,
-  getSRIterationStore,
-} from "../../store/slices/IterationSlice";
-import { getSRListStore } from "../../store/slices/IRSRSlice";
+import { SRId2SRInfo, userId2UserInfo } from "../../utils/Association";
 import { getProjectStore } from "../../store/slices/ProjectSlice";
+import { UIUserCardPreview } from "../ums/UIUserCard";
+import IRCard from "./IRCard";
 const { TextArea } = Input;
 
 interface UIIRListProps {
@@ -59,8 +35,6 @@ const UIIRList = (props: UIIRListProps) => {
   const project = props.project_id;
   const dataIRList: IRCardProps[] = [];
   const projectInfo = useSelector(getProjectStore);
-  const iterationStore = useSelector(getIterationStore);
-  const iterIRAssoStore = useSelector(getIRIterationStore);
 
   IRListData.forEach((value: IRCardProps) => {
     const user = userId2UserInfo(Number(value.createdBy), projectInfo);
@@ -87,23 +61,25 @@ const UIIRList = (props: UIIRListProps) => {
       title: value.title,
       description: value.description,
       rank: value.rank,
-      createdBy: user.name,
+      createdBy: user.id,
       createdAt: value.createdAt * 1000,
       disabled: value.disabled,
       progress: curProgress,
       iter: [],
     });
   });
-  // const [tableListDataSource] = useState<IRCard[]>(dataIRList);
   const [isEditModalVisible, setIsEditModalVisible] = useState<boolean>(false);
   const [isCreateModalVisible, setIsCreateModalVisible] =
     useState<boolean>(false);
   const [isSRModalVisible, setIsSRModalVisible] = useState<boolean>(false);
+  const [isCardModalVisible, setIsCardModalVisible] = useState<boolean>(false);
 
   const [id, setId] = useState<number>(-1);
   const [title, setTitle] = useState<string>("");
   const [desc, setDesc] = useState<string>("");
   const [rank, setRank] = useState<number>(1);
+  const [ifok, setIfok] = useState<boolean>(true);
+  const [IRCardRecord, setIRCardRecord] = useState<IRCardProps>(IRListData[0]);
 
   const showSRModal = (record: IRCardProps) => {
     setId(record.id);
@@ -124,6 +100,7 @@ const UIIRList = (props: UIIRListProps) => {
   };
 
   const showEditModal = (record: IRCardProps) => {
+    setIfok(false);
     setId(record.id);
     setTitle(record.title);
     setDesc(record.description);
@@ -157,6 +134,7 @@ const UIIRList = (props: UIIRListProps) => {
         ToastMessage("error", "修改失败", "您的原始需求修改失败");
       }
     });
+    setIfok(true);
   };
 
   const handleEditCancel = () => {
@@ -165,10 +143,12 @@ const UIIRList = (props: UIIRListProps) => {
     setDesc("");
     setRank(1);
     setIsEditModalVisible(false);
+    setIfok(true);
   };
 
   const showCreateModal = () => {
     setIsCreateModalVisible(true);
+    setIfok(true);
   };
 
   const handleCreateOk = () => {
@@ -197,6 +177,7 @@ const UIIRList = (props: UIIRListProps) => {
         ToastMessage("error", "创建失败", "您的原始需求创建失败");
       }
     });
+    setIfok(true);
   };
 
   const handleCreateCancel = () => {
@@ -205,6 +186,7 @@ const UIIRList = (props: UIIRListProps) => {
     setDesc("");
     setRank(1);
     setIsCreateModalVisible(false);
+    setIfok(true);
   };
 
   function confirmDelete(record: IRCardProps) {
@@ -223,6 +205,19 @@ const UIIRList = (props: UIIRListProps) => {
     });
   }
 
+  const showCardModal = (record: IRCardProps) => {
+    setIsCardModalVisible(true);
+    setIRCardRecord(record);
+  };
+
+  const handleCardCancel = () => {
+    setIsCardModalVisible(false);
+  };
+
+  const handleCardOk = () => {
+    setIsCardModalVisible(false);
+  };
+
   const columns: ProColumns<IRCardProps>[] = [
     {
       title: "原始需求标题",
@@ -237,7 +232,9 @@ const UIIRList = (props: UIIRListProps) => {
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
+            cursor: "pointer",
           }}
+          onClick={() => showCardModal(record)}
         >
           {record.title}
         </div>
@@ -254,7 +251,7 @@ const UIIRList = (props: UIIRListProps) => {
     },
     {
       title: "进度",
-      width: "13%",
+      width: "12%",
       align: "center",
       render: (_, record) => (
         <Progress className={"prgressProp"} percent={record.progress} />
@@ -262,10 +259,20 @@ const UIIRList = (props: UIIRListProps) => {
     },
     {
       title: "创建者",
-      width: "12%",
+      width: "8%",
       ellipsis: true,
-      dataIndex: "createdBy",
       align: "center",
+      render: (_, record) => {
+        // console.log(record);
+        return (
+          <div style={{}}>
+            <UIUserCardPreview
+              projectStore={projectInfo}
+              userId={Number(record.createdBy)}
+            />
+          </div>
+        );
+      },
     },
     {
       title: "创建时间",
@@ -278,7 +285,7 @@ const UIIRList = (props: UIIRListProps) => {
     },
     {
       title: "操作",
-      width: "20%",
+      width: "25%",
       valueType: "option",
       align: "center",
       render: (text, record, _, action) => [
@@ -336,17 +343,10 @@ const UIIRList = (props: UIIRListProps) => {
             setting: true,
             density: true,
           }}
-          // request={() => {
-          //   return Promise.resolve({
-          //     data: tableListDataSource,
-          //     success: true,
-          //   });
-          // }}
           defaultSize={"small"}
           dataSource={dataIRList}
           rowKey="id"
           pagination={{ pageSize: 10 }}
-          // scroll={{ y: 600 }}
           tableStyle={{ padding: "1rem 1rem 2rem" }}
           dateFormatter="string"
           search={false}
@@ -382,11 +382,18 @@ const UIIRList = (props: UIIRListProps) => {
           onOk={handleCreateOk}
           onCancel={handleCreateCancel}
           width={"60vw"}
+          okButtonProps={{ disabled: ifok }}
         >
           <p style={{ marginBottom: "5px", fontSize: "16px" }}>原始需求名称</p>
           <Input
             value={title}
             onChange={(e) => {
+              if (e.target.value === "") {
+                setIfok(true);
+              }
+              if (e.target.value !== "") {
+                setIfok(false);
+              }
               setTitle(e.target.value);
             }}
           />
@@ -407,17 +414,6 @@ const UIIRList = (props: UIIRListProps) => {
               setDesc(e.target.value);
             }}
           />
-          {/*<p*/}
-          {/*  style={{ paddingTop: "10px", marginBottom: "5px", fontSize: "16px" }}*/}
-          {/*>*/}
-          {/*  项目重要性*/}
-          {/*</p>*/}
-          {/*<InputNumber*/}
-          {/*  value={rank}*/}
-          {/*  onChange={(e: number) => {*/}
-          {/*    setRank(e);*/}
-          {/*  }}*/}
-          {/*/>*/}
         </Modal>
 
         <Modal
@@ -427,6 +423,7 @@ const UIIRList = (props: UIIRListProps) => {
           onOk={handleEditOk}
           onCancel={handleEditCancel}
           width={"70%"}
+          okButtonProps={{ disabled: ifok }}
         >
           <p
             style={{
@@ -440,6 +437,12 @@ const UIIRList = (props: UIIRListProps) => {
           <Input
             value={title}
             onChange={(e) => {
+              if (e.target.value === "") {
+                setIfok(true);
+              }
+              if (e.target.value !== "") {
+                setIfok(false);
+              }
               setTitle(e.target.value);
             }}
           />
@@ -459,6 +462,32 @@ const UIIRList = (props: UIIRListProps) => {
             onChange={(e) => {
               setDesc(e.target.value);
             }}
+          />
+        </Modal>
+
+        <Modal
+          title="IRCard展示"
+          centered={true}
+          visible={isCardModalVisible}
+          onCancel={handleCardCancel}
+          footer={[
+            <Button key="confirm" onClick={handleCardOk}>
+              确认
+            </Button>,
+          ]}
+          width={"40%"}
+          destroyOnClose={true}
+        >
+          <IRCard
+            title={IRCardRecord.title}
+            iter={IRCardRecord.iter}
+            id={IRCardRecord.id}
+            project={IRCardRecord.project}
+            description={IRCardRecord.description}
+            progress={IRCardRecord.progress}
+            createdAt={Number(IRCardRecord.createdAt) / 1000}
+            createdBy={IRCardRecord.createdBy}
+            rank={IRCardRecord.rank}
           />
         </Modal>
       </div>
@@ -488,6 +517,31 @@ const UIIRList = (props: UIIRListProps) => {
           dateFormatter="string"
           search={false}
         />
+        <Modal
+          title="IRCard展示"
+          centered={true}
+          visible={isCardModalVisible}
+          onCancel={handleCardCancel}
+          footer={[
+            <Button key="confirm" onClick={handleCardOk}>
+              确认
+            </Button>,
+          ]}
+          width={"40%"}
+          destroyOnClose={true}
+        >
+          <IRCard
+            title={IRCardRecord.title}
+            iter={IRCardRecord.iter}
+            id={IRCardRecord.id}
+            project={IRCardRecord.project}
+            description={IRCardRecord.description}
+            progress={IRCardRecord.progress}
+            createdAt={Number(IRCardRecord.createdAt) / 1000}
+            createdBy={IRCardRecord.createdBy}
+            rank={IRCardRecord.rank}
+          />
+        </Modal>
       </div>
     );
   }
