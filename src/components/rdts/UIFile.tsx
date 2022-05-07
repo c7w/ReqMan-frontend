@@ -21,6 +21,9 @@ const UIFileNotFound = () => {
   // Get project ID
   const params = useParams<"id">();
   const project_id = Number(params.id);
+  if (project_id === undefined) {
+    Redirect(dispatcher, "/error", 0);
+  }
 
   const pathname = window.location.pathname
     .split("/")
@@ -72,7 +75,7 @@ const UIFile = () => {
   const repoStore = useSelector(getRepoStore);
   const projectStore = useSelector(getProjectStore);
 
-  const params = useParams();
+  const params = useParams<"id">();
   const project_id = Number(params.id);
 
   // Get Query String
@@ -270,10 +273,18 @@ const UIFile = () => {
         if (pathname[i] === "/") {
           continue;
         }
+        let additional = "";
+        if (i === pathname.length - 1 && isFile) {
+          additional = "?isFile=1";
+        }
         breadcrumb_list.push({
           name: pathname[i],
           link:
-            "/project/" + project_id + "/" + pathname.slice(0, i + 1).join("/"),
+            "/project/" +
+            project_id +
+            "/" +
+            pathname.slice(0, i + 1).join("/") +
+            additional,
         });
       }
 
@@ -341,7 +352,7 @@ const UIFile = () => {
         <Breadcrumb.Item>
           <a
             onClick={() => {
-              Redirect(dispatcher, `/project/${pathname[1]}/tree/`, 0);
+              Redirect(dispatcher, `/project/${project_id}/tree/`, 0);
             }}
           >
             <FontAwesomeIcon icon={faHome} />
@@ -504,6 +515,27 @@ const UIFile = () => {
                           "-" +
                           lineNumber.toString();
 
+                        const GenerateNewNode = (
+                          unique_ID: string,
+                          NodeText: string,
+                          index = 0
+                        ) => {
+                          if (NodeText !== "") {
+                            const Node2 = document.createElement("span");
+                            Node2.innerText = NodeText;
+                            Node2.className = "Appended";
+                            // Node2.style.setProperty(
+                            //   "right",
+                            //   `${index * 10}rem`
+                            // );
+                            document
+                              .getElementById(unique_ID)
+                              ?.appendChild(Node2);
+                            return 1;
+                          }
+                          return 0;
+                        };
+
                         setTimeout(() => {
                           console.debug(unique_ID);
                           const Node = document.createElement("span");
@@ -541,6 +573,7 @@ const UIFile = () => {
                           let user = "";
                           let lastUpdate = "";
                           let hash_id = "";
+                          let sr = "";
 
                           const filtered: any = Object.entries(
                             JSON.parse(currCode).Commits
@@ -550,39 +583,26 @@ const UIFile = () => {
                           });
 
                           if (filtered.length > 0) {
-                            user = filtered[0][1].committer_name;
+                            user = filtered[0][1].commiter_name;
                             lastUpdate = moment(
-                              filtered[0][1].createdAt
+                              filtered[0][1].createdAt * 1000
                             ).calendar();
                             hash_id = filtered[0][1].hash_id.slice(0, 7);
                           }
 
-                          const SR = JSON.parse(currCode).SR;
-
-                          const Node1 = document.createElement("span");
-                          Node1.innerText = "1233";
-                          Node1.className = "Appended";
-
-                          const Node2 = document.createElement("span");
-                          Node2.innerText = "1234";
-                          Node2.className = "Appended";
-
-                          document
-                            .getElementById(unique_ID)
-                            ?.appendChild(Node1);
-                          document
-                            .getElementById(unique_ID)
-                            ?.appendChild(Node2);
-
-                          if (hash_id !== "") {
-                            const Node3 = document.createElement("span");
-                            Node3.innerText = hash_id;
-                            Node3.className = "Appended";
-
-                            document
-                              .getElementById(unique_ID)
-                              ?.appendChild(Node3);
+                          const SR_list = JSON.parse(currCode).SR;
+                          if (my_relation.SR !== null) {
+                            const tmp_SR = SR_list[my_relation.SR];
+                            if (tmp_SR !== undefined) {
+                              sr = tmp_SR.title;
+                            }
                           }
+
+                          let idx = 0;
+                          idx += GenerateNewNode(unique_ID, sr, idx);
+                          idx += GenerateNewNode(unique_ID, user, idx);
+                          idx += GenerateNewNode(unique_ID, lastUpdate, idx);
+                          idx += GenerateNewNode(unique_ID, hash_id, idx);
                         }, 400);
 
                         return {
