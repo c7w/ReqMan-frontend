@@ -256,6 +256,7 @@ nav .root-menu .root-menu_icon:hover .icon:after {
 .root-footer {
   bottom: 2%;
   text-align: center;
+  position: fixed;
   width: 100vw;
   color: #000;
   font-family: "Consolas";
@@ -401,6 +402,7 @@ nav .root-menu .root-menu_icon:hover .icon:after {
   padding: 65px 0;
   width: 1200px;
   margin: 0 auto;
+  user-select: none;
 }
 
 .secondEditionContent .hadoop .hadoopCon {
@@ -487,3 +489,86 @@ pre {
   overflow: initial;
 }
 
+.inView {
+  opacity: 1;
+  transition: all 1.5s ease;
+}
+
+.outView {
+  opacity: 0;
+  transition: all 1.5s ease;
+}
+
+.outView .word-item {
+  opacity: 0;
+}
+
+.inView .word-item {
+  opacity: 1;
+  animation: show .2s 1 forwards;
+}
+
+.oneStop .oneStopContent {
+  display: flex;
+}
+
+.oneStop .oneStopContent .osLeftMain {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  position: relative;
+  margin-bottom: 182px;
+}
+
+.oneStop .oneStopContent .osRightMain {
+  margin-left: 22px;
+  text-align: left;
+}
+
+.oneStop {
+  text-align: center;
+  transition: 2s;
+}
+
+.oneStop .osleftPosi1 {
+  position: absolute;
+  right: -200px;
+  top: 102px;
+  transition: 2s;
+  opacity: 0;
+  z-index: 1;
+}
+
+.oneStop .osleftPosi2 {
+  position: absolute;
+  right: -200px;
+  top: 102px;
+  transition: 2s;
+  opacity: 0;
+  z-index: 1;
+}
+
+.oneStop .oneStopContent .osRightMain .osRightTitle {
+  height: 50px;
+  font-size: 36px;
+  font-weight: 600;
+  color: #fff;
+  line-height: 50px;
+  background: -webkit-linear-gradient(112deg,#ff8b75,#dd2476);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-top: 28px;
+}
+
+.oneStop .oneStopContent .osRightMain p {
+  font-size: 20px;
+  color: #637497;
+  line-height: 36px;
+  margin-top: 50px;
+  margin-bottom: 0 !important;
+}
+
+.oneStop .oneStopContent .osRightMain p span {
+  color: #000;
+  font-weight: 500;
+}
