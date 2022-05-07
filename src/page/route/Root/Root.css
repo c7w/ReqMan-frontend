@@ -206,15 +206,17 @@ nav .root-menu .root-menu_icon:hover .icon:after {
   flex-direction: column;
   justify-content: space-around;
 }
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@1,500&display=swap');
+
 .combined .title {
   font-size: 6rem;
   overflow: hidden;
   color: #000;
   /*font-family: Verdana, Geneva, Tahoma, sans-serif;*/
-  font-family: "Microsoft YaHei UI";
+  font-family:  'IBM Plex Sans', sans-serif;
 }
 .combined-bar {
-  width: 85%;
+  width: 80%;
   height: 2px;
   background: #ff4d4f;
 }
@@ -257,6 +259,17 @@ nav .root-menu .root-menu_icon:hover .icon:after {
   bottom: 2%;
   text-align: center;
   position: fixed;
+  width: 100vw;
+  color: #000;
+  font-family: "Consolas";
+  font-size: 20px;
+  user-select: none;
+  font-style: italic;
+}
+
+.root-footer-2 {
+  bottom: 2%;
+  text-align: center;
   width: 100vw;
   color: #000;
   font-family: "Consolas";
@@ -533,19 +546,12 @@ pre {
 .oneStop .osleftPosi1 {
   position: absolute;
   right: -200px;
-  top: 102px;
+  top: 200px;
   transition: 2s;
   opacity: 0;
   z-index: 1;
-}
-
-.oneStop .osleftPosi2 {
-  position: absolute;
-  right: -200px;
-  top: 102px;
-  transition: 2s;
-  opacity: 0;
-  z-index: 1;
+  transition-duration: 2s;
+  transition-delay: 0.2s;
 }
 
 .oneStop .oneStopContent .osRightMain .osRightTitle {
@@ -571,4 +577,52 @@ pre {
 .oneStop .oneStopContent .osRightMain p span {
   color: #000;
   font-weight: 500;
+}
+
+.multipleAnalyse {
+  background: url(../../../assets/RootPageCarousel/rootpage-3-0.png) no-repeat 50%;
+  background-size: cover;
+  height: 830px;
+  padding-left: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  transition-delay: 2s;
+  transition: 2s;
+}
+
+.multipleAnalyse .maContent {
+  height: 520px;
+  width: 763px;
+  background: url(../../../assets/RootPageCarousel/rootpage-3.png) no-repeat;
+  background-size: 100% 100%;
+  margin: 1rem 0 26px;
+  transition: 3s;
+  border-radius: 2rem;
+}
+
+.multipleAnalyse .title {
+  display: inline-block;
+  font-size: 36px;
+  font-weight: 600;
+  margin-bottom: 26px;
+  background: -webkit-linear-gradient(1deg,#6d66ff 12%,#c148ff 57%,#f59f77 76%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 50px;
+  margin-top: 20px;
+}
+
+.multipleAnalyse .inView{
+  transform: rotateY(1turn);
+}
+
+.multipleAnalyse .desc {
+  text-align: center;
+  max-width: 869px;
+  line-height: 30px;
+  color: #69daf5;
+  font-weight: 400;
+  font-size: 18px;
 }

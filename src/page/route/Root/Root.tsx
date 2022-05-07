@@ -30,6 +30,10 @@ import AnimatedText from "react-animated-text-content";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
+import root21 from "../../../assets/RootPageCarousel/rootpage-2-1.png";
+import root25 from "../../../assets/RootPageCarousel/rootpage-2-5.png";
+import root23 from "../../../assets/RootPageCarousel/rootpage-2-3.png";
+
 const Root = () => {
   const dispatcher = useDispatch();
 
@@ -413,28 +417,22 @@ const Root = () => {
                     <div className="oneStopContent">
                       <div className="osLeftMain">
                         <img
-                          src="/react/build/static/media/2-2-1.afd0f2f5.png"
+                          src={root21}
                           alt=""
-                          width="520px"
+                          width="600px"
                           className="osleftPosi"
+                          style={{ borderRadius: "2rem", marginLeft: "80px" }}
                         />
                         <img
-                          src="/react/build/static/media/2-2-head.5e69dbb2.png"
-                          alt=""
-                          width="213px"
-                          style={{ marginLeft: "-12px" }}
-                        />
-                        <img
-                          src="/react/build/static/media/2-2-2.26bc3301.png"
+                          src={root23}
                           alt=""
                           width="653px"
                           className="osleftPosi1"
-                        />
-                        <img
-                          src="/react/build/static/media/2-2-3.6d6ce99c.png"
-                          alt=""
-                          width="367px"
-                          className="osleftPosi2"
+                          style={{
+                            borderRadius: "1rem",
+                            right: isVisible ? "70px" : "-200px",
+                            opacity: isVisible ? 1 : 0,
+                          }}
                         />
                       </div>
                       <div className="osRightMain">
@@ -449,12 +447,14 @@ const Root = () => {
                           ，需求关系查看更方便
                         </p>
                         <p>
-                          <span>我们的目标，是让您的需求管理更加高效！</span>
+                          <span>
+                            我们的目标，是让您的需求管理更加高效，让您的开发更加敏捷！
+                          </span>
                         </p>
                       </div>
                     </div>
                     <img
-                      src="data:image/png;base64,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"
+                      src={root25}
                       alt=""
                       height="83px"
                       className="imgring"
@@ -463,9 +463,33 @@ const Root = () => {
                 );
               }}
             </IsVisible>
+            <IsVisible once={true}>
+              {(isVisible: any) => {
+                return (
+                  <div className="multipleAnalyse" id="multipleAnalyse">
+                    <span
+                      className="title"
+                      style={{ marginBottom: "1rem", marginTop: "6rem" }}
+                    >
+                      多层次代码分析
+                    </span>
+                    <div
+                      className={
+                        "maContent" + (isVisible ? " inView" : " outView")
+                      }
+                    ></div>
+                    <p className="desc">
+                      提供交付后缺陷分析、开发工程师活跃度分析、开发工程师基于
+                      Issue
+                      解决时间的能力评定等数据分析功能，让您的项目数据栩栩如生
+                    </p>
+                  </div>
+                );
+              }}
+            </IsVisible>
           </div>
         </div>
-        <div className={"root-footer"}>
+        <div className={"root-footer-2"}>
           © 2022 undefined. All rights reserved.
         </div>
       </div>
