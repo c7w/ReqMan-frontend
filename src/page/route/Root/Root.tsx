@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import "./Root.css";
-import { Loading3QuartersOutlined } from "@ant-design/icons";
+import { DownOutlined, Loading3QuartersOutlined } from "@ant-design/icons";
 import projectListPic from "../../../assets/RootPageCarousel/项目列表.png";
 import SRListPic from "../../../assets/RootPageCarousel/SR列表.png";
 import iterationPic from "../../../assets/RootPageCarousel/迭代周期.png";
@@ -16,6 +16,7 @@ import {
   getCookie,
   setCookie,
 } from "../../../utils/CookieOperation";
+import { faAngleDoubleDown } from "@fortawesome/free-solid-svg-icons";
 import { immediateToast } from "izitoast-react";
 import { useDispatch } from "react-redux";
 import { updateUserStore } from "../../../store/slices/UserSlice";
@@ -23,6 +24,8 @@ import { push } from "redux-first-history";
 // import { Progress } from "rsup-progress";
 import TweenOne from "rc-tween-one";
 import AnimatedText from "react-animated-text-content";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 const Root = () => {
   const dispatcher = useDispatch();
@@ -88,7 +91,7 @@ const Root = () => {
   };
 
   return (
-    <div className="root-screen">
+    <div className="root-screen-2">
       <div id="loading-progress">
         <span id="loading-progress-thumb" />
       </div>
@@ -130,10 +133,10 @@ const Root = () => {
                 scale: 1.1,
                 ease: "ease-in-out",
               }}
+              className={"title"}
               animationType="float"
               interval={0}
               duration={0.8}
-              className="title"
               includeWhiteSpaces
               threshold={0.1}
               rootMargin="20%"
@@ -145,7 +148,7 @@ const Root = () => {
               animation={{
                 delay: 1400,
                 width: 0,
-                x: "10vw",
+                x: "8vw",
                 type: "from",
                 ease: "easeInOutExpo",
               }}
@@ -168,7 +171,7 @@ const Root = () => {
             </div>
           </div>
           <div className="root-carousel">
-            <Carousel autoplay>
+            <Carousel autoplay style={{ borderRadius: "2rem" }}>
               <Image
                 src={calendarPic}
                 alt="开发工程师日程表"
@@ -226,6 +229,162 @@ const Root = () => {
             <div className="root-feature-title">缺陷跟踪</div>
             <div className="root-feature-content">
               实时获取项目缺陷，查看缺陷修复情况
+            </div>
+          </div>
+        </div>
+        <div
+          style={{
+            height: "45vh",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "flex-end",
+            alignItems: "center",
+            fontSize: "2rem",
+          }}
+        >
+          <FontAwesomeIcon icon={faAngleDoubleDown} />
+        </div>
+        <div className={"root-contents"}>
+          <div className="secondEdition">
+            <p className="theTitle">ReqMan，新一代需求管理与缺陷追踪平台</p>
+          </div>
+          <div className="secondEditionContent">
+            <div className="hadoop" id="hadoop">
+              <div className="hadoopCon">
+                <div className="descBox">
+                  <p className="desc1">与 Git 深入融合</p>
+                  <p className="desc2">
+                    支持 Git 分布式代码托管环境，与 GitLab 完美对接；
+                  </p>
+                  <p className="desc3">
+                    支持协作贡献统计、代码仓库查看、贡献合并查看、贡献信息查看等功能；
+                  </p>
+                </div>
+                <div className="hadoopCode">
+                  <li>
+                    <pre
+                      className="word-item"
+                      style={{ animationDelay: "0.2s" }}
+                    >
+                      <span className="codenum">1</span>
+                      <span>
+                        <span className="code-green">git remote</span> add
+                        origin git@gitlab.secoder.net:undefined/frontend.git
+                      </span>
+                    </pre>
+                  </li>
+                  <li>
+                    <pre
+                      className="word-item"
+                      style={{ animationDelay: "0.4s" }}
+                    >
+                      <span className="codenum">2</span>
+                      <span>
+                        <span className="code-red">git push</span> -u origin
+                        master
+                      </span>
+                    </pre>
+                  </li>
+                  <li>
+                    <pre
+                      className="word-item"
+                      style={{ animationDelay: "0.6s" }}
+                    >
+                      <span className="codenum">3</span>
+                      <span>
+                        <span className="code-green">git branch</span> dev
+                      </span>
+                    </pre>
+                  </li>
+                  <li>
+                    <pre
+                      className="word-item"
+                      style={{ animationDelay: "0.8s" }}
+                    >
+                      <span className="codenum">4</span>
+                      <span>
+                        <span className="code-blue">git checkout</span> dev
+                      </span>
+                    </pre>
+                  </li>
+                  <li>
+                    <pre
+                      className="word-item"
+                      style={{ animationDelay: "1.0s" }}
+                    >
+                      <span className="codenum">5</span>
+                      <span>
+                        <span className="code-green">git add</span> .
+                      </span>
+                    </pre>
+                  </li>
+                  <li>
+                    <pre
+                      className="word-item"
+                      style={{ animationDelay: "1.2s" }}
+                    >
+                      <span className="codenum">6</span>
+                      <span>
+                        <span className="code-red">git commit</span> -m
+                        "[SR.007.109] Remake Rootpage"
+                      </span>
+                    </pre>
+                  </li>
+                  <li>
+                    <pre
+                      className="word-item"
+                      style={{ animationDelay: "1.4s" }}
+                    >
+                      <span className="codenum">7</span>
+                      <span>
+                        <span className="code-red">git push</span> origin dev
+                      </span>
+                    </pre>
+                  </li>
+                  <li>
+                    <pre
+                      className="word-item"
+                      style={{ animationDelay: "1.6s" }}
+                    >
+                      <span className="codenum">8</span>
+                      <span>
+                        <span className="code-blue">git checkout</span> master
+                      </span>
+                    </pre>
+                  </li>
+                  <li>
+                    <pre
+                      className="word-item"
+                      style={{ animationDelay: "1.8s" }}
+                    >
+                      <span className="codenum">9</span>
+                      <span>
+                        <span className="code-green">git pull</span> origin
+                        master
+                      </span>
+                    </pre>
+                  </li>
+                  <li>
+                    <pre className="word-item" style={{ animationDelay: "2s" }}>
+                      <span className="codenum">10</span>
+                      <span>
+                        <span className="code-green">git merge</span> dev
+                      </span>
+                    </pre>
+                  </li>
+                  <li>
+                    <pre
+                      className="word-item"
+                      style={{ animationDelay: "2.2s" }}
+                    >
+                      <span className="codenum">11</span>
+                      <span>
+                        <span className="code-red">git push</span> origin master
+                      </span>
+                    </pre>
+                  </li>
+                </div>
+              </div>
             </div>
           </div>
         </div>
