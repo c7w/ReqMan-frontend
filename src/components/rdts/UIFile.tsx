@@ -9,6 +9,10 @@ import { faHome } from "@fortawesome/free-solid-svg-icons";
 import { Redirect } from "../../utils/Navigation";
 import { getProjectStore } from "../../store/slices/ProjectSlice";
 import { useParams } from "react-router-dom";
+import { repoId2RepoInfo } from "../../utils/Association";
+import request_json from "../../utils/Network";
+import API from "../../utils/APIList";
+import Loading from "../../layout/components/Loading";
 
 const UIFileNotFound = () => {
   const dispatcher = useDispatch();
@@ -72,6 +76,8 @@ const UIFile = () => {
   const codeString = `using namespace std\nint main(){\n  return 0;\n}`;
 
   const [loaded, setLoaded] = React.useState(false);
+  const [savedBranches, setSavedBranches] = React.useState("{}");
+  const [savedFiles, setSavedFiles] = React.useState("{}");
 
   const link = window.location.href;
 
@@ -101,11 +107,22 @@ const UIFile = () => {
 
   // Parse pathname
   if (pathname.length === 1) {
+    // Prepare for breadcrumb
+    breadcrumb_list.push({
+      name: JSON.parse(projectStore).data.project.title,
+      link: `/project/${project_id}/tree/`,
+    });
+
+    // Prepare for showing directory
     JSON.parse(repoStore).data.forEach((repo: any) => {
-      files.push({ name: repo.id, type: "directory", link: ["tree", repo.id] });
+      files.push({
+        name: repo.title,
+        type: "directory",
+        link: ["tree", repo.id],
+      });
     });
   } else if (pathname.length === 2) {
-    // Tree, repo_id
+    // Test if repo_id is valid
     if (!isRepoIDValid(Number(pathname[1]))) {
       // Error: Repo not found
       return (
@@ -114,12 +131,118 @@ const UIFile = () => {
         </div>
       );
     }
-  } else if (pathname.length === 3) {
-    // Tree, repo_id, branch_name
-  } else {
+
+    // Prepare for breadcrumb
+    breadcrumb_list.push({
+      name: JSON.parse(projectStore).data.project.title,
+      link: `/project/${project_id}/tree/`,
+    });
+    breadcrumb_list.push({
+      name: repoId2RepoInfo(Number(pathname[1]), repoStore).title, // Get repo name
+      link: `/project/${project_id}/tree/${pathname[1]}`,
+    });
+
+    // If savedBranches is empty, wait for branches to be loaded
+    if (JSON.parse(savedBranches)[Number(pathname[1])] === undefined) {
+      // Get Branchs
+      const branches = request_json(API.GET_PROJECT_REPO_BRANCH, {
+        getParams: {
+          project: project_id,
+          repo: Number(pathname[1]),
+        },
+      }).then((res: any) => {
+        if (res.data.http_status === 200) {
+          const curr_branch = JSON.parse(savedBranches);
+          curr_branch[Number(pathname[1])] = res.data.body.map(
+            (branch: any) => branch.name
+          );
+          setSavedBranches(JSON.stringify(curr_branch));
+        }
+      });
+
+      // TODO: Return Loading
+      return (
+        <div className={"personal-setting-container"}>
+          <Loading />
+        </div>
+      );
+    } else {
+      // Prepare for directory
+      files.push({ name: "..", type: "directory", link: ["tree"] });
+      JSON.parse(savedBranches)[Number(pathname[1])].forEach((branch: any) => {
+        files.push({
+          name: branch,
+          type: "directory",
+          link: ["tree", pathname[1], branch],
+        });
+      });
+    }
+  } else if (pathname.length >= 3) {
+    // TODO: Tree, repo_id, branch_name, file_path
+    if (pathname.length === 3) {
+      pathname.push("/");
+    }
+    // Join pathname and get file_path
+    const file_path = pathname.join("/");
+
+    if (JSON.parse(savedFiles)[file_path] === undefined) {
+      // Query for file list
+      request_json(API.GET_FORWARD_TREE, {
+        getParams: {
+          project: project_id,
+          repo: Number(pathname[1]),
+          ref: pathname[2],
+          path: pathname.slice(3).join("/"),
+        },
+      }).then((res: any) => {
+        if (res.data.http_status === 200) {
+          const curr_files = JSON.parse(savedFiles);
+          curr_files[file_path] = res.data.body;
+          setSavedFiles(JSON.stringify(curr_files));
+        }
+      });
+
+      // TODO: Return Loading
+      return (
+        <div className={"personal-setting-container"}>
+          <Loading />
+        </div>
+      );
+    } else {
+      // Prepare for breadcrumb
+      breadcrumb_list.push({
+        name: JSON.parse(projectStore).data.project.title,
+        link: `/project/${project_id}/tree/`,
+      });
+      breadcrumb_list.push({
+        name: repoId2RepoInfo(Number(pathname[1]), repoStore).title, // Get repo name
+        link: `/project/${project_id}/tree/${pathname[1]}`,
+      });
+      for (let i = 2; i < pathname.length; i++) {
+        breadcrumb_list.push({
+          name: pathname[i],
+          link:
+            "/project/" + project_id + "/" + pathname.slice(0, i + 1).join("/"),
+        });
+      }
+
+      // Prepare for showing directory
+      files.push({
+        name: "..",
+        type: "directory",
+        link: pathname.slice(0, pathname.length - 1),
+      });
+      JSON.parse(savedFiles)[file_path].forEach((file: any) => {
+        files.push({
+          name: file.name,
+          type: file.type === "tree" ? "directory" : "file",
+          link: ["tree", pathname[1], pathname[2], file.path],
+        });
+      });
+    }
   }
 
-  isFile = pathname.length === 3;
+  isFile = true;
   console.debug(files);
 
   return (
@@ -165,7 +288,9 @@ const UIFile = () => {
           );
         })}
       </Breadcrumb>
-      <div>这个地方做文件选择框</div>
+      <p>{savedBranches}</p>
+      <p>{savedFiles}</p>
+      <p>{JSON.stringify(files)}</p>
       <div style={{ width: "90%" }}>
         <SyntaxHighlighter
           language="cpp"

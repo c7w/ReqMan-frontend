@@ -123,6 +123,18 @@ const API = {
     path: "/rdts/test_access_token/",
     method: "get",
   },
+  GET_PROJECT_REPO_BRANCH: {
+    path: "/rdts/forward_branches/",
+    method: "get",
+  },
+  GET_FORWARD_CODE_SR: {
+    path: "/rdts/forward_code_sr/",
+    method: "get",
+  },
+  GET_FORWARD_TREE: {
+    path: "/rdts/forward_tree/",
+    method: "get",
+  },
 };
 
 export default API;
