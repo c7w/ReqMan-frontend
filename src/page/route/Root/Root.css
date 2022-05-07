@@ -5,6 +5,12 @@
   height: 100vh;
 }
 
+.root-screen-2{
+  background: #f7f7f7;
+  position: relative;
+  width: 100vw;
+}
+
 nav .root-menu {
   width: 100%;
   height: 10vh;
@@ -200,14 +206,17 @@ nav .root-menu .root-menu_icon:hover .icon:after {
   flex-direction: column;
   justify-content: space-around;
 }
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@1,500&display=swap');
+
 .combined .title {
   font-size: 6rem;
   overflow: hidden;
   color: #000;
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  /*font-family: Verdana, Geneva, Tahoma, sans-serif;*/
+  font-family:  'IBM Plex Sans', sans-serif;
 }
 .combined-bar {
-  width: 100%;
+  width: 80%;
   height: 2px;
   background: #ff4d4f;
 }
@@ -247,7 +256,18 @@ nav .root-menu .root-menu_icon:hover .icon:after {
 }
 
 .root-footer {
+  bottom: 2%;
+  text-align: center;
   position: fixed;
+  width: 100vw;
+  color: #000;
+  font-family: "Consolas";
+  font-size: 20px;
+  user-select: none;
+  font-style: italic;
+}
+
+.root-footer-2 {
   bottom: 2%;
   text-align: center;
   width: 100vw;
@@ -286,7 +306,7 @@ nav .root-menu .root-menu_icon:hover .icon:after {
 .root-features {
   position: absolute;
   right: 5vw;
-  top: 67vh;
+  top: 72vh;
   left: 5vw;
   z-index: 1;
   padding: 30px 40px;
@@ -349,4 +369,260 @@ nav .root-menu .root-menu_icon:hover .icon:after {
   line-height: 1.72;
   color: #666;
   white-space: normal;
+}
+
+.root-contents {
+  width: 100%;
+}
+
+.secondEdition .theTitle {
+  height: 53px;
+  line-height: 53px;
+  font-size: 38px;
+  font-weight: 500;
+  color: #1e1e1e;
+  text-align: center;
+  margin: 42px 0 30px!important;
+}
+
+
+.secondEditionContent .hadoop .hadoopCon {
+  display: flex;
+  width: 100%;
+}
+
+.secondEditionContent .hadoop .hadoopdesc {
+  color: #fff;
+  background: -webkit-linear-gradient(112deg,#ff8b75,#dd2476);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 18px;
+  line-height: 25px;
+  font-weight: 500;
+  text-align: center;
+  margin-top: 40px;
+}
+
+.secondEditionContent .hadoop {
+  background: url(../../../assets/RootPageCarousel/rootpage-1.png) no-repeat 50%;
+  background-size: cover;
+  min-height: 753px;
+  padding: 50px 56px;
+}
+
+
+.secondEditionContent {
+  padding: 65px 0;
+  width: 1200px;
+  margin: 0 auto;
+  user-select: none;
+}
+
+.secondEditionContent .hadoop .hadoopCon {
+  display: flex;
+  width: 100%;
+}
+
+
+.secondEditionContent .hadoop .descBox {
+  max-width: 352px;
+  word-break: break-all;
+}
+
+.secondEditionContent .hadoop .descBox .desc1 {
+  height: 50px;
+  line-height: 50px;
+  font-size: 36px;
+  font-weight: 600;
+  color: #fff;
+  background: -webkit-linear-gradient(90deg,#50edff,#557cff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.secondEditionContent .hadoop .descBox .desc2 {
+  height: 72px;
+  font-size: 18px;
+  font-weight: 500;
+  color: #69daf5;
+  line-height: 36px;
+  margin-top: 97px;
+}
+
+.secondEditionContent .hadoop .descBox .desc3 {
+  height: 108px;
+  font-size: 18px;
+  font-weight: 500;
+  color: #fff;
+  line-height: 36px;
+  margin-top: 70px;
+}
+
+.hadoopCode {
+  margin-left: 96px;
+  box-shadow: 0 0 0 2px hsl(0deg 0% 100% / 10%);
+  border-radius: 10px;
+  padding: 18px 20px;
+  flex: 1;
+  margin-top: 8px;
+  position: relative;
+}
+
+.hadoopCode li {
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 30px;
+  color: #e1e1e1;
+}
+
+pre .code-green {
+  color: #00fa30;
+}
+
+pre .code-red {
+  color: #ff5058;
+}
+
+pre .code-blue {
+  color: #05cfc8;
+}
+
+pre .codenum {
+  display: inline-block;
+  width: 15px;
+  text-align: left;
+  margin-right: 15px;
+}
+
+pre {
+  font-family: ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace;
+  word-break: break-all;
+  overflow: initial;
+}
+
+.inView {
+  opacity: 1;
+  transition: all 1.5s ease;
+}
+
+.outView {
+  opacity: 0;
+  transition: all 1.5s ease;
+}
+
+.outView .word-item {
+  opacity: 0;
+}
+
+.inView .word-item {
+  opacity: 1;
+  animation: show .2s 1 forwards;
+}
+
+.oneStop .oneStopContent {
+  display: flex;
+}
+
+.oneStop .oneStopContent .osLeftMain {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  position: relative;
+  margin-bottom: 182px;
+}
+
+.oneStop .oneStopContent .osRightMain {
+  margin-left: 22px;
+  text-align: left;
+}
+
+.oneStop {
+  text-align: center;
+  transition: 2s;
+}
+
+.oneStop .osleftPosi1 {
+  position: absolute;
+  right: -200px;
+  top: 200px;
+  transition: 2s;
+  opacity: 0;
+  z-index: 1;
+  transition-duration: 2s;
+  transition-delay: 0.2s;
+}
+
+.oneStop .oneStopContent .osRightMain .osRightTitle {
+  height: 50px;
+  font-size: 36px;
+  font-weight: 600;
+  color: #fff;
+  line-height: 50px;
+  background: -webkit-linear-gradient(112deg,#ff8b75,#dd2476);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-top: 28px;
+}
+
+.oneStop .oneStopContent .osRightMain p {
+  font-size: 20px;
+  color: #637497;
+  line-height: 36px;
+  margin-top: 50px;
+  margin-bottom: 0 !important;
+}
+
+.oneStop .oneStopContent .osRightMain p span {
+  color: #000;
+  font-weight: 500;
+}
+
+.multipleAnalyse {
+  background: url(../../../assets/RootPageCarousel/rootpage-3-0.png) no-repeat 50%;
+  background-size: cover;
+  height: 830px;
+  padding-left: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  transition-delay: 2s;
+  transition: 2s;
+}
+
+.multipleAnalyse .maContent {
+  height: 520px;
+  width: 763px;
+  background: url(../../../assets/RootPageCarousel/rootpage-3.png) no-repeat;
+  background-size: 100% 100%;
+  margin: 1rem 0 26px;
+  transition: 3s;
+  border-radius: 2rem;
+}
+
+.multipleAnalyse .title {
+  display: inline-block;
+  font-size: 36px;
+  font-weight: 600;
+  margin-bottom: 26px;
+  background: -webkit-linear-gradient(1deg,#6d66ff 12%,#c148ff 57%,#f59f77 76%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 50px;
+  margin-top: 20px;
+}
+
+.multipleAnalyse .inView{
+  transform: rotateY(1turn);
+}
+
+.multipleAnalyse .desc {
+  text-align: center;
+  max-width: 869px;
+  line-height: 30px;
+  color: #69daf5;
+  font-weight: 400;
+  font-size: 18px;
 }
