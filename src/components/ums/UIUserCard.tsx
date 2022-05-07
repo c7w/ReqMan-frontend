@@ -315,6 +315,12 @@ const UIUserCardPreview = (props: UIUserCardPreviewProps) => {
   const userInfo = projectInfo.users.filter(
     (user: any) => user.id === props.userId
   )[0];
+
+  if (userInfo === undefined) {
+    console.debug("???");
+    return <></>;
+  }
+
   // console.log(userInfo);
   return (
     <>
