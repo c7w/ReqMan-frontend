@@ -2,3 +2,14 @@
   border-bottom: 1px solid #f0f0f0;
   border-top: 1px solid #f0f0f0;
 }
+
+.Appended {
+  background-color: grey;
+  border-radius: 0.15rem;
+  padding: 0.05rem 0.15rem;
+  margin: 0 0.15rem;
+  white-space: nowrap;
+  overflow: hidden;
+  height: 1.6rem;
+
+}

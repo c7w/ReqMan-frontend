@@ -14,6 +14,7 @@ import { repoId2RepoInfo } from "../../utils/Association";
 import request_json from "../../utils/Network";
 import API from "../../utils/APIList";
 import Loading from "../../layout/components/Loading";
+import moment from "moment";
 
 const UIFileNotFound = () => {
   const dispatcher = useDispatch();
@@ -88,6 +89,8 @@ const UIFile = () => {
   const [currCode, setCurrCode] = React.useState("");
   const [currCodeType, setCurrCodeType] = React.useState("javascript");
 
+  const [isLoading, setIsLoading] = React.useState(false);
+
   // From `http://localhost:3000/project/2/tree/123` get ['tree', '123']
   // Wanted data format: ['tree', repo_id, branch_name, file_path]
   const pathname = window.location.pathname
@@ -102,6 +105,7 @@ const UIFile = () => {
       // Try get file from savedCodes
       if (JSON.parse(savedCodes)[file_path] === undefined) {
         setCurrCode("");
+        setIsLoading(true);
         // Query for file content
         console.debug(pathname.slice(3).join("/"));
         request_json(API.GET_FORWARD_CODE_SR, {
@@ -123,6 +127,7 @@ const UIFile = () => {
         });
       } else {
         // Show file
+        setIsLoading(false);
         setCurrCode(JSON.stringify(JSON.parse(savedCodes)[file_path]));
         setCurrCodeType(file_path.split(".").pop() || "txt");
       }
@@ -444,71 +449,160 @@ const UIFile = () => {
         </table>
       </div>
       {isFile ? (
-        <div style={{ width: "90%" }}>
-          <SyntaxHighlighter
-            language={currCodeType}
-            style={a11yDark}
-            showLineNumbers={true}
-            wrapLongLines={true}
-            lineProps={(lineNumber) => {
-              const appended_list = document.getElementsByClassName("Appended");
-              for (let i = appended_list.length - 1; i >= 0; --i) {
-                appended_list[i].remove();
+        isLoading ? (
+          <div>
+            <Loading />
+          </div>
+        ) : (
+          <div style={{ width: "90%" }}>
+            {((currCodeType: string, currCode: string) => {
+              switch (currCodeType) {
+                case "jpg":
+                case "png":
+                case "gif":
+                case "jpeg":
+                case "bmp":
+                case "svg":
+                case "webp":
+                case "ico":
+                case "tiff":
+                case "tif":
+                  return (
+                    <div
+                      style={{
+                        width: "100%",
+                        height: "40vh",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      无法预览该文件
+                    </div>
+                  );
+                default:
+                  return (
+                    <SyntaxHighlighter
+                      language={currCodeType}
+                      style={a11yDark}
+                      showLineNumbers={true}
+                      wrapLongLines={true}
+                      lineProps={(lineNumber) => {
+                        const appended_list =
+                          document.getElementsByClassName("Appended");
+                        for (let i = appended_list.length - 1; i >= 0; --i) {
+                          appended_list[i].remove();
+                        }
+                        const appended2_list =
+                          document.getElementsByClassName("Appended2");
+                        for (let i = appended2_list.length - 1; i >= 0; --i) {
+                          appended2_list[i].remove();
+                        }
+
+                        const unique_ID =
+                          Math.random().toString(8) +
+                          "-" +
+                          lineNumber.toString();
+
+                        setTimeout(() => {
+                          console.debug(unique_ID);
+                          const Node = document.createElement("span");
+                          Node.style.setProperty("flex-grow", "1");
+                          Node.className = `Appended2`;
+                          document.getElementById(unique_ID)?.appendChild(Node);
+
+                          const tmp_idx = [0];
+
+                          const line_lens = JSON.parse(currCode)
+                            .relationship.map((relation: any) => {
+                              return relation.lines.length;
+                            })
+                            .forEach((lines: number) => {
+                              tmp_idx.push(tmp_idx[tmp_idx.length - 1] + lines);
+                            });
+
+                          // Decide lineNumber in which relation
+                          // Find i - 1 which tmp_idx[i-1] < lineNumber <= tmp_idx[i]
+                          let relation_index = 0;
+                          for (let i = 1; i < tmp_idx.length; ++i) {
+                            if (
+                              tmp_idx[i - 1] < lineNumber &&
+                              lineNumber <= tmp_idx[i]
+                            ) {
+                              relation_index = i - 1;
+                              break;
+                            }
+                          }
+
+                          const my_relation =
+                            JSON.parse(currCode).relationship[relation_index];
+                          console.debug(my_relation);
+
+                          let user = "";
+                          let lastUpdate = "";
+                          let hash_id = "";
+
+                          const filtered: any = Object.entries(
+                            JSON.parse(currCode).Commits
+                          ).filter(([hash, commit]: any) => {
+                            console.debug(commit);
+                            return commit.id === my_relation.local_commit;
+                          });
+
+                          if (filtered.length > 0) {
+                            user = filtered[0][1].committer_name;
+                            lastUpdate = moment(
+                              filtered[0][1].createdAt
+                            ).calendar();
+                            hash_id = filtered[0][1].hash_id.slice(0, 7);
+                          }
+
+                          const SR = JSON.parse(currCode).SR;
+
+                          const Node1 = document.createElement("span");
+                          Node1.innerText = "1233";
+                          Node1.className = "Appended";
+
+                          const Node2 = document.createElement("span");
+                          Node2.innerText = "1234";
+                          Node2.className = "Appended";
+
+                          document
+                            .getElementById(unique_ID)
+                            ?.appendChild(Node1);
+                          document
+                            .getElementById(unique_ID)
+                            ?.appendChild(Node2);
+
+                          if (hash_id !== "") {
+                            const Node3 = document.createElement("span");
+                            Node3.innerText = hash_id;
+                            Node3.className = "Appended";
+
+                            document
+                              .getElementById(unique_ID)
+                              ?.appendChild(Node3);
+                          }
+                        }, 400);
+
+                        return {
+                          onClick: () => {
+                            console.debug(lineNumber);
+                          },
+                          style: {
+                            margin: "0.15rem",
+                          },
+                          id: unique_ID,
+                        };
+                      }}
+                    >
+                      {code_to_render}
+                    </SyntaxHighlighter>
+                  );
               }
-
-              const unique_ID =
-                Math.random().toString(8) + "-" + lineNumber.toString();
-
-              setTimeout(() => {
-                console.debug(unique_ID);
-                const Node = document.createElement("span");
-                Node.style.setProperty("flex-grow", "1");
-                Node.className = `Appended`;
-
-                const Node1 = document.createElement("span");
-                Node1.innerText = "1233";
-                Node1.className = "Appended";
-                Node1.style.setProperty("background-color", "grey");
-                Node1.style.setProperty("border-radius", "0.15rem");
-                Node1.style.setProperty("padding", "0.05rem 0.15rem");
-                Node1.style.setProperty("margin", "0rem 0.15rem");
-
-                const Node2 = document.createElement("span");
-                Node2.innerText = "1234";
-                Node2.className = "Appended";
-                Node2.style.setProperty("background-color", "grey");
-                Node2.style.setProperty("border-radius", "0.15rem");
-                Node2.style.setProperty("padding", "0.05rem 0.15rem");
-                Node2.style.setProperty("margin", "0rem 0.15rem");
-
-                const Node3 = document.createElement("span");
-                Node3.innerText = "1235";
-                Node3.className = "Appended";
-                Node3.style.setProperty("background-color", "grey");
-                Node3.style.setProperty("border-radius", "0.15rem");
-                Node3.style.setProperty("padding", "0.05rem 0.15rem");
-                Node3.style.setProperty("margin", "0rem 0.15rem");
-
-                document.getElementById(unique_ID)?.appendChild(Node);
-                document.getElementById(unique_ID)?.appendChild(Node1);
-                document.getElementById(unique_ID)?.appendChild(Node2);
-                document.getElementById(unique_ID)?.appendChild(Node3);
-              }, 400);
-
-              return {
-                onClick: () => {
-                  console.debug(lineNumber);
-                },
-                style: {
-                  margin: "0.15rem",
-                },
-                id: unique_ID,
-              };
-            }}
-          >
-            {code_to_render}
-          </SyntaxHighlighter>
-        </div>
+            })(currCodeType, currCode)}
+          </div>
+        )
       ) : null}
     </div>
   );
