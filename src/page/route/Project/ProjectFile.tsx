@@ -33,14 +33,9 @@ const ProjectFile = () => {
     JSON.parse(projectInfo).data.project.id !== project_id
   ) {
     // Just wait for response...
-    return (
-      <Home sidebar={true}>
-        <Loading />
-      </Home>
-    );
   } else if (
     JSON.parse(userInfo).data.projects.filter(
-      (obj: any) => obj.id.toString() === project_id
+      (obj: any) => obj.id === project_id
     ).length <= 0
   ) {
     // Error: User not in project!
@@ -52,6 +47,12 @@ const ProjectFile = () => {
       </Home>
     );
   }
+
+  return (
+    <Home sidebar={true}>
+      <Loading />
+    </Home>
+  );
 };
 
 export default ProjectFile;

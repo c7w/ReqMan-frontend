@@ -13,6 +13,7 @@ import {
   RiseOutlined,
   UnorderedListOutlined,
   PieChartOutlined,
+  CodeSandboxOutlined,
 } from "@ant-design/icons";
 import "./Sidebar.css";
 
@@ -155,6 +156,22 @@ const Sidebar = () => {
             icon={<RiseOutlined />}
           >
             项目贡献一览
+          </Menu.Item>
+        )}
+        {["supermaster", "qa", "sys", "dev"].indexOf(
+          JSON.parse(userStore).data.projects.filter(
+            (project: any) => project.id === Number(project_id)
+          )[0].role
+        ) < 0 ? null : (
+          <Menu.Item
+            key="codes"
+            className={"sidebar-item"}
+            onClick={() =>
+              Redirect(dispatch, `/project/${project_id}/tree/`, 0)
+            }
+            icon={<CodeSandboxOutlined />}
+          >
+            项目代码查看
           </Menu.Item>
         )}
         {["supermaster", "qa"].indexOf(

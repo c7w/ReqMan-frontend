@@ -34,6 +34,7 @@ import {
 } from "./route/Auth/ResetPassword";
 import { getCookie } from "../utils/CookieOperation";
 import { Redirect, ToastMessage } from "../utils/Navigation";
+import ProjectFile from "./route/Project/ProjectFile";
 
 const SiteRouter = () => {
   // See if sessionId in place
@@ -53,6 +54,7 @@ const SiteRouter = () => {
           <Route path="resetpass/:hash" element={<ResetPasswordWithHash />} />
           <Route path="resetpass" element={<ResetPassword />} />
           <Route path="settings" element={<PersonalSetting />} />
+          <Route path="project/:id/tree/*" element={<ProjectFile />} />
           <Route path="project/:id/IRManager" element={<ProjectIR />} />
           <Route path="project/:id/SRManager" element={<ProjectSR />} />
           <Route
