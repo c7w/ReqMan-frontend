@@ -12,10 +12,12 @@ import Home from "../../../layout/Home";
 import Loading from "../../../layout/components/Loading";
 import { Redirect } from "../../../utils/Navigation";
 import UIFile from "../../../components/rdts/UIFile";
+import { getRepoStore } from "../../../store/slices/RepoSlice";
 
 const ProjectFile = () => {
   const userInfo = useSelector(getUserStore);
   const projectInfo = useSelector(getProjectStore);
+  const repoStore = useSelector(getRepoStore);
 
   const dispatcher = useDispatch();
   const params = useParams<"id">();
@@ -30,6 +32,7 @@ const ProjectFile = () => {
   if (
     userInfo === "" ||
     projectInfo === "" ||
+    repoStore === "" ||
     JSON.parse(projectInfo).data.project.id !== project_id
   ) {
     // Just wait for response...
