@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./UIFile.css";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { a11yDark } from "react-syntax-highlighter/dist/esm/styles/prism";
@@ -82,8 +82,6 @@ const UIFile = () => {
 
   console.debug(params);
 
-  const codeString = `using namespace std\nint main(){\n  return 0;\n}`;
-
   const [savedBranches, setSavedBranches] = React.useState("{}");
   const [savedFiles, setSavedFiles] = React.useState("{}");
   const [savedCodes, setSavedCodes] = React.useState("{}");
@@ -96,7 +94,40 @@ const UIFile = () => {
     .split("/")
     .filter((str: string) => str !== "")
     .slice(2);
-  console.debug(pathname);
+
+  useEffect(() => {
+    const file_path = pathname.join("/");
+
+    if (isFile) {
+      // Try get file from savedCodes
+      if (JSON.parse(savedCodes)[file_path] === undefined) {
+        setCurrCode("");
+        // Query for file content
+        console.debug(pathname.slice(3).join("/"));
+        request_json(API.GET_FORWARD_CODE_SR, {
+          getParams: {
+            project: project_id,
+            repo: Number(pathname[1]),
+            ref: pathname[2],
+            path: pathname.slice(3).join("/"),
+          },
+        }).then((res: any) => {
+          if (res.code === 0) {
+            const curr_codes = JSON.parse(savedCodes);
+            curr_codes[file_path] = res.data;
+            setSavedCodes(JSON.stringify(curr_codes));
+          } else {
+            ToastMessage("error", "请求失败", "请求地址不存在！");
+            Redirect(dispatcher, `/project/${project_id}/tree/`, 0);
+          }
+        });
+      } else {
+        // Show file
+        setCurrCode(JSON.stringify(JSON.parse(savedCodes)[file_path]));
+        setCurrCodeType(file_path.split(".").pop() || "txt");
+      }
+    }
+  }, [savedCodes, pathname]);
 
   // Read isFile from params
 
@@ -264,38 +295,23 @@ const UIFile = () => {
         });
       });
     }
-
-    if (isFile) {
-      // Try get file from savedCodes
-      if (JSON.parse(savedCodes)[file_path] === undefined) {
-        // Query for file content
-        console.debug(pathname.slice(3).join("/"));
-        request_json(API.GET_FORWARD_CODE_SR, {
-          getParams: {
-            project: project_id,
-            repo: Number(pathname[1]),
-            ref: pathname[2],
-            path: pathname.slice(3).join("/"),
-          },
-        }).then((res: any) => {
-          if (res.code === 0) {
-            const curr_codes = JSON.parse(savedCodes);
-            curr_codes[file_path] = res.data.body;
-            setSavedCodes(JSON.stringify(curr_codes));
-          } else {
-            ToastMessage("error", "请求失败", "请求地址不存在！");
-            Redirect(dispatcher, `/project/${project_id}/tree/`, 0);
-          }
-        });
-      } else {
-        // Show file
-        setCurrCode(JSON.parse(savedCodes)[file_path]);
-        setCurrCodeType(file_path.split(".").pop() || "txt");
-      }
-    }
   }
 
-  console.debug(files);
+  console.debug(savedCodes);
+  console.debug(currCode);
+
+  let code_to_render = "";
+
+  if (currCode !== "") {
+    JSON.parse(currCode).relationship.forEach(
+      (relation: any, index: number) => {
+        code_to_render += relation.lines.join("\n");
+        if (index !== JSON.parse(currCode).relationship.length - 1) {
+          code_to_render += "\n";
+        }
+      }
+    );
+  }
 
   return (
     <div className={"personal-setting-container"}>
@@ -359,19 +375,21 @@ const UIFile = () => {
           }}
         >
           <thead>
-            <td
-              style={{
-                backgroundColor: "#f0f0f0",
-                color: "#000",
-                fontWeight: "700",
-                lineHeight: "28px",
-                fontSize: "1.2rem",
-                padding: "0.5rem",
-                paddingLeft: "2rem",
-              }}
-            >
-              名称
-            </td>
+            <tr>
+              <td
+                style={{
+                  backgroundColor: "#f0f0f0",
+                  color: "#000",
+                  fontWeight: "700",
+                  lineHeight: "28px",
+                  fontSize: "1.2rem",
+                  padding: "0.5rem",
+                  paddingLeft: "2rem",
+                }}
+              >
+                名称
+              </td>
+            </tr>
           </thead>
           <tbody>
             {files.map((file: any, index: any) => {
@@ -425,71 +443,73 @@ const UIFile = () => {
           </tbody>
         </table>
       </div>
-      <div style={{ width: "90%" }}>
-        <SyntaxHighlighter
-          language={currCodeType}
-          style={a11yDark}
-          showLineNumbers={true}
-          wrapLongLines={true}
-          lineProps={(lineNumber) => {
-            const appended_list = document.getElementsByClassName("Appended");
-            for (let i = appended_list.length - 1; i >= 0; --i) {
-              appended_list[i].remove();
-            }
+      {isFile ? (
+        <div style={{ width: "90%" }}>
+          <SyntaxHighlighter
+            language={currCodeType}
+            style={a11yDark}
+            showLineNumbers={true}
+            wrapLongLines={true}
+            lineProps={(lineNumber) => {
+              const appended_list = document.getElementsByClassName("Appended");
+              for (let i = appended_list.length - 1; i >= 0; --i) {
+                appended_list[i].remove();
+              }
 
-            const unique_ID =
-              Math.random().toString(8) + "-" + lineNumber.toString();
+              const unique_ID =
+                Math.random().toString(8) + "-" + lineNumber.toString();
 
-            setTimeout(() => {
-              console.debug(unique_ID);
-              const Node = document.createElement("span");
-              Node.style.setProperty("flex-grow", "1");
-              Node.className = `Appended`;
+              setTimeout(() => {
+                console.debug(unique_ID);
+                const Node = document.createElement("span");
+                Node.style.setProperty("flex-grow", "1");
+                Node.className = `Appended`;
 
-              const Node1 = document.createElement("span");
-              Node1.innerText = "1233";
-              Node1.className = "Appended";
-              Node1.style.setProperty("background-color", "grey");
-              Node1.style.setProperty("border-radius", "0.15rem");
-              Node1.style.setProperty("padding", "0.05rem 0.15rem");
-              Node1.style.setProperty("margin", "0rem 0.15rem");
+                const Node1 = document.createElement("span");
+                Node1.innerText = "1233";
+                Node1.className = "Appended";
+                Node1.style.setProperty("background-color", "grey");
+                Node1.style.setProperty("border-radius", "0.15rem");
+                Node1.style.setProperty("padding", "0.05rem 0.15rem");
+                Node1.style.setProperty("margin", "0rem 0.15rem");
 
-              const Node2 = document.createElement("span");
-              Node2.innerText = "1234";
-              Node2.className = "Appended";
-              Node2.style.setProperty("background-color", "grey");
-              Node2.style.setProperty("border-radius", "0.15rem");
-              Node2.style.setProperty("padding", "0.05rem 0.15rem");
-              Node2.style.setProperty("margin", "0rem 0.15rem");
+                const Node2 = document.createElement("span");
+                Node2.innerText = "1234";
+                Node2.className = "Appended";
+                Node2.style.setProperty("background-color", "grey");
+                Node2.style.setProperty("border-radius", "0.15rem");
+                Node2.style.setProperty("padding", "0.05rem 0.15rem");
+                Node2.style.setProperty("margin", "0rem 0.15rem");
 
-              const Node3 = document.createElement("span");
-              Node3.innerText = "1235";
-              Node3.className = "Appended";
-              Node3.style.setProperty("background-color", "grey");
-              Node3.style.setProperty("border-radius", "0.15rem");
-              Node3.style.setProperty("padding", "0.05rem 0.15rem");
-              Node3.style.setProperty("margin", "0rem 0.15rem");
+                const Node3 = document.createElement("span");
+                Node3.innerText = "1235";
+                Node3.className = "Appended";
+                Node3.style.setProperty("background-color", "grey");
+                Node3.style.setProperty("border-radius", "0.15rem");
+                Node3.style.setProperty("padding", "0.05rem 0.15rem");
+                Node3.style.setProperty("margin", "0rem 0.15rem");
 
-              document.getElementById(unique_ID)?.appendChild(Node);
-              document.getElementById(unique_ID)?.appendChild(Node1);
-              document.getElementById(unique_ID)?.appendChild(Node2);
-              document.getElementById(unique_ID)?.appendChild(Node3);
-            }, 400);
+                document.getElementById(unique_ID)?.appendChild(Node);
+                document.getElementById(unique_ID)?.appendChild(Node1);
+                document.getElementById(unique_ID)?.appendChild(Node2);
+                document.getElementById(unique_ID)?.appendChild(Node3);
+              }, 400);
 
-            return {
-              onClick: () => {
-                console.debug(lineNumber);
-              },
-              style: {
-                margin: "0.15rem",
-              },
-              id: unique_ID,
-            };
-          }}
-        >
-          {currCode}
-        </SyntaxHighlighter>
-      </div>
+              return {
+                onClick: () => {
+                  console.debug(lineNumber);
+                },
+                style: {
+                  margin: "0.15rem",
+                },
+                id: unique_ID,
+              };
+            }}
+          >
+            {code_to_render}
+          </SyntaxHighlighter>
+        </div>
+      ) : null}
     </div>
   );
 };
