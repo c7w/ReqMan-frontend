@@ -1,14 +1,15 @@
 import React from "react";
+import "./UIFile.css";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { a11yDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { useDispatch, useSelector } from "react-redux";
 import { getRepoStore } from "../../store/slices/RepoSlice";
 import { Breadcrumb, Typography } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHome } from "@fortawesome/free-solid-svg-icons";
-import { Redirect } from "../../utils/Navigation";
+import { faFile, faFolder, faHome } from "@fortawesome/free-solid-svg-icons";
+import { Redirect, ToastMessage } from "../../utils/Navigation";
 import { getProjectStore } from "../../store/slices/ProjectSlice";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { repoId2RepoInfo } from "../../utils/Association";
 import request_json from "../../utils/Network";
 import API from "../../utils/APIList";
@@ -70,16 +71,24 @@ const UIFile = () => {
   const repoStore = useSelector(getRepoStore);
   const projectStore = useSelector(getProjectStore);
 
-  const params = useParams<"id">();
+  const params = useParams();
   const project_id = Number(params.id);
+
+  // Get Query String
+  const { search } = useLocation();
+  const query = React.useMemo(() => new URLSearchParams(search), [search]);
+
+  const isFile = query.get("isFile") === "1" ? true : false;
+
+  console.debug(params);
 
   const codeString = `using namespace std\nint main(){\n  return 0;\n}`;
 
-  const [loaded, setLoaded] = React.useState(false);
   const [savedBranches, setSavedBranches] = React.useState("{}");
   const [savedFiles, setSavedFiles] = React.useState("{}");
-
-  const link = window.location.href;
+  const [savedCodes, setSavedCodes] = React.useState("{}");
+  const [currCode, setCurrCode] = React.useState("");
+  const [currCodeType, setCurrCodeType] = React.useState("javascript");
 
   // From `http://localhost:3000/project/2/tree/123` get ['tree', '123']
   // Wanted data format: ['tree', repo_id, branch_name, file_path]
@@ -89,7 +98,8 @@ const UIFile = () => {
     .slice(2);
   console.debug(pathname);
 
-  let isFile = false;
+  // Read isFile from params
+
   const files: any[] = [];
   const breadcrumb_list: any[] = [];
 
@@ -99,10 +109,6 @@ const UIFile = () => {
       JSON.parse(repoStore).data.filter((obj: any) => obj.id === repo_id)
         .length > 0
     );
-  };
-
-  const isBranchValid = (repo_id: number, branch_name: string) => {
-    console.debug(repo_id, branch_name);
   };
 
   // Parse pathname
@@ -157,6 +163,9 @@ const UIFile = () => {
             (branch: any) => branch.name
           );
           setSavedBranches(JSON.stringify(curr_branch));
+        } else {
+          ToastMessage("error", "请求失败", "请求地址不存在！");
+          Redirect(dispatcher, `/project/${project_id}/tree/`, 0);
         }
       });
 
@@ -199,6 +208,9 @@ const UIFile = () => {
           const curr_files = JSON.parse(savedFiles);
           curr_files[file_path] = res.data.body;
           setSavedFiles(JSON.stringify(curr_files));
+        } else {
+          ToastMessage("error", "请求失败", "请求地址不存在！");
+          Redirect(dispatcher, `/project/${project_id}/tree/`, 0);
         }
       });
 
@@ -219,6 +231,9 @@ const UIFile = () => {
         link: `/project/${project_id}/tree/${pathname[1]}`,
       });
       for (let i = 2; i < pathname.length; i++) {
+        if (pathname[i] === "/") {
+          continue;
+        }
         breadcrumb_list.push({
           name: pathname[i],
           link:
@@ -227,11 +242,20 @@ const UIFile = () => {
       }
 
       // Prepare for showing directory
-      files.push({
-        name: "..",
-        type: "directory",
-        link: pathname.slice(0, pathname.length - 1),
-      });
+      if (pathname[3] === "/") {
+        files.push({
+          name: "..",
+          type: "directory",
+          link: pathname.slice(0, pathname.length - 2),
+        });
+      } else {
+        files.push({
+          name: "..",
+          type: "directory",
+          link: pathname.slice(0, pathname.length - 1),
+        });
+      }
+
       JSON.parse(savedFiles)[file_path].forEach((file: any) => {
         files.push({
           name: file.name,
@@ -240,9 +264,37 @@ const UIFile = () => {
         });
       });
     }
+
+    if (isFile) {
+      // Try get file from savedCodes
+      if (JSON.parse(savedCodes)[file_path] === undefined) {
+        // Query for file content
+        console.debug(pathname.slice(3).join("/"));
+        request_json(API.GET_FORWARD_CODE_SR, {
+          getParams: {
+            project: project_id,
+            repo: Number(pathname[1]),
+            ref: pathname[2],
+            path: pathname.slice(3).join("/"),
+          },
+        }).then((res: any) => {
+          if (res.code === 0) {
+            const curr_codes = JSON.parse(savedCodes);
+            curr_codes[file_path] = res.data.body;
+            setSavedCodes(JSON.stringify(curr_codes));
+          } else {
+            ToastMessage("error", "请求失败", "请求地址不存在！");
+            Redirect(dispatcher, `/project/${project_id}/tree/`, 0);
+          }
+        });
+      } else {
+        // Show file
+        setCurrCode(JSON.parse(savedCodes)[file_path]);
+        setCurrCodeType(file_path.split(".").pop() || "txt");
+      }
+    }
   }
 
-  isFile = true;
   console.debug(files);
 
   return (
@@ -260,7 +312,7 @@ const UIFile = () => {
       <hr style={{ width: "98%", margin: "1rem auto" }} />
       <Breadcrumb
         style={{
-          width: "98%",
+          width: "90%",
           margin: "1rem auto",
           textAlign: "left",
         }}
@@ -288,12 +340,94 @@ const UIFile = () => {
           );
         })}
       </Breadcrumb>
-      <p>{savedBranches}</p>
-      <p>{savedFiles}</p>
-      <p>{JSON.stringify(files)}</p>
+      <div
+        style={{
+          width: "90%",
+          borderRadius: "1rem",
+          border: "1px solid #dbdbdb",
+          marginTop: "1rem",
+          marginBottom: "2rem",
+          overflow: "hidden",
+        }}
+      >
+        <table
+          style={{
+            width: "100%",
+            color: "#303030",
+            margin: "0 auto 0",
+            padding: "1rem",
+          }}
+        >
+          <thead>
+            <td
+              style={{
+                backgroundColor: "#f0f0f0",
+                color: "#000",
+                fontWeight: "700",
+                lineHeight: "28px",
+                fontSize: "1.2rem",
+                padding: "0.5rem",
+                paddingLeft: "2rem",
+              }}
+            >
+              名称
+            </td>
+          </thead>
+          <tbody>
+            {files.map((file: any, index: any) => {
+              return (
+                <tr
+                  className={"tree-item"}
+                  key={index}
+                  onClick={() => {
+                    Redirect(
+                      dispatcher,
+                      `/project/${project_id}/` +
+                        file.link.join("/") +
+                        "?isFile=" +
+                        (file.type !== "directory" ? "1" : "0"),
+                      0
+                    );
+                  }}
+                  style={{
+                    lineHeight: "32px",
+                    cursor: "pointer",
+                    fontSize: "1.2rem",
+                  }}
+                >
+                  <td
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    <FontAwesomeIcon
+                      icon={file.type === "directory" ? faFolder : faFile}
+                      style={{
+                        color: "#000",
+                        padding: "0.2rem",
+                        marginLeft: "2rem",
+                      }}
+                    />
+                    <Typography.Link
+                      style={{
+                        color: "#000",
+                        padding: "0.2rem",
+                        marginLeft: "2rem",
+                      }}
+                    >
+                      {file.name}
+                    </Typography.Link>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
       <div style={{ width: "90%" }}>
         <SyntaxHighlighter
-          language="cpp"
+          language={currCodeType}
           style={a11yDark}
           showLineNumbers={true}
           wrapLongLines={true}
@@ -353,7 +487,7 @@ const UIFile = () => {
             };
           }}
         >
-          {codeString}
+          {currCode}
         </SyntaxHighlighter>
       </div>
     </div>
