@@ -452,7 +452,11 @@ const UIIteration = () => {
             (project: any) => project.id === Number(project_id)
           )[0].role
         ) < 0 ? null : (
-          <Button type={"primary"} onClick={() => setManager(true)}>
+          <Button
+            type={"primary"}
+            onClick={() => setManager(true)}
+            style={{ marginRight: "2rem" }}
+          >
             迭代周期管理
           </Button>
         )}

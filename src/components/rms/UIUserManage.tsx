@@ -23,6 +23,7 @@ import {
   deleteUserIteration,
 } from "../../store/functions/RMS";
 import { getUserStore } from "../../store/slices/UserSlice";
+import { UIUserCardPreview } from "../ums/UIUserCard";
 
 interface UserManageProps {
   readonly userInfo: string;
@@ -320,7 +321,12 @@ const UserManage = (props: UserManageProps) => {
                   display: "flex",
                 }}
               >
-                <img alt={""} className={"avatarimg"} src={item.avatar} />
+                <UIUserCardPreview
+                  projectStore={props.userInfo}
+                  userId={item.id}
+                  previewSize={200}
+                />
+                {/*<img alt={""} className={"avatarimg"} src={item.avatar} />*/}
               </div>
             ),
           },

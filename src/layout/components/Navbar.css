@@ -6,6 +6,11 @@
   flex-direction: row;
   justify-content: space-between;
   background: rgb(36, 41, 47);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
 }
 
 .header-left {
@@ -21,6 +26,15 @@
   margin-bottom: 4px;
   text-align: center;
   user-select: none;
+}
+
+.navbar-logo {
+  opacity: 1;
+}
+
+.navbar-logo:hover {
+  cursor: pointer;
+  opacity: 0.8;
 }
 
 .header-item {

@@ -6,7 +6,6 @@ import {
   Avatar,
   Typography,
   Menu,
-  Dropdown,
   Space,
   Tag,
   Modal,
@@ -15,21 +14,15 @@ import {
   Select,
   Empty,
 } from "antd";
-import { UserOutlined, DownOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getIRListStore,
   getIRSRStore,
   getSRListStore,
-  updateIRSRStore,
-  updateSRListStore,
 } from "../../store/slices/IRSRSlice";
 import QueueAnim from "rc-queue-anim";
-import { Draggable } from "react-beautiful-dnd";
 import {
   IRCardProps,
-  IssueProps,
-  Iteration,
   MergeRequestProps,
   SRCardProps,
 } from "../../store/ConfigureStore";
@@ -45,31 +38,21 @@ import {
   updateSRInfo,
 } from "../../store/functions/RMS";
 import {
-  oneIR2AllSR,
   oneSR2AllCommit,
   oneSR2AllIR,
   oneSR2AllMR,
-  projId2ProjInfo,
   SR2Issue,
   SR2Iteration,
   SR2Service,
-  SRId2SRInfo,
-  userId2UserInfo,
 } from "../../utils/Association";
 import CryptoJS from "crypto-js";
 import { getUserStore } from "../../store/slices/UserSlice";
 import { getProjectStore } from "../../store/slices/ProjectSlice";
-import { updateProjectInfo, updateUserInfo } from "../../store/functions/UMS";
-import Loading from "../../layout/components/Loading";
-import { Option } from "antd/es/mentions";
+import { updateProjectInfo } from "../../store/functions/UMS";
 import Paragraph from "antd/es/typography/Paragraph";
-import { Service, ServiceReadonlyModal } from "./UIServiceReadonly";
+import { ServiceReadonlyModal } from "./UIServiceReadonly";
 import { ToastMessage } from "../../utils/Navigation";
-import { set } from "husky";
-import {
-  updateCounter,
-  updateTodoSRList,
-} from "../../store/slices/CalendarSlice";
+import { updateCounter } from "../../store/slices/CalendarSlice";
 import moment from "moment";
 import IRCard from "./IRCard";
 import {
@@ -84,14 +67,9 @@ import {
   getMergeStore,
   getMRSRAssociationStore,
 } from "../../store/slices/IssueSlice";
-import {
-  getMRSRAssociation,
-  getRDTSInfo,
-  getRepoInfo,
-} from "../../store/functions/RDTS";
+import { getRDTSInfo } from "../../store/functions/RDTS";
 import { getRepoStore } from "../../store/slices/RepoSlice";
 import { getSRChangeLogStore } from "../../store/slices/SRChangeLogSlice";
-import { userId2Avatar } from "../../utils/UserAvatar";
 import UISRChangeLogList from "./UISRChangeLogList";
 import { state2Color, state2ChineseState } from "../../utils/SRStateConvert";
 import MRCard from "../rdts/MRCard";
@@ -310,7 +288,7 @@ const SRCard = (props: SRCardProps) => {
         JSON.stringify(data[0]),
         JSON.stringify(data[1])
       );
-      console.log(assoIRListData);
+      // console.log(assoIRListData);
       const newAssoIRCardList: any = [];
       assoIRListData.forEach((value: IRCardProps) => {
         newAssoIRCardList.push(
@@ -470,7 +448,7 @@ const SRCard = (props: SRCardProps) => {
               size="small"
               src={createdByAvatar}
             />
-            {chargedByAvatar ? (
+            {chargedByAvatar && chargedByAvatar !== createdByAvatar ? (
               <Avatar
                 className="SRCard-small-avatar"
                 size="small"
@@ -571,7 +549,7 @@ const SRCard = (props: SRCardProps) => {
                   <UIUserCardPreview
                     userId={Number(props.chargedBy)}
                     projectStore={projectStore}
-                    // yourSelf={false}
+                    previewSize={30}
                   />
                 ) : (
                   "暂无指定负责人"

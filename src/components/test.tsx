@@ -181,7 +181,11 @@ const Test = () => {
         }}
       >
         <p>I am test page</p>
-        <UIUserCardPreview projectStore={projectInfo} userId={17} />
+        <UIUserCardPreview
+          projectStore={projectInfo}
+          userId={17}
+          previewSize={200}
+        />
         {/*<Button type="primary" onClick={() => handleOnClick()}>*/}
         {/*  Primary Button*/}
         {/*</Button>*/}

@@ -1,7 +1,7 @@
 .project-iteration-container {
   display: flex;
   flex-direction: column;
-
+  border-radius: 1rem;
   min-height: 80vh;
   width: 80vw;
   margin-top: 3rem;

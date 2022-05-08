@@ -34,7 +34,14 @@ const Navbar = () => {
       <Header className="header">
         <div className="header-left">
           <div className="dashboard-undefined">
-            <img src={logo} alt="undefined" width={133} height={36} />
+            <img
+              src={logo}
+              alt="undefined"
+              className="navbar-logo"
+              width={133}
+              height={36}
+              onClick={() => Redirect(dispatcher, "/", 0)}
+            />
           </div>
           <div
             className="header-item"

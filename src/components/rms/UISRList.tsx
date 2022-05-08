@@ -614,6 +614,7 @@ const UISRList = (props: UISRListProps) => {
                 (user: any) => user.id === record.chargedBy
               )[0].id
             }
+            previewSize={30}
           />
         ) : (
           "-"
