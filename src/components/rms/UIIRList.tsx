@@ -465,32 +465,33 @@ const UIIRList = (props: UIIRListProps) => {
             }}
           />
         </Modal>
-
-        <Modal
-          title="IRCard展示"
-          centered={true}
-          visible={isCardModalVisible}
-          onCancel={handleCardCancel}
-          footer={[
-            <Button key="confirm" onClick={handleCardOk}>
-              确认
-            </Button>,
-          ]}
-          width={"40%"}
-          destroyOnClose={true}
-        >
-          <IRCard
-            title={IRCardRecord.title}
-            iter={IRCardRecord.iter}
-            id={IRCardRecord.id}
-            project={IRCardRecord.project}
-            description={IRCardRecord.description}
-            progress={IRCardRecord.progress}
-            createdAt={Number(IRCardRecord.createdAt) / 1000}
-            createdBy={IRCardRecord.createdBy}
-            rank={IRCardRecord.rank}
-          />
-        </Modal>
+        {IRCardRecord === undefined ? null : (
+          <Modal
+            title="IRCard展示"
+            centered={true}
+            visible={isCardModalVisible}
+            onCancel={handleCardCancel}
+            footer={[
+              <Button key="confirm" onClick={handleCardOk}>
+                确认
+              </Button>,
+            ]}
+            width={"40%"}
+            destroyOnClose={true}
+          >
+            <IRCard
+              title={IRCardRecord.title}
+              iter={IRCardRecord.iter}
+              id={IRCardRecord.id}
+              project={IRCardRecord.project}
+              description={IRCardRecord.description}
+              progress={IRCardRecord.progress}
+              createdAt={Number(IRCardRecord.createdAt) / 1000}
+              createdBy={IRCardRecord.createdBy}
+              rank={IRCardRecord.rank}
+            />
+          </Modal>
+        )}
       </div>
     );
   } else {
@@ -518,31 +519,33 @@ const UIIRList = (props: UIIRListProps) => {
           dateFormatter="string"
           search={false}
         />
-        <Modal
-          title="IRCard展示"
-          centered={true}
-          visible={isCardModalVisible}
-          onCancel={handleCardCancel}
-          footer={[
-            <Button key="confirm" onClick={handleCardOk}>
-              确认
-            </Button>,
-          ]}
-          width={"40%"}
-          destroyOnClose={true}
-        >
-          <IRCard
-            title={IRCardRecord.title}
-            iter={IRCardRecord.iter}
-            id={IRCardRecord.id}
-            project={IRCardRecord.project}
-            description={IRCardRecord.description}
-            progress={IRCardRecord.progress}
-            createdAt={Number(IRCardRecord.createdAt) / 1000}
-            createdBy={IRCardRecord.createdBy}
-            rank={IRCardRecord.rank}
-          />
-        </Modal>
+        {IRCardRecord === undefined ? null : (
+          <Modal
+            title="IRCard展示"
+            centered={true}
+            visible={isCardModalVisible}
+            onCancel={handleCardCancel}
+            footer={[
+              <Button key="confirm" onClick={handleCardOk}>
+                确认
+              </Button>,
+            ]}
+            width={"40%"}
+            destroyOnClose={true}
+          >
+            <IRCard
+              title={IRCardRecord.title}
+              iter={IRCardRecord.iter}
+              id={IRCardRecord.id}
+              project={IRCardRecord.project}
+              description={IRCardRecord.description}
+              progress={IRCardRecord.progress}
+              createdAt={Number(IRCardRecord.createdAt) / 1000}
+              createdBy={IRCardRecord.createdBy}
+              rank={IRCardRecord.rank}
+            />
+          </Modal>
+        )}
       </div>
     );
   }

@@ -241,7 +241,9 @@ const Root = () => {
         </div>
         <div
           style={{
+            position: "relative",
             height: "45vh",
+            marginTop: "3vh",
             display: "flex",
             flexDirection: "column",
             justifyContent: "flex-end",
@@ -249,7 +251,12 @@ const Root = () => {
             fontSize: "2rem",
           }}
         >
-          <FontAwesomeIcon icon={faAngleDoubleDown} />
+          <div id={"scroll-down"}>
+            <FontAwesomeIcon
+              icon={faAngleDoubleDown}
+              className={"scroll-down-effects"}
+            />
+          </div>
         </div>
         <div className={"root-contents"}>
           <div className="secondEdition">

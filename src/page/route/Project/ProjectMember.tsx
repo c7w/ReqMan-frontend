@@ -20,8 +20,17 @@ import {
 import { useEffect } from "react";
 import {
   getIterationInfo,
+  getSRListInfo,
   getUserIterationInfo,
 } from "../../../store/functions/RMS";
+import { getMRSRAssociation, getRDTSInfo } from "../../../store/functions/RDTS";
+import {
+  getCommitStore,
+  getIssueStore,
+  getMergeStore,
+  getMRSRAssociationStore,
+} from "../../../store/slices/IssueSlice";
+import { getSRListStore } from "../../../store/slices/IRSRSlice";
 
 const ProjectMember = () => {
   // Store subscription
@@ -34,18 +43,34 @@ const ProjectMember = () => {
   const params = useParams<"id">();
   const project_id = params.id;
 
+  // RDTS Stores
+  const commitInfo = useSelector(getCommitStore);
+  const mergeInfo = useSelector(getMergeStore);
+  const issueInfo = useSelector(getIssueStore);
+
+  const SRListInfo = useSelector(getSRListStore);
+  const MRSRStore = useSelector(getMRSRAssociationStore);
+
   useEffect(() => {
     updateUserInfo(dispatcher);
     updateProjectInfo(dispatcher, Number(project_id));
     getIterationInfo(dispatcher, Number(project_id));
     getUserIterationInfo(dispatcher, Number(project_id));
+
+    getRDTSInfo(dispatcher, Number(project_id));
+    getSRListInfo(dispatcher, Number(project_id));
   }, []);
 
   if (
     userInfo === "" ||
     projectInfo === "" ||
     iterationStore === "" ||
-    userIterStore === ""
+    userIterStore === "" ||
+    commitInfo === "" ||
+    mergeInfo === "" ||
+    issueInfo === "" ||
+    SRListInfo === "" ||
+    MRSRStore === ""
   ) {
     // Waiting for Query...
   } else if (JSON.parse(userInfo).code !== 0) {
