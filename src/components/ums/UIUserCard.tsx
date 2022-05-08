@@ -6,13 +6,10 @@ import moment from "moment";
 import { getCommitCountInfo } from "../../store/functions/UMS";
 import { useDispatch, useSelector } from "react-redux";
 import Loading from "../../layout/components/Loading";
-import { getRDTSInfo } from "../../store/functions/RDTS";
 import UserActivityType from "../../utils/UserActivityType";
 import UIUserActivityList from "./UIUserActivityList";
-import UIProjectList from "../rms/UIProjectList";
 import CryptoJS from "crypto-js";
 import { getIssueStore, getMergeStore } from "../../store/slices/IssueSlice";
-import { data } from "jquery";
 
 interface UIUserCardProps {
   readonly projectStore: string;
