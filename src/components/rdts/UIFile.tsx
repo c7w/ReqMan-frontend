@@ -4,7 +4,8 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { a11yDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { useDispatch, useSelector } from "react-redux";
 import { getRepoStore } from "../../store/slices/RepoSlice";
-import { Breadcrumb, Typography } from "antd";
+import { Breadcrumb, Empty, Typography } from "antd";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFile, faFolder, faHome } from "@fortawesome/free-solid-svg-icons";
 import { Redirect, ToastMessage } from "../../utils/Navigation";
@@ -329,6 +330,8 @@ const UIFile = () => {
     );
   }
 
+  console.debug(files.length);
+
   return (
     <div className={"personal-setting-container"}>
       <div
@@ -372,93 +375,98 @@ const UIFile = () => {
           );
         })}
       </Breadcrumb>
-      <div
-        style={{
-          width: "90%",
-          borderRadius: "1rem",
-          border: "1px solid #dbdbdb",
-          marginTop: "1rem",
-          marginBottom: "2rem",
-          overflow: "hidden",
-        }}
-      >
-        <table
+      {pathname.length === 1 && files.length === 0 ? (
+        <Empty description="请添加项目仓库" />
+      ) : (
+        <div
           style={{
-            width: "100%",
-            color: "#303030",
-            margin: "0 auto 0",
-            padding: "1rem",
+            width: "90%",
+            borderRadius: "1rem",
+            border: "1px solid #dbdbdb",
+            marginTop: "1rem",
+            marginBottom: "2rem",
+            overflow: "hidden",
           }}
         >
-          <thead>
-            <tr>
-              <td
-                style={{
-                  backgroundColor: "#f0f0f0",
-                  color: "#000",
-                  fontWeight: "700",
-                  lineHeight: "28px",
-                  fontSize: "1.2rem",
-                  padding: "0.5rem",
-                  paddingLeft: "2rem",
-                }}
-              >
-                名称
-              </td>
-            </tr>
-          </thead>
-          <tbody>
-            {files.map((file: any, index: any) => {
-              return (
-                <tr
-                  className={"tree-item"}
-                  key={index}
-                  onClick={() => {
-                    Redirect(
-                      dispatcher,
-                      `/project/${project_id}/` +
-                        file.link.join("/") +
-                        "?isFile=" +
-                        (file.type !== "directory" ? "1" : "0"),
-                      0
-                    );
-                  }}
+          <table
+            style={{
+              width: "100%",
+              color: "#303030",
+              margin: "0 auto 0",
+              padding: "1rem",
+            }}
+          >
+            <thead>
+              <tr>
+                <td
                   style={{
-                    lineHeight: "32px",
-                    cursor: "pointer",
+                    backgroundColor: "#f0f0f0",
+                    color: "#000",
+                    fontWeight: "700",
+                    lineHeight: "28px",
                     fontSize: "1.2rem",
+                    padding: "0.5rem",
+                    paddingLeft: "2rem",
                   }}
                 >
-                  <td
+                  名称
+                </td>
+              </tr>
+            </thead>
+            <tbody>
+              {files.map((file: any, index: any) => {
+                return (
+                  <tr
+                    className={"tree-item"}
+                    key={index}
+                    onClick={() => {
+                      Redirect(
+                        dispatcher,
+                        `/project/${project_id}/` +
+                          file.link.join("/") +
+                          "?isFile=" +
+                          (file.type !== "directory" ? "1" : "0"),
+                        0
+                      );
+                    }}
                     style={{
-                      display: "flex",
-                      alignItems: "center",
+                      lineHeight: "32px",
+                      cursor: "pointer",
+                      fontSize: "1.2rem",
                     }}
                   >
-                    <FontAwesomeIcon
-                      icon={file.type === "directory" ? faFolder : faFile}
+                    <td
                       style={{
-                        color: "#000",
-                        padding: "0.2rem",
-                        marginLeft: "2rem",
-                      }}
-                    />
-                    <Typography.Link
-                      style={{
-                        color: "#000",
-                        padding: "0.2rem",
-                        marginLeft: "2rem",
+                        display: "flex",
+                        alignItems: "center",
                       }}
                     >
-                      {file.name}
-                    </Typography.Link>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
+                      <FontAwesomeIcon
+                        icon={file.type === "directory" ? faFolder : faFile}
+                        style={{
+                          color: "#000",
+                          padding: "0.2rem",
+                          marginLeft: "2rem",
+                        }}
+                      />
+                      <Typography.Link
+                        style={{
+                          color: "#000",
+                          padding: "0.2rem",
+                          marginLeft: "2rem",
+                        }}
+                      >
+                        {file.name}
+                      </Typography.Link>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+
       {isFile ? (
         isLoading ? (
           <div>
