@@ -99,9 +99,7 @@ const UserModel = (props: UserModelProps) => {
               src={
                 JSON.parse(props.userInfo).avatar.length > 5
                   ? JSON.parse(props.userInfo).avatar
-                  : `https://www.gravatar.com/avatar/${CryptoJS.MD5(
-                      JSON.parse(props.userInfo).email
-                    )}`
+                  : "https://s1.ax1x.com/2022/05/08/O3S6sI.jpg"
               }
               width={200}
               height={200}
