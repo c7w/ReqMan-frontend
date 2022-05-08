@@ -210,7 +210,7 @@ const UIIssueCard = (props: UIIssueCardProps) => {
       visible={props.visible}
       onCancel={() => props.close()}
       width={"70%"}
-      title={"合并请求查看"}
+      title={"合并缺陷查看"}
     >
       <div className={"meta-data"}>
         <Typography.Title level={4}>
