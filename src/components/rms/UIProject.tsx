@@ -29,6 +29,7 @@ const UIProject = (props: UIProjectProps) => {
         projectStore={projectStore}
         userId={user.id}
         key={user.id}
+        previewSize={30}
       />
     );
   });
