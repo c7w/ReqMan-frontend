@@ -57,7 +57,7 @@ const IssueFigure = (props: IssueFigureProps) => {
       },
     },
     legend: {
-      data: ["功能需求数量", "问题数量", "错误率"],
+      data: ["功能需求数量", "问题数量", "缺陷率"],
     },
     xAxis: [
       {
@@ -80,7 +80,7 @@ const IssueFigure = (props: IssueFigureProps) => {
       },
       {
         type: "value",
-        name: "错误率",
+        name: "缺陷率",
         min: 0,
         max: 100,
         axisLabel: {
@@ -110,7 +110,7 @@ const IssueFigure = (props: IssueFigureProps) => {
         data: issues,
       },
       {
-        name: "错误率",
+        name: "缺陷率",
         type: "line",
         yAxisIndex: 1,
         tooltip: {

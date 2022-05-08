@@ -111,16 +111,7 @@ const LinesChanged = (props: LinesChangedProps) => {
         text: props.title,
       },
       {
-        subtext:
-          "代码更改行数共 " +
-          change_out +
-          " 次 >500 行； " +
-          "代码增加行数共 " +
-          add_out +
-          " 次 >500 行； " +
-          "代码减少行数共 " +
-          del_out +
-          " 次 >500 行",
+        subtext: "还有 " + change_out + " 次代码更改行数 >500 行 ",
         left: "50%",
         top: "85%",
         textAlign: "center",
@@ -128,7 +119,7 @@ const LinesChanged = (props: LinesChangedProps) => {
     ],
     tooltip: {},
     legend: {
-      data: ["更改行数统计", "增加行数统计", "减少行数统计"],
+      data: ["更改行数统计"],
     },
     xAxis: {
       type: "value",
@@ -143,19 +134,9 @@ const LinesChanged = (props: LinesChangedProps) => {
     },
     series: [
       {
-        name: "更改行数统计",
+        name: "更改行数分段计频",
         type: "bar",
         data: change_data,
-      },
-      {
-        name: "增加行数统计",
-        type: "bar",
-        data: add_data,
-      },
-      {
-        name: "减少行数统计",
-        type: "bar",
-        data: del_data,
       },
     ],
   };
