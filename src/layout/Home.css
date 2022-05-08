@@ -6,9 +6,9 @@
   overflow-x: hidden;
 }
 
-.ant-layout.ant-layout-has-sider {
-  flex-direction: column;
-}
+/*.ant-layout.ant-layout-has-sider {*/
+/*  flex-direction: column;*/
+/*}*/
 
 .layout {
   width: 100vw;

@@ -47,6 +47,14 @@ const MemberCommit = (props: MemberCommitProps) => {
       }
     }
   });
+
+  for (let i = new_all_names.length - 1; i >= 0; i--) {
+    if (all_data[i] === 0) {
+      new_all_names.splice(i, 1);
+      all_data.splice(i, 1);
+    }
+  }
+
   const option = {
     title: {
       text: props.title,

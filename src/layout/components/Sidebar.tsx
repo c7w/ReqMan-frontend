@@ -63,7 +63,36 @@ const Sidebar = (props: SidebarProps) => {
   const project_id = Number(params.id) || 0;
 
   if (userStore === "" || projectStore === "") {
-    return <Loading />;
+    return (
+      <Sider
+        id="sidebar"
+        className="sidebar"
+        theme={"light"}
+        collapsible
+        collapsed={isCollapsed}
+        onCollapse={(collapsed) => onCollapse(collapsed)}
+        style={{
+          overflowY: "scroll",
+          overflowX: "hidden",
+          msOverflowStyle: "none",
+        }}
+      >
+        <Menu
+          defaultSelectedKeys={["loading"]}
+          mode="inline"
+          id={"sidebar-column"}
+        >
+          <Menu.Item
+            key="loading"
+            className={"sidebar-item"}
+            // onClick={() => Redirect(dispatch, `/project/${project_id}/`, 0)}
+            icon={<HomeOutlined />}
+          >
+            页面加载中...
+          </Menu.Item>
+        </Menu>
+      </Sider>
+    );
   }
 
   return (
@@ -74,6 +103,11 @@ const Sidebar = (props: SidebarProps) => {
       collapsible
       collapsed={isCollapsed}
       onCollapse={(collapsed) => onCollapse(collapsed)}
+      style={{
+        overflowY: "scroll",
+        overflowX: "hidden",
+        msOverflowStyle: "none",
+      }}
     >
       <Menu defaultSelectedKeys={[path[2]]} mode="inline" id={"sidebar-column"}>
         <Menu.Item

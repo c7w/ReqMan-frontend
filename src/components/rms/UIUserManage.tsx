@@ -363,7 +363,7 @@ const UserManage = (props: UserManageProps) => {
                 <br />
                 {item.role}
                 <br />
-                {["supermaster"].indexOf(
+                {["supermaster", "sys"].indexOf(
                   JSON.parse(userStore).data.projects.filter(
                     (project: any) => project.id === Number(project_id)
                   )[0].role

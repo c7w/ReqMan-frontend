@@ -331,8 +331,26 @@ const UIService = () => {
 
   return (
     <div className={"personal-setting-container"}>
-      <div className={"ServiceHeader"}>
-        <Button type={"primary"} onClick={() => setCreateService(true)}>
+      <div
+        style={{
+          fontSize: "2rem",
+          marginLeft: "1rem",
+          userSelect: "none",
+          alignSelf: "flex-start",
+          display: "flex",
+          flexDirection: "row",
+          width: "100%",
+        }}
+      >
+        <p style={{ marginBottom: "0px" }}>项目服务管理</p>
+        <div style={{ flexGrow: "1" }}></div>
+        <Button
+          type={"primary"}
+          onClick={() => setCreateService(true)}
+          style={{
+            alignSelf: "end",
+          }}
+        >
           创建新服务
         </Button>
         <Modal
@@ -371,7 +389,9 @@ const UIService = () => {
           </div>
         </Modal>
       </div>
-      <hr style={{ width: "90%", margin: "1rem auto" }} />
+
+      <hr style={{ width: "98%", margin: "1rem auto" }} />
+
       <div className={"ServiceShowcase"}>
         <div className={"ServiceShowcaseLeft"}>{leftService}</div>
         <div className={"ServiceShowcaseRight"}>{rightService}</div>

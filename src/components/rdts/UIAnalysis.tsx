@@ -30,6 +30,7 @@ import CommitFigure from "../Figure/CommitFigure";
 import LinesChanged from "../Figure/LinesChanged";
 import MemberCommit from "../Figure/MemberCommit";
 import MemberLines from "../Figure/MemberLines";
+import { Tabs } from "antd";
 
 const UIAnalysis = () => {
   const [recentSeven, setRecentSeven] = useState("");
@@ -181,42 +182,108 @@ const UIAnalysis = () => {
 
   return (
     <div className={"merge-card"}>
-      <IssueFigure
-        text={JSON.stringify(iter_issue_sr_list)}
-        title={"交付后缺陷分析"}
-      />
+      <div
+        style={{
+          fontSize: "2rem",
+          marginLeft: "1rem",
+          userSelect: "none",
+          alignSelf: "flex-start",
+        }}
+      >
+        项目数据分析
+      </div>
+      <hr style={{ width: "98%", margin: "1rem auto" }} />
+      <Tabs
+        defaultActiveKey="1"
+        centered={true}
+        style={{
+          width: "90%",
+        }}
+      >
+        <Tabs.TabPane tab="开发工程师活跃度分析（周）" key="1">
+          <ActiveFigure
+            text={JSON.stringify(active_list_7)}
+            title={"开发工程师活跃度分析（周）"}
+          />
+        </Tabs.TabPane>
+        <Tabs.TabPane tab="开发工程师活跃度分析（总）" key="2">
+          <ActiveFigure
+            text={JSON.stringify(active_list_all)}
+            title={"开发工程师活跃度分析（总）"}
+          />
+        </Tabs.TabPane>
+      </Tabs>
 
-      <ActiveFigure
-        text={JSON.stringify(active_list_7)}
-        title={"开发工程师活跃度分析（周）"}
-      />
+      <Tabs
+        defaultActiveKey="1"
+        centered={true}
+        style={{
+          width: "90%",
+          marginTop: "2rem",
+        }}
+      >
+        <Tabs.TabPane
+          tab="开发工程师基于 Issue 解决时间的能力评定（周）"
+          key="1"
+        >
+          <TimeFigure
+            text={JSON.stringify(issue_list_7)}
+            title={"开发工程师基于 Issue 解决时间的能力评定（周）"}
+          />
+        </Tabs.TabPane>
+        <Tabs.TabPane
+          tab="开发工程师基于 Issue 解决时间的能力评定（总）"
+          key="2"
+        >
+          <TimeFigure
+            text={JSON.stringify(issue_list_all)}
+            title={"开发工程师基于 Issue 解决时间的能力评定（总）"}
+          />
+        </Tabs.TabPane>
+      </Tabs>
 
-      <ActiveFigure
-        text={JSON.stringify(active_list_all)}
-        title={"开发工程师活跃度分析（总）"}
-      />
-
-      <TimeFigure
-        text={JSON.stringify(issue_list_7)}
-        title={"开发工程师基于 Issue 解决时间的能力评定（周）"}
-      />
-
-      <TimeFigure
-        text={JSON.stringify(issue_list_all)}
-        title={"开发工程师基于 Issue 解决时间的能力评定（总）"}
-      />
-      <MRTimeFigure
-        text={JSON.stringify(MRReviewList)}
-        title={"MR数量统计表"}
-      />
-      <CommitFigure title={"Commit数量统计表"} text={overall} />
-      {/*<CountDistributionFigure*/}
-      {/*  title={"MR,commit及Issue数量分析"}*/}
-      {/*  text={overall}*/}
-      {/*/>*/}
-      <LinesChanged text={commitStore} title={"代码变化行数统计"} />
-      <MemberCommit text={commitStore} title={"个人提交次数分布统计"} />
-      <MemberLines text={commitStore} title={"个人代码行数修改统计"} />
+      <Tabs
+        defaultActiveKey="1"
+        centered={true}
+        style={{
+          width: "90%",
+          marginTop: "2rem",
+        }}
+      >
+        <Tabs.TabPane tab="交付后缺陷分析" key="1">
+          <IssueFigure
+            text={JSON.stringify(iter_issue_sr_list)}
+            title={"交付后缺陷分析"}
+          />
+        </Tabs.TabPane>
+        <Tabs.TabPane tab="项目 Commit 时间轴" key="2">
+          <CommitFigure title={"Commit数量统计表"} text={overall} />
+        </Tabs.TabPane>
+        <Tabs.TabPane tab="项目 Merge Request 时间轴" key="3">
+          <MRTimeFigure
+            text={JSON.stringify(MRReviewList)}
+            title={"MR数量统计表"}
+          />
+        </Tabs.TabPane>{" "}
+        <Tabs.TabPane tab="代码变化行数分段计数" key="4">
+          <LinesChanged text={commitStore} title={"代码变化行数分段计数"} />
+        </Tabs.TabPane>
+      </Tabs>
+      <Tabs
+        defaultActiveKey="1"
+        centered={true}
+        style={{
+          width: "90%",
+          marginTop: "2rem",
+        }}
+      >
+        <Tabs.TabPane tab="个人提交次数统计" key="1">
+          <MemberCommit text={commitStore} title={"个人提交次数统计"} />
+        </Tabs.TabPane>
+        <Tabs.TabPane tab="个人提交信息长度分布" key="2">
+          <MemberLines text={commitStore} title={"个人提交信息长度分布"} />
+        </Tabs.TabPane>
+      </Tabs>
     </div>
   );
 };

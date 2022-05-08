@@ -210,7 +210,7 @@ const UIIssueCard = (props: UIIssueCardProps) => {
       visible={props.visible}
       onCancel={() => props.close()}
       width={"70%"}
-      title={"合并请求查看"}
+      title={"合并缺陷查看"}
     >
       <div className={"meta-data"}>
         <Typography.Title level={4}>
@@ -276,7 +276,7 @@ const UIIssueCard = (props: UIIssueCardProps) => {
             onChange={onSelectionChange}
             value={JSON.parse(MRIssueAssociation).map((asso: any) => asso.MR)}
             filterOption={(input, option: any) =>
-              option.children.indexOf(input.toLowerCase()) >= 0
+              option.children.indexOf(input) >= 0
             }
           >
             {JSON.parse(MRStore).data.map((mr: MergeRequestProps) => (
