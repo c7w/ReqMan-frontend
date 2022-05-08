@@ -23,7 +23,12 @@ const Home = (props: LayoutProps) => {
     <div>
       <Layout className="home">
         <Navbar />
-        <Layout className="layout">
+        <Layout
+          className="layout"
+          style={{
+            flexDirection: "row",
+          }}
+        >
           {props.sidebar ? (
             <Sidebar
               getSidebarWidth={(width: number) => {

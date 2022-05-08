@@ -1,12 +1,13 @@
 @import "~antd/dist/antd.css";
 
 .SRTable {
+  padding: 3rem;
   width: 100%;
   padding-top: 8px;
   padding-bottom: 1rem;
   padding-left: 2rem;
   padding-right: 2rem;
-  margin-top: 1rem;
+  margin-top: 2rem;
   min-height: 80vh;
   border-radius: 1rem;
   background-color: #ffffff;

@@ -446,7 +446,19 @@ const UIIteration = () => {
 
   return (
     <div className={"project-iteration-container"}>
-      <div className={"project-iteration-header"}>
+      <div
+        style={{
+          fontSize: "2rem",
+          marginLeft: "1rem",
+          userSelect: "none",
+          alignSelf: "flex-start",
+          display: "flex",
+          flexDirection: "row",
+          width: "100%",
+        }}
+      >
+        <p style={{ marginBottom: "0px" }}>项目迭代管理</p>
+        <div style={{ flexGrow: "1" }}></div>
         {["supermaster", "sys"].indexOf(
           JSON.parse(userStore).data.projects.filter(
             (project: any) => project.id === Number(project_id)
@@ -455,7 +467,7 @@ const UIIteration = () => {
           <Button
             type={"primary"}
             onClick={() => setManager(true)}
-            style={{ marginRight: "2rem" }}
+            style={{ marginRight: "2rem", alignSelf: "end" }}
           >
             迭代周期管理
           </Button>
@@ -467,7 +479,7 @@ const UIIteration = () => {
           }}
         />
       </div>
-      <hr style={{ width: "90%", margin: "0rem auto 1rem" }} />
+      <hr style={{ width: "98%", margin: "1rem auto" }} />
       <div className={"project-iteration-map-container"}>
         {iteration_show_length === 1 ? (
           <Empty description={"请创建项目迭代"} />

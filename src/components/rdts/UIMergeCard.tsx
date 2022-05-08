@@ -192,7 +192,7 @@ const UIMergeCard = (props: UIMergeCardProps) => {
             onChange={onSRAssociatedChange}
             defaultValue={currAssociatedSRId.toString()}
             filterOption={(input, option: any) =>
-              option.children.indexOf(input.toLowerCase()) >= 0
+              option.children.indexOf(input) >= 0
             }
           >
             <Select.Option value="-1">　</Select.Option>

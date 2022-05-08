@@ -276,7 +276,7 @@ const UIIssueCard = (props: UIIssueCardProps) => {
             onChange={onSelectionChange}
             value={JSON.parse(MRIssueAssociation).map((asso: any) => asso.MR)}
             filterOption={(input, option: any) =>
-              option.children.indexOf(input.toLowerCase()) >= 0
+              option.children.indexOf(input) >= 0
             }
           >
             {JSON.parse(MRStore).data.map((mr: MergeRequestProps) => (
