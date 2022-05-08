@@ -52,6 +52,13 @@ const MemberLines = (props: MemberLinesProps) => {
     }
   });
 
+  for (let i = new_all_names.length - 1; i >= 0; i--) {
+    if (all_change[i].length === 0) {
+      new_all_names.splice(i, 1);
+      all_change.splice(i, 1);
+    }
+  }
+
   const option = {
     title: {
       text: props.title,
@@ -139,17 +146,7 @@ const MemberLines = (props: MemberLinesProps) => {
     },
     series: [
       {
-        name: "平均增加行数",
-        type: "boxplot",
-        datasetIndex: 3,
-      },
-      {
-        name: "平均减少行数",
-        type: "boxplot",
-        datasetIndex: 4,
-      },
-      {
-        name: "平均修改行数",
+        name: "修改行数极值",
         type: "boxplot",
         datasetIndex: 5,
       },
