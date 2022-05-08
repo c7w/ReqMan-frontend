@@ -23,6 +23,15 @@
   user-select: none;
 }
 
+.navbar-logo {
+  opacity: 1;
+}
+
+.navbar-logo:hover {
+  cursor: pointer;
+  opacity: 0.8;
+}
+
 .header-item {
   padding-left: 40px;
   padding-right: 40px;
