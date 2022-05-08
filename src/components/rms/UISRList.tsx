@@ -31,6 +31,7 @@ import {
   deleteSRIteration,
   deleteSRService,
   deleteUserSRInfo,
+  getSRListInfo,
   updateSRInfo,
 } from "../../store/functions/RMS";
 import { ToastMessage } from "../../utils/Navigation";
@@ -55,6 +56,10 @@ import { getUserSRStore } from "../../store/slices/UserSRSlice";
 import { UIUserCardPreview } from "../ums/UIUserCard";
 import IRCard from "./IRCard";
 import SRCard from "./SRCard";
+import { getUserStore } from "../../store/slices/UserSlice";
+import request_json from "../../utils/Network";
+import API from "../../utils/APIList";
+import Loading from "../../layout/components/Loading";
 const { TextArea } = Input;
 const { Option } = Select;
 
@@ -69,6 +74,7 @@ interface UISRListProps {
 }
 
 const UISRList = (props: UISRListProps) => {
+  const userStore = useSelector(getUserStore);
   const SRListData = JSON.parse(props.SRListStr).data;
   const IRSRAssociationData = JSON.parse(props.IRSRAssociation).data;
 
@@ -224,7 +230,65 @@ const UISRList = (props: UISRListProps) => {
     setIsEditModalVisible(true);
   };
 
+  // Assert that userInfo and projectInfo are not undefined
+
+  // Get user role
+  const filtered_project = JSON.parse(userStore).data.projects.filter(
+    (value: any) => value.id === Number(props.project_id)
+  );
+  if (filtered_project.length === 0) {
+    console.debug("????");
+    return (
+      <div>
+        <Loading />
+      </div>
+    );
+  }
+  const project_role = filtered_project[0].role;
+
   const handleEditOk = () => {
+    // Here process Dev
+    if (project_role === "dev") {
+      let state = "";
+      if (currState === "未开始") {
+        state = "TODO";
+      }
+      if (currState === "开发中") {
+        state = "WIP";
+      }
+      if (currState === "测试中") {
+        state = "Reviewing";
+      }
+      if (currState === "已交付") {
+        state = "Done";
+      }
+
+      request_json(API.POST_RMS, {
+        body: {
+          project: props.project_id,
+          type: "SRState",
+          operation: "update",
+          data: {
+            id: id,
+            updateData: {
+              state: state,
+            },
+          },
+        },
+      }).then((res: any) => {
+        if (res.code === 0) {
+          ToastMessage("success", "修改成功", "您的功能需求状态修改成功");
+          getSRListInfo(dispatcher, props.project_id);
+        } else {
+          ToastMessage("error", "修改失败", "您的功能需求状态修改失败");
+        }
+      });
+      setIsEditModalVisible(false);
+      setIfok(true);
+      return;
+    }
+
+    // Here process QA and sys and supermaster
     let state = "";
     if (currState === "未开始") {
       state = "TODO";
@@ -683,15 +747,21 @@ const UISRList = (props: UISRListProps) => {
     align: "center",
     render: (text, record, _, action) => [
       // 编辑内含修改删除等，须继续与后端接口适配
-      <a onClick={() => showEditModal(record)}>编辑</a>,
-      <Popconfirm
-        title="你确定要删除该功能需求吗？"
-        onConfirm={() => confirmDelete(record)}
-        okText="是"
-        cancelText="否"
-      >
-        <a href="#">删除</a>
-      </Popconfirm>,
+      project_role !== "dev" ||
+      JSON.parse(userStore).data.user.id === record.chargedBy ? (
+        <a onClick={() => showEditModal(record)}>编辑</a>
+      ) : null,
+
+      project_role === "dev" ? null : (
+        <Popconfirm
+          title="你确定要删除该功能需求吗？"
+          onConfirm={() => confirmDelete(record)}
+          okText="是"
+          cancelText="否"
+        >
+          <a href="#">删除</a>
+        </Popconfirm>
+      ),
     ],
   };
 
@@ -782,9 +852,11 @@ const UISRList = (props: UISRListProps) => {
           headerTitle="功能需求列表"
           toolBarRender={() => {
             return [
-              <Button key="create" onClick={showCreateModal} type="primary">
-                新建功能需求
-              </Button>,
+              project_role === "dev" ? null : (
+                <Button key="create" onClick={showCreateModal} type="primary">
+                  新建功能需求
+                </Button>
+              ),
             ];
           }}
           rowKey="id"
@@ -914,6 +986,7 @@ const UISRList = (props: UISRListProps) => {
           </p>
           <Input
             value={title}
+            disabled={project_role === "dev"}
             onChange={(e) => {
               if (e.target.value === "") {
                 setIfok(true);
@@ -934,6 +1007,7 @@ const UISRList = (props: UISRListProps) => {
             功能需求描述
           </p>
           <TextArea
+            disabled={project_role === "dev"}
             rows={4}
             allowClear
             value={desc}
@@ -970,6 +1044,7 @@ const UISRList = (props: UISRListProps) => {
             迭代选择
           </p>
           <Select
+            disabled={project_role === "dev"}
             mode="multiple"
             style={{ width: "100%" }}
             defaultValue={iter}
@@ -987,6 +1062,7 @@ const UISRList = (props: UISRListProps) => {
             服务选择
           </p>
           <Select
+            disabled={project_role === "dev"}
             defaultValue={service}
             style={{ width: 120 }}
             onChange={handleServiceChange}
@@ -1003,6 +1079,7 @@ const UISRList = (props: UISRListProps) => {
             指定负责人
           </p>
           <Select
+            disabled={project_role === "dev"}
             defaultValue={chargedBy}
             style={{ width: 120 }}
             onChange={handleChargedByChange}
@@ -1019,6 +1096,7 @@ const UISRList = (props: UISRListProps) => {
             项目优先级
           </p>
           <InputNumber
+            disabled={project_role === "dev"}
             value={priority}
             onChange={(e: number) => {
               setPriority(e);

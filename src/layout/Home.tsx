@@ -52,6 +52,7 @@ const Home = (props: LayoutProps) => {
               // marginLeft: "50px",
               marginRight: props.sidebar ? "5vw" : "200px",
               transition: "all, 0.2s",
+              minWidth: "70vw",
             }}
           >
             <Content className="layout-content">{props.children}</Content>
