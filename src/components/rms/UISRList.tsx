@@ -439,7 +439,11 @@ const UISRList = (props: UISRListProps) => {
   }
 
   const iterChildren = JSON.parse(iterationStore).data.map(
-    (iter: Iteration) => <Option value={iter.id}>{iter.title}</Option>
+    (iter: Iteration, index: number) => (
+      <Option value={iter.id} key={index}>
+        {iter.title}
+      </Option>
+    )
   );
 
   // Handle service change
@@ -449,14 +453,30 @@ const UISRList = (props: UISRListProps) => {
     setService(value);
   }
 
-  const serviceChildren = [<Option value={-1}>　</Option>];
+  const serviceChildren = [
+    <Option value={-1} key={"-1"}>
+      　
+    </Option>,
+  ];
   JSON.parse(serviceStore).data.forEach((service: any) =>
-    serviceChildren.push(<Option value={service.id}>{service.title}</Option>)
+    serviceChildren.push(
+      <Option value={service.id} key={service.id}>
+        {service.title}
+      </Option>
+    )
   );
 
-  const chargedByChildren = [<Option value={-1}>　</Option>];
+  const chargedByChildren = [
+    <Option value={-1} key={"-1"}>
+      　
+    </Option>,
+  ];
   JSON.parse(projectInfo).data.users.forEach((user: any) =>
-    chargedByChildren.push(<Option value={user.id}>{user.name}</Option>)
+    chargedByChildren.push(
+      <Option value={user.id} key={user.id}>
+        {user.name}
+      </Option>
+    )
   );
 
   function handleChargedByChange(value: number) {
@@ -1006,35 +1026,37 @@ const UISRList = (props: UISRListProps) => {
           />
         </Modal>
 
-        <Modal
-          title="SRCard展示"
-          centered={true}
-          visible={isCardModalVisible}
-          onCancel={handleCardCancel}
-          footer={[
-            <Button key="confirm" onClick={handleCardOk}>
-              确认
-            </Button>,
-          ]}
-          width={"40%"}
-          destroyOnClose={true}
-        >
-          <SRCard
-            id={SRCardRecord.id}
-            project={SRCardRecord.project}
-            title={SRCardRecord.title}
-            description={SRCardRecord.description}
-            priority={SRCardRecord.priority}
-            rank={SRCardRecord.rank}
-            currState={SRCardRecord.currState}
-            stateColor={SRCardRecord.stateColor}
-            createdBy={SRCardRecord.createdBy}
-            createdAt={Number(SRCardRecord.createdAt) / 1000}
-            iter={SRCardRecord.iter}
-            chargedBy={SRCardRecord.chargedBy}
-            service={SRCardRecord.service}
-          />
-        </Modal>
+        {SRCardRecord === undefined ? null : (
+          <Modal
+            title="SRCard展示"
+            centered={true}
+            visible={isCardModalVisible}
+            onCancel={handleCardCancel}
+            footer={[
+              <Button key="confirm" onClick={handleCardOk}>
+                确认
+              </Button>,
+            ]}
+            width={"40%"}
+            destroyOnClose={true}
+          >
+            <SRCard
+              id={SRCardRecord.id}
+              project={SRCardRecord.project}
+              title={SRCardRecord.title}
+              description={SRCardRecord.description}
+              priority={SRCardRecord.priority}
+              rank={SRCardRecord.rank}
+              currState={SRCardRecord.currState}
+              stateColor={SRCardRecord.stateColor}
+              createdBy={SRCardRecord.createdBy}
+              createdAt={Number(SRCardRecord.createdAt) / 1000}
+              iter={SRCardRecord.iter}
+              chargedBy={SRCardRecord.chargedBy}
+              service={SRCardRecord.service}
+            />
+          </Modal>
+        )}
       </div>
     );
   } else if (props.showChoose) {
@@ -1064,35 +1086,37 @@ const UISRList = (props: UISRListProps) => {
           toolBarRender={false}
         />
 
-        <Modal
-          title="SRCard展示"
-          centered={true}
-          visible={isCardModalVisible}
-          onCancel={handleCardCancel}
-          footer={[
-            <Button key="confirm" onClick={handleCardOk}>
-              确认
-            </Button>,
-          ]}
-          width={"40%"}
-          destroyOnClose={true}
-        >
-          <SRCard
-            id={SRCardRecord.id}
-            project={SRCardRecord.project}
-            title={SRCardRecord.title}
-            description={SRCardRecord.description}
-            priority={SRCardRecord.priority}
-            rank={SRCardRecord.rank}
-            currState={SRCardRecord.currState}
-            stateColor={SRCardRecord.stateColor}
-            createdBy={SRCardRecord.createdBy}
-            createdAt={Number(SRCardRecord.createdAt) / 1000}
-            iter={SRCardRecord.iter}
-            chargedBy={SRCardRecord.chargedBy}
-            service={SRCardRecord.service}
-          />
-        </Modal>
+        {SRCardRecord === undefined ? null : (
+          <Modal
+            title="SRCard展示"
+            centered={true}
+            visible={isCardModalVisible}
+            onCancel={handleCardCancel}
+            footer={[
+              <Button key="confirm" onClick={handleCardOk}>
+                确认
+              </Button>,
+            ]}
+            width={"40%"}
+            destroyOnClose={true}
+          >
+            <SRCard
+              id={SRCardRecord.id}
+              project={SRCardRecord.project}
+              title={SRCardRecord.title}
+              description={SRCardRecord.description}
+              priority={SRCardRecord.priority}
+              rank={SRCardRecord.rank}
+              currState={SRCardRecord.currState}
+              stateColor={SRCardRecord.stateColor}
+              createdBy={SRCardRecord.createdBy}
+              createdAt={Number(SRCardRecord.createdAt) / 1000}
+              iter={SRCardRecord.iter}
+              chargedBy={SRCardRecord.chargedBy}
+              service={SRCardRecord.service}
+            />
+          </Modal>
+        )}
       </div>
     );
   } else {
@@ -1115,36 +1139,37 @@ const UISRList = (props: UISRListProps) => {
           search={false}
           dateFormatter="string"
         />
-
-        <Modal
-          title="SRCard展示"
-          centered={true}
-          visible={isCardModalVisible}
-          onCancel={handleCardCancel}
-          footer={[
-            <Button key="confirm" onClick={handleCardOk}>
-              确认
-            </Button>,
-          ]}
-          width={"40%"}
-          destroyOnClose={true}
-        >
-          <SRCard
-            id={SRCardRecord.id}
-            project={SRCardRecord.project}
-            title={SRCardRecord.title}
-            description={SRCardRecord.description}
-            priority={SRCardRecord.priority}
-            rank={SRCardRecord.rank}
-            currState={SRCardRecord.currState}
-            stateColor={SRCardRecord.stateColor}
-            createdBy={SRCardRecord.createdBy}
-            createdAt={Number(SRCardRecord.createdAt) / 1000}
-            iter={SRCardRecord.iter}
-            chargedBy={SRCardRecord.chargedBy}
-            service={SRCardRecord.service}
-          />
-        </Modal>
+        {SRCardRecord === undefined ? null : (
+          <Modal
+            title="SRCard展示"
+            centered={true}
+            visible={isCardModalVisible}
+            onCancel={handleCardCancel}
+            footer={[
+              <Button key="confirm" onClick={handleCardOk}>
+                确认
+              </Button>,
+            ]}
+            width={"40%"}
+            destroyOnClose={true}
+          >
+            <SRCard
+              id={SRCardRecord.id}
+              project={SRCardRecord.project}
+              title={SRCardRecord.title}
+              description={SRCardRecord.description}
+              priority={SRCardRecord.priority}
+              rank={SRCardRecord.rank}
+              currState={SRCardRecord.currState}
+              stateColor={SRCardRecord.stateColor}
+              createdBy={SRCardRecord.createdBy}
+              createdAt={Number(SRCardRecord.createdAt) / 1000}
+              iter={SRCardRecord.iter}
+              chargedBy={SRCardRecord.chargedBy}
+              service={SRCardRecord.service}
+            />
+          </Modal>
+        )}
       </div>
     );
   }
