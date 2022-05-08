@@ -35,9 +35,16 @@ const Home = (props: LayoutProps) => {
             <></>
           )}
           <div
+            style={{
+              marginRight: (sidebarWidth + 50).toString() + "px",
+              height: "100vh",
+            }}
+          ></div>
+          <div
             className="layout-right"
             style={{
-              marginLeft: sidebarWidth.toString() + "px",
+              // marginLeft: (sidebarWidth + 50).toString() + "px",
+              // marginLeft: "50px",
               marginRight: props.sidebar ? "5vw" : "200px",
               transition: "all, 0.2s",
             }}

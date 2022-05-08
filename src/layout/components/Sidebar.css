@@ -3,9 +3,10 @@
 .sidebar {
   position: fixed;
   left: 0;
-  bottom: 0;
+  /*bottom: 0;*/
   top: 60px;
   z-index: 99;
+  height: calc(100vh - 108px);
 }
 
 .ant-menu-inline .ant-menu-selected::after,
@@ -37,4 +38,8 @@
 
 #sidebar-column .sidebar-item-header {
   height: 4.5rem;
+}
+
+.sidebar::-webkit-scrollbar{
+  width: 5px;
 }

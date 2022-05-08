@@ -4,7 +4,7 @@ const Loading = () => {
   return (
     <div
       style={{
-        width: "100%",
+        width: "80vw",
         minHeight: "80vh",
         height: "100%",
         display: "flex",

@@ -74,6 +74,11 @@ const Sidebar = (props: SidebarProps) => {
       collapsible
       collapsed={isCollapsed}
       onCollapse={(collapsed) => onCollapse(collapsed)}
+      style={{
+        overflowY: "scroll",
+        overflowX: "hidden",
+        msOverflowStyle: "none",
+      }}
     >
       <Menu defaultSelectedKeys={[path[2]]} mode="inline" id={"sidebar-column"}>
         <Menu.Item
