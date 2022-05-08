@@ -301,7 +301,7 @@ const UIUserCard = (props: UIUserCardProps) => {
 interface UIUserCardPreviewProps {
   readonly projectStore: string;
   readonly userId: number;
-  // readonly yourSelf: boolean;
+  readonly previewSize: number;
 }
 
 const UIUserCardPreview = (props: UIUserCardPreviewProps) => {
@@ -338,7 +338,7 @@ const UIUserCardPreview = (props: UIUserCardPreviewProps) => {
         >
           <Avatar
             className="UserCard-small-avatar"
-            size="small"
+            size={props.previewSize}
             src={
               userInfo.avatar.length < 5
                 ? `https://www.gravatar.com/avatar/${CryptoJS.MD5(

@@ -109,6 +109,7 @@ const UICommit = () => {
                 <UIUserCardPreview
                   projectStore={projectStore}
                   userId={find_result.id}
+                  previewSize={30}
                 />
               </div>
             );

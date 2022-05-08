@@ -269,6 +269,7 @@ const UIIRList = (props: UIIRListProps) => {
             <UIUserCardPreview
               projectStore={projectInfo}
               userId={Number(record.createdBy)}
+              previewSize={30}
             />
           </div>
         );

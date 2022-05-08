@@ -549,7 +549,7 @@ const SRCard = (props: SRCardProps) => {
                   <UIUserCardPreview
                     userId={Number(props.chargedBy)}
                     projectStore={projectStore}
-                    // yourSelf={false}
+                    previewSize={30}
                   />
                 ) : (
                   "暂无指定负责人"

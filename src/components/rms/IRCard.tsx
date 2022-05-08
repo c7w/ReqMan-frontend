@@ -339,7 +339,7 @@ const IRCard = (props: IRCardProps) => {
               <UIUserCardPreview
                 userId={Number(props.createdBy)}
                 projectStore={projectInfo}
-                // yourSelf={false}
+                previewSize={30}
               />
             </div>
             <div>

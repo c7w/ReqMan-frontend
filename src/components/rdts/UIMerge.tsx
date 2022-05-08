@@ -121,6 +121,7 @@ const UIMerge = () => {
                 <UIUserCardPreview
                   projectStore={projectStore}
                   userId={find_result.id}
+                  previewSize={30}
                 />
                 {/*<span>{"@" + find_result.name}</span>*/}
               </div>
