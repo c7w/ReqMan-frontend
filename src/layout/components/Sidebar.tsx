@@ -31,13 +31,18 @@ import Loading from "./Loading";
 
 const { Sider } = Layout;
 
-const Sidebar = () => {
+interface SidebarProps {
+  readonly getSidebarWidth: (width: number) => void; // 获取 sidebar 宽度
+}
+
+const Sidebar = (props: SidebarProps) => {
   const dispatch = useDispatch();
 
   // Collapse state between pages
   const isCollapsed = useSelector(getIsCollapsed);
   const onCollapse = (collapsed: boolean) => {
     dispatch(updateIsCollapsed(collapsed));
+    props.getSidebarWidth(collapsed ? 160 : 200);
   };
 
   const userStore = useSelector(getUserStore);
@@ -63,6 +68,7 @@ const Sidebar = () => {
 
   return (
     <Sider
+      id="sidebar"
       className="sidebar"
       theme={"light"}
       collapsible

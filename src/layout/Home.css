@@ -6,18 +6,16 @@
   overflow-x: hidden;
 }
 
+.ant-layout.ant-layout-has-sider {
+  flex-direction: column;
+}
+
 .layout {
-  width: 99vw;
+  width: 100vw;
 }
 
 .layout-right {
-  /*width: 100%;*/
-  /*min-height: 90vh;*/
-  /*background: rgb(248, 248, 248);*/
-  /*display: grid;*/
-  /*grid-template-rows: 1fr auto;*/
-  width: 80vw;
-  margin: 0 auto;
+  margin-top: 60px;
 }
 
 .layout-content {

@@ -6,6 +6,11 @@
   flex-direction: row;
   justify-content: space-between;
   background: rgb(36, 41, 47);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
 }
 
 .header-left {
