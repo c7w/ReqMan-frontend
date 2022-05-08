@@ -219,6 +219,7 @@ const UIAnalysis = () => {
         centered={true}
         style={{
           width: "90%",
+          marginTop: "2rem",
         }}
       >
         <Tabs.TabPane
@@ -246,6 +247,7 @@ const UIAnalysis = () => {
         centered={true}
         style={{
           width: "90%",
+          marginTop: "2rem",
         }}
       >
         <Tabs.TabPane tab="交付后缺陷分析" key="1">
@@ -262,16 +264,26 @@ const UIAnalysis = () => {
             text={JSON.stringify(MRReviewList)}
             title={"MR数量统计表"}
           />
+        </Tabs.TabPane>{" "}
+        <Tabs.TabPane tab="代码变化行数分段计数" key="4">
+          <LinesChanged text={commitStore} title={"代码变化行数分段计数"} />
         </Tabs.TabPane>
       </Tabs>
-
-      {/*<CountDistributionFigure*/}
-      {/*  title={"MR,commit及Issue数量分析"}*/}
-      {/*  text={overall}*/}
-      {/*/>*/}
-      <LinesChanged text={commitStore} title={"代码变化行数统计"} />
-      <MemberCommit text={commitStore} title={"个人提交次数分布统计"} />
-      <MemberLines text={commitStore} title={"个人代码行数修改统计"} />
+      <Tabs
+        defaultActiveKey="1"
+        centered={true}
+        style={{
+          width: "90%",
+          marginTop: "2rem",
+        }}
+      >
+        <Tabs.TabPane tab="个人提交次数统计" key="1">
+          <MemberCommit text={commitStore} title={"个人提交次数统计"} />
+        </Tabs.TabPane>
+        <Tabs.TabPane tab="个人提交信息长度分布" key="2">
+          <MemberLines text={commitStore} title={"个人提交信息长度分布"} />
+        </Tabs.TabPane>
+      </Tabs>
     </div>
   );
 };
