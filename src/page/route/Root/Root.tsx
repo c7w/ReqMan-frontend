@@ -477,7 +477,7 @@ const Root = () => {
                       className={
                         "maContent" + (isVisible ? " inView" : " outView")
                       }
-                    ></div>
+                    />
                     <p className="desc">
                       提供交付后缺陷分析、开发工程师活跃度分析、开发工程师基于
                       Issue
