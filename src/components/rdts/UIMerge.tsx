@@ -146,6 +146,7 @@ const UIMerge = () => {
         if (filtered_list.length > 0) {
           currAssociatedSRId = filtered_list[0].SR;
         }
+        // TODO: change to async
         const related =
           currAssociatedSRId <= 0
             ? "-"

@@ -48,6 +48,7 @@ const UIIRList = (props: UIIRListProps) => {
     let totalWeight = 0;
     let curWeight = 0;
     curSRKey.forEach((value1: number) => {
+      // TODO: change to async
       const SRInfo = SRId2SRInfo(value1, props.SRListStr);
       totalWeight += SRInfo.priority;
       if (SRInfo.state === "Done") {

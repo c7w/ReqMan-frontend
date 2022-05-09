@@ -56,7 +56,6 @@ const Project = () => {
         if (projectData.data.project.id !== Number(project_id)) {
           updateProjectInfo(dispatcher, Number(project_id));
         } else {
-          // TODO: Render Page
           return (
             <Home sidebar={true}>
               <div>

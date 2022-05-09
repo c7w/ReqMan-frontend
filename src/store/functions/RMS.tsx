@@ -220,7 +220,7 @@ const createSRInfo = async (
         description: sr.description,
         priority: sr.priority,
         rank: 1,
-        state: sr.currState, // "TODO" "WIP" "Reviewing" "Done" 四选一
+        state: sr.currState,
       },
     },
   };
@@ -249,7 +249,7 @@ const updateSRInfo = async (
         description: sr.description,
         priority: sr.priority,
         rank: 1,
-        state: sr.currState, // "TODO" "WIP" "Reviewing" "Done" 四选一
+        state: sr.currState,
       },
     },
   };

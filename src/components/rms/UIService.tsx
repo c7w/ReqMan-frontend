@@ -35,7 +35,6 @@ interface ProjectServiceCardProps {
 export const ProjectServiceCard = (props: ProjectServiceCardProps) => {
   const data = JSON.parse(props.data);
 
-  // TODO: Buggy selected association!!!!!!
   const serviceSRStore = useSelector(getSRServiceStore);
   const SRListStore = useSelector(getSRListStore);
 
@@ -166,14 +165,14 @@ const ServiceModal = (props: { data: string; close: () => void }) => {
         <span className={"service-label"}>创建时间</span>&nbsp;&nbsp;
         <span>{moment(data.createdAt * 1000).format("lll")}</span>
       </div>
-      <div style={{ margin: "0.5rem 0" }}>
-        <span className={"service-label"}>开发进度</span>&nbsp;&nbsp;
-        <Progress
-          percent={getPercentage(data.id)}
-          success={{ percent: getSuccessPercentage(data.id) }}
-          style={{ width: "40%" }}
-        />
-      </div>
+      {/*<div style={{ margin: "0.5rem 0" }}>*/}
+      {/*  <span className={"service-label"}>开发进度</span>&nbsp;&nbsp;*/}
+      {/*  <Progress*/}
+      {/*    percent={getPercentage(data.id)}*/}
+      {/*    success={{ percent: getSuccessPercentage(data.id) }}*/}
+      {/*    style={{ width: "40%" }}*/}
+      {/*  />*/}
+      {/*</div>*/}
       <div className={"service-row"}>
         <span className={"service-label"}>服务简介</span>&nbsp;&nbsp;
       </div>

@@ -25,5 +25,6 @@ module.exports = {
       2,
       { extensions: [".js", ".jsx", ".ts", ".tsx"] },
     ],
+    "@typescript-eslint/no-explicit-any": "off",
   },
 };

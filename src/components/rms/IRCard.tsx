@@ -35,12 +35,7 @@ import {
   getIRSRStore,
   getSRListStore,
 } from "../../store/slices/IRSRSlice";
-import {
-  IR2Iteration,
-  oneIR2AllSR,
-  oneSR2AllIR,
-  SRId2SRInfo,
-} from "../../utils/Association";
+import { IR2Iteration, oneIR2AllSR } from "../../utils/Association";
 import {
   getIRIterationStore,
   getIterationStore,

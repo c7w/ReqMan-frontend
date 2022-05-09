@@ -35,11 +35,7 @@ import {
   getIRSRStore,
   getSRListStore,
 } from "../../store/slices/IRSRSlice";
-import {
-  oneIR2AllSR,
-  SR2Iteration,
-  SRId2SRInfo,
-} from "../../utils/Association";
+import { oneIR2AllSR } from "../../utils/Association";
 import moment, { Moment } from "moment";
 import { without } from "underscore";
 

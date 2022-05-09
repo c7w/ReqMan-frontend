@@ -79,7 +79,6 @@ const ProjectIteration = () => {
     ToastMessage("error", "项目信息拉取失败", "即将跳转回项目列表");
     Redirect(dispatcher, "/projects");
   } else if (false) {
-    // TODO: Auth, what is my role???
     Redirect(dispatcher, "/error", 0);
   } else {
     return (
