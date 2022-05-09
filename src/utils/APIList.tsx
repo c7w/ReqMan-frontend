@@ -163,6 +163,10 @@ const API = {
     path: "/rms/project_single_sr/",
     method: "get",
   },
+  GET_SR_PAGED: {
+    path: "/rms/project_sr/",
+    method: "get",
+  },
 };
 
 export default API;

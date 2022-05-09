@@ -50,8 +50,11 @@ const getRDTSInfo = async (dispatcher: any, project_id: number) => {
       // getIssueInfo(dispatcher, project_id, JSON.stringify(repo_data))
     );
     promise_list.push(
-      getMergeInfo(dispatcher, project_id, JSON.stringify(repo_data))
+      new Promise((resolve) => {
+        resolve({ code: 0, data: [] });
+      })
     );
+    getMergeInfo(dispatcher, project_id, JSON.stringify(repo_data)); // Just request, no waiting time!
     // promise_list.push(
     //   getCommitInfo(dispatcher, project_id, JSON.stringify(repo_data))
     // );
