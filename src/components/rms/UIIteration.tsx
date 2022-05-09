@@ -347,98 +347,98 @@ const UIIteration = () => {
 
   const iteration_show_length = JSON.parse(iterationStore).data.length + 1;
 
-  const getBlockClassName = (
-    sr_id: number,
-    iter_id: number | undefined
-  ): string => {
-    const exists =
-      JSON.parse(SRIterStore).data.filter(
-        (asso: any) => asso.iteration === iter_id && asso.SR === sr_id
-      ).length > 0;
-    if (exists) {
-      const sr = JSON.parse(SRStore).data.filter(
-        (sr: SRCardProps) => sr.id === sr_id
-      );
-      if (sr.length === 0) {
-        return "iteration-table-unit-exception";
-      } else {
-        const status = sr[0].state;
-        if (status === "TODO") {
-          return "iteration-table-unit-todo";
-        } else if (status === "WIP") {
-          return "iteration-table-unit-wip";
-        } else if (status === "Reviewing") {
-          return "iteration-table-unit-reviewing";
-        } else {
-          return "iteration-table-unit-done";
-        }
-      }
-    } else {
-      return "iteration-table-unit-blank";
-    }
-  };
-
-  const getIRBlockClassName = (ir_id: number, data_id: number) => {
-    const key = { TODO: 0, WIP: 1, Reviewing: 2, Done: 3 };
-    let now = 4;
-    oneIR2AllSR(ir_id, IRSRAssociation, SRStore).forEach((sr: any) => {
-      const exists =
-        JSON.parse(SRIterStore).data.filter(
-          (asso: any) => asso.iteration === data_id && asso.SR === sr.id
-        ).length > 0;
-      if (exists) {
-        const curr = key[sr.state as "TODO" | "WIP" | "Reviewing" | "Done"];
-        now = curr < now ? curr : now;
-      }
-    });
-    const ans = [
-      "iteration-table-unit-todo",
-      "iteration-table-unit-wip",
-      "iteration-table-unit-reviewing",
-      "iteration-table-unit-done",
-      "iteration-table-unit-blank",
-    ];
-    return ans[now];
-  };
-
-  const getIRIterPercentage = (ir_id: number, data_id: number) => {
-    let now = 0;
-    let all = 0;
-
-    oneIR2AllSR(ir_id, IRSRAssociation, SRStore).forEach((sr: any) => {
-      const exists =
-        JSON.parse(SRIterStore).data.filter(
-          (asso: any) => asso.iteration === data_id && asso.SR === sr.id
-        ).length > 0;
-
-      if (exists) {
-        all += sr.priority;
-        const curr = sr.state === "Reviewing" || sr.state === "Done";
-        if (curr) {
-          now += sr.priority;
-        }
-      }
-    });
-    if (all != 0) return ((now / all) * 100).toFixed(2) + "%";
-    else return "";
-  };
-
-  const getSRState = (sr: any, iter_id: number | undefined) => {
-    const exists =
-      JSON.parse(SRIterStore).data.filter(
-        (asso: any) => asso.iteration === iter_id && asso.SR === sr.id
-      ).length > 0;
-    if (exists) {
-      const ans = {
-        TODO: "未开始",
-        WIP: "开发中",
-        Reviewing: "测试中",
-        Done: "已交付",
-      };
-      return ans[sr.state as "TODO" | "WIP" | "Reviewing" | "Done"];
-    }
-    return "";
-  };
+  // const getBlockClassName = (
+  //   sr_id: number,
+  //   iter_id: number | undefined
+  // ): string => {
+  //   const exists =
+  //     JSON.parse(SRIterStore).data.filter(
+  //       (asso: any) => asso.iteration === iter_id && asso.SR === sr_id
+  //     ).length > 0;
+  //   if (exists) {
+  //     const sr = JSON.parse(SRStore).data.filter(
+  //       (sr: SRCardProps) => sr.id === sr_id
+  //     );
+  //     if (sr.length === 0) {
+  //       return "iteration-table-unit-exception";
+  //     } else {
+  //       const status = sr[0].state;
+  //       if (status === "TODO") {
+  //         return "iteration-table-unit-todo";
+  //       } else if (status === "WIP") {
+  //         return "iteration-table-unit-wip";
+  //       } else if (status === "Reviewing") {
+  //         return "iteration-table-unit-reviewing";
+  //       } else {
+  //         return "iteration-table-unit-done";
+  //       }
+  //     }
+  //   } else {
+  //     return "iteration-table-unit-blank";
+  //   }
+  // };
+  //
+  // const getIRBlockClassName = (ir_id: number, data_id: number) => {
+  //   const key = { TODO: 0, WIP: 1, Reviewing: 2, Done: 3 };
+  //   let now = 4;
+  //   oneIR2AllSR(ir_id, IRSRAssociation, SRStore).forEach((sr: any) => {
+  //     const exists =
+  //       JSON.parse(SRIterStore).data.filter(
+  //         (asso: any) => asso.iteration === data_id && asso.SR === sr.id
+  //       ).length > 0;
+  //     if (exists) {
+  //       const curr = key[sr.state as "TODO" | "WIP" | "Reviewing" | "Done"];
+  //       now = curr < now ? curr : now;
+  //     }
+  //   });
+  //   const ans = [
+  //     "iteration-table-unit-todo",
+  //     "iteration-table-unit-wip",
+  //     "iteration-table-unit-reviewing",
+  //     "iteration-table-unit-done",
+  //     "iteration-table-unit-blank",
+  //   ];
+  //   return ans[now];
+  // };
+  //
+  // const getIRIterPercentage = (ir_id: number, data_id: number) => {
+  //   let now = 0;
+  //   let all = 0;
+  //
+  //   oneIR2AllSR(ir_id, IRSRAssociation, SRStore).forEach((sr: any) => {
+  //     const exists =
+  //       JSON.parse(SRIterStore).data.filter(
+  //         (asso: any) => asso.iteration === data_id && asso.SR === sr.id
+  //       ).length > 0;
+  //
+  //     if (exists) {
+  //       all += sr.priority;
+  //       const curr = sr.state === "Reviewing" || sr.state === "Done";
+  //       if (curr) {
+  //         now += sr.priority;
+  //       }
+  //     }
+  //   });
+  //   if (all != 0) return ((now / all) * 100).toFixed(2) + "%";
+  //   else return "";
+  // };
+  //
+  // const getSRState = (sr: any, iter_id: number | undefined) => {
+  //   const exists =
+  //     JSON.parse(SRIterStore).data.filter(
+  //       (asso: any) => asso.iteration === iter_id && asso.SR === sr.id
+  //     ).length > 0;
+  //   if (exists) {
+  //     const ans = {
+  //       TODO: "未开始",
+  //       WIP: "开发中",
+  //       Reviewing: "测试中",
+  //       Done: "已交付",
+  //     };
+  //     return ans[sr.state as "TODO" | "WIP" | "Reviewing" | "Done"];
+  //   }
+  //   return "";
+  // };
 
   return (
     <div className={"project-iteration-container"}>
