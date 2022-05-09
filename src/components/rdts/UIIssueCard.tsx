@@ -107,6 +107,7 @@ const UIIssueCard = (props: UIIssueCardProps) => {
   }
 
   const reload_timeline = async () => {
+    console.debug("reload timeline");
     const timeline_list: TimelineEntry[] = [];
     timeline_list.push({
       time: data.authoredAt,
@@ -128,15 +129,27 @@ const UIIssueCard = (props: UIIssueCardProps) => {
         ),
       });
     }
-    for (const asso of JSON.parse(MRIssueAssociation)) {
+    console.debug(MRIssueAssociation);
+
+    const curr_mr_issue_asso = await request_json(API.GET_RDTS, {
+      getParams: { repo: data.repo, type: "issue-mr", issueId: data.id },
+    });
+    setMRIssueAssociation(JSON.stringify(curr_mr_issue_asso.data));
+
+    for (const asso of curr_mr_issue_asso.data) {
       // If asso.issue is not my id, skip it
       if (asso.issue !== data.id) {
         continue;
       }
 
-      const filtered: MergeRequestProps[] = [
-        await MRId2MRInfo(asso.MR, MRStore, project_id),
-      ];
+      const mrInfo = await MRId2MRInfo(asso.MR, MRStore, project_id);
+
+      const filtered: MergeRequestProps[] = [];
+      if (mrInfo !== "not found") {
+        filtered.push(mrInfo);
+      }
+
+      // console.debug(filtered);
       if (filtered.length > 0) {
         let MRBy = filtered[0].authoredByUserName;
         if (filtered[0].user_authored > 0) {
@@ -174,6 +187,7 @@ const UIIssueCard = (props: UIIssueCardProps) => {
       }
     }
     setTimelineList(timeline_list);
+    console.debug(timeline_list);
   };
 
   useEffect(() => {
@@ -196,7 +210,7 @@ const UIIssueCard = (props: UIIssueCardProps) => {
 
   const onSelectionChange = (val: number[]) => {
     setMRBindDisabled(true);
-    console.debug(val);
+    // console.debug(val);
     const former = JSON.parse(MRIssueAssociation).map((asso: any) => asso.MR);
     const promise_list: any[] = [];
     difference(former, val).forEach((to_delete: number) => {

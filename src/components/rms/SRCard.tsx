@@ -411,7 +411,7 @@ const SRCard = (props: SRCardProps) => {
       <Menu.Item key="未开始">未开始</Menu.Item>
       <Menu.Item key="开发中">开发中</Menu.Item>
       <Menu.Item key="测试中">测试中</Menu.Item>
-      <Menu.Item key="已完成">已完成</Menu.Item>
+      <Menu.Item key="已完成">已交付</Menu.Item>
     </Menu>
   );
 
@@ -499,7 +499,7 @@ const SRCard = (props: SRCardProps) => {
               <Select.Option value="未开始">未开始</Select.Option>
               <Select.Option value="开发中">开发中</Select.Option>
               <Select.Option value="测试中">测试中</Select.Option>
-              <Select.Option value="已完成">已完成</Select.Option>
+              <Select.Option value="已完成">已交付</Select.Option>
             </Select>
           </div>
           <div className="SRModal-header-right"></div>

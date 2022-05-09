@@ -49,7 +49,7 @@ const IssueRelatedMerge = (props: { issueId: number; repo: number }) => {
         setRelatedMergeTitle(mr_info.title);
       }
     }
-    console.debug("association_list", association_list);
+    // console.debug("association_list", association_list);
   };
 
   useEffect(() => {
