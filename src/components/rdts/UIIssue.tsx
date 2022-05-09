@@ -3,10 +3,14 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getProjectStore } from "../../store/slices/ProjectSlice";
 import { getRepoStore } from "../../store/slices/RepoSlice";
-import { getIssueStore, getMergeStore } from "../../store/slices/IssueSlice";
+import {
+  getIssueStore,
+  getMergeStore,
+  getMRIssueAssociationStore,
+} from "../../store/slices/IssueSlice";
 import ProTable, { ProColumns } from "@ant-design/pro-table";
 import { IssueProps, MergeRequestProps } from "../../store/ConfigureStore";
-import { userId2UserInfo } from "../../utils/Association";
+import { MRId2MRInfo, userId2UserInfo } from "../../utils/Association";
 import { UIIssueCardPreview } from "./UIIssueCard";
 import { Typography } from "antd";
 import { getRDTSInfo } from "../../store/functions/RDTS";
@@ -15,6 +19,45 @@ import { SyncOutlined, ReloadOutlined } from "@ant-design/icons";
 import moment from "moment";
 import { addRDTSTimer } from "../../utils/Timer";
 import { UIUserCardPreview } from "../ums/UIUserCard";
+import request_json from "../../utils/Network";
+import API from "../../utils/APIList";
+
+const IssueRelatedMerge = (props: { issueId: number; repo: number }) => {
+  // get project id
+  const params = useParams();
+  const project_id = Number(params.id);
+
+  const issueId = props.issueId;
+  const [relatedMerge, setRelatedMerge] = useState("-");
+  const [relatedMergeTitle, setRelatedMergeTitle] = useState("");
+
+  const mergeStore = useSelector(getMergeStore);
+
+  const reload_related_merge = async () => {
+    const association_list = await request_json(API.GET_RDTS, {
+      getParams: { repo: props.repo, type: "issue-mr", issueId: props.issueId },
+    });
+    if (association_list.code === 0) {
+      if (association_list.data.length > 0) {
+        const mr_info = await MRId2MRInfo(
+          association_list.data[0].MR,
+          mergeStore,
+          project_id
+        );
+
+        setRelatedMerge(props.repo + "-!" + mr_info.merge_id);
+        setRelatedMergeTitle(mr_info.title);
+      }
+    }
+    // console.debug("association_list", association_list);
+  };
+
+  useEffect(() => {
+    reload_related_merge();
+  }, [issueId]);
+
+  return <div title={relatedMergeTitle}>{relatedMerge}</div>;
+};
 
 const UIIssue = () => {
   const dispatcher = useDispatch();
@@ -22,6 +65,8 @@ const UIIssue = () => {
   const projectStore = useSelector(getProjectStore);
   const repoStore = useSelector(getRepoStore);
   const issueStore = useSelector(getIssueStore);
+
+  const issueMergeStore = useSelector(getMRIssueAssociationStore);
 
   // Get project_id
   const params = useParams();
@@ -89,36 +134,7 @@ const UIIssue = () => {
       ),
     },
     {
-      title: "项目缺陷解决人",
-      width: "12%",
-      ellipsis: true,
-      dataIndex: "createdBy",
-      align: "center",
-      render: (_, record) => {
-        const user = record.assigneeUserName;
-        if (record.user_assignee > 0) {
-          const find_result = userId2UserInfo(
-            record.user_assignee,
-            projectStore
-          );
-          if (find_result !== "not_found") {
-            return (
-              <div style={{}}>
-                <UIUserCardPreview
-                  projectStore={projectStore}
-                  userId={find_result.id}
-                  previewSize={30}
-                />
-                {/*<span>{"@" + find_result.name}</span>*/}
-              </div>
-            );
-          }
-        }
-        return <div style={{}}>{user}</div>;
-      },
-    },
-    {
-      title: "项目缺陷提交者",
+      title: "提交者",
       width: "12%",
       ellipsis: true,
       dataIndex: "authoredBy",
@@ -143,6 +159,52 @@ const UIIssue = () => {
           }
         }
         return <div style={{}}>{user}</div>;
+      },
+    },
+    {
+      title: "解决者",
+      width: "12%",
+      ellipsis: true,
+      dataIndex: "createdBy",
+      align: "center",
+      render: (_, record) => {
+        const user = record.assigneeUserName || "-";
+        if (record.user_assignee > 0) {
+          const find_result = userId2UserInfo(
+            record.user_assignee,
+            projectStore
+          );
+          if (find_result !== "not_found") {
+            return (
+              <div style={{}}>
+                <UIUserCardPreview
+                  projectStore={projectStore}
+                  userId={find_result.id}
+                  previewSize={30}
+                />
+                {/*<span>{"@" + find_result.name}</span>*/}
+              </div>
+            );
+          }
+        }
+        return <div style={{}}>{user}</div>;
+      },
+    },
+    {
+      title: "关联合并请求",
+      width: "15%",
+      ellipsis: true,
+      dataIndex: "Merge",
+      align: "center",
+      render: (_, record) => {
+        return <IssueRelatedMerge issueId={record.id} repo={record.repo} />;
+        // const filtered_list = JSON.parse(issueMergeStore).data.filter(
+        //   (asso: any) => asso.commit === record.id
+        // );
+        // if (filtered_list.length > 0) {
+        //   currAssociatedSRId = filtered_list[0].SR;
+        // }
+        // return <CommitRelatedSR currAssociatedSRId={currAssociatedSRId} />;
       },
     },
   ];
@@ -188,14 +250,24 @@ const UIIssue = () => {
           density: true,
           reload: false,
         }}
-        // request={() => {
-        //   return Promise.resolve({
-        //     data: tableListDataSource,
-        //     success: true,
-        //   });
-        // }}
+        request={async ({ pageSize, current }, sort, filter) => {
+          const retrieved_data = await request_json(API.GET_BUGS_PAGED, {
+            getParams: {
+              from: ((current as number) - 1) * (pageSize as number),
+              size: pageSize,
+              project: project_id,
+            },
+          });
+          console.debug(retrieved_data);
+
+          return {
+            data: retrieved_data.data.payload,
+            success: true,
+            total: retrieved_data.data.total_size,
+          };
+        }}
         defaultSize={"small"}
-        dataSource={data_source}
+        // dataSource={data_source}
         rowKey="id"
         pagination={{ position: ["bottomRight"] }}
         tableStyle={{ padding: "1rem 1rem 2rem" }}

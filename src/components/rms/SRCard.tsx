@@ -120,7 +120,7 @@ const SRCard = (props: SRCardProps) => {
   const [assoIRCardList, setAssoIRCardList] = useState([]);
   const [assoMRCardList, setAssoMRCardList] = useState([]);
   const [assoIssueCardList, setAssoIssueCardList] = useState([]);
-  const [assoCommitList, setAssoCommitList] = useState([]);
+  const [assoCommitList, setAssoCommitList] = useState<any>([]);
   const [assoIterList, setAssoIterList] = useState([]);
   const [assoService, setAssoService] = useState([]);
   // 关联 service 的附带状态
@@ -128,13 +128,13 @@ const SRCard = (props: SRCardProps) => {
   const [modal, setModal] = useState(false);
 
   // 更新打开的 modal 对应的 SR 的所有关系
-  const updateAssociation = () => {
+  const updateAssociation = async () => {
     Promise.all([
       getRDTSInfo(dispatcher, props.project),
       getSRListInfo(dispatcher, props.project),
       updateProjectInfo(dispatcher, props.project),
       getSRChangeLogInfo(dispatcher, props.project, props.id),
-    ]).then((data) => {
+    ]).then(async (data) => {
       /*
         data[0][0]: issue
         data[0][1]: commit
@@ -146,7 +146,8 @@ const SRCard = (props: SRCardProps) => {
         data[2]: ProjectInfo
         data[3]: SRChangeLogInfo
       */
-      const assoCommitListData = oneSR2AllCommit(
+      console.debug(data);
+      const assoCommitListData: any[] = await oneSR2AllCommit(
         props.id,
         JSON.stringify(data[0][5]),
         JSON.stringify(data[0][1])
@@ -156,10 +157,11 @@ const SRCard = (props: SRCardProps) => {
           commit_1.createdAt - commit_2.createdAt
       );
       setAssoCommitList(assoCommitListData);
-      const assoIssueListData = SR2Issue(
+      const assoIssueListData = await SR2Issue(
         props.id,
         JSON.stringify(data[0][4]),
-        JSON.stringify(data[0][0])
+        JSON.stringify(data[0][0]),
+        props.project
       );
       const newAssoIssueList: any = [];
       assoIssueListData.forEach((value: any) => {
@@ -170,10 +172,11 @@ const SRCard = (props: SRCardProps) => {
         }
       });
       setAssoIssueCardList(newAssoIssueList);
-      const assoMRListData = oneSR2AllMR(
+      const assoMRListData = await oneSR2AllMR(
         props.id,
         JSON.stringify(data[0][3]),
-        JSON.stringify(data[0][2])
+        JSON.stringify(data[0][2]),
+        props.project
       );
       const newAssoMRCardList: any = [];
       assoMRListData.forEach((value: MergeRequestProps) => {
@@ -324,11 +327,13 @@ const SRCard = (props: SRCardProps) => {
       userInfo = data.data.users.filter(
         (user: any) => user.id === props.chargedBy
       )[0];
-      const chargedByAvatar =
-        userInfo.avatar.length < 5
-          ? `https://www.gravatar.com/avatar/${CryptoJS.MD5(userInfo.email)}`
-          : userInfo.avatar;
-      setChargedByAvatar(chargedByAvatar);
+      if (userInfo !== undefined) {
+        const chargedByAvatar =
+          userInfo.avatar.length < 5
+            ? `https://www.gravatar.com/avatar/${CryptoJS.MD5(userInfo.email)}`
+            : userInfo.avatar;
+        setChargedByAvatar(chargedByAvatar);
+      }
     });
   }, []);
 
@@ -406,7 +411,7 @@ const SRCard = (props: SRCardProps) => {
       <Menu.Item key="未开始">未开始</Menu.Item>
       <Menu.Item key="开发中">开发中</Menu.Item>
       <Menu.Item key="测试中">测试中</Menu.Item>
-      <Menu.Item key="已完成">已完成</Menu.Item>
+      <Menu.Item key="已完成">已交付</Menu.Item>
     </Menu>
   );
 
@@ -494,7 +499,7 @@ const SRCard = (props: SRCardProps) => {
               <Select.Option value="未开始">未开始</Select.Option>
               <Select.Option value="开发中">开发中</Select.Option>
               <Select.Option value="测试中">测试中</Select.Option>
-              <Select.Option value="已完成">已完成</Select.Option>
+              <Select.Option value="已完成">已交付</Select.Option>
             </Select>
           </div>
           <div className="SRModal-header-right"></div>

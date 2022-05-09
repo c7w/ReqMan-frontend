@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import type { ProColumns } from "@ant-design/pro-table";
 import ProTable from "@ant-design/pro-table";
-import { Input, Button, Modal, Progress, Popconfirm } from "antd";
+import { Input, Button, Modal, Progress, Popconfirm, Typography } from "antd";
 import { IRCardProps, IRSRAssociation } from "../../store/ConfigureStore";
 import "./UIIRList.css";
 import SRList from "./UISRList";
@@ -29,45 +29,58 @@ interface UIIRListProps {
 }
 
 const UIIRList = (props: UIIRListProps) => {
+  console.debug("UIIRList ");
   const IRListData = JSON.parse(props.IRListStr).data;
   const IRSRAssociationData = JSON.parse(props.IRSRAssociation).data;
   const dispatcher = useDispatch();
   const project = props.project_id;
-  const dataIRList: IRCardProps[] = [];
+  const [dataIRList, setDataIRList] = useState<any[]>([]);
   const projectInfo = useSelector(getProjectStore);
+  const [reload, setReload] = useState(0);
 
-  IRListData.forEach((value: IRCardProps) => {
-    const user = userId2UserInfo(Number(value.createdBy), projectInfo);
-    // calculate the IR Progress
-    const curSRKey: number[] = [];
-    IRSRAssociationData.forEach((value0: IRSRAssociation) => {
-      if (value0.IR === value.id) {
-        curSRKey.push(value0.SR);
+  const reload_dataIRList = async () => {
+    const dataIRList = [];
+    for (const value of IRListData) {
+      const user = userId2UserInfo(Number(value.createdBy), projectInfo);
+      // calculate the IR Progress
+      const curSRKey: number[] = [];
+      IRSRAssociationData.forEach((value0: IRSRAssociation) => {
+        if (value0.IR === value.id) {
+          curSRKey.push(value0.SR);
+        }
+      });
+      let totalWeight = 0;
+      let curWeight = 0;
+      for (const value1 of curSRKey) {
+        // TODO: change to async
+        const SRInfo = await SRId2SRInfo(value1, props.SRListStr, project);
+        totalWeight += SRInfo.priority;
+        if (SRInfo.state === "Done") {
+          curWeight += SRInfo.priority;
+        }
       }
-    });
-    let totalWeight = 0;
-    let curWeight = 0;
-    curSRKey.forEach((value1: number) => {
-      const SRInfo = SRId2SRInfo(value1, props.SRListStr);
-      totalWeight += SRInfo.priority;
-      if (SRInfo.state === "Done") {
-        curWeight += SRInfo.priority;
-      }
-    });
-    const curProgress = 0 | ((curWeight * 100) / totalWeight);
-    dataIRList.push({
-      id: value.id,
-      project: value.project,
-      title: value.title,
-      description: value.description,
-      rank: value.rank,
-      createdBy: user.id,
-      createdAt: value.createdAt * 1000,
-      disabled: value.disabled,
-      progress: curProgress,
-      iter: [],
-    });
-  });
+      const curProgress = 0 | ((curWeight * 100) / totalWeight);
+      dataIRList.push({
+        id: value.id,
+        project: value.project,
+        title: value.title,
+        description: value.description,
+        rank: value.rank,
+        createdBy: user.id,
+        createdAt: value.createdAt * 1000,
+        disabled: value.disabled,
+        progress: curProgress,
+        iter: [],
+      });
+    }
+    setDataIRList(dataIRList);
+    console.debug("UIIRList reloaded");
+  };
+
+  useEffect(() => {
+    reload_dataIRList();
+  }, [reload, props.IRListStr]);
+
   const [isEditModalVisible, setIsEditModalVisible] = useState<boolean>(false);
   const [isCreateModalVisible, setIsCreateModalVisible] =
     useState<boolean>(false);
@@ -91,6 +104,7 @@ const UIIRList = (props: UIIRListProps) => {
     // setTimeout(() => window.location.reload(), 1000);
     ToastMessage("success", "关联成功", "您的需求关联成功");
     setIsSRModalVisible(false);
+    setReload(reload + 1);
   };
 
   const handleSRCancel = () => {
@@ -130,6 +144,7 @@ const UIIRList = (props: UIIRListProps) => {
         setDesc("");
         setRank(1);
         setIsEditModalVisible(false);
+        setReload(reload + 1);
       } else {
         ToastMessage("error", "修改失败", "您的原始需求修改失败");
       }
@@ -173,6 +188,7 @@ const UIIRList = (props: UIIRListProps) => {
         setDesc("");
         setRank(1);
         setIsCreateModalVisible(false);
+        setReload(reload + 1);
       } else {
         ToastMessage("error", "创建失败", "您的原始需求创建失败");
       }
@@ -216,6 +232,7 @@ const UIIRList = (props: UIIRListProps) => {
 
   const handleCardOk = () => {
     setIsCardModalVisible(false);
+    setReload(reload + 1);
   };
 
   const columns: ProColumns<IRCardProps>[] = [
@@ -236,7 +253,7 @@ const UIIRList = (props: UIIRListProps) => {
           }}
           onClick={() => showCardModal(record)}
         >
-          {record.title}
+          <Typography.Link>{record.title}</Typography.Link>
         </div>
       ),
     },
@@ -323,6 +340,8 @@ const UIIRList = (props: UIIRListProps) => {
   for (let i = 0; i < 5; i += 1) {
     onlyShowColumn.push(columns[i]);
   }
+
+  console.debug(dataIRList);
 
   if (!props.onlyShow) {
     return (

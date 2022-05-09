@@ -35,12 +35,7 @@ import {
   getIRSRStore,
   getSRListStore,
 } from "../../store/slices/IRSRSlice";
-import {
-  IR2Iteration,
-  oneIR2AllSR,
-  oneSR2AllIR,
-  SRId2SRInfo,
-} from "../../utils/Association";
+import { IR2Iteration, oneIR2AllSR } from "../../utils/Association";
 import {
   getIRIterationStore,
   getIterationStore,
@@ -119,7 +114,7 @@ const IRCard = (props: IRCardProps) => {
   }, []);
 
   // 更新打开的 modal 对应的 SR 的所有关系
-  const updateAssociation = () => {
+  const updateAssociation = async () => {
     Promise.all([
       getIRSRInfo(dispatcher, props.project),
       getSRListInfo(dispatcher, props.project),
@@ -127,11 +122,12 @@ const IRCard = (props: IRCardProps) => {
       getIterationInfo(dispatcher, props.project),
       updateProjectInfo(dispatcher, props.project),
       getUserSRInfo(dispatcher, props.project),
-    ]).then((data: any) => {
-      const assoSRListData = oneIR2AllSR(
+    ]).then(async (data: any) => {
+      const assoSRListData = await oneIR2AllSR(
         props.id,
         JSON.stringify(data[0]),
-        JSON.stringify(data[1])
+        JSON.stringify(data[1]),
+        props.project
       );
       // to do: iteration card
       const assoIterData = IR2Iteration(
@@ -194,7 +190,7 @@ const IRCard = (props: IRCardProps) => {
       });
       setAssoIterList(newAssoIterList);
       const newAssoSRCardList: any = [];
-      console.log(assoSRListData);
+      // console.log(assoSRListData);
       // const assoSRIdList = data[5].data
       //   .map((asso: any) => {
       //     if (asso.user === userInfo.user.id) return asso.sr;

@@ -22,7 +22,7 @@ interface SRCardProps {
   readonly description: string; // description
   readonly priority: number; // the priority which indicates the importance of the SR
   readonly rank?: number;
-  readonly currState: string; // "TODO", "WIP", "Reviewing", "Done"
+  readonly currState: string;
   readonly stateColor?: string;
   readonly createdBy?: string; // somebody
   readonly createdAt?: number; // sometime
@@ -37,7 +37,7 @@ interface SRChangelog {
   readonly project: number;
   readonly SRId: number;
   readonly description: string;
-  readonly formerState: string; // "TODO", "WIP", "Reviewing", "Done"
+  readonly formerState: string;
   readonly formerDescription: string;
   readonly changedBy: number;
   readonly changedAt: number;

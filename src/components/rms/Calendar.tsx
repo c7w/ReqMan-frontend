@@ -80,8 +80,9 @@ const Calendar = (props: CalendarProps) => {
             if (asso.user === userData.user.id) return asso.sr;
           })
           .filter((asso: any) => asso);
+        // TODO: change to async
         const assoSRList = assoSRIdList.map((sr_id: string) =>
-          SRId2SRInfo(Number(sr_id), JSON.stringify(data[0]))
+          SRId2SRInfo(Number(sr_id), JSON.stringify(data[0]), project_id)
         );
         // console.log(assoSRList);
         const todo_arr = todoSR(

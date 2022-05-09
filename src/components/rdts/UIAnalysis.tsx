@@ -45,6 +45,14 @@ const UIAnalysis = () => {
   const mergeStore = useSelector(getMergeStore);
   const commitStore = useSelector(getCommitStore);
 
+  // const [MRReviewList, setMRReviewList] = useState({ data: [] });
+
+  const [iter_issue_sr_list, set_iter_issue_sr_list] = useState({
+    iterations: Array<string>(),
+    all_sr_count: Array<number>(),
+    issues: Array<number>(),
+  });
+
   const [reload, setReload] = useState(0);
 
   const dispatcher = useDispatch();
@@ -92,44 +100,94 @@ const UIAnalysis = () => {
     });
   }, [reload]);
 
-  if (recentSeven === "" || overall === "") {
-    return <Loading />;
-  }
+  const load_iter_issue_sr = async () => {
+    const iter_issue_sr_list = {
+      iterations: Array<string>(),
+      all_sr_count: Array<number>(),
+      issues: Array<number>(),
+    };
+    // 所有 iteration id
+    const iterationList = JSON.parse(iterationStore).data.map((value: any) => {
+      return {
+        id: value.id,
+        title: value.title,
+      };
+    });
+    for (const iteration of iterationList) {
+      // 该 iteration 对应的所有 SR 信息
+      const assoSRList = await Iteration2SR(
+        iteration.id,
+        SRIterationStore,
+        SRListStore,
+        project_id
+      );
+      // console.log(assoSRList);
+      iter_issue_sr_list.iterations.push(iteration.title);
+      iter_issue_sr_list.all_sr_count.push(assoSRList.length);
+      let counter = 0;
+      for (const sr of assoSRList) {
+        const issue = await SR2Issue(
+          sr.id,
+          issueSRStore,
+          issueStore,
+          project_id
+        );
+        if (issue.length > 0 && issue[0] !== "not found") counter++;
+      }
+      iter_issue_sr_list.issues.push(counter);
+    }
+    set_iter_issue_sr_list(iter_issue_sr_list);
+    // console.log(iter_issue_sr_list);
+  };
 
-  let active_list_7 = [];
+  useEffect(() => {
+    load_iter_issue_sr();
+  }, []);
+
+  // if (recentSeven === "" || overall === "") {
+  //   return <Loading />;
+  // }
+
+  let active_list_7: { user: any; mr: any; line: any }[] = [];
   const issue_list_7 = [];
-  for (let i = 0; i < JSON.parse(recentSeven).data.length; ++i) {
-    active_list_7.push({
-      user: JSON.parse(projectStore).data.users[i],
-      mr: JSON.parse(recentSeven).data[i].mr_count,
-      line: JSON.parse(recentSeven).data[i].lines,
-    });
-    issue_list_7.push({
-      user: JSON.parse(projectStore).data.users[i],
-      time: JSON.parse(recentSeven).data[i].issue_times,
-    });
-  }
 
-  let active_list_all = [];
+  let active_list_all: { user: any; mr: any; line: any }[] = [];
   const issue_list_all = [];
-  for (let i = 0; i < JSON.parse(recentSeven).data.length; ++i) {
-    active_list_all.push({
-      user: JSON.parse(projectStore).data.users[i],
-      mr: JSON.parse(overall).data[i].mr_count,
-      line: JSON.parse(overall).data[i].lines,
-    });
-    issue_list_all.push({
-      user: JSON.parse(projectStore).data.users[i],
-      time: JSON.parse(overall).data[i].issue_times,
-    });
-  }
+
   // filter 掉贡献为 0 的
-  active_list_7 = active_list_7.filter(
-    (active: any) => active.mr !== 0 || active.line !== 0
-  );
-  active_list_all = active_list_all.filter(
-    (active: any) => active.mr !== 0 || active.line !== 0
-  );
+
+  if (recentSeven !== "" && overall !== "") {
+    for (let i = 0; i < JSON.parse(recentSeven).data.length; ++i) {
+      active_list_7.push({
+        user: JSON.parse(projectStore).data.users[i],
+        mr: JSON.parse(recentSeven).data[i].mr_count,
+        line: JSON.parse(recentSeven).data[i].lines,
+      });
+      issue_list_7.push({
+        user: JSON.parse(projectStore).data.users[i],
+        time: JSON.parse(recentSeven).data[i].issue_times,
+      });
+    }
+
+    for (let i = 0; i < JSON.parse(recentSeven).data.length; ++i) {
+      active_list_all.push({
+        user: JSON.parse(projectStore).data.users[i],
+        mr: JSON.parse(overall).data[i].mr_count,
+        line: JSON.parse(overall).data[i].lines,
+      });
+      issue_list_all.push({
+        user: JSON.parse(projectStore).data.users[i],
+        time: JSON.parse(overall).data[i].issue_times,
+      });
+    }
+
+    active_list_7 = active_list_7.filter(
+      (active: any) => active.mr !== 0 || active.line !== 0
+    );
+    active_list_all = active_list_all.filter(
+      (active: any) => active.mr !== 0 || active.line !== 0
+    );
+  }
 
   // 先获得该项目下的所有 iteration ok
   // 再获得该项目下的所有 repo ok
@@ -137,46 +195,8 @@ const UIAnalysis = () => {
   // 再根据 sr-iteration 关系，对每个 iteration，查询其对应哪些 sr，需要 utils::Iteration2SR
   // 再根据已得到的 issue-sr，对上述每个 iteration 的每个 sr，需要 utils::SR2Issue
   // 查询有没有 issue 跟它对应，有就计数器 + 1
-  const iter_issue_sr_list = {
-    iterations: Array<string>(),
-    all_sr_count: Array<number>(),
-    issues: Array<number>(),
-  };
-  // 所有 iteration id
-  const iterationList = JSON.parse(iterationStore).data.map((value: any) => {
-    return {
-      id: value.id,
-      title: value.title,
-    };
-  });
-  iterationList.forEach((iteration: any) => {
-    // 该 iteration 对应的所有 SR 信息
-    const assoSRList = Iteration2SR(
-      iteration.id,
-      SRIterationStore,
-      SRListStore
-    );
-    // console.log(assoSRList);
-    iter_issue_sr_list.iterations.push(iteration.title);
-    iter_issue_sr_list.all_sr_count.push(assoSRList.length);
-    let counter = 0;
-    assoSRList.forEach((sr: any) => {
-      const issue = SR2Issue(sr.id, issueSRStore, issueStore);
-      if (issue.length > 0 && issue[0] !== "not found") counter++;
-    });
-    iter_issue_sr_list.issues.push(counter);
-  });
-  // console.log(iter_issue_sr_list);
 
   // put in all the MRs get from an repo
-  const MRReviewList = {
-    data: Array<any>(),
-  };
-  JSON.parse(mergeStore).data.forEach((mr: any) => {
-    MRReviewList.data.push({
-      authoredAt: mr.authoredAt,
-    });
-  });
 
   // console.log(JSON.parse(commitStore));
 
@@ -259,15 +279,16 @@ const UIAnalysis = () => {
         <Tabs.TabPane tab="项目 Commit 时间轴" key="2">
           <CommitFigure title={"Commit数量统计表"} text={overall} />
         </Tabs.TabPane>
-        <Tabs.TabPane tab="项目 Merge Request 时间轴" key="3">
-          <MRTimeFigure
-            text={JSON.stringify(MRReviewList)}
-            title={"MR数量统计表"}
-          />
-        </Tabs.TabPane>{" "}
-        <Tabs.TabPane tab="代码变化行数分段计数" key="4">
-          <LinesChanged text={commitStore} title={"代码变化行数分段计数"} />
-        </Tabs.TabPane>
+        {/*TODO: These two figures crashed!!!*/}
+        {/*<Tabs.TabPane tab="项目 Merge Request 时间轴" key="3">*/}
+        {/*  <MRTimeFigure*/}
+        {/*    text={JSON.stringify(MRReviewList)}*/}
+        {/*    title={"MR数量统计表"}*/}
+        {/*  />*/}
+        {/*</Tabs.TabPane>{" "}*/}
+        {/*<Tabs.TabPane tab="代码变化行数分段计数" key="4">*/}
+        {/*  <LinesChanged text={commitStore} title={"代码变化行数分段计数"} />*/}
+        {/*</Tabs.TabPane>*/}
       </Tabs>
       <Tabs
         defaultActiveKey="1"

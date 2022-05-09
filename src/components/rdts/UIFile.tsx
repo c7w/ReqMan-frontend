@@ -209,7 +209,6 @@ const UIFile = () => {
         }
       });
 
-      // TODO: Return Loading
       return (
         <div className={"personal-setting-container"}>
           <Loading />
@@ -227,7 +226,6 @@ const UIFile = () => {
       });
     }
   } else if (pathname.length >= 3) {
-    // TODO: Tree, repo_id, branch_name, file_path
     if (pathname.length === 3) {
       pathname.push("/");
     }
@@ -254,7 +252,6 @@ const UIFile = () => {
         }
       });
 
-      // TODO: Return Loading
       return (
         <div className={"personal-setting-container"}>
           <Loading />

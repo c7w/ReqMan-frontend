@@ -20,6 +20,36 @@ import { getRDTSInfo } from "../../store/functions/RDTS";
 import { useParams } from "react-router-dom";
 import { ReloadOutlined, SyncOutlined } from "@ant-design/icons";
 import { UIUserCardPreview } from "../ums/UIUserCard";
+import request_json from "../../utils/Network";
+import API from "../../utils/APIList";
+
+const MergeRelatedSR = (props: { currAssociatedSRId: number }) => {
+  const currAssociatedSRId = props.currAssociatedSRId;
+
+  // get project id
+  const params = useParams<"id">();
+  const project_id = Number(params.id);
+
+  const SRListStore = useSelector(getSRListStore);
+
+  const [related, setRelated] = useState("-");
+
+  const resetRelated = async () => {
+    if (currAssociatedSRId > 0) {
+      setRelated(
+        (await SRId2SRInfo(currAssociatedSRId, SRListStore, project_id)).title
+      );
+    } else {
+      setRelated("-");
+    }
+  };
+
+  useEffect(() => {
+    resetRelated();
+  }, [currAssociatedSRId]);
+
+  return <div style={{}}>{related}</div>;
+};
 
 const UIMerge = () => {
   const dispatcher = useDispatch();
@@ -132,6 +162,35 @@ const UIMerge = () => {
       },
     },
     {
+      title: "合并请求合入者",
+      width: "15%",
+      ellipsis: true,
+      dataIndex: "mergedBy",
+      align: "center",
+      render: (_, record) => {
+        const user = record.reviewedByUserName || "-";
+        if (record.user_reviewed > 0) {
+          const find_result = userId2UserInfo(
+            record.user_reviewed,
+            projectStore
+          );
+          if (find_result !== "not_found") {
+            return (
+              <div style={{}}>
+                <UIUserCardPreview
+                  projectStore={projectStore}
+                  userId={find_result.id}
+                  previewSize={30}
+                />
+                {/*<span>{"@" + find_result.name}</span>*/}
+              </div>
+            );
+          }
+        }
+        return <div style={{}}>{user}</div>;
+      },
+    },
+    {
       title: "关联功能需求",
       width: "15%",
       ellipsis: true,
@@ -146,12 +205,7 @@ const UIMerge = () => {
         if (filtered_list.length > 0) {
           currAssociatedSRId = filtered_list[0].SR;
         }
-        const related =
-          currAssociatedSRId <= 0
-            ? "-"
-            : SRId2SRInfo(currAssociatedSRId, SRListStore).title;
-
-        return <div style={{}}>{related}</div>;
+        return <MergeRelatedSR currAssociatedSRId={currAssociatedSRId} />;
       },
     },
   ];
@@ -204,8 +258,24 @@ const UIMerge = () => {
         //   });
         // }}
         defaultSize={"small"}
-        dataSource={data_source}
+        // dataSource={data_source}
         rowKey="id"
+        request={async ({ pageSize, current }, sort, filter) => {
+          const retrieved_data = await request_json(API.GET_MERGES_PAGED, {
+            getParams: {
+              from: ((current as number) - 1) * (pageSize as number),
+              size: pageSize,
+              project: project_id,
+            },
+          });
+          console.debug(retrieved_data);
+
+          return {
+            data: retrieved_data.data.payload,
+            success: true,
+            total: retrieved_data.data.total_size,
+          };
+        }}
         pagination={{ position: ["bottomRight"] }}
         tableStyle={{ padding: "1rem 1rem 2rem" }}
         dateFormatter="string"
