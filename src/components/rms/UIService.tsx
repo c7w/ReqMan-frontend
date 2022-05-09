@@ -38,7 +38,10 @@ export const ProjectServiceCard = (props: ProjectServiceCardProps) => {
   const serviceSRStore = useSelector(getSRServiceStore);
   const SRListStore = useSelector(getSRListStore);
 
-  const getPercentage = (service_id: number) => {
+  const [percentage, setPercentage] = useState(0);
+  const [successPercentage, setSuccessPercentage] = useState(0);
+
+  const getPercentage = async (service_id: number) => {
     let now = 0;
     let all = 0;
     (await Service2SR(service_id, serviceSRStore, SRListStore)).forEach(
@@ -49,20 +52,29 @@ export const ProjectServiceCard = (props: ProjectServiceCardProps) => {
         }
       }
     );
-    return all === 0 ? 0 : Number(((now / all) * 100).toFixed(1));
+    setPercentage(all === 0 ? 0 : Number(((now / all) * 100).toFixed(1)));
   };
 
-  const getSuccessPercentage = (service_id: number) => {
+  const getSuccessPercentage = async (service_id: number) => {
     let now = 0;
     let all = 0;
-    Service2SR(service_id, serviceSRStore, SRListStore).forEach((sr: any) => {
-      all += sr.priority;
-      if (sr.state === "Done") {
-        now += sr.priority;
+    (await Service2SR(service_id, serviceSRStore, SRListStore)).forEach(
+      (sr: any) => {
+        all += sr.priority;
+        if (sr.state === "Done") {
+          now += sr.priority;
+        }
       }
-    });
-    return all === 0 ? 0 : Number(((now / all) * 100).toFixed(1));
+    );
+    setSuccessPercentage(
+      all === 0 ? 0 : Number(((now / all) * 100).toFixed(1))
+    );
   };
+
+  useEffect(() => {
+    getPercentage(data.id);
+    getSuccessPercentage(data.id);
+  }, []);
 
   return (
     <div className={"service-card"} onClick={() => props.modal(props.data)}>
@@ -89,8 +101,8 @@ export const ProjectServiceCard = (props: ProjectServiceCardProps) => {
       <div className={"service-row"}>
         <span className={"service-label"}>开发进度</span>&nbsp;&nbsp;
         <Progress
-          percent={getPercentage(data.id)}
-          success={{ percent: getSuccessPercentage(data.id) }}
+          percent={percentage}
+          success={{ percent: successPercentage }}
           style={{ width: "70%" }}
         />
       </div>
