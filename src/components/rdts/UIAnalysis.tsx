@@ -45,6 +45,12 @@ const UIAnalysis = () => {
   const mergeStore = useSelector(getMergeStore);
   const commitStore = useSelector(getCommitStore);
 
+  const [iter_issue_sr_list, set_iter_issue_sr_list] = useState({
+    iterations: Array<string>(),
+    all_sr_count: Array<number>(),
+    issues: Array<number>(),
+  });
+
   const [reload, setReload] = useState(0);
 
   const dispatcher = useDispatch();
@@ -92,6 +98,10 @@ const UIAnalysis = () => {
     });
   }, [reload]);
 
+  useEffect(() => {
+    load_iter_issue_sr();
+  }, []);
+
   if (recentSeven === "" || overall === "") {
     return <Loading />;
   }
@@ -137,36 +147,39 @@ const UIAnalysis = () => {
   // 再根据 sr-iteration 关系，对每个 iteration，查询其对应哪些 sr，需要 utils::Iteration2SR
   // 再根据已得到的 issue-sr，对上述每个 iteration 的每个 sr，需要 utils::SR2Issue
   // 查询有没有 issue 跟它对应，有就计数器 + 1
-  const iter_issue_sr_list = {
-    iterations: Array<string>(),
-    all_sr_count: Array<number>(),
-    issues: Array<number>(),
-  };
-  // 所有 iteration id
-  const iterationList = JSON.parse(iterationStore).data.map((value: any) => {
-    return {
-      id: value.id,
-      title: value.title,
+  const load_iter_issue_sr = async () => {
+    const iter_issue_sr_list = {
+      iterations: Array<string>(),
+      all_sr_count: Array<number>(),
+      issues: Array<number>(),
     };
-  });
-  iterationList.forEach((iteration: any) => {
-    // 该 iteration 对应的所有 SR 信息
-    const assoSRList = Iteration2SR(
-      iteration.id,
-      SRIterationStore,
-      SRListStore
-    );
-    // console.log(assoSRList);
-    iter_issue_sr_list.iterations.push(iteration.title);
-    iter_issue_sr_list.all_sr_count.push(assoSRList.length);
-    let counter = 0;
-    assoSRList.forEach((sr: any) => {
-      const issue = SR2Issue(sr.id, issueSRStore, issueStore);
-      if (issue.length > 0 && issue[0] !== "not found") counter++;
+    // 所有 iteration id
+    const iterationList = JSON.parse(iterationStore).data.map((value: any) => {
+      return {
+        id: value.id,
+        title: value.title,
+      };
     });
-    iter_issue_sr_list.issues.push(counter);
-  });
-  // console.log(iter_issue_sr_list);
+    for (const iteration of iterationList) {
+      // 该 iteration 对应的所有 SR 信息
+      const assoSRList = await Iteration2SR(
+        iteration.id,
+        SRIterationStore,
+        SRListStore
+      );
+      // console.log(assoSRList);
+      iter_issue_sr_list.iterations.push(iteration.title);
+      iter_issue_sr_list.all_sr_count.push(assoSRList.length);
+      let counter = 0;
+      for (const sr of assoSRList) {
+        const issue = await SR2Issue(sr.id, issueSRStore, issueStore);
+        if (issue.length > 0 && issue[0] !== "not found") counter++;
+      }
+      iter_issue_sr_list.issues.push(counter);
+    }
+    set_iter_issue_sr_list(iter_issue_sr_list);
+    // console.log(iter_issue_sr_list);
+  };
 
   // put in all the MRs get from an repo
   const MRReviewList = {
