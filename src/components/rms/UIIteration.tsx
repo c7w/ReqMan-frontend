@@ -717,13 +717,121 @@ const UIIteration = () => {
                 </div>
               </Tabs.TabPane>
               <Tabs.TabPane tab="开发中" key="2">
-                Content of Tab Pane 1
+                <div
+                  style={{
+                    display: "flex",
+                    margin: "1rem auto",
+                    flexDirection: "row",
+                    flexWrap: "wrap",
+                    justifyContent: "space-evenly",
+                    width: "95%",
+                  }}
+                >
+                  {currSR.WIP.length <= 0 ? (
+                    <Empty description={"暂无开发中的需求"} />
+                  ) : (
+                    currSR.WIP.map((sr: any) => (
+                      <SRCard
+                        id={sr.id}
+                        project={sr.project}
+                        title={sr.title}
+                        description={sr.description}
+                        priority={sr.priority}
+                        currState={sr.state}
+                        createdAt={sr.createdAt}
+                        createdBy={sr.createdBy}
+                        iter={[curr_iter]}
+                        chargedBy={
+                          SR2ChargedUser(sr.id, userSRStore, projectStore)[0]
+                            ?.id
+                        }
+                        service={SR2Service(
+                          sr.id,
+                          SRServiceStore,
+                          serviceStore
+                        )}
+                      />
+                    ))
+                  )}
+                </div>
               </Tabs.TabPane>
               <Tabs.TabPane tab="测试中" key="3">
-                Content of Tab Pane 1
+                <div
+                  style={{
+                    display: "flex",
+                    margin: "1rem auto",
+                    flexDirection: "row",
+                    flexWrap: "wrap",
+                    justifyContent: "space-evenly",
+                    width: "95%",
+                  }}
+                >
+                  {currSR.Reviewing.length <= 0 ? (
+                    <Empty description={"暂无测试中的需求"} />
+                  ) : (
+                    currSR.Reviewing.map((sr: any) => (
+                      <SRCard
+                        id={sr.id}
+                        project={sr.project}
+                        title={sr.title}
+                        description={sr.description}
+                        priority={sr.priority}
+                        currState={sr.state}
+                        createdAt={sr.createdAt}
+                        createdBy={sr.createdBy}
+                        iter={[curr_iter]}
+                        chargedBy={
+                          SR2ChargedUser(sr.id, userSRStore, projectStore)[0]
+                            ?.id
+                        }
+                        service={SR2Service(
+                          sr.id,
+                          SRServiceStore,
+                          serviceStore
+                        )}
+                      />
+                    ))
+                  )}
+                </div>
               </Tabs.TabPane>
               <Tabs.TabPane tab="已交付" key="4">
-                Content of Tab Pane 1
+                <div
+                  style={{
+                    display: "flex",
+                    margin: "1rem auto",
+                    flexDirection: "row",
+                    flexWrap: "wrap",
+                    justifyContent: "space-evenly",
+                    width: "95%",
+                  }}
+                >
+                  {currSR.Done.length <= 0 ? (
+                    <Empty description={"暂无已交付的需求"} />
+                  ) : (
+                    currSR.Done.map((sr: any) => (
+                      <SRCard
+                        id={sr.id}
+                        project={sr.project}
+                        title={sr.title}
+                        description={sr.description}
+                        priority={sr.priority}
+                        currState={sr.state}
+                        createdAt={sr.createdAt}
+                        createdBy={sr.createdBy}
+                        iter={[curr_iter]}
+                        chargedBy={
+                          SR2ChargedUser(sr.id, userSRStore, projectStore)[0]
+                            ?.id
+                        }
+                        service={SR2Service(
+                          sr.id,
+                          SRServiceStore,
+                          serviceStore
+                        )}
+                      />
+                    ))
+                  )}
+                </div>
               </Tabs.TabPane>
             </Tabs>
           </div>
