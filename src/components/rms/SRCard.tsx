@@ -128,13 +128,13 @@ const SRCard = (props: SRCardProps) => {
   const [modal, setModal] = useState(false);
 
   // 更新打开的 modal 对应的 SR 的所有关系
-  const updateAssociation = () => {
+  const updateAssociation = async () => {
     Promise.all([
       getRDTSInfo(dispatcher, props.project),
       getSRListInfo(dispatcher, props.project),
       updateProjectInfo(dispatcher, props.project),
       getSRChangeLogInfo(dispatcher, props.project, props.id),
-    ]).then((data) => {
+    ]).then(async (data) => {
       /*
         data[0][0]: issue
         data[0][1]: commit
@@ -146,7 +146,7 @@ const SRCard = (props: SRCardProps) => {
         data[2]: ProjectInfo
         data[3]: SRChangeLogInfo
       */
-      const assoCommitListData = oneSR2AllCommit(
+      const assoCommitListData = await oneSR2AllCommit(
         props.id,
         JSON.stringify(data[0][5]),
         JSON.stringify(data[0][1])
@@ -156,7 +156,7 @@ const SRCard = (props: SRCardProps) => {
           commit_1.createdAt - commit_2.createdAt
       );
       setAssoCommitList(assoCommitListData);
-      const assoIssueListData = SR2Issue(
+      const assoIssueListData = await SR2Issue(
         props.id,
         JSON.stringify(data[0][4]),
         JSON.stringify(data[0][0])
@@ -170,7 +170,7 @@ const SRCard = (props: SRCardProps) => {
         }
       });
       setAssoIssueCardList(newAssoIssueList);
-      const assoMRListData = oneSR2AllMR(
+      const assoMRListData = await oneSR2AllMR(
         props.id,
         JSON.stringify(data[0][3]),
         JSON.stringify(data[0][2])
