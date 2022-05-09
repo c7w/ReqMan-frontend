@@ -29,6 +29,7 @@ interface UIIRListProps {
 }
 
 const UIIRList = (props: UIIRListProps) => {
+  console.debug("UIIRList ");
   const IRListData = JSON.parse(props.IRListStr).data;
   const IRSRAssociationData = JSON.parse(props.IRSRAssociation).data;
   const dispatcher = useDispatch();
@@ -73,11 +74,12 @@ const UIIRList = (props: UIIRListProps) => {
       });
     }
     setDataIRList(dataIRList);
+    console.debug("UIIRList reloaded");
   };
 
   useEffect(() => {
     reload_dataIRList();
-  }, [IRListData, IRSRAssociationData, reload]);
+  }, [reload, props.IRListStr]);
 
   const [isEditModalVisible, setIsEditModalVisible] = useState<boolean>(false);
   const [isCreateModalVisible, setIsCreateModalVisible] =
@@ -102,6 +104,7 @@ const UIIRList = (props: UIIRListProps) => {
     // setTimeout(() => window.location.reload(), 1000);
     ToastMessage("success", "关联成功", "您的需求关联成功");
     setIsSRModalVisible(false);
+    setReload(reload + 1);
   };
 
   const handleSRCancel = () => {
@@ -141,6 +144,7 @@ const UIIRList = (props: UIIRListProps) => {
         setDesc("");
         setRank(1);
         setIsEditModalVisible(false);
+        setReload(reload + 1);
       } else {
         ToastMessage("error", "修改失败", "您的原始需求修改失败");
       }
@@ -184,6 +188,7 @@ const UIIRList = (props: UIIRListProps) => {
         setDesc("");
         setRank(1);
         setIsCreateModalVisible(false);
+        setReload(reload + 1);
       } else {
         ToastMessage("error", "创建失败", "您的原始需求创建失败");
       }
@@ -227,6 +232,7 @@ const UIIRList = (props: UIIRListProps) => {
 
   const handleCardOk = () => {
     setIsCardModalVisible(false);
+    setReload(reload + 1);
   };
 
   const columns: ProColumns<IRCardProps>[] = [
@@ -334,6 +340,8 @@ const UIIRList = (props: UIIRListProps) => {
   for (let i = 0; i < 5; i += 1) {
     onlyShowColumn.push(columns[i]);
   }
+
+  console.debug(dataIRList);
 
   if (!props.onlyShow) {
     return (

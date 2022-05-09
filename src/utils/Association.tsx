@@ -93,7 +93,7 @@ const repoId2RepoInfo = (repoId: number, repoInfo: string) => {
   传入该项目的 SRList (getSRListStore 而来)（未解析）
   返回未排序
  */
-// TODO: change to async
+
 const oneIR2AllSR = async (
   IRId: number,
   IRSRAssociation: string,
@@ -108,8 +108,15 @@ const oneIR2AllSR = async (
     }
     return undefined;
   }).filter((obj: any) => obj);
-  // TODO: change to async
-  return matchedSRId.map((id: any) => SRId2SRInfo(id, SRList));
+
+  const cached_SRList = [];
+  for (let i = 0; i < matchedSRId.length; i++) {
+    const SR = await SRId2SRInfo(matchedSRId[i], SRList);
+    if (SR !== "not found") {
+      cached_SRList.push(SR);
+    }
+  }
+  return cached_SRList;
 };
 
 /*
@@ -136,14 +143,14 @@ const oneSR2AllIR = (SRId: number, IRSRAssociation: string, IRList: string) => {
 同时需要传入该项目的 SRList ( getSRListStore 而来) （未解析）
 返回未排序
  */
-// TODO: change to async
+
 const MR2SR = async (MRId: number, MRSRAsso: string, SRList: string) => {
   console.log("================ Get SR By MR ===============");
   const MRSRData = JSON.parse(MRSRAsso).data;
   console.log(MRSRData);
   const matchedSR = MRSRData.filter((obj: any) => obj.MR === MRId);
-  // TODO: change to async
-  if (matchedSR.length > 0) return SRId2SRInfo(matchedSR[0].SR, SRList);
+
+  if (matchedSR.length > 0) return await SRId2SRInfo(matchedSR[0].SR, SRList);
   return {};
 };
 
@@ -153,7 +160,6 @@ const MR2SR = async (MRId: number, MRSRAsso: string, SRList: string) => {
 同时需要传入该项目的 MRList ( getMergeStore 而来) （未解析）
 返回未排序
  */
-// TODO: change to async
 const oneSR2AllMR = async (SRId: number, SRMRAsso: string, MRList: string) => {
   // console.log("================ Get MR By SR ===============");
   const SRMRData = JSON.parse(SRMRAsso).data;
@@ -163,8 +169,13 @@ const oneSR2AllMR = async (SRId: number, SRMRAsso: string, MRList: string) => {
       return obj.MR;
     }
   }).filter((obj: any) => obj);
-  // TODO: change to async
-  return matchedMRId.map((id: any) => MRId2MRInfo(id, MRList));
+
+  const cached_mr_info = [];
+  for (let i = 0; i < matchedMRId.length; i++) {
+    const mr_info = await MRId2MRInfo(matchedMRId[i], MRList);
+    cached_mr_info.push(mr_info);
+  }
+  return cached_mr_info;
 };
 
 /*
@@ -239,7 +250,6 @@ const SR2Iteration = (
 以及传入该项目的 SRList (getSRListStore 而来)（未解析）
 返回未排序
  */
-// TODO: change to async
 const Iteration2SR = async (
   iterationId: number,
   SRIterationAsso: string,
@@ -253,12 +263,14 @@ const Iteration2SR = async (
       return obj.SR;
     }
   }).filter((obj: any) => obj);
-  return (
-    matchedSRId
-      // TODO: change to async
-      .map((id: any) => SRId2SRInfo(id, SRList))
-      .filter((obj: any) => obj !== "not found")
-  );
+
+  const cached_SR_info = [];
+  for (const id of matchedSRId) {
+    const SR_info = await SRId2SRInfo(id, SRList);
+    cached_SR_info.push(SR_info);
+  }
+
+  return cached_SR_info.filter((obj: any) => obj !== "not found");
 };
 
 /*
@@ -267,7 +279,6 @@ const Iteration2SR = async (
 同时需要传入该项目的 issueInfo (getIssueStore 而来) （未解析）
 返回未排序
  */
-// TODO: change to async
 const SR2Issue = async (
   SRId: number,
   SRIssueAsso: string,
@@ -276,10 +287,14 @@ const SR2Issue = async (
   // console.log("================ Get Issue By SR ===============");
   const SRIssueData = JSON.parse(SRIssueAsso).data;
   // console.log(SRIssueData);
-  return SRIssueData.filter((obj: any) => obj.SR === SRId).map((obj: any) =>
-    // TODO: change to async
-    issueId2IssueInfo(obj.issue, issueInfo)
-  );
+  const filtered = SRIssueData.filter((obj: any) => obj.SR === SRId);
+
+  const ret_list = [];
+
+  for (const obj of filtered) {
+    ret_list.push(await issueId2IssueInfo(obj.issue, issueInfo));
+  }
+  return ret_list;
 };
 
 /*
@@ -288,7 +303,7 @@ const SR2Issue = async (
 同时需要传入该项目的 commitInfo (getCommitStore 而来) （未解析）
 返回未排序
 */
-// TODO: change to async
+
 const oneSR2AllCommit = async (
   SRId: number,
   SRCommitAsso: string,
@@ -297,9 +312,13 @@ const oneSR2AllCommit = async (
   // console.log("================ Get Commit By SR ===============");
   const SRCommitData = JSON.parse(SRCommitAsso).data;
   // console.log(SRCommitData);
-  return SRCommitData.filter((obj: any) => obj.SR === SRId).map(
-    (obj: any) => commitId2CommitInfo(obj.commit, commitInfo) // TODO: change to async
-  );
+
+  const filtered = SRCommitData.filter((obj: any) => obj.SR === SRId);
+  const ret_list: any[] = [];
+  for (const obj of filtered) {
+    ret_list.push(await commitId2CommitInfo(obj.commit, commitInfo));
+  }
+  return ret_list;
 };
 
 /*
@@ -331,7 +350,6 @@ const SR2Service = (
 同时需要传入该项目的 SRList (getSRListStore 而来) （未解析）
 返回未排序
  */
-// TODO: change to async
 const Service2SR = async (
   serviceId: number,
   SRServiceAsso: string,
@@ -345,8 +363,13 @@ const Service2SR = async (
       return obj.SR;
     }
   }).filter((obj: any) => obj);
-  // TODO: change to async
-  return matchedSRId.map((id: any) => SRId2SRInfo(id, SRList));
+
+  const cached_SR_info = [];
+  for (const id of matchedSRId) {
+    const SR_info = await SRId2SRInfo(id, SRList);
+    cached_SR_info.push(SR_info);
+  }
+  return cached_SR_info.filter((obj: any) => obj !== "not found");
 };
 
 const SR2ChargedUser = (

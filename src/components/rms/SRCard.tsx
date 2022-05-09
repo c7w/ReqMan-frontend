@@ -120,7 +120,7 @@ const SRCard = (props: SRCardProps) => {
   const [assoIRCardList, setAssoIRCardList] = useState([]);
   const [assoMRCardList, setAssoMRCardList] = useState([]);
   const [assoIssueCardList, setAssoIssueCardList] = useState([]);
-  const [assoCommitList, setAssoCommitList] = useState([]);
+  const [assoCommitList, setAssoCommitList] = useState<any>([]);
   const [assoIterList, setAssoIterList] = useState([]);
   const [assoService, setAssoService] = useState([]);
   // 关联 service 的附带状态
@@ -146,7 +146,7 @@ const SRCard = (props: SRCardProps) => {
         data[2]: ProjectInfo
         data[3]: SRChangeLogInfo
       */
-      const assoCommitListData = await oneSR2AllCommit(
+      const assoCommitListData: any[] = await oneSR2AllCommit(
         props.id,
         JSON.stringify(data[0][5]),
         JSON.stringify(data[0][1])
@@ -324,11 +324,13 @@ const SRCard = (props: SRCardProps) => {
       userInfo = data.data.users.filter(
         (user: any) => user.id === props.chargedBy
       )[0];
-      const chargedByAvatar =
-        userInfo.avatar.length < 5
-          ? `https://www.gravatar.com/avatar/${CryptoJS.MD5(userInfo.email)}`
-          : userInfo.avatar;
-      setChargedByAvatar(chargedByAvatar);
+      if (userInfo !== undefined) {
+        const chargedByAvatar =
+          userInfo.avatar.length < 5
+            ? `https://www.gravatar.com/avatar/${CryptoJS.MD5(userInfo.email)}`
+            : userInfo.avatar;
+        setChargedByAvatar(chargedByAvatar);
+      }
     });
   }, []);
 
