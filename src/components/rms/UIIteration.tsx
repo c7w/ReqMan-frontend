@@ -15,6 +15,7 @@ import {
   Input,
   Modal,
   Popconfirm,
+  Select,
   Typography,
 } from "antd";
 import React, { useEffect, useState } from "react";
@@ -347,6 +348,36 @@ const UIIteration = () => {
 
   const iteration_show_length = JSON.parse(iterationStore).data.length + 1;
 
+  const [currIteration, setCurrIteration] = useState(0);
+
+  useEffect(() => {
+    // Judge if currIteration in iterationStore
+    if (iterationStore) {
+      const iteration = JSON.parse(iterationStore).data;
+      const _currIteration = iteration.findIndex(
+        (iter: Iteration) => iter.id === currIteration
+      );
+      if (_currIteration !== -1) {
+        // Find!
+        return;
+      }
+
+      const iterInfo = JSON.parse(iterationStore).data;
+      // Find the iteration with max sid
+      let maxSid = -2,
+        maxIter = -1;
+
+      for (let i = 0; i < iterInfo.length; i++) {
+        if (iterInfo[i].sid > maxSid) {
+          maxSid = iterInfo[i].sid;
+          maxIter = i;
+        }
+      }
+
+      setCurrIteration(JSON.parse(iterationStore).data[maxIter].id as number);
+    }
+  }, [iterationStore]);
+
   // const getBlockClassName = (
   //   sr_id: number,
   //   iter_id: number | undefined
@@ -440,42 +471,83 @@ const UIIteration = () => {
   //   return "";
   // };
 
+  const curr_iter = JSON.parse(iterationStore).data.find(
+    (iter: Iteration) => iter.id === currIteration
+  );
+  const curr_iter_id = curr_iter ? curr_iter.id : -1;
+
   return (
     <div className={"project-iteration-container"}>
-      {/*<div*/}
-      {/*  style={{*/}
-      {/*    fontSize: "2rem",*/}
-      {/*    marginLeft: "1rem",*/}
-      {/*    userSelect: "none",*/}
-      {/*    alignSelf: "flex-start",*/}
-      {/*    display: "flex",*/}
-      {/*    flexDirection: "row",*/}
-      {/*    width: "100%",*/}
-      {/*  }}*/}
-      {/*>*/}
-      {/*  <p style={{ marginBottom: "0px" }}>项目迭代管理</p>*/}
-      {/*  <div style={{ flexGrow: "1" }}></div>*/}
-      {/*  {["supermaster", "sys"].indexOf(*/}
-      {/*    JSON.parse(userStore).data.projects.filter(*/}
-      {/*      (project: any) => project.id === Number(project_id)*/}
-      {/*    )[0].role*/}
-      {/*  ) < 0 ? null : (*/}
-      {/*    <Button*/}
-      {/*      type={"primary"}*/}
-      {/*      onClick={() => setManager(true)}*/}
-      {/*      style={{ marginRight: "2rem", alignSelf: "end" }}*/}
-      {/*    >*/}
-      {/*      迭代周期管理*/}
-      {/*    </Button>*/}
-      {/*  )}*/}
-      {/*  <UIIterationManagerModel*/}
-      {/*    visible={manager}*/}
-      {/*    close={() => {*/}
-      {/*      setManager(false);*/}
-      {/*    }}*/}
-      {/*  />*/}
-      {/*</div>*/}
-      {/*<hr style={{ width: "98%", margin: "1rem auto" }} />*/}
+      <div
+        style={{
+          fontSize: "2rem",
+          marginLeft: "1rem",
+          userSelect: "none",
+          alignSelf: "flex-start",
+          display: "flex",
+          flexDirection: "row",
+          width: "100%",
+        }}
+      >
+        <p style={{ marginBottom: "0px" }}>项目迭代管理</p>
+        <div style={{ flexGrow: "1" }}></div>
+        <Select
+          value={currIteration}
+          onChange={(value: number) => {
+            setCurrIteration(value);
+          }}
+          style={{ alignSelf: "end", marginRight: "2rem", width: "8rem" }}
+        >
+          {JSON.parse(iterationStore)
+            .data.sort((a: any, b: any) => b.sid - a.sid)
+            .map((iter: any) => (
+              <Select.Option value={iter.id} key={iter.id}>
+                {iter.title}
+              </Select.Option>
+            ))}
+        </Select>
+        {["supermaster", "sys"].indexOf(
+          JSON.parse(userStore).data.projects.filter(
+            (project: any) => project.id === Number(project_id)
+          )[0].role
+        ) < 0 ? null : (
+          <Button
+            type={"primary"}
+            onClick={() => setManager(true)}
+            style={{ marginRight: "2rem", alignSelf: "end" }}
+          >
+            迭代周期管理
+          </Button>
+        )}
+
+        <UIIterationManagerModel
+          visible={manager}
+          close={() => {
+            setManager(false);
+          }}
+        />
+      </div>
+      <hr style={{ width: "98%", margin: "1rem auto" }} />
+
+      {JSON.parse(iterationStore).data.findIndex(
+        (iter: any) => iter.id === currIteration
+      ) < 0 ? (
+        <Empty description={"请创建项目迭代"} />
+      ) : (
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            width: "90%",
+          }}
+        >
+          <div>
+            <p>当前项目迭代名称：</p>
+            <p>{curr_iter.title}</p>
+          </div>
+        </div>
+      )}
+
       {/*<div className={"project-iteration-map-container"}>*/}
       {/*  {iteration_show_length === 1 ? (*/}
       {/*    <Empty description={"请创建项目迭代"} />*/}
