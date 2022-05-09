@@ -23,8 +23,13 @@ import request_json from "../../utils/Network";
 import API from "../../utils/APIList";
 
 const IssueRelatedMerge = (props: { issueId: number; repo: number }) => {
+  // get project id
+  const params = useParams();
+  const project_id = Number(params.id);
+
   const issueId = props.issueId;
   const [relatedMerge, setRelatedMerge] = useState("-");
+  const [relatedMergeTitle, setRelatedMergeTitle] = useState("");
 
   const mergeStore = useSelector(getMergeStore);
 
@@ -34,12 +39,14 @@ const IssueRelatedMerge = (props: { issueId: number; repo: number }) => {
     });
     if (association_list.code === 0) {
       if (association_list.data.length > 0) {
-        setRelatedMerge(
-          props.repo +
-            "-!" +
-            (await MRId2MRInfo(association_list.data[0].MR, mergeStore))
-              .merge_id
+        const mr_info = await MRId2MRInfo(
+          association_list.data[0].MR,
+          mergeStore,
+          project_id
         );
+
+        setRelatedMerge(props.repo + "-!" + mr_info.merge_id);
+        setRelatedMergeTitle(mr_info.title);
       }
     }
     console.debug("association_list", association_list);
@@ -49,7 +56,7 @@ const IssueRelatedMerge = (props: { issueId: number; repo: number }) => {
     reload_related_merge();
   }, [issueId]);
 
-  return <div style={{}}>{relatedMerge}</div>;
+  return <div title={relatedMergeTitle}>{relatedMerge}</div>;
 };
 
 const UIIssue = () => {

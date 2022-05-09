@@ -159,7 +159,8 @@ const SRCard = (props: SRCardProps) => {
       const assoIssueListData = await SR2Issue(
         props.id,
         JSON.stringify(data[0][4]),
-        JSON.stringify(data[0][0])
+        JSON.stringify(data[0][0]),
+        props.project
       );
       const newAssoIssueList: any = [];
       assoIssueListData.forEach((value: any) => {
@@ -173,7 +174,8 @@ const SRCard = (props: SRCardProps) => {
       const assoMRListData = await oneSR2AllMR(
         props.id,
         JSON.stringify(data[0][3]),
-        JSON.stringify(data[0][2])
+        JSON.stringify(data[0][2]),
+        props.project
       );
       const newAssoMRCardList: any = [];
       assoMRListData.forEach((value: MergeRequestProps) => {

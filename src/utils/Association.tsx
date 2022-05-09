@@ -1,4 +1,6 @@
 import { SRCardProps, UserSRAssociationProps } from "../store/ConfigureStore";
+import request_json from "./Network";
+import API from "./APIList";
 
 // 传入需要查询的 userId 以及所有的 projectInfo (getProjectStore 而来) 字符串（未解析）
 const userId2UserInfo = (userId: number, projectInfo: string) => {
@@ -27,23 +29,56 @@ const IRId2IRInfo = (IRId: number, IRList: string) => {
   return IR.length > 0 ? IR[0] : "not found";
 };
 
-// TODO: change to async
 // 传入 MR 的 Id，返回其详细信息，同时需要传入该项目的 MRList (getMRStore 而来) （未解析）
-const MRId2MRInfo = async (MRId: number, MRList: string) => {
+const MRId2MRInfo = async (
+  MRId: number,
+  MRList: string,
+  project_id: number
+) => {
   // console.log("==================== Get MRInfo By MRId ===================");
   const MRListData = JSON.parse(MRList).data;
   const MR = MRListData.filter((obj: any) => obj.id === MRId);
+
+  if (MR.length <= 0) {
+    const mr = await request_json(API.GET_PROJECT_SINGLE_MERGE, {
+      getParams: {
+        id: MRId,
+        project: project_id,
+      },
+    });
+    if (mr.code === 0) {
+      return mr.data;
+    }
+  }
+
   return MR.length > 0 ? MR[0] : "not found";
 };
 
-// TODO: change to async
 // 传入 Issue 的 Id，返回其详细信息，同时需要传入该项目的 issueList (getIssueStore 而来) （未解析）
-const issueId2IssueInfo = async (issueId: number, issueList: string) => {
+const issueId2IssueInfo = async (
+  issueId: number,
+  issueList: string,
+  project_id: number
+) => {
   // console.log("==================== Get issueInfo By IssueId ===================");
   const issueListData = JSON.parse(issueList).data;
   const issue = issueListData.filter(
     (obj: any) => obj.id === issueId && obj.is_bug
   );
+
+  if (issue.length <= 0) {
+    const issue = await request_json(API.GET_PROJECT_SINGLE_BUG, {
+      getParams: {
+        id: issueId,
+        project: project_id,
+      },
+    });
+
+    if (issue.code === 0) {
+      return issue.data;
+    }
+  }
+
   return issue.length > 0 ? issue[0] : "not found";
 };
 
@@ -160,7 +195,12 @@ const MR2SR = async (MRId: number, MRSRAsso: string, SRList: string) => {
 同时需要传入该项目的 MRList ( getMergeStore 而来) （未解析）
 返回未排序
  */
-const oneSR2AllMR = async (SRId: number, SRMRAsso: string, MRList: string) => {
+const oneSR2AllMR = async (
+  SRId: number,
+  SRMRAsso: string,
+  MRList: string,
+  project_id: number
+) => {
   // console.log("================ Get MR By SR ===============");
   const SRMRData = JSON.parse(SRMRAsso).data;
   // console.log(SRMRData);
@@ -172,7 +212,7 @@ const oneSR2AllMR = async (SRId: number, SRMRAsso: string, MRList: string) => {
 
   const cached_mr_info = [];
   for (let i = 0; i < matchedMRId.length; i++) {
-    const mr_info = await MRId2MRInfo(matchedMRId[i], MRList);
+    const mr_info = await MRId2MRInfo(matchedMRId[i], MRList, project_id);
     cached_mr_info.push(mr_info);
   }
   return cached_mr_info;
@@ -282,7 +322,8 @@ const Iteration2SR = async (
 const SR2Issue = async (
   SRId: number,
   SRIssueAsso: string,
-  issueInfo: string
+  issueInfo: string,
+  project_id: number
 ) => {
   // console.log("================ Get Issue By SR ===============");
   const SRIssueData = JSON.parse(SRIssueAsso).data;
@@ -292,7 +333,7 @@ const SR2Issue = async (
   const ret_list = [];
 
   for (const obj of filtered) {
-    ret_list.push(await issueId2IssueInfo(obj.issue, issueInfo));
+    ret_list.push(await issueId2IssueInfo(obj.issue, issueInfo, project_id));
   }
   return ret_list;
 };

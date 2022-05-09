@@ -34,15 +34,18 @@ const getAllRDTSInfo = async (dispatcher: any, userStore: string) => {
 const getRDTSInfo = async (dispatcher: any, project_id: number) => {
   return getRepoInfo(dispatcher, project_id).then((repo_data: any) => {
     const promise_list = [];
-    promise_list.push(
-      getIssueInfo(dispatcher, project_id, JSON.stringify(repo_data))
-    );
-    promise_list.push(
-      getCommitInfo(dispatcher, project_id, JSON.stringify(repo_data))
-    );
-    promise_list.push(
-      getMergeInfo(dispatcher, project_id, JSON.stringify(repo_data))
-    );
+    dispatcher(updateCommitStore(JSON.stringify({ code: 0, data: [] })));
+    dispatcher(updateIssueStore(JSON.stringify({ code: 0, data: [] })));
+    dispatcher(updateMergeStore(JSON.stringify({ code: 0, data: [] })));
+    // promise_list.push(
+    //   getIssueInfo(dispatcher, project_id, JSON.stringify(repo_data))
+    // );
+    // promise_list.push(
+    //   getCommitInfo(dispatcher, project_id, JSON.stringify(repo_data))
+    // );
+    // promise_list.push(
+    //   getMergeInfo(dispatcher, project_id, JSON.stringify(repo_data))
+    // );
     promise_list.push(
       getMRSRAssociation(dispatcher, project_id, JSON.stringify(repo_data))
     );

@@ -147,6 +147,22 @@ const API = {
     path: "/rdts/project_commits/",
     method: "get",
   },
+  GET_PROJECT_SINGLE_MERGE: {
+    path: "/rdts/project_single_merge/",
+    method: "get",
+  },
+  GET_PROJECT_SINGLE_BUG: {
+    path: "/rdts/project_single_bug/",
+    method: "get",
+  },
+  GET_PROJECT_SINGLE_COMMIT: {
+    path: "/rdts/project_single_commit/",
+    method: "get",
+  },
+  GET_PROJECT_SINGLE_SR: {
+    path: "/rms/project_single_sr/",
+    method: "get",
+  },
 };
 
 export default API;

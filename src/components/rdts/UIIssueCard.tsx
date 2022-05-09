@@ -3,7 +3,7 @@ import moment from "moment";
 import React, { ReactElement, useEffect, useState } from "react";
 import { UIMergeCard } from "./UIMergeCard";
 import { IssueProps, MergeRequestProps } from "../../store/ConfigureStore";
-import { userId2UserInfo } from "../../utils/Association";
+import { MRId2MRInfo, userId2UserInfo } from "../../utils/Association";
 import { useDispatch, useSelector } from "react-redux";
 import { getProjectStore } from "../../store/slices/ProjectSlice";
 import request_json from "../../utils/Network";
@@ -46,6 +46,9 @@ const UIIssueCard = (props: UIIssueCardProps) => {
   const [MRIssueAssociation, setMRIssueAssociation] = useState("[]");
 
   const [MRBindDisabled, setMRBindDisabled] = useState(false);
+
+  const [timeline_list, setTimelineList] = useState<TimelineEntry[]>([]);
+
   const [reload, setReload] = useState(0);
 
   const data: IssueProps = JSON.parse(props.data);
@@ -103,55 +106,79 @@ const UIIssueCard = (props: UIIssueCardProps) => {
     }
   }
 
-  console.debug();
-  const timeline_list: TimelineEntry[] = [];
-  timeline_list.push({
-    time: data.authoredAt,
-    color: "red",
-    content: (
-      <span>
-        {authoredBy} 提出了本项目缺陷（#{data.issue_id}）
-      </span>
-    ),
-  });
-  if (closedBy) {
+  const reload_timeline = async () => {
+    const timeline_list: TimelineEntry[] = [];
     timeline_list.push({
-      time: data.closedAt,
-      color: "green",
+      time: data.authoredAt,
+      color: "red",
       content: (
         <span>
-          {closedBy} 审核并关闭了本项目缺陷（#{data.issue_id}）
+          {authoredBy} 提出了本项目缺陷（#{data.issue_id}）
         </span>
       ),
     });
-  }
-  JSON.parse(MRIssueAssociation).forEach((asso: any) => {
-    const filtered: MergeRequestProps[] = JSON.parse(MRStore).data.filter(
-      (entry: MergeRequestProps) => entry.id === asso.MR
-    );
-    if (filtered.length > 0) {
-      let MRBy = filtered[0].authoredByUserName;
-      if (filtered[0].user_authored > 0) {
-        const find_result = userId2UserInfo(
-          filtered[0].user_authored,
-          projectStore
-        );
-        if (find_result !== "not_found") {
-          MRBy = find_result.name;
-        }
-      }
+    if (closedBy) {
       timeline_list.push({
-        time: filtered[0].authoredAt,
-        color: "purple",
+        time: data.closedAt,
+        color: "green",
         content: (
           <span>
-            {MRBy} 提出了合并请求 !{filtered[0].merge_id} &nbsp;&nbsp;
-            {asso.auto_added ? <Tag color={"green"}>自动关联</Tag> : null}
+            {closedBy} 审核并关闭了本项目缺陷（#{data.issue_id}）
           </span>
         ),
       });
     }
-  });
+    for (const asso of JSON.parse(MRIssueAssociation)) {
+      // If asso.issue is not my id, skip it
+      if (asso.issue !== data.id) {
+        continue;
+      }
+
+      const filtered: MergeRequestProps[] = [
+        await MRId2MRInfo(asso.MR, MRStore, project_id),
+      ];
+      if (filtered.length > 0) {
+        let MRBy = filtered[0].authoredByUserName;
+        if (filtered[0].user_authored > 0) {
+          const find_result = userId2UserInfo(
+            filtered[0].user_authored,
+            projectStore
+          );
+          if (find_result !== "not_found") {
+            MRBy = find_result.name;
+          }
+        }
+        timeline_list.push({
+          time: filtered[0].authoredAt,
+          color: "purple",
+          content: (
+            <>
+              <span>{MRBy} 提出了合并请求 </span>
+              <span
+                style={{
+                  fontWeight: "bold",
+                }}
+              >
+                !{filtered[0].merge_id}
+              </span>
+              <span>
+                {" "}
+                &nbsp;
+                {filtered[0].title}
+                &nbsp;
+                {asso.auto_added ? <Tag color={"green"}>自动关联</Tag> : null}
+              </span>
+            </>
+          ),
+        });
+      }
+    }
+    setTimelineList(timeline_list);
+  };
+
+  useEffect(() => {
+    reload_timeline();
+  }, []);
 
   const indices = [];
   let idx = data.url.indexOf("/");

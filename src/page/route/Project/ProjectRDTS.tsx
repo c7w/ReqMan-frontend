@@ -87,6 +87,7 @@ const ProjectRDTS = (props: ProjectRDTSProps) => {
     SRIterationStore === ""
   ) {
     // Just let useEffect to re-query!
+    console.debug("ProjectRDTS: Loading...");
   } else if (JSON.parse(userInfo).code !== 0) {
     // 如果有用户信息但没登录，就跑去登录
     ToastMessage("error", "未登录", "跳转回登录界面");
