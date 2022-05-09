@@ -123,7 +123,7 @@ const UIMergeCard = (props: UIMergeCardProps) => {
     /!\[image\]\((.*?)\)/g,
     `<img src='${image_front_url}/$1' style="width: auto; height: auto; max-width: 90%"></img>`
   );
-  console.debug(data.description);
+  // console.debug(data.description);
 
   return (
     <Modal

@@ -135,6 +135,18 @@ const API = {
     path: "/rdts/forward_tree/",
     method: "get",
   },
+  GET_MERGES_PAGED: {
+    path: "/rdts/project_merges/",
+    method: "get",
+  },
+  GET_BUGS_PAGED: {
+    path: "/rdts/project_bugs/",
+    method: "get",
+  },
+  GET_COMMITS_PAGED: {
+    path: "/rdts/project_commits/",
+    method: "get",
+  },
 };
 
 export default API;
