@@ -442,195 +442,195 @@ const UIIteration = () => {
 
   return (
     <div className={"project-iteration-container"}>
-      <div
-        style={{
-          fontSize: "2rem",
-          marginLeft: "1rem",
-          userSelect: "none",
-          alignSelf: "flex-start",
-          display: "flex",
-          flexDirection: "row",
-          width: "100%",
-        }}
-      >
-        <p style={{ marginBottom: "0px" }}>项目迭代管理</p>
-        <div style={{ flexGrow: "1" }}></div>
-        {["supermaster", "sys"].indexOf(
-          JSON.parse(userStore).data.projects.filter(
-            (project: any) => project.id === Number(project_id)
-          )[0].role
-        ) < 0 ? null : (
-          <Button
-            type={"primary"}
-            onClick={() => setManager(true)}
-            style={{ marginRight: "2rem", alignSelf: "end" }}
-          >
-            迭代周期管理
-          </Button>
-        )}
-        <UIIterationManagerModel
-          visible={manager}
-          close={() => {
-            setManager(false);
-          }}
-        />
-      </div>
-      <hr style={{ width: "98%", margin: "1rem auto" }} />
-      <div className={"project-iteration-map-container"}>
-        {iteration_show_length === 1 ? (
-          <Empty description={"请创建项目迭代"} />
-        ) : (
-          <div
-            className={"iteration-table"}
-            style={{
-              width:
-                iteration_show_length * window.innerWidth * 0.05 <
-                window.innerWidth * 0.7
-                  ? window.innerWidth * 0.7
-                  : iteration_show_length * window.innerWidth * 0.05,
-            }}
-          >
-            <div style={{ display: "flex" }}>
-              {/* IR List */}
-              <div className={"iteration-table-side"}>
-                <div
-                  className={"iteration-table-iter-cell"}
-                  style={{ backgroundColor: "#66cfcf" }}
-                >
-                  &nbsp;
-                </div>
-                {JSON.parse(IRStore).data.map((ir: IRCardProps) => {
-                  return (
-                    <div key={ir.id}>
-                      <div
-                        className={"iteration-table-ir-cell"}
-                        onClick={() => {
-                          const det = JSON.parse(detail);
-                          if (det.includes(ir.id)) {
-                            setDetail(JSON.stringify(without(det, ir.id)));
-                          } else {
-                            det.push(ir.id);
-                            setDetail(JSON.stringify(det));
-                          }
-                        }}
-                        style={{
-                          cursor: "pointer",
-                          fontWeight: "bold",
-                          display: "flex",
-                          flexDirection: "row",
-                          justifyContent: "start",
-                        }}
-                        key={ir.id}
-                      >
-                        <span
-                          id={`iteration-table-ir-control-${ir.id}`}
-                          style={{ display: "inline-block" }}
-                        >
-                          　　{JSON.parse(detail).includes(ir.id) ? "-" : "+"}
-                        </span>
-                        <span
-                          style={{
-                            whiteSpace: "nowrap",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            display: "inline-block",
-                          }}
-                        >
-                          　{ir.title}
-                        </span>
-                      </div>
-                      {oneIR2AllSR(ir.id, IRSRAssociation, SRStore).map(
-                        (sr: SRCardProps) => (
-                          <div
-                            key={sr.id}
-                            className={`iteration-table-sr-cell iteration-table-ir-${ir.id}`}
-                            style={{
-                              height: JSON.parse(detail).includes(ir.id)
-                                ? "2.0rem"
-                                : "0",
-                              padding: JSON.parse(detail).includes(ir.id)
-                                ? "0.4rem"
-                                : "0",
-                            }}
-                          >
-                            {sr.title}
-                          </div>
-                        )
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-              {/*Head*/}
-              <div className={"iteration-table-header"}>
-                <div className={"iteration-table-iters"}>
-                  {JSON.parse(iterationStore)
-                    .data.sort((a: Iteration, b: Iteration) => a.sid - b.sid)
-                    .map((data: Iteration) => (
-                      <div
-                        key={data.id}
-                        className={"iteration-table-iter-cell"}
-                        style={{
-                          backgroundColor: "#66cfcf",
-                          fontWeight: "bold",
-                        }}
-                      >
-                        {data.title}
-                      </div>
-                    ))}
-                </div>
-                <div className={"iteration-table-units"}>
-                  {JSON.parse(iterationStore)
-                    .data.sort((a: Iteration, b: Iteration) => a.sid - b.sid)
-                    .map((data: Iteration) => (
-                      <div key={data.id}>
-                        {JSON.parse(IRStore).data.map((ir: IRCardProps) => {
-                          return (
-                            <div key={ir.id}>
-                              <div
-                                className={
-                                  "iteration-table-ir-cell-unit " +
-                                  getIRBlockClassName(ir.id, data.id as number)
-                                }
-                                style={{ fontWeight: "bold" }}
-                              >
-                                {getIRIterPercentage(ir.id, data.id as number)}
-                                &nbsp;
-                              </div>
-                              {oneIR2AllSR(ir.id, IRSRAssociation, SRStore).map(
-                                (sr: SRCardProps) => (
-                                  <div
-                                    key={sr.id}
-                                    style={{
-                                      height: JSON.parse(detail).includes(ir.id)
-                                        ? "2.0rem"
-                                        : "0",
-                                      padding: JSON.parse(detail).includes(
-                                        ir.id
-                                      )
-                                        ? "0.4rem"
-                                        : "0",
-                                    }}
-                                    className={
-                                      "iteration-table-sr-cell-unit " +
-                                      getBlockClassName(sr.id, data.id)
-                                    }
-                                  >
-                                    {getSRState(sr, data.id)}
-                                  </div>
-                                )
-                              )}
-                            </div>
-                          );
-                        })}
-                      </div>
-                    ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
+      {/*<div*/}
+      {/*  style={{*/}
+      {/*    fontSize: "2rem",*/}
+      {/*    marginLeft: "1rem",*/}
+      {/*    userSelect: "none",*/}
+      {/*    alignSelf: "flex-start",*/}
+      {/*    display: "flex",*/}
+      {/*    flexDirection: "row",*/}
+      {/*    width: "100%",*/}
+      {/*  }}*/}
+      {/*>*/}
+      {/*  <p style={{ marginBottom: "0px" }}>项目迭代管理</p>*/}
+      {/*  <div style={{ flexGrow: "1" }}></div>*/}
+      {/*  {["supermaster", "sys"].indexOf(*/}
+      {/*    JSON.parse(userStore).data.projects.filter(*/}
+      {/*      (project: any) => project.id === Number(project_id)*/}
+      {/*    )[0].role*/}
+      {/*  ) < 0 ? null : (*/}
+      {/*    <Button*/}
+      {/*      type={"primary"}*/}
+      {/*      onClick={() => setManager(true)}*/}
+      {/*      style={{ marginRight: "2rem", alignSelf: "end" }}*/}
+      {/*    >*/}
+      {/*      迭代周期管理*/}
+      {/*    </Button>*/}
+      {/*  )}*/}
+      {/*  <UIIterationManagerModel*/}
+      {/*    visible={manager}*/}
+      {/*    close={() => {*/}
+      {/*      setManager(false);*/}
+      {/*    }}*/}
+      {/*  />*/}
+      {/*</div>*/}
+      {/*<hr style={{ width: "98%", margin: "1rem auto" }} />*/}
+      {/*<div className={"project-iteration-map-container"}>*/}
+      {/*  {iteration_show_length === 1 ? (*/}
+      {/*    <Empty description={"请创建项目迭代"} />*/}
+      {/*  ) : (*/}
+      {/*    <div*/}
+      {/*      className={"iteration-table"}*/}
+      {/*      style={{*/}
+      {/*        width:*/}
+      {/*          iteration_show_length * window.innerWidth * 0.05 <*/}
+      {/*          window.innerWidth * 0.7*/}
+      {/*            ? window.innerWidth * 0.7*/}
+      {/*            : iteration_show_length * window.innerWidth * 0.05,*/}
+      {/*      }}*/}
+      {/*    >*/}
+      {/*      <div style={{ display: "flex" }}>*/}
+      {/*        /!* IR List *!/*/}
+      {/*        <div className={"iteration-table-side"}>*/}
+      {/*          <div*/}
+      {/*            className={"iteration-table-iter-cell"}*/}
+      {/*            style={{ backgroundColor: "#66cfcf" }}*/}
+      {/*          >*/}
+      {/*            &nbsp;*/}
+      {/*          </div>*/}
+      {/*          {JSON.parse(IRStore).data.map((ir: IRCardProps) => {*/}
+      {/*            return (*/}
+      {/*              <div key={ir.id}>*/}
+      {/*                <div*/}
+      {/*                  className={"iteration-table-ir-cell"}*/}
+      {/*                  onClick={() => {*/}
+      {/*                    const det = JSON.parse(detail);*/}
+      {/*                    if (det.includes(ir.id)) {*/}
+      {/*                      setDetail(JSON.stringify(without(det, ir.id)));*/}
+      {/*                    } else {*/}
+      {/*                      det.push(ir.id);*/}
+      {/*                      setDetail(JSON.stringify(det));*/}
+      {/*                    }*/}
+      {/*                  }}*/}
+      {/*                  style={{*/}
+      {/*                    cursor: "pointer",*/}
+      {/*                    fontWeight: "bold",*/}
+      {/*                    display: "flex",*/}
+      {/*                    flexDirection: "row",*/}
+      {/*                    justifyContent: "start",*/}
+      {/*                  }}*/}
+      {/*                  key={ir.id}*/}
+      {/*                >*/}
+      {/*                  <span*/}
+      {/*                    id={`iteration-table-ir-control-${ir.id}`}*/}
+      {/*                    style={{ display: "inline-block" }}*/}
+      {/*                  >*/}
+      {/*                    　　{JSON.parse(detail).includes(ir.id) ? "-" : "+"}*/}
+      {/*                  </span>*/}
+      {/*                  <span*/}
+      {/*                    style={{*/}
+      {/*                      whiteSpace: "nowrap",*/}
+      {/*                      overflow: "hidden",*/}
+      {/*                      textOverflow: "ellipsis",*/}
+      {/*                      display: "inline-block",*/}
+      {/*                    }}*/}
+      {/*                  >*/}
+      {/*                    　{ir.title}*/}
+      {/*                  </span>*/}
+      {/*                </div>*/}
+      {/*                {oneIR2AllSR(ir.id, IRSRAssociation, SRStore).map(*/}
+      {/*                  (sr: SRCardProps) => (*/}
+      {/*                    <div*/}
+      {/*                      key={sr.id}*/}
+      {/*                      className={`iteration-table-sr-cell iteration-table-ir-${ir.id}`}*/}
+      {/*                      style={{*/}
+      {/*                        height: JSON.parse(detail).includes(ir.id)*/}
+      {/*                          ? "2.0rem"*/}
+      {/*                          : "0",*/}
+      {/*                        padding: JSON.parse(detail).includes(ir.id)*/}
+      {/*                          ? "0.4rem"*/}
+      {/*                          : "0",*/}
+      {/*                      }}*/}
+      {/*                    >*/}
+      {/*                      {sr.title}*/}
+      {/*                    </div>*/}
+      {/*                  )*/}
+      {/*                )}*/}
+      {/*              </div>*/}
+      {/*            );*/}
+      {/*          })}*/}
+      {/*        </div>*/}
+      {/*        /!*Head*!/*/}
+      {/*        <div className={"iteration-table-header"}>*/}
+      {/*          <div className={"iteration-table-iters"}>*/}
+      {/*            {JSON.parse(iterationStore)*/}
+      {/*              .data.sort((a: Iteration, b: Iteration) => a.sid - b.sid)*/}
+      {/*              .map((data: Iteration) => (*/}
+      {/*                <div*/}
+      {/*                  key={data.id}*/}
+      {/*                  className={"iteration-table-iter-cell"}*/}
+      {/*                  style={{*/}
+      {/*                    backgroundColor: "#66cfcf",*/}
+      {/*                    fontWeight: "bold",*/}
+      {/*                  }}*/}
+      {/*                >*/}
+      {/*                  {data.title}*/}
+      {/*                </div>*/}
+      {/*              ))}*/}
+      {/*          </div>*/}
+      {/*          <div className={"iteration-table-units"}>*/}
+      {/*            {JSON.parse(iterationStore)*/}
+      {/*              .data.sort((a: Iteration, b: Iteration) => a.sid - b.sid)*/}
+      {/*              .map((data: Iteration) => (*/}
+      {/*                <div key={data.id}>*/}
+      {/*                  {JSON.parse(IRStore).data.map((ir: IRCardProps) => {*/}
+      {/*                    return (*/}
+      {/*                      <div key={ir.id}>*/}
+      {/*                        <div*/}
+      {/*                          className={*/}
+      {/*                            "iteration-table-ir-cell-unit " +*/}
+      {/*                            getIRBlockClassName(ir.id, data.id as number)*/}
+      {/*                          }*/}
+      {/*                          style={{ fontWeight: "bold" }}*/}
+      {/*                        >*/}
+      {/*                          {getIRIterPercentage(ir.id, data.id as number)}*/}
+      {/*                          &nbsp;*/}
+      {/*                        </div>*/}
+      {/*                        {oneIR2AllSR(ir.id, IRSRAssociation, SRStore).map(*/}
+      {/*                          (sr: SRCardProps) => (*/}
+      {/*                            <div*/}
+      {/*                              key={sr.id}*/}
+      {/*                              style={{*/}
+      {/*                                height: JSON.parse(detail).includes(ir.id)*/}
+      {/*                                  ? "2.0rem"*/}
+      {/*                                  : "0",*/}
+      {/*                                padding: JSON.parse(detail).includes(*/}
+      {/*                                  ir.id*/}
+      {/*                                )*/}
+      {/*                                  ? "0.4rem"*/}
+      {/*                                  : "0",*/}
+      {/*                              }}*/}
+      {/*                              className={*/}
+      {/*                                "iteration-table-sr-cell-unit " +*/}
+      {/*                                getBlockClassName(sr.id, data.id)*/}
+      {/*                              }*/}
+      {/*                            >*/}
+      {/*                              {getSRState(sr, data.id)}*/}
+      {/*                            </div>*/}
+      {/*                          )*/}
+      {/*                        )}*/}
+      {/*                      </div>*/}
+      {/*                    );*/}
+      {/*                  })}*/}
+      {/*                </div>*/}
+      {/*              ))}*/}
+      {/*          </div>*/}
+      {/*        </div>*/}
+      {/*      </div>*/}
+      {/*    </div>*/}
+      {/*  )}*/}
+      {/*</div>*/}
     </div>
   );
 };
