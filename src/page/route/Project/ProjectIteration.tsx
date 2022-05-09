@@ -16,6 +16,7 @@ import {
   getIRIterationStore,
   getIterationStore,
   getSRIterationStore,
+  getUserIterationStore,
 } from "../../../store/slices/IterationSlice";
 import {
   getIRIterationInfo,
@@ -24,6 +25,9 @@ import {
   getIterationInfo,
   getSRIterationInfo,
   getSRListInfo,
+  getSRServiceInfo,
+  getUserIterationInfo,
+  getUserSRInfo,
   updateServiceInfo,
 } from "../../../store/functions/RMS";
 import { useEffect } from "react";
@@ -33,6 +37,15 @@ import {
   getIRSRStore,
   getSRListStore,
 } from "../../../store/slices/IRSRSlice";
+import {
+  getCommitSRAssociation,
+  getRDTSInfo,
+} from "../../../store/functions/RDTS";
+import {
+  getServiceStore,
+  getSRServiceStore,
+} from "../../../store/slices/ServiceSlice";
+import { getUserSRStore } from "../../../store/slices/UserSRSlice";
 
 const ProjectIteration = () => {
   const userStore = useSelector(getUserStore);
@@ -42,6 +55,12 @@ const ProjectIteration = () => {
   const SRStore = useSelector(getSRListStore);
   const IRSRAssociationStore = useSelector(getIRSRStore);
   const SRIterStore = useSelector(getSRIterationStore);
+
+  const userIterationStore = useSelector(getUserIterationStore);
+  const userSRStore = useSelector(getUserSRStore);
+
+  const SRServiceStore = useSelector(getSRServiceStore);
+  const serviceStore = useSelector(getServiceStore);
 
   const dispatcher = useDispatch();
   const params = useParams<"id">();
@@ -55,7 +74,16 @@ const ProjectIteration = () => {
     getIRListInfo(dispatcher, project_id);
     getSRListInfo(dispatcher, project_id);
     getSRIterationInfo(dispatcher, project_id);
+    getRDTSInfo(dispatcher, project_id);
+    getUserIterationInfo(dispatcher, project_id);
+
+    getSRServiceInfo(dispatcher, project_id);
+    updateServiceInfo(dispatcher, project_id);
+
+    getUserSRInfo(dispatcher, project_id);
+
     getIRSRInfo(dispatcher, project_id);
+    // getCommitSRAssociation(dispatcher, project_id);
   }, []);
 
   if (
@@ -65,7 +93,11 @@ const ProjectIteration = () => {
     IRStore === "" ||
     SRStore === "" ||
     SRIterStore === "" ||
-    IRSRAssociationStore === ""
+    IRSRAssociationStore === "" ||
+    userIterationStore === "" ||
+    SRServiceStore === "" ||
+    serviceStore === "" ||
+    userSRStore === ""
   ) {
     // Waiting for query...
   } else if (JSON.parse(userStore).code !== 0) {

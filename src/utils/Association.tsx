@@ -14,8 +14,23 @@ const userId2UserInfo = (userId: number, projectInfo: string) => {
 
 // TODO: change to async
 // 传入 SR 的 Id，返回其详细信息，同时需要传入该项目的 SRList (getSRListStore 而来) （未解析）
-const SRId2SRInfo = async (SRId: number, SRList: string) => {
+const SRId2SRInfo = async (
+  SRId: number,
+  SRList: string,
+  project_id: number
+) => {
   // console.log("===================== Get SRInfo By SRId ==================== ");
+
+  const sr = await request_json(API.GET_PROJECT_SINGLE_SR, {
+    getParams: {
+      id: SRId,
+      project: project_id,
+    },
+  });
+  if (sr.code === 0) {
+    return sr.data;
+  }
+
   const SRListData = JSON.parse(SRList).data;
   const SR = SRListData.filter((obj: any) => obj.id === SRId);
   return SR.length > 0 ? SR[0] : "not found";
@@ -132,7 +147,8 @@ const repoId2RepoInfo = (repoId: number, repoInfo: string) => {
 const oneIR2AllSR = async (
   IRId: number,
   IRSRAssociation: string,
-  SRList: string
+  SRList: string,
+  project_id: number
 ) => {
   // console.log("===================== Get SR By IR ======================= ");
   const IRSRData = JSON.parse(IRSRAssociation).data;
@@ -146,7 +162,7 @@ const oneIR2AllSR = async (
 
   const cached_SRList = [];
   for (let i = 0; i < matchedSRId.length; i++) {
-    const SR = await SRId2SRInfo(matchedSRId[i], SRList);
+    const SR = await SRId2SRInfo(matchedSRId[i], SRList, project_id);
     if (SR !== "not found") {
       cached_SRList.push(SR);
     }
@@ -179,13 +195,19 @@ const oneSR2AllIR = (SRId: number, IRSRAssociation: string, IRList: string) => {
 返回未排序
  */
 
-const MR2SR = async (MRId: number, MRSRAsso: string, SRList: string) => {
+const MR2SR = async (
+  MRId: number,
+  MRSRAsso: string,
+  SRList: string,
+  project_id: number
+) => {
   console.log("================ Get SR By MR ===============");
   const MRSRData = JSON.parse(MRSRAsso).data;
   console.log(MRSRData);
   const matchedSR = MRSRData.filter((obj: any) => obj.MR === MRId);
 
-  if (matchedSR.length > 0) return await SRId2SRInfo(matchedSR[0].SR, SRList);
+  if (matchedSR.length > 0)
+    return await SRId2SRInfo(matchedSR[0].SR, SRList, project_id);
   return {};
 };
 
@@ -293,7 +315,8 @@ const SR2Iteration = (
 const Iteration2SR = async (
   iterationId: number,
   SRIterationAsso: string,
-  SRList: string
+  SRList: string,
+  project_id: number
 ) => {
   // console.log("================ Get SR By Iteration ===============");
   const SRItData = JSON.parse(SRIterationAsso).data;
@@ -306,7 +329,7 @@ const Iteration2SR = async (
 
   const cached_SR_info = [];
   for (const id of matchedSRId) {
-    const SR_info = await SRId2SRInfo(id, SRList);
+    const SR_info = await SRId2SRInfo(id, SRList, project_id);
     cached_SR_info.push(SR_info);
   }
 
@@ -394,7 +417,8 @@ const SR2Service = (
 const Service2SR = async (
   serviceId: number,
   SRServiceAsso: string,
-  SRList: string
+  SRList: string,
+  project_id: number
 ) => {
   // console.log("================ Get SR By Service ===============");
   const SRServiceData = JSON.parse(SRServiceAsso).data;
@@ -407,7 +431,7 @@ const Service2SR = async (
 
   const cached_SR_info = [];
   for (const id of matchedSRId) {
-    const SR_info = await SRId2SRInfo(id, SRList);
+    const SR_info = await SRId2SRInfo(id, SRList, project_id);
     cached_SR_info.push(SR_info);
   }
   return cached_SR_info.filter((obj: any) => obj !== "not found");

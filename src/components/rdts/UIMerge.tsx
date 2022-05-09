@@ -26,13 +26,19 @@ import API from "../../utils/APIList";
 const MergeRelatedSR = (props: { currAssociatedSRId: number }) => {
   const currAssociatedSRId = props.currAssociatedSRId;
 
+  // get project id
+  const params = useParams<"id">();
+  const project_id = Number(params.id);
+
   const SRListStore = useSelector(getSRListStore);
 
   const [related, setRelated] = useState("-");
 
   const resetRelated = async () => {
     if (currAssociatedSRId > 0) {
-      setRelated((await SRId2SRInfo(currAssociatedSRId, SRListStore)).title);
+      setRelated(
+        (await SRId2SRInfo(currAssociatedSRId, SRListStore, project_id)).title
+      );
     } else {
       setRelated("-");
     }

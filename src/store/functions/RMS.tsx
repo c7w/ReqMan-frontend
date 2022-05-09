@@ -541,9 +541,13 @@ const createSRIteration = async (
       },
     },
   };
-  request_json(API.POST_RMS, { body: myBody });
+  request_json(API.POST_RMS, { body: myBody }).then((data) => {
+    if (data.code === 0) {
+      getSRIterationInfo(dispatcher, project_id);
+    }
+  });
   // 更新 Iteration 的 store
-  getSRIterationInfo(dispatcher, project_id);
+  // getSRIterationInfo(dispatcher, project_id);
 };
 
 const deleteSRIteration = async (
@@ -560,8 +564,12 @@ const deleteSRIteration = async (
       SRId: SRIteration.SRId,
     },
   };
-  request_json(API.POST_RMS, { body: myBody });
-  getSRIterationInfo(dispatcher, project_id);
+  request_json(API.POST_RMS, { body: myBody }).then((data) => {
+    if (data.code === 0) {
+      getSRIterationInfo(dispatcher, project_id);
+    }
+  });
+  // getSRIterationInfo(dispatcher, project_id);
 };
 
 const getUserIterationInfo = async (

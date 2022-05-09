@@ -5,6 +5,7 @@ import {
   getIRIterationStore,
   getIterationStore,
   getSRIterationStore,
+  getUserIterationStore,
 } from "../../store/slices/IterationSlice";
 import { Link, useParams } from "react-router-dom";
 import "./UIIteration.css";
@@ -16,6 +17,7 @@ import {
   Modal,
   Popconfirm,
   Select,
+  Tabs,
   Typography,
 } from "antd";
 import React, { useEffect, useState } from "react";
@@ -36,9 +38,23 @@ import {
   getIRSRStore,
   getSRListStore,
 } from "../../store/slices/IRSRSlice";
-import { oneIR2AllSR } from "../../utils/Association";
+import {
+  Iteration2SR,
+  oneIR2AllSR,
+  SR2ChargedUser,
+  SR2Service,
+  userId2UserInfo,
+} from "../../utils/Association";
 import moment, { Moment } from "moment";
 import { without } from "underscore";
+import { UIUserCardPreview } from "../ums/UIUserCard";
+import Calendar from "./Calendar";
+import SRCard from "./SRCard";
+import {
+  getServiceStore,
+  getSRServiceStore,
+} from "../../store/slices/ServiceSlice";
+import { getUserSRStore } from "../../store/slices/UserSRSlice";
 
 interface EditorModelProps {
   visible: boolean;
@@ -331,11 +347,18 @@ const UIIterationManagerModel = (props: ManagerModelProps) => {
 const UIIteration = () => {
   // Select stores
   const userStore = useSelector(getUserStore);
+  const projectStore = useSelector(getProjectStore);
   const iterationStore = useSelector(getIterationStore);
+  const useriterStore = useSelector(getUserIterationStore);
+
+  const SRServiceStore = useSelector(getSRServiceStore);
+  const serviceStore = useSelector(getServiceStore);
+
   const IRStore = useSelector(getIRListStore);
   const SRStore = useSelector(getSRListStore);
   const SRIterStore = useSelector(getSRIterationStore);
   const IRSRAssociation = useSelector(getIRSRStore);
+  const userSRStore = useSelector(getUserSRStore);
 
   // Dispatcher && get project ID
   const dispatcher = useDispatch();
@@ -349,6 +372,17 @@ const UIIteration = () => {
   const iteration_show_length = JSON.parse(iterationStore).data.length + 1;
 
   const [currIteration, setCurrIteration] = useState(0);
+  const curr_iter = JSON.parse(iterationStore).data.find(
+    (iter: Iteration) => iter.id === currIteration
+  );
+  const curr_iter_id = curr_iter ? curr_iter.id : -1;
+
+  const [currSR, setCurrSR] = useState({
+    TODO: [],
+    WIP: [],
+    Reviewing: [],
+    Done: [],
+  });
 
   useEffect(() => {
     // Judge if currIteration in iterationStore
@@ -377,6 +411,48 @@ const UIIteration = () => {
       setCurrIteration(JSON.parse(iterationStore).data[maxIter].id as number);
     }
   }, [iterationStore]);
+
+  const reload_SR = async () => {
+    // Prepare SRs
+    const currSR: any = {
+      TODO: [],
+      WIP: [],
+      Reviewing: [],
+      Done: [],
+    };
+    // Read all SRs
+    const SRs = await Iteration2SR(
+      currIteration,
+      SRIterStore,
+      SRStore,
+      Number(project_id)
+    );
+    console.debug(SRs);
+    for (let i = 0; i < SRs.length; i++) {
+      const sr = SRs[i];
+      // Switch status
+      switch (sr.state) {
+        case "TODO":
+          currSR.TODO.push(sr);
+          break;
+        case "WIP":
+          currSR.WIP.push(sr);
+          break;
+        case "Reviewing":
+          currSR.Reviewing.push(sr);
+          break;
+        case "Done":
+          currSR.Done.push(sr);
+          break;
+      }
+    }
+    setCurrSR(currSR);
+    console.debug(currSR);
+  };
+
+  useEffect(() => {
+    reload_SR();
+  }, [currIteration]);
 
   // const getBlockClassName = (
   //   sr_id: number,
@@ -471,10 +547,11 @@ const UIIteration = () => {
   //   return "";
   // };
 
-  const curr_iter = JSON.parse(iterationStore).data.find(
-    (iter: Iteration) => iter.id === currIteration
-  );
-  const curr_iter_id = curr_iter ? curr_iter.id : -1;
+  // console.debug(useriterStore);
+  const users_charging = JSON.parse(useriterStore)
+    .data.filter((user: any) => user.iteration === curr_iter_id)
+    .map((user: any) => userId2UserInfo(user.user, projectStore));
+  // console.debug(users_charging);
 
   return (
     <div className={"project-iteration-container"}>
@@ -490,7 +567,7 @@ const UIIteration = () => {
         }}
       >
         <p style={{ marginBottom: "0px" }}>项目迭代管理</p>
-        <div style={{ flexGrow: "1" }}></div>
+        <div style={{ flexGrow: "1" }} />
         <Select
           value={currIteration}
           onChange={(value: number) => {
@@ -535,15 +612,120 @@ const UIIteration = () => {
         <Empty description={"请创建项目迭代"} />
       ) : (
         <div
+          className={"iteration-meta-data"}
           style={{
             display: "flex",
             flexDirection: "column",
             width: "90%",
           }}
         >
-          <div>
-            <p>当前项目迭代名称：</p>
-            <p>{curr_iter.title}</p>
+          <div
+            style={{
+              marginLeft: "1rem",
+            }}
+          >
+            <div style={{ margin: "0.5rem 0" }}>
+              <span className={"service-label"}>项目迭代名称</span>&nbsp;&nbsp;
+              <span>{curr_iter.title}</span>
+            </div>
+            <div style={{ margin: "0.5rem 0" }}>
+              <span className={"service-label"}>项目迭代编号</span>&nbsp;&nbsp;
+              <span>{curr_iter.sid}</span>
+            </div>
+            {/*<div style={{ margin: "0.5rem 0" }}>*/}
+            {/*  <span className={"service-label"}>项目迭代状态</span>&nbsp;&nbsp;*/}
+            {/*  <span>{curr_iter.state}</span>*/}
+            {/*</div>*/}
+            <div style={{ margin: "0.5rem 0" }}>
+              <span className={"service-label"}>项目迭代开始日期</span>
+              &nbsp;&nbsp;
+              <span>{moment(curr_iter.begin * 1000).format("YYYY-MM-DD")}</span>
+            </div>
+            <div style={{ margin: "0.5rem 0" }}>
+              <span className={"service-label"}>项目迭代结束日期</span>
+              &nbsp;&nbsp;
+              <span>{moment(curr_iter.end * 1000).format("YYYY-MM-DD")}</span>
+            </div>
+            <div style={{ margin: "0.5rem 0" }}>
+              <span className={"service-label"}>项目迭代负责人</span>
+              &nbsp;&nbsp;
+              <div
+                style={{
+                  display: "inline",
+                }}
+              >
+                {users_charging.length > 0
+                  ? users_charging.map((user: any) => (
+                      <UIUserCardPreview
+                        key={user.id}
+                        projectStore={projectStore}
+                        userId={user.id}
+                        previewSize={24}
+                      />
+                      // <span key={user.id}>{user.name}&nbsp;&nbsp;</span>
+                    ))
+                  : "未指定负责人"}
+              </div>
+            </div>
+          </div>
+
+          <div
+            className={"SR-related"}
+            style={{
+              width: "100%",
+              margin: "1rem auto",
+            }}
+          >
+            <Tabs defaultActiveKey="4" centered>
+              <Tabs.TabPane tab="未开始" key="1">
+                <div
+                  style={{
+                    display: "flex",
+                    margin: "1rem auto",
+                    flexDirection: "row",
+                    flexWrap: "wrap",
+                    justifyContent: "space-evenly",
+                    width: "95%",
+                  }}
+                >
+                  {currSR.TODO.length <= 0 ? (
+                    <Empty description={"暂无未开始的需求"} />
+                  ) : (
+                    currSR.TODO.map((sr: any) => (
+                      <SRCard
+                        id={sr.id}
+                        project={sr.project}
+                        title={sr.title}
+                        description={sr.description}
+                        priority={sr.priority}
+                        currState={sr.state}
+                        createdAt={sr.createdAt}
+                        createdBy={sr.createdBy}
+                        iter={[curr_iter]}
+                        chargedBy={
+                          SR2ChargedUser(sr.id, userSRStore, projectStore)[0]
+                            ?.id
+                        }
+                        service={SR2Service(
+                          sr.id,
+                          SRServiceStore,
+                          serviceStore
+                        )}
+                      />
+                    ))
+                  )}
+                </div>
+              </Tabs.TabPane>
+              <Tabs.TabPane tab="开发中" key="2">
+                Content of Tab Pane 1
+              </Tabs.TabPane>
+              <Tabs.TabPane tab="测试中" key="3">
+                Content of Tab Pane 1
+              </Tabs.TabPane>
+              <Tabs.TabPane tab="已交付" key="4">
+                Content of Tab Pane 1
+              </Tabs.TabPane>
+            </Tabs>
           </div>
         </div>
       )}

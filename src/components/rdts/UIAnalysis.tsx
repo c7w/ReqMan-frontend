@@ -118,7 +118,8 @@ const UIAnalysis = () => {
       const assoSRList = await Iteration2SR(
         iteration.id,
         SRIterationStore,
-        SRListStore
+        SRListStore,
+        project_id
       );
       // console.log(assoSRList);
       iter_issue_sr_list.iterations.push(iteration.title);

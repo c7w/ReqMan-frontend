@@ -126,7 +126,8 @@ const IRCard = (props: IRCardProps) => {
       const assoSRListData = await oneIR2AllSR(
         props.id,
         JSON.stringify(data[0]),
-        JSON.stringify(data[1])
+        JSON.stringify(data[1]),
+        props.project
       );
       // to do: iteration card
       const assoIterData = IR2Iteration(

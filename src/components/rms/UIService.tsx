@@ -38,34 +38,38 @@ export const ProjectServiceCard = (props: ProjectServiceCardProps) => {
   const serviceSRStore = useSelector(getSRServiceStore);
   const SRListStore = useSelector(getSRListStore);
 
+  // get project id
+  const params = useParams<"id">();
+  const project_id = Number(params.id);
+
   const [percentage, setPercentage] = useState(0);
   const [successPercentage, setSuccessPercentage] = useState(0);
 
   const getPercentage = async (service_id: number) => {
     let now = 0;
     let all = 0;
-    (await Service2SR(service_id, serviceSRStore, SRListStore)).forEach(
-      (sr: any) => {
-        all += sr.priority;
-        if (sr.state === "Reviewing" || sr.state === "Done") {
-          now += sr.priority;
-        }
+    (
+      await Service2SR(service_id, serviceSRStore, SRListStore, project_id)
+    ).forEach((sr: any) => {
+      all += sr.priority;
+      if (sr.state === "Reviewing" || sr.state === "Done") {
+        now += sr.priority;
       }
-    );
+    });
     setPercentage(all === 0 ? 0 : Number(((now / all) * 100).toFixed(1)));
   };
 
   const getSuccessPercentage = async (service_id: number) => {
     let now = 0;
     let all = 0;
-    (await Service2SR(service_id, serviceSRStore, SRListStore)).forEach(
-      (sr: any) => {
-        all += sr.priority;
-        if (sr.state === "Done") {
-          now += sr.priority;
-        }
+    (
+      await Service2SR(service_id, serviceSRStore, SRListStore, project_id)
+    ).forEach((sr: any) => {
+      all += sr.priority;
+      if (sr.state === "Done") {
+        now += sr.priority;
       }
-    );
+    });
     setSuccessPercentage(
       all === 0 ? 0 : Number(((now / all) * 100).toFixed(1))
     );

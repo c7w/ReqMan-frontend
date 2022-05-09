@@ -37,9 +37,24 @@ const getRDTSInfo = async (dispatcher: any, project_id: number) => {
     dispatcher(updateCommitStore(JSON.stringify({ code: 0, data: [] })));
     dispatcher(updateIssueStore(JSON.stringify({ code: 0, data: [] })));
     dispatcher(updateMergeStore(JSON.stringify({ code: 0, data: [] })));
-    // promise_list.push(
-    //   getIssueInfo(dispatcher, project_id, JSON.stringify(repo_data))
-    // );
+    promise_list.push(
+      new Promise((resolve) => {
+        resolve({ code: 0, data: [] });
+      })
+      // getIssueInfo(dispatcher, project_id, JSON.stringify(repo_data))
+    );
+    promise_list.push(
+      new Promise((resolve) => {
+        resolve({ code: 0, data: [] });
+      })
+      // getIssueInfo(dispatcher, project_id, JSON.stringify(repo_data))
+    );
+    promise_list.push(
+      new Promise((resolve) => {
+        resolve({ code: 0, data: [] });
+      })
+      // getIssueInfo(dispatcher, project_id, JSON.stringify(repo_data))
+    );
     // promise_list.push(
     //   getCommitInfo(dispatcher, project_id, JSON.stringify(repo_data))
     // );
