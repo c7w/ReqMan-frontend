@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import type { ProColumns } from "@ant-design/pro-table";
 import ProTable from "@ant-design/pro-table";
-import { Input, Button, Modal, Progress, Popconfirm } from "antd";
+import { Input, Button, Modal, Progress, Popconfirm, Typography } from "antd";
 import { IRCardProps, IRSRAssociation } from "../../store/ConfigureStore";
 import "./UIIRList.css";
 import SRList from "./UISRList";
@@ -253,7 +253,7 @@ const UIIRList = (props: UIIRListProps) => {
           }}
           onClick={() => showCardModal(record)}
         >
-          {record.title}
+          <Typography.Link>{record.title}</Typography.Link>
         </div>
       ),
     },

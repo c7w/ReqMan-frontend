@@ -11,6 +11,7 @@ import {
   Select,
   Space,
   Tag,
+  Typography,
 } from "antd";
 import "./UISRList.css";
 import { useDispatch, useSelector } from "react-redux";
@@ -609,7 +610,7 @@ const UISRList = (props: UISRListProps) => {
         }}
         onClick={() => showCardModal(record)}
       >
-        {record.title}
+        <Typography.Link>{record.title}</Typography.Link>
       </div>
     ),
   };
