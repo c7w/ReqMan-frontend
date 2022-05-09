@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import type { ProColumns } from "@ant-design/pro-table";
 import ProTable from "@ant-design/pro-table";
 import { Input, Button, Modal, Progress, Popconfirm } from "antd";
@@ -33,42 +33,52 @@ const UIIRList = (props: UIIRListProps) => {
   const IRSRAssociationData = JSON.parse(props.IRSRAssociation).data;
   const dispatcher = useDispatch();
   const project = props.project_id;
-  const dataIRList: IRCardProps[] = [];
+  const [dataIRList, setDataIRList] = useState<any[]>([]);
   const projectInfo = useSelector(getProjectStore);
+  const [reload, setReload] = useState(0);
 
-  IRListData.forEach((value: IRCardProps) => {
-    const user = userId2UserInfo(Number(value.createdBy), projectInfo);
-    // calculate the IR Progress
-    const curSRKey: number[] = [];
-    IRSRAssociationData.forEach((value0: IRSRAssociation) => {
-      if (value0.IR === value.id) {
-        curSRKey.push(value0.SR);
+  const reload_dataIRList = async () => {
+    const dataIRList = [];
+    for (const value of IRListData) {
+      const user = userId2UserInfo(Number(value.createdBy), projectInfo);
+      // calculate the IR Progress
+      const curSRKey: number[] = [];
+      IRSRAssociationData.forEach((value0: IRSRAssociation) => {
+        if (value0.IR === value.id) {
+          curSRKey.push(value0.SR);
+        }
+      });
+      let totalWeight = 0;
+      let curWeight = 0;
+      for (const value1 of curSRKey) {
+        // TODO: change to async
+        const SRInfo = await SRId2SRInfo(value1, props.SRListStr);
+        totalWeight += SRInfo.priority;
+        if (SRInfo.state === "Done") {
+          curWeight += SRInfo.priority;
+        }
       }
-    });
-    let totalWeight = 0;
-    let curWeight = 0;
-    curSRKey.forEach((value1: number) => {
-      // TODO: change to async
-      const SRInfo = SRId2SRInfo(value1, props.SRListStr);
-      totalWeight += SRInfo.priority;
-      if (SRInfo.state === "Done") {
-        curWeight += SRInfo.priority;
-      }
-    });
-    const curProgress = 0 | ((curWeight * 100) / totalWeight);
-    dataIRList.push({
-      id: value.id,
-      project: value.project,
-      title: value.title,
-      description: value.description,
-      rank: value.rank,
-      createdBy: user.id,
-      createdAt: value.createdAt * 1000,
-      disabled: value.disabled,
-      progress: curProgress,
-      iter: [],
-    });
-  });
+      const curProgress = 0 | ((curWeight * 100) / totalWeight);
+      dataIRList.push({
+        id: value.id,
+        project: value.project,
+        title: value.title,
+        description: value.description,
+        rank: value.rank,
+        createdBy: user.id,
+        createdAt: value.createdAt * 1000,
+        disabled: value.disabled,
+        progress: curProgress,
+        iter: [],
+      });
+    }
+    setDataIRList(dataIRList);
+  };
+
+  useEffect(() => {
+    reload_dataIRList();
+  }, [IRListData, IRSRAssociationData, reload]);
+
   const [isEditModalVisible, setIsEditModalVisible] = useState<boolean>(false);
   const [isCreateModalVisible, setIsCreateModalVisible] =
     useState<boolean>(false);
