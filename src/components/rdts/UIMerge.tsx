@@ -21,6 +21,28 @@ import { useParams } from "react-router-dom";
 import { ReloadOutlined, SyncOutlined } from "@ant-design/icons";
 import { UIUserCardPreview } from "../ums/UIUserCard";
 
+const MergeRelatedSR = (props: { currAssociatedSRId: number }) => {
+  const currAssociatedSRId = props.currAssociatedSRId;
+
+  const SRListStore = useSelector(getSRListStore);
+
+  const [related, setRelated] = useState("-");
+
+  const resetRelated = async () => {
+    if (currAssociatedSRId > 0) {
+      setRelated((await SRId2SRInfo(currAssociatedSRId, SRListStore)).title);
+    } else {
+      setRelated("-");
+    }
+  };
+
+  useEffect(() => {
+    resetRelated();
+  }, [currAssociatedSRId]);
+
+  return <div style={{}}>{related}</div>;
+};
+
 const UIMerge = () => {
   const dispatcher = useDispatch();
 
@@ -146,13 +168,7 @@ const UIMerge = () => {
         if (filtered_list.length > 0) {
           currAssociatedSRId = filtered_list[0].SR;
         }
-        // TODO: change to async
-        const related =
-          currAssociatedSRId <= 0
-            ? "-"
-            : SRId2SRInfo(currAssociatedSRId, SRListStore).title;
-
-        return <div style={{}}>{related}</div>;
+        return <MergeRelatedSR currAssociatedSRId={currAssociatedSRId} />;
       },
     },
   ];
