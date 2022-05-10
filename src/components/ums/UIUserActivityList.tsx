@@ -9,6 +9,7 @@ interface UIUserActivityListProps {
 
 const UIUserActivityList = (props: UIUserActivityListProps) => {
   const myActivities = JSON.parse(props.myActivities);
+  console.debug(myActivities);
   return (
     <div
       className="user-activity-list"

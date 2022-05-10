@@ -3,6 +3,7 @@ enum UserActivityType {
   CLOSE_ISSUE,
   OPEN_MR,
   REVIEW_MR,
+  COMMIT,
 }
 
 export default UserActivityType;

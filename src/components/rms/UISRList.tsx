@@ -1036,7 +1036,7 @@ const UISRList = (props: UISRListProps) => {
           >
             功能需求权重
             <span style={{ color: "grey", fontSize: "0.6rem" }}>
-              （用于计算需求完成进度）
+              （用于加权计算原始需求完成进度）
             </span>
           </p>
           <InputNumber
