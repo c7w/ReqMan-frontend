@@ -171,8 +171,22 @@ const UIServiceReadonly = () => {
   }, [serviceStore]);
   return (
     <div className={"personal-setting-container"}>
-      <Typography.Title level={2}>项目服务</Typography.Title>
-      <hr style={{ width: "90%", margin: "1rem auto" }} />
+      <div
+        style={{
+          fontSize: "2rem",
+          marginLeft: "1rem",
+          userSelect: "none",
+          alignSelf: "flex-start",
+          display: "flex",
+          flexDirection: "row",
+          width: "100%",
+        }}
+      >
+        <p style={{ marginBottom: "0px" }}>项目服务查看</p>
+        <div style={{ flexGrow: "1" }}></div>
+      </div>
+
+      <hr style={{ width: "98%", margin: "1rem auto" }} />
       <div className={"ServiceShowcase"}>
         <div className={"ServiceShowcaseLeft"}>{leftService}</div>
         <div className={"ServiceShowcaseRight"}>{rightService}</div>
