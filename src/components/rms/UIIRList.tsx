@@ -38,48 +38,16 @@ const UIIRList = (props: UIIRListProps) => {
   const projectInfo = useSelector(getProjectStore);
   const [reload, setReload] = useState(0);
 
-  const reload_dataIRList = async () => {
-    const dataIRList = [];
-    for (const value of IRListData) {
-      const user = userId2UserInfo(Number(value.createdBy), projectInfo);
-      // calculate the IR Progress
-      const curSRKey: number[] = [];
-      IRSRAssociationData.forEach((value0: IRSRAssociation) => {
-        if (value0.IR === value.id) {
-          curSRKey.push(value0.SR);
-        }
-      });
-      let totalWeight = 0;
-      let curWeight = 0;
-      for (const value1 of curSRKey) {
-        // TODO: change to async
-        const SRInfo = await SRId2SRInfo(value1, props.SRListStr, project);
-        totalWeight += SRInfo.priority;
-        if (SRInfo.state === "Done") {
-          curWeight += SRInfo.priority;
-        }
-      }
-      const curProgress = 0 | ((curWeight * 100) / totalWeight);
-      dataIRList.push({
-        id: value.id,
-        project: value.project,
-        title: value.title,
-        description: value.description,
-        rank: value.rank,
-        createdBy: user.id,
-        createdAt: value.createdAt * 1000,
-        disabled: value.disabled,
-        progress: curProgress,
-        iter: [],
-      });
-    }
-    setDataIRList(dataIRList);
-    console.debug("UIIRList reloaded");
-  };
+  const [explorerParams, setExplorerParams] = useState({
+    current: 1,
+    pageSize: 10,
+  });
 
   useEffect(() => {
-    reload_dataIRList();
-  }, [reload, props.IRListStr]);
+    if (reload !== 0) {
+      setReload(reload + 1);
+    }
+  }, [props.IRListStr]);
 
   const [isEditModalVisible, setIsEditModalVisible] = useState<boolean>(false);
   const [isCreateModalVisible, setIsCreateModalVisible] =
@@ -341,7 +309,63 @@ const UIIRList = (props: UIIRListProps) => {
     onlyShowColumn.push(columns[i]);
   }
 
-  console.debug(dataIRList);
+  const reload_IR_request = async (
+    { pageSize, current }: any,
+    sort: any,
+    filter: any
+  ) => {
+    // First, slice the IRListData
+    // console.debug(12312312312312);
+    // console.debug(JSON.parse(props.IRListStr).data);
+    // console.debug(props.IRListStr);
+
+    console.debug("current", current);
+    const _IRListData = JSON.parse(props.IRListStr).data.slice(
+      (current - 1) * pageSize,
+      current * pageSize
+    );
+    console.debug(_IRListData);
+
+    // Then, post-process the IRListData
+    const IRListData_processed = await Promise.all(
+      _IRListData.map(async (item: any) => {
+        item.createdAt *= 1000;
+
+        // Calc item.progress
+
+        const curSRKey: number[] = [];
+        IRSRAssociationData.forEach((value0: IRSRAssociation) => {
+          if (value0.IR === item.id) {
+            curSRKey.push(value0.SR);
+          }
+        });
+        let totalWeight = 0;
+        let curWeight = 0;
+
+        const curSRs = await Promise.all(
+          curSRKey.map((value1: number) => {
+            return SRId2SRInfo(value1, props.SRListStr, project);
+          })
+        );
+
+        for (const SRInfo of curSRs) {
+          // TODO: change to async
+          totalWeight += SRInfo.priority;
+          if (SRInfo.state === "Done") {
+            curWeight += SRInfo.priority;
+          }
+        }
+        item.progress = 0 | ((curWeight * 100) / totalWeight);
+        return item;
+      })
+    );
+    console.debug(IRListData_processed);
+    return {
+      data: IRListData_processed,
+      total: JSON.parse(props.IRListStr).data.length,
+      success: true,
+    };
+  };
 
   if (!props.onlyShow) {
     return (
@@ -364,7 +388,9 @@ const UIIRList = (props: UIIRListProps) => {
             density: true,
           }}
           defaultSize={"small"}
-          dataSource={dataIRList}
+          // dataSource={dataIRList}
+          request={reload_IR_request}
+          params={{ reload: reload }}
           rowKey="id"
           pagination={{ pageSize: 10 }}
           tableStyle={{ padding: "1rem 1rem 2rem" }}
@@ -530,7 +556,9 @@ const UIIRList = (props: UIIRListProps) => {
           cardBordered={true}
           columns={onlyShowColumn}
           expandable={{ expandedRowRender }}
-          dataSource={dataIRList}
+          // dataSource={dataIRList}
+          request={reload_IR_request}
+          params={{ reload: reload }}
           rowKey="id"
           pagination={{ pageSize: 10 }}
           scroll={{ y: 400 }}

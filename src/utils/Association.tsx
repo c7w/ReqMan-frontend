@@ -99,10 +99,28 @@ const issueId2IssueInfo = async (
 
 // TODO: change to async
 // 传入 commit 的 Id，返回其详细信息，同时需要传入该项目的 commitList (getCommitStore 而来) （未解析）
-const commitId2CommitInfo = async (commitId: number, commitList: string) => {
+const commitId2CommitInfo = async (
+  commitId: number,
+  commitList: string,
+  project_id: number
+) => {
   // console.log("==================== Get commitInfo By CommitId ===================");
   const commitListData = JSON.parse(commitList).data;
   const commit = commitListData.filter((obj: any) => obj.id === commitId);
+
+  if (commit.length <= 0) {
+    const commit = await request_json(API.GET_PROJECT_SINGLE_COMMIT, {
+      getParams: {
+        id: commitId,
+        project: project_id,
+      },
+    });
+
+    if (commit.code === 0) {
+      return commit.data;
+    }
+  }
+
   return commit.length > 0 ? commit[0] : "not found";
 };
 
@@ -371,17 +389,20 @@ const SR2Issue = async (
 const oneSR2AllCommit = async (
   SRId: number,
   SRCommitAsso: string,
-  commitInfo: string
+  commitInfo: string,
+  project_id: number
 ) => {
   // console.log("================ Get Commit By SR ===============");
   const SRCommitData = JSON.parse(SRCommitAsso).data;
   // console.log(SRCommitData);
 
   const filtered = SRCommitData.filter((obj: any) => obj.SR === SRId);
-  const ret_list: any[] = [];
-  for (const obj of filtered) {
-    ret_list.push(await commitId2CommitInfo(obj.commit, commitInfo));
-  }
+  const ret_list: any[] = await Promise.all(
+    filtered.map((obj: any) =>
+      commitId2CommitInfo(obj.commit, commitInfo, project_id)
+    )
+  );
+  console.debug(ret_list);
   return ret_list;
 };
 
