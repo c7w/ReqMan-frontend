@@ -41,6 +41,7 @@ import {
   SR2ChargedUser,
   SR2Iteration,
   SR2Service,
+  SRId2SRInfo,
   userId2UserInfo,
 } from "../../utils/Association";
 import {
@@ -90,6 +91,12 @@ const UISRList = (props: UISRListProps) => {
   const SRServiceStore = useSelector(getSRServiceStore);
 
   const userSRStore = useSelector(getUserSRStore);
+
+  const [reload, setReload] = useState(0);
+  const [otherRequestParams, setOtherRequestParams] = useState({
+    current: 1,
+    pageSize: 10,
+  });
 
   const curSRKey: number[] = [];
   if (props.IR_id !== -1) {
@@ -279,7 +286,8 @@ const UISRList = (props: UISRListProps) => {
       }).then((res: any) => {
         if (res.code === 0) {
           ToastMessage("success", "修改成功", "您的功能需求状态修改成功");
-          getSRListInfo(dispatcher, props.project_id);
+          // getSRListInfo(dispatcher, props.project_id);
+          setReload(reload + 1);
         } else {
           ToastMessage("error", "修改失败", "您的功能需求状态修改失败");
         }
@@ -408,6 +416,9 @@ const UISRList = (props: UISRListProps) => {
       }
     });
     setIfok(true);
+    setTimeout(() => {
+      setReload(reload + 1);
+    }, 500);
   };
 
   const handleEditCancel = () => {
@@ -445,6 +456,7 @@ const UISRList = (props: UISRListProps) => {
     createSRInfo(dispatcher, project, newSR).then((data: any) => {
       if (data.code === 0) {
         ToastMessage("success", "创建成功", "您的功能需求创建成功");
+        setReload(reload + 1);
         // setTimeout(() => window.location.reload(), 1000);
         setId(-1);
         setTitle("");
@@ -480,6 +492,7 @@ const UISRList = (props: UISRListProps) => {
     deleteSRInfo(dispatcher, project, record).then((data: any) => {
       if (data.code === 0) {
         ToastMessage("success", "删除成功", "您的功能需求删除成功");
+        setReload(reload + 1);
         // setTimeout(() => window.location.reload(), 1000);
         setId(-1);
         setTitle("");
@@ -584,9 +597,11 @@ const UISRList = (props: UISRListProps) => {
 
   const handleCardCancel = () => {
     setIsCardModalVisible(false);
+    setReload(reload + 1);
   };
 
   const handleCardOk = () => {
+    setReload(reload + 1);
     setIsCardModalVisible(false);
   };
 
@@ -846,6 +861,70 @@ const UISRList = (props: UISRListProps) => {
     },
   };
 
+  console.debug(reload);
+
+  const reload_paged_sr = async (
+    { pageSize, current }: any,
+    sort: any,
+    filter: any
+  ) => {
+    const retrieved_data = await request_json(API.GET_SR_PAGED, {
+      getParams: {
+        from: ((current as number) - 1) * (pageSize as number),
+        size: pageSize,
+        project: props.project_id,
+      },
+    });
+    // console.debug(retrieved_data);
+
+    const post_processed_data = retrieved_data.data.payload.map(
+      (value: any) => {
+        value.iter = SR2Iteration(value.id, iterSRAssoStore, iterationStore);
+
+        value.chargedBy = SR2ChargedUser(
+          value.id,
+          userSRStore,
+          projectInfo
+        )[0]?.id;
+
+        value.service = SR2Service(
+          value.id,
+          SRServiceStore,
+          serviceStore
+        )[0]?.id;
+
+        switch (value.state) {
+          case "TODO":
+            value.currState = "未开始";
+            value.stateColor = "red";
+            break;
+          case "WIP":
+            value.currState = "开发中";
+            value.stateColor = "blue";
+            break;
+          case "Reviewing":
+            value.currState = "测试中";
+            value.stateColor = "lime";
+            break;
+          case "Done":
+            value.currState = "已交付";
+            value.stateColor = "green";
+            break;
+        }
+
+        value.createdAt = value.createdAt * 1000;
+
+        return value;
+      }
+    );
+
+    return {
+      data: post_processed_data,
+      success: true,
+      total: retrieved_data.data.total_size,
+    };
+  };
+
   if (!props.showChoose && !props.onlyShow) {
     return (
       <div className={"SRTable"}>
@@ -862,7 +941,9 @@ const UISRList = (props: UISRListProps) => {
           }}
           rowKey="id"
           columns={columns}
-          dataSource={dataSRList}
+          // dataSource={dataSRList}
+          params={{ reload: reload }}
+          request={reload_paged_sr}
           pagination={{ pageSize: 10 }}
           options={{
             fullScreen: false,
@@ -1148,15 +1229,17 @@ const UISRList = (props: UISRListProps) => {
             defaultSelectedRowKeys: curSRKey,
             ...rowSelection,
           }}
-          tableAlertOptionRender={({ selectedRowKeys, selectedRows }) => (
-            <Space size={24}>
-              <span>{`关联功能需求: ${selectedRows.reduce(
-                (pre, item: SRCardProps) => pre + item.title + ", ",
-                ""
-              )} `}</span>
-            </Space>
-          )}
-          dataSource={dataSRList}
+          // tableAlertOptionRender={({ selectedRowKeys, selectedRows }) => (
+          //   <Space size={24}>
+          //     <span>{`关联功能需求: ${selectedRows.reduce(
+          //       (pre, item: SRCardProps) => pre + item.title + ", ",
+          //       ""
+          //     )} `}</span>
+          //   </Space>
+          // )}
+          // dataSource={dataSRList}
+          params={{ reload: reload }}
+          request={reload_paged_sr}
           pagination={{ pageSize: 5 }}
           // scroll={{ y: 300 }}
           search={false}
@@ -1206,7 +1289,9 @@ const UISRList = (props: UISRListProps) => {
           toolBarRender={false}
           rowKey="id"
           columns={showColumn}
-          dataSource={showSRList}
+          // dataSource={showSRList}
+          params={{ reload: reload }}
+          request={reload_paged_sr}
           pagination={{ pageSize: 10 }}
           options={{
             fullScreen: false,
