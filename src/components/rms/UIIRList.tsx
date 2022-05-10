@@ -51,9 +51,15 @@ const UIIRList = (props: UIIRListProps) => {
       });
       let totalWeight = 0;
       let curWeight = 0;
-      for (const value1 of curSRKey) {
+
+      const curSRs = await Promise.all(
+        curSRKey.map((value1: number) => {
+          return SRId2SRInfo(value1, props.SRListStr, project);
+        })
+      );
+
+      for (const SRInfo of curSRs) {
         // TODO: change to async
-        const SRInfo = await SRId2SRInfo(value1, props.SRListStr, project);
         totalWeight += SRInfo.priority;
         if (SRInfo.state === "Done") {
           curWeight += SRInfo.priority;
@@ -341,7 +347,61 @@ const UIIRList = (props: UIIRListProps) => {
     onlyShowColumn.push(columns[i]);
   }
 
-  console.debug(dataIRList);
+  const reload_IR_request = async (
+    { pageSize, current }: any,
+    sort: any,
+    filter: any
+  ) => {
+    // First, slice the IRListData
+    // console.debug(12312312312312);
+    // console.debug(JSON.parse(props.IRListStr).data);
+
+    const _IRListData = JSON.parse(props.IRListStr).data.slice(
+      (current - 1) * pageSize,
+      current * pageSize
+    );
+    console.debug(_IRListData);
+
+    // Then, post-process the IRListData
+    const IRListData_processed = await Promise.all(
+      _IRListData.map(async (item: any) => {
+        item.createdAt *= 1000;
+
+        // Calc item.progress
+
+        const curSRKey: number[] = [];
+        IRSRAssociationData.forEach((value0: IRSRAssociation) => {
+          if (value0.IR === item.id) {
+            curSRKey.push(value0.SR);
+          }
+        });
+        let totalWeight = 0;
+        let curWeight = 0;
+
+        const curSRs = await Promise.all(
+          curSRKey.map((value1: number) => {
+            return SRId2SRInfo(value1, props.SRListStr, project);
+          })
+        );
+
+        for (const SRInfo of curSRs) {
+          // TODO: change to async
+          totalWeight += SRInfo.priority;
+          if (SRInfo.state === "Done") {
+            curWeight += SRInfo.priority;
+          }
+        }
+        item.progress = 0 | ((curWeight * 100) / totalWeight);
+        return item;
+      })
+    );
+    console.debug(IRListData_processed);
+    return {
+      data: IRListData_processed,
+      total: JSON.parse(props.IRListStr).data.length,
+      success: true,
+    };
+  };
 
   if (!props.onlyShow) {
     return (
@@ -364,7 +424,8 @@ const UIIRList = (props: UIIRListProps) => {
             density: true,
           }}
           defaultSize={"small"}
-          dataSource={dataIRList}
+          // dataSource={dataIRList}
+          request={reload_IR_request}
           rowKey="id"
           pagination={{ pageSize: 10 }}
           tableStyle={{ padding: "1rem 1rem 2rem" }}
@@ -530,7 +591,8 @@ const UIIRList = (props: UIIRListProps) => {
           cardBordered={true}
           columns={onlyShowColumn}
           expandable={{ expandedRowRender }}
-          dataSource={dataIRList}
+          // dataSource={dataIRList}
+          request={reload_IR_request}
           rowKey="id"
           pagination={{ pageSize: 10 }}
           scroll={{ y: 400 }}
