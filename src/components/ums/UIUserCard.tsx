@@ -272,9 +272,7 @@ const UIUserCard = (props: UIUserCardProps) => {
             size={100}
             src={
               userInfo.avatar.length < 5
-                ? `https://www.gravatar.com/avatar/${CryptoJS.MD5(
-                    userInfo.email
-                  )}`
+                ? `https://s1.ax1x.com/2022/05/08/O3S6sI.jpg`
                 : userInfo.avatar
             }
           />
@@ -341,9 +339,7 @@ const UIUserCardPreview = (props: UIUserCardPreviewProps) => {
             size={props.previewSize}
             src={
               userInfo.avatar.length < 5
-                ? `https://www.gravatar.com/avatar/${CryptoJS.MD5(
-                    userInfo.email
-                  )}`
+                ? `https://s1.ax1x.com/2022/05/08/O3S6sI.jpg`
                 : userInfo.avatar
             }
           />

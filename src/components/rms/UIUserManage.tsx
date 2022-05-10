@@ -306,7 +306,7 @@ const UserManage = (props: UserManageProps) => {
       avatar:
         value.avatar.length > 5
           ? value.avatar
-          : `https://www.gravatar.com/avatar/${CryptoJS.MD5(value.email)}`,
+          : `https://s1.ax1x.com/2022/05/08/O3S6sI.jpg`,
     });
   });
 

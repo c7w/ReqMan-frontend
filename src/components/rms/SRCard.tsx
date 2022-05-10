@@ -326,7 +326,7 @@ const SRCard = (props: SRCardProps) => {
       )[0];
       const createdByAvatar =
         userInfo.avatar.length < 5
-          ? `https://www.gravatar.com/avatar/${CryptoJS.MD5(userInfo.email)}`
+          ? `https://s1.ax1x.com/2022/05/08/O3S6sI.jpg`
           : userInfo.avatar;
       setCreatedByAvatar(createdByAvatar);
       userInfo = data.data.users.filter(
@@ -335,7 +335,7 @@ const SRCard = (props: SRCardProps) => {
       if (userInfo !== undefined) {
         const chargedByAvatar =
           userInfo.avatar.length < 5
-            ? `https://www.gravatar.com/avatar/${CryptoJS.MD5(userInfo.email)}`
+            ? `https://s1.ax1x.com/2022/05/08/O3S6sI.jpg`
             : userInfo.avatar;
         setChargedByAvatar(chargedByAvatar);
       }
