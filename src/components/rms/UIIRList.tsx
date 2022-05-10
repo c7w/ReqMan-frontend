@@ -8,15 +8,23 @@ import SRList from "./UISRList";
 import { useDispatch, useSelector } from "react-redux";
 import {
   createIRInfo,
+  createIRSR,
   deleteIRInfo,
+  deleteIRSR,
   updateIRInfo,
 } from "../../store/functions/RMS";
 import { ToastMessage } from "../../utils/Navigation";
 import ReactMarkdown from "react-markdown";
-import { SRId2SRInfo, userId2UserInfo } from "../../utils/Association";
+import {
+  oneIR2AllSR,
+  SRId2SRInfo,
+  userId2UserInfo,
+} from "../../utils/Association";
 import { getProjectStore } from "../../store/slices/ProjectSlice";
 import { UIUserCardPreview } from "../ums/UIUserCard";
 import IRCard from "./IRCard";
+import SRSearchBox from "../Shared/SRSearchBox";
+import { difference } from "underscore";
 const { TextArea } = Input;
 
 interface UIIRListProps {
@@ -79,6 +87,7 @@ const UIIRList = (props: UIIRListProps) => {
     setId(-1);
     // setTimeout(() => window.location.reload(), 0);
     setIsSRModalVisible(false);
+    setReload(reload + 1);
   };
 
   const showEditModal = (record: IRCardProps) => {
@@ -367,6 +376,10 @@ const UIIRList = (props: UIIRListProps) => {
     };
   };
 
+  const [selectedSR, setSelectedSR] = useState<any>(
+    JSON.stringify({ code: 0, data: [] })
+  );
+
   if (!props.onlyShow) {
     return (
       <div className={`IRTable`}>
@@ -402,19 +415,45 @@ const UIIRList = (props: UIIRListProps) => {
           centered={true}
           visible={isSRModalVisible}
           onCancel={handleSRCancel}
-          footer={[
-            <Button key="confirm" onClick={handleSROk}>
-              确认
-            </Button>,
-          ]}
+          footer={null}
           width={"70%"}
           destroyOnClose={true}
         >
+          <SRSearchBox
+            value={JSON.parse(props.IRSRAssociation)
+              .data.filter((value: any) => {
+                return value.IR === id;
+              })
+              .map((value: any) => {
+                return value.SR;
+              })}
+            onChange={(from: number[], to: number[]) => {
+              difference(from, to).forEach((value: number) => {
+                deleteIRSR(dispatcher, project, {
+                  IR: id,
+                  SR: value,
+                  id: -1,
+                });
+              });
+              difference(to, from).forEach((value: number) => {
+                createIRSR(dispatcher, project, {
+                  IR: id,
+                  SR: value,
+                  id: -1,
+                });
+              });
+            }}
+            getSelectedSR={(value: any[]) => {
+              console.debug("update to UIIRList", value);
+              setSelectedSR(JSON.stringify({ code: 0, data: value }));
+            }}
+            multiple={true}
+          />
           <SRList
-            showChoose={true}
-            onlyShow={false}
+            showChoose={false}
+            onlyShow={true}
             project_id={props.project_id}
-            SRListStr={props.SRListStr}
+            SRListStr={selectedSR}
             userInfo={props.userInfo}
             IRSRAssociation={props.IRSRAssociation}
             IR_id={id}
@@ -555,7 +594,7 @@ const UIIRList = (props: UIIRListProps) => {
           }}
           cardBordered={true}
           columns={onlyShowColumn}
-          expandable={{ expandedRowRender }}
+          // expandable={{ expandedRowRender }}
           // dataSource={dataIRList}
           request={reload_IR_request}
           params={{ reload: reload }}

@@ -9,6 +9,10 @@
   height: calc(100vh - 108px);
 }
 
+/*::-webkit-scrollbar {*/
+/*  display: none;*/
+/*}*/
+
 .ant-menu-inline .ant-menu-selected::after,
 .ant-menu-inline .ant-menu-item-selected::after {
   border-right: 3px solid #000;

@@ -93,10 +93,6 @@ const UISRList = (props: UISRListProps) => {
   const userSRStore = useSelector(getUserSRStore);
 
   const [reload, setReload] = useState(0);
-  const [otherRequestParams, setOtherRequestParams] = useState({
-    current: 1,
-    pageSize: 10,
-  });
 
   const curSRKey: number[] = [];
   if (props.IR_id !== -1) {
@@ -106,6 +102,8 @@ const UISRList = (props: UISRListProps) => {
       }
     });
   }
+
+  console.debug(SRListData);
 
   // 总任务列表
   const dataSRList: SRCardProps[] = [];
@@ -1289,10 +1287,10 @@ const UISRList = (props: UISRListProps) => {
           toolBarRender={false}
           rowKey="id"
           columns={showColumn}
-          // dataSource={showSRList}
-          params={{ reload: reload }}
-          request={reload_paged_sr}
-          pagination={{ pageSize: 10 }}
+          dataSource={showSRList}
+          // params={{ reload: reload }}
+          // request={reload_paged_sr}
+          pagination={{ pageSize: 5 }}
           options={{
             fullScreen: false,
             reload: false,
