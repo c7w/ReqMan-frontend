@@ -23,8 +23,12 @@ import { UIUserCardPreview } from "../ums/UIUserCard";
 import request_json from "../../utils/Network";
 import API from "../../utils/APIList";
 
-const MergeRelatedSR = (props: { currAssociatedSRId: number }) => {
+const MergeRelatedSR = (props: {
+  currAssociatedSRId: number;
+  show_digest?: boolean;
+}) => {
   const currAssociatedSRId = props.currAssociatedSRId;
+  const show_digest = props.show_digest || false;
 
   // get project id
   const params = useParams<"id">();
@@ -33,14 +37,20 @@ const MergeRelatedSR = (props: { currAssociatedSRId: number }) => {
   const SRListStore = useSelector(getSRListStore);
 
   const [related, setRelated] = useState("-");
+  const [desp, setDesp] = useState("-");
 
   const resetRelated = async () => {
     if (currAssociatedSRId > 0) {
-      setRelated(
-        (await SRId2SRInfo(currAssociatedSRId, SRListStore, project_id)).title
+      const res = await SRId2SRInfo(
+        currAssociatedSRId,
+        SRListStore,
+        project_id
       );
+      setRelated(res.title);
+      setDesp(res.desp);
     } else {
       setRelated("-");
+      setDesp("-");
     }
   };
 
@@ -48,7 +58,7 @@ const MergeRelatedSR = (props: { currAssociatedSRId: number }) => {
     resetRelated();
   }, [currAssociatedSRId]);
 
-  return <div style={{}}>{related}</div>;
+  return <div style={{}}>{show_digest ? `[${related}] ${desp}` : related}</div>;
 };
 
 const UIMerge = () => {
@@ -286,3 +296,4 @@ const UIMerge = () => {
 };
 
 export default UIMerge;
+export { MergeRelatedSR };
