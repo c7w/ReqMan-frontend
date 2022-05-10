@@ -186,7 +186,9 @@ const UIMergeCard = (props: UIMergeCardProps) => {
             关联功能需求
           </span>
           <SRSearchBox
-            value={[81]}
+            value={JSON.parse(props.MRSRAssociationStore)
+              .data.filter((asso: any) => asso.MR === mrId)
+              .map((asso: any) => asso.SR)}
             onChange={onSRAssociatedChange}
             multiple={false}
           />

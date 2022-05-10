@@ -363,7 +363,11 @@ const IRCard = (props: IRCardProps) => {
           <div className="IRModal-content-bottom">
             <div className="IRWrap IR-SR-related">
               <div className="IR-title-related">关联功能需求</div>
-              <div className="IR-content-related">{assoSRCardList}</div>
+              {assoSRCardList.length > 0 ? (
+                <div className="IR-content-related">{assoSRCardList}</div>
+              ) : (
+                <Empty description="暂无关联需求" />
+              )}
             </div>
             {/*<div className="IR-iteration-related IRWrap">*/}
             {/*  <div className="IR-title-related">关联迭代</div>*/}
