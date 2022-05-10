@@ -124,7 +124,7 @@ const LinesChanged = (props: LinesChangedProps) => {
   //     }
   //   }
   // });
-  console.debug(Object.entries(final_result));
+  // console.debug(Object.entries(final_result));
   const option = {
     title: [
       {

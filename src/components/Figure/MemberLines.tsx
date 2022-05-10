@@ -10,7 +10,8 @@ interface MemberLinesProps {
 }
 
 const MemberLines = (props: MemberLinesProps) => {
-  const data = JSON.parse(props.text).data;
+  const data = JSON.parse(props.text);
+
   const projectStore = useSelector(getProjectStore);
   const allUserInfo = JSON.parse(projectStore).data.users;
   const all_name_id: number[] = [];
@@ -19,6 +20,7 @@ const MemberLines = (props: MemberLinesProps) => {
     all_name.push(value.name);
     all_name_id.push(value.id);
   });
+
   const max_len_per_row = 8;
   const new_all_names: string[] = [];
   all_name.forEach((value: string) => {
@@ -32,6 +34,7 @@ const MemberLines = (props: MemberLinesProps) => {
       new_all_names.push(value + " ");
     }
   });
+
   const all_change: any = [];
   const all_add: any = [];
   const all_del: any = [];
@@ -41,15 +44,16 @@ const MemberLines = (props: MemberLinesProps) => {
     all_del.push([]);
     all_change.push([]);
   }
-  data.forEach((item: any) => {
-    const id = item.user_committer;
-    for (let i = 0; i < all_name_id.length; i++) {
-      if (all_name_id[i] === id) {
-        all_change[i].push(item.additions + item.deletions);
-        all_del[i].push(item.deletions);
-        all_add[i].push(item.additions);
-      }
-    }
+  data.forEach((item: any, index: number) => {
+    all_change[index] = item.commit_lines;
+    // const id = item.user_committer;
+    // for (let i = 0; i < all_name_id.length; i++) {
+    //   if (all_name_id[i] === id) {
+    //     all_change[i].push(item.additions + item.deletions);
+    //     all_del[i].push(item.deletions);
+    //     all_add[i].push(item.additions);
+    //   }
+    // }
   });
 
   for (let i = new_all_names.length - 1; i >= 0; i--) {

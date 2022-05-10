@@ -47,6 +47,7 @@ const UIAnalysis = () => {
 
   const [allMergeTime, setAllMergeTime] = useState<any>([]);
   const [allCommitLines, setAllCommitLines] = useState<any>([]);
+  const [allData, setAllData] = useState<any>([]);
 
   // const [MRReviewList, setMRReviewList] = useState({ data: [] });
 
@@ -110,6 +111,9 @@ const UIAnalysis = () => {
         }
       }
       setAllCommitLines(new_all_commit_lines);
+
+      // Reset all data
+      setAllData(res.data);
 
       res.data = res.data.map((activity: any) => {
         return {
@@ -307,7 +311,7 @@ const UIAnalysis = () => {
         <Tabs.TabPane tab="项目 Merge Request 时间轴" key="3">
           <MRTimeFigure
             text={JSON.stringify(allMergeTime)}
-            title={"MR数量统计表"}
+            title={"MR 数量统计表"}
           />
         </Tabs.TabPane>{" "}
         <Tabs.TabPane tab="代码变化行数分段计数" key="4">
@@ -326,10 +330,16 @@ const UIAnalysis = () => {
         }}
       >
         <Tabs.TabPane tab="个人提交次数统计" key="1">
-          <MemberCommit text={commitStore} title={"个人提交次数统计"} />
+          <MemberCommit
+            text={JSON.stringify(allData)}
+            title={"个人提交次数统计"}
+          />
         </Tabs.TabPane>
         <Tabs.TabPane tab="个人提交信息长度分布" key="2">
-          <MemberLines text={commitStore} title={"个人提交信息长度分布"} />
+          <MemberLines
+            text={JSON.stringify(allData)}
+            title={"个人提交信息长度分布"}
+          />
         </Tabs.TabPane>
       </Tabs>
     </div>
