@@ -41,6 +41,7 @@ import {
   SR2ChargedUser,
   SR2Iteration,
   SR2Service,
+  SRId2SRInfo,
   userId2UserInfo,
 } from "../../utils/Association";
 import {
@@ -68,7 +69,7 @@ interface UISRListProps {
   readonly showChoose: boolean;
   readonly onlyShow: boolean;
   readonly project_id: number;
-  readonly SRListStr: string;
+  // readonly SRListStr: string;
   readonly userInfo: string;
   readonly IRSRAssociation: string;
   readonly IR_id: number;
@@ -76,7 +77,7 @@ interface UISRListProps {
 
 const UISRList = (props: UISRListProps) => {
   const userStore = useSelector(getUserStore);
-  const SRListData = JSON.parse(props.SRListStr).data;
+  // const SRListData = JSON.parse(props.SRListStr).data;
   const IRSRAssociationData = JSON.parse(props.IRSRAssociation).data;
 
   const dispatcher = useDispatch();
@@ -90,6 +91,8 @@ const UISRList = (props: UISRListProps) => {
   const SRServiceStore = useSelector(getSRServiceStore);
 
   const userSRStore = useSelector(getUserSRStore);
+
+  const [reload, setReload] = useState(0);
 
   const curSRKey: number[] = [];
   if (props.IR_id !== -1) {
@@ -279,7 +282,8 @@ const UISRList = (props: UISRListProps) => {
       }).then((res: any) => {
         if (res.code === 0) {
           ToastMessage("success", "修改成功", "您的功能需求状态修改成功");
-          getSRListInfo(dispatcher, props.project_id);
+          // getSRListInfo(dispatcher, props.project_id);
+          setReload(reload + 1);
         } else {
           ToastMessage("error", "修改失败", "您的功能需求状态修改失败");
         }
@@ -445,6 +449,7 @@ const UISRList = (props: UISRListProps) => {
     createSRInfo(dispatcher, project, newSR).then((data: any) => {
       if (data.code === 0) {
         ToastMessage("success", "创建成功", "您的功能需求创建成功");
+        setReload(reload + 1);
         // setTimeout(() => window.location.reload(), 1000);
         setId(-1);
         setTitle("");
@@ -480,6 +485,7 @@ const UISRList = (props: UISRListProps) => {
     deleteSRInfo(dispatcher, project, record).then((data: any) => {
       if (data.code === 0) {
         ToastMessage("success", "删除成功", "您的功能需求删除成功");
+        setReload(reload + 1);
         // setTimeout(() => window.location.reload(), 1000);
         setId(-1);
         setTitle("");
@@ -587,6 +593,7 @@ const UISRList = (props: UISRListProps) => {
   };
 
   const handleCardOk = () => {
+    setReload(reload + 1);
     setIsCardModalVisible(false);
   };
 
@@ -862,7 +869,48 @@ const UISRList = (props: UISRListProps) => {
           }}
           rowKey="id"
           columns={columns}
-          dataSource={dataSRList}
+          // dataSource={dataSRList}
+          params={{ reload: reload }}
+          request={async ({ pageSize, current }, sort, filter) => {
+            const retrieved_data = await request_json(API.GET_SR_PAGED, {
+              getParams: {
+                from: ((current as number) - 1) * (pageSize as number),
+                size: pageSize,
+                project: props.project_id,
+              },
+            });
+            console.debug(retrieved_data);
+
+            const post_processed_data = retrieved_data.data.payload.map(
+              (value: any) => {
+                value.iter = SR2Iteration(
+                  value.id,
+                  iterSRAssoStore,
+                  iterationStore
+                );
+
+                value.chargedBy = SR2ChargedUser(
+                  value.id,
+                  userSRStore,
+                  projectInfo
+                )[0]?.id;
+
+                value.service = SR2Service(
+                  value.id,
+                  SRServiceStore,
+                  serviceStore
+                );
+
+                return value;
+              }
+            );
+
+            return {
+              data: post_processed_data,
+              success: true,
+              total: retrieved_data.data.total_size,
+            };
+          }}
           pagination={{ pageSize: 10 }}
           options={{
             fullScreen: false,
