@@ -85,42 +85,43 @@ const UIUserCard = (props: UIUserCardProps) => {
         dev_id: [props.userId],
       },
     });
-    // for (const activity of res.data[0].merges) {
-    //   if (activity.user_authored === props.userId) {
-    //     myActivities.activities.push({
-    //       type: UserActivityType.OPEN_MR,
-    //       timestamp: activity.authoredAt,
-    //       info: activity,
-    //       project: project_id,
-    //     });
-    //   }
-    //   if (activity.user_reviewed === props.userId) {
-    //     myActivities.activities.push({
-    //       type: UserActivityType.REVIEW_MR,
-    //       timestamp: activity.reviewedAt,
-    //       info: activity,
-    //       project: project_id,
-    //     });
-    //   }
-    // }
-    // for (const activity of res.data[0].issues) {
-    //   if (activity.user_authored === props.userId) {
-    //     myActivities.activities.push({
-    //       type: UserActivityType.OPEN_ISSUE,
-    //       timestamp: activity.authoredAt,
-    //       info: activity,
-    //       project: project_id,
-    //     });
-    //   }
-    //   if (activity.user_closed === props.userId) {
-    //     myActivities.activities.push({
-    //       type: UserActivityType.CLOSE_ISSUE,
-    //       timestamp: activity.closedAt,
-    //       info: activity,
-    //       project: project_id,
-    //     });
-    //   }
-    // }
+    console.debug(res);
+    for (const activity of res.data[0].merges) {
+      if (activity.user_authored === props.userId) {
+        myActivities.activities.push({
+          type: UserActivityType.OPEN_MR,
+          timestamp: activity.authoredAt,
+          info: activity,
+          project: project_id,
+        });
+      }
+      if (activity.user_reviewed === props.userId) {
+        myActivities.activities.push({
+          type: UserActivityType.REVIEW_MR,
+          timestamp: activity.reviewedAt,
+          info: activity,
+          project: project_id,
+        });
+      }
+    }
+    for (const activity of res.data[0].issues) {
+      if (activity.user_authored === props.userId) {
+        myActivities.activities.push({
+          type: UserActivityType.OPEN_ISSUE,
+          timestamp: activity.authoredAt,
+          info: activity,
+          project: project_id,
+        });
+      }
+      if (activity.user_closed === props.userId) {
+        myActivities.activities.push({
+          type: UserActivityType.CLOSE_ISSUE,
+          timestamp: activity.closedAt,
+          info: activity,
+          project: project_id,
+        });
+      }
+    }
 
     for (const activity of res.data[0].commits) {
       myActivities.activities.push({

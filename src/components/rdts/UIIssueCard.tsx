@@ -195,18 +195,21 @@ const UIIssueCard = (props: UIIssueCardProps) => {
   }, []);
 
   const indices = [];
-  let idx = data.url.indexOf("/");
-  while (idx != -1) {
-    indices.push(idx);
-    idx = data.url.indexOf("/", idx + 1);
+
+  if (data.url !== undefined) {
+    let idx = data.url.indexOf("/");
+    while (idx != -1) {
+      indices.push(idx);
+      idx = data.url.indexOf("/", idx + 1);
+    }
+
+    const image_front_url = data.url.slice(0, indices[indices.length - 3]);
+
+    data.description = data.description.replaceAll(
+      /!\[image\]\((.*?)\)/g,
+      `<img src='${image_front_url}/$1' style="width: auto; height: auto; max-width: 90%"></img>`
+    );
   }
-
-  const image_front_url = data.url.slice(0, indices[indices.length - 3]);
-
-  data.description = data.description.replaceAll(
-    /!\[image\]\((.*?)\)/g,
-    `<img src='${image_front_url}/$1' style="width: auto; height: auto; max-width: 90%"></img>`
-  );
 
   const onSelectionChange = (val: number[]) => {
     setMRBindDisabled(true);
@@ -251,7 +254,7 @@ const UIIssueCard = (props: UIIssueCardProps) => {
       visible={props.visible}
       onCancel={() => props.close()}
       width={"70%"}
-      title={"合并缺陷查看"}
+      title={"项目缺陷查看"}
     >
       <div className={"meta-data"}>
         <Typography.Title level={4}>

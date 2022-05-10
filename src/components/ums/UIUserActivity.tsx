@@ -29,7 +29,7 @@ interface UIUserActivityProps {
 
 const UIUserActivity = (props: UIUserActivityProps) => {
   const activity = JSON.parse(props.activity);
-  console.debug(activity);
+  // console.debug(activity);
   const userInfo = JSON.parse(props.userInfo);
   const repoStore = useSelector(getRepoStore);
   const SRListStore = useSelector(getSRListStore);
@@ -233,6 +233,7 @@ const UIUserActivity = (props: UIUserActivityProps) => {
                         SRListStore={SRListStore}
                         MRSRAssociationStore={MRSRAssoStore}
                         data={JSON.stringify(activity.info)}
+                        onlyShow={true}
                       />
                     </>
                   );
@@ -254,6 +255,7 @@ const UIUserActivity = (props: UIUserActivityProps) => {
                         SRListStore={SRListStore}
                         MRSRAssociationStore={MRSRAssoStore}
                         data={JSON.stringify(activity.info)}
+                        onlyShow={true}
                       />
                     </>
                   );
