@@ -77,7 +77,7 @@ const UIFileRenderer = (props: UIFileRendererProps) => {
                 {moment(commit.createdAt * 1000).format("YYYY-MM-DD HH:mm")}
               </div>
               {sr !== undefined ? (
-                <div>
+                <div title={`[${sr.title}] ${sr.description}`}>
                   <span style={{ fontSize: "0.9rem", fontWeight: "600" }}>
                     [关联功能需求]
                   </span>
