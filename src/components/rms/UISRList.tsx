@@ -1229,14 +1229,14 @@ const UISRList = (props: UISRListProps) => {
             defaultSelectedRowKeys: curSRKey,
             ...rowSelection,
           }}
-          tableAlertOptionRender={({ selectedRowKeys, selectedRows }) => (
-            <Space size={24}>
-              <span>{`关联功能需求: ${selectedRows.reduce(
-                (pre, item: SRCardProps) => pre + item.title + ", ",
-                ""
-              )} `}</span>
-            </Space>
-          )}
+          // tableAlertOptionRender={({ selectedRowKeys, selectedRows }) => (
+          //   <Space size={24}>
+          //     <span>{`关联功能需求: ${selectedRows.reduce(
+          //       (pre, item: SRCardProps) => pre + item.title + ", ",
+          //       ""
+          //     )} `}</span>
+          //   </Space>
+          // )}
           // dataSource={dataSRList}
           params={{ reload: reload }}
           request={reload_paged_sr}
