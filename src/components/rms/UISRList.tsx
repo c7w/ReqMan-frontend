@@ -69,7 +69,7 @@ interface UISRListProps {
   readonly showChoose: boolean;
   readonly onlyShow: boolean;
   readonly project_id: number;
-  // readonly SRListStr: string;
+  readonly SRListStr: string;
   readonly userInfo: string;
   readonly IRSRAssociation: string;
   readonly IR_id: number;
@@ -77,7 +77,7 @@ interface UISRListProps {
 
 const UISRList = (props: UISRListProps) => {
   const userStore = useSelector(getUserStore);
-  // const SRListData = JSON.parse(props.SRListStr).data;
+  const SRListData = JSON.parse(props.SRListStr).data;
   const IRSRAssociationData = JSON.parse(props.IRSRAssociation).data;
 
   const dispatcher = useDispatch();
@@ -93,6 +93,10 @@ const UISRList = (props: UISRListProps) => {
   const userSRStore = useSelector(getUserSRStore);
 
   const [reload, setReload] = useState(0);
+  const [otherRequestParams, setOtherRequestParams] = useState({
+    current: 1,
+    pageSize: 10,
+  });
 
   const curSRKey: number[] = [];
   if (props.IR_id !== -1) {
@@ -412,6 +416,9 @@ const UISRList = (props: UISRListProps) => {
       }
     });
     setIfok(true);
+    setTimeout(() => {
+      setReload(reload + 1);
+    }, 500);
   };
 
   const handleEditCancel = () => {
@@ -590,6 +597,7 @@ const UISRList = (props: UISRListProps) => {
 
   const handleCardCancel = () => {
     setIsCardModalVisible(false);
+    setReload(reload + 1);
   };
 
   const handleCardOk = () => {
@@ -853,6 +861,70 @@ const UISRList = (props: UISRListProps) => {
     },
   };
 
+  console.debug(reload);
+
+  const reload_paged_sr = async (
+    { pageSize, current }: any,
+    sort: any,
+    filter: any
+  ) => {
+    const retrieved_data = await request_json(API.GET_SR_PAGED, {
+      getParams: {
+        from: ((current as number) - 1) * (pageSize as number),
+        size: pageSize,
+        project: props.project_id,
+      },
+    });
+    // console.debug(retrieved_data);
+
+    const post_processed_data = retrieved_data.data.payload.map(
+      (value: any) => {
+        value.iter = SR2Iteration(value.id, iterSRAssoStore, iterationStore);
+
+        value.chargedBy = SR2ChargedUser(
+          value.id,
+          userSRStore,
+          projectInfo
+        )[0]?.id;
+
+        value.service = SR2Service(
+          value.id,
+          SRServiceStore,
+          serviceStore
+        )[0]?.id;
+
+        switch (value.state) {
+          case "TODO":
+            value.currState = "未开始";
+            value.stateColor = "red";
+            break;
+          case "WIP":
+            value.currState = "开发中";
+            value.stateColor = "blue";
+            break;
+          case "Reviewing":
+            value.currState = "测试中";
+            value.stateColor = "lime";
+            break;
+          case "Done":
+            value.currState = "已交付";
+            value.stateColor = "green";
+            break;
+        }
+
+        value.createdAt = value.createdAt * 1000;
+
+        return value;
+      }
+    );
+
+    return {
+      data: post_processed_data,
+      success: true,
+      total: retrieved_data.data.total_size,
+    };
+  };
+
   if (!props.showChoose && !props.onlyShow) {
     return (
       <div className={"SRTable"}>
@@ -871,46 +943,7 @@ const UISRList = (props: UISRListProps) => {
           columns={columns}
           // dataSource={dataSRList}
           params={{ reload: reload }}
-          request={async ({ pageSize, current }, sort, filter) => {
-            const retrieved_data = await request_json(API.GET_SR_PAGED, {
-              getParams: {
-                from: ((current as number) - 1) * (pageSize as number),
-                size: pageSize,
-                project: props.project_id,
-              },
-            });
-            console.debug(retrieved_data);
-
-            const post_processed_data = retrieved_data.data.payload.map(
-              (value: any) => {
-                value.iter = SR2Iteration(
-                  value.id,
-                  iterSRAssoStore,
-                  iterationStore
-                );
-
-                value.chargedBy = SR2ChargedUser(
-                  value.id,
-                  userSRStore,
-                  projectInfo
-                )[0]?.id;
-
-                value.service = SR2Service(
-                  value.id,
-                  SRServiceStore,
-                  serviceStore
-                );
-
-                return value;
-              }
-            );
-
-            return {
-              data: post_processed_data,
-              success: true,
-              total: retrieved_data.data.total_size,
-            };
-          }}
+          request={reload_paged_sr}
           pagination={{ pageSize: 10 }}
           options={{
             fullScreen: false,
@@ -1204,7 +1237,9 @@ const UISRList = (props: UISRListProps) => {
               )} `}</span>
             </Space>
           )}
-          dataSource={dataSRList}
+          // dataSource={dataSRList}
+          params={{ reload: reload }}
+          request={reload_paged_sr}
           pagination={{ pageSize: 5 }}
           // scroll={{ y: 300 }}
           search={false}
@@ -1254,7 +1289,9 @@ const UISRList = (props: UISRListProps) => {
           toolBarRender={false}
           rowKey="id"
           columns={showColumn}
-          dataSource={showSRList}
+          // dataSource={showSRList}
+          params={{ reload: reload }}
+          request={reload_paged_sr}
           pagination={{ pageSize: 10 }}
           options={{
             fullScreen: false,

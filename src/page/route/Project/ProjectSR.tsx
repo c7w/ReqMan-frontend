@@ -110,7 +110,7 @@ const ProjectSR = () => {
                 showChoose={false}
                 onlyShow={false}
                 project_id={Number(project_id)}
-                // SRListStr={SRListInfo}
+                SRListStr={SRListInfo}
                 userInfo={userInfo}
                 IRSRAssociation={IRSRAssociation}
                 IR_id={-1}

@@ -188,20 +188,23 @@ const deleteServiceInfo = async (
 const getSRListInfo = async (
   dispatcher: any,
   project_id: number
-): Promise<void> => {
+): Promise<any> => {
   const myParams = {
     project: project_id,
     type: "sr",
   };
-  return request_json(API.GET_RMS, { getParams: myParams }).then(
-    (SRList_data) => {
-      // console.log(SRList_data.code);
-      if (SRList_data.code === 0) {
-        dispatcher(updateSRListStore(JSON.stringify(SRList_data)));
-      }
-      return SRList_data;
-    }
-  );
+  // return request_json(API.GET_RMS, { getParams: myParams }).then(
+  //   (SRList_data) => {
+  //     // console.log(SRList_data.code);
+  //     if (SRList_data.code === 0) {
+  //       dispatcher(updateSRListStore(JSON.stringify(SRList_data)));
+  //     }
+  //     return SRList_data;
+  //   }
+  // );
+  return new Promise((resolve, reject) => {
+    resolve({ code: 0, data: [] });
+  });
 };
 
 const createSRInfo = async (
