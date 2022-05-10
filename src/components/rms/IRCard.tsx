@@ -52,6 +52,10 @@ import { useParams } from "react-router-dom";
 
 const IRCard = (props: IRCardProps) => {
   const dispatcher = useDispatch();
+  // get project ID
+  const params = useParams<"id">();
+  const project_id = Number(params.id);
+
   const userInfo = useSelector(getUserStore);
   const projectInfo = useSelector(getProjectStore);
   const IRSRAssoStore = useSelector(getIRSRStore);
@@ -63,14 +67,28 @@ const IRCard = (props: IRCardProps) => {
   const [title, setTitle] = useState<string>(props.title);
   const [progress, setProgress] = useState<number>(props.progress);
   const [description, setDescription] = useState<string>(props.description);
-  const [assoSRCardList, setAssoSRCardList] = useState([]);
+  const [assoSRCardList, setAssoSRCardList] = useState([
+    <SRCard
+      id={-1}
+      key={-1}
+      project={project_id}
+      title={"加载中..."}
+      description={""}
+      priority={1}
+      rank={1}
+      currState={"TODO"}
+      stateColor={"#f5222d"}
+      createdBy={""}
+      createdAt={moment().unix()}
+      disabled={true}
+      iter={[]}
+      chargedBy={-1}
+      service={-1}
+    />,
+  ]);
   const [assoIterList, setAssoIterList] = useState([]);
 
   const [createdByAvatar, setCreatedByAvatar] = useState<string>("");
-
-  // get project ID
-  const params = useParams<"id">();
-  const project_id = Number(params.id);
 
   const handleOK = () => {
     if (

@@ -594,7 +594,7 @@ const UIIRList = (props: UIIRListProps) => {
           }}
           cardBordered={true}
           columns={onlyShowColumn}
-          expandable={{ expandedRowRender }}
+          // expandable={{ expandedRowRender }}
           // dataSource={dataIRList}
           request={reload_IR_request}
           params={{ reload: reload }}
