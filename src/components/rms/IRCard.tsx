@@ -48,6 +48,7 @@ import QueueAnim from "rc-queue-anim";
 import { updateProjectInfo } from "../../store/functions/UMS";
 import { expandSRList } from "../../utils/SRClassification";
 import { getUserSRStore } from "../../store/slices/UserSRSlice";
+import { useParams } from "react-router-dom";
 
 const IRCard = (props: IRCardProps) => {
   const dispatcher = useDispatch();
@@ -67,7 +68,9 @@ const IRCard = (props: IRCardProps) => {
 
   const [createdByAvatar, setCreatedByAvatar] = useState<string>("");
 
-  // console.log(props);
+  // get project ID
+  const params = useParams<"id">();
+  const project_id = Number(params.id);
 
   const handleOK = () => {
     if (
@@ -237,6 +240,11 @@ const IRCard = (props: IRCardProps) => {
     setModalVisible(false);
   };
 
+  // get user role
+  const user_role = JSON.parse(userInfo).data.projects.filter(
+    (project: any) => project.id === Number(project_id)
+  )[0]?.role;
+
   return (
     <>
       <div
@@ -319,10 +327,14 @@ const IRCard = (props: IRCardProps) => {
               }}
             >
               <Paragraph
-                editable={{
-                  onChange: setDescription,
-                  autoSize: { maxRows: 5 },
-                }}
+                editable={
+                  user_role === "supermaster" || user_role === "sys"
+                    ? {
+                        onChange: setDescription,
+                        autoSize: { maxRows: 5 },
+                      }
+                    : false
+                }
               >
                 {description}
               </Paragraph>
@@ -353,19 +365,19 @@ const IRCard = (props: IRCardProps) => {
               <div className="IR-title-related">关联功能需求</div>
               <div className="IR-content-related">{assoSRCardList}</div>
             </div>
-            <div className="IR-iteration-related IRWrap">
-              <div className="IR-title-related">关联迭代</div>
-              {assoIterList.length === 0 ? (
-                <Empty
-                  image={Empty.PRESENTED_IMAGE_SIMPLE}
-                  style={{
-                    width: "100%",
-                  }}
-                />
-              ) : (
-                <>{assoIterList}</>
-              )}
-            </div>
+            {/*<div className="IR-iteration-related IRWrap">*/}
+            {/*  <div className="IR-title-related">关联迭代</div>*/}
+            {/*  {assoIterList.length === 0 ? (*/}
+            {/*    <Empty*/}
+            {/*      image={Empty.PRESENTED_IMAGE_SIMPLE}*/}
+            {/*      style={{*/}
+            {/*        width: "100%",*/}
+            {/*      }}*/}
+            {/*    />*/}
+            {/*  ) : (*/}
+            {/*    <>{assoIterList}</>*/}
+            {/*  )}*/}
+            {/*</div>*/}
           </div>
         </div>
       </Modal>
