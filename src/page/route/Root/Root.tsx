@@ -7,6 +7,7 @@ import iterationPic from "../../../assets/RootPageCarousel/迭代周期.png";
 import calendarPic from "../../../assets/RootPageCarousel/日程表.png";
 import analysisPic from "../../../assets/RootPageCarousel/项目分析.png";
 import servicePic from "../../../assets/RootPageCarousel/项目服务.png";
+import filePic from "../../../assets/RootPageCarousel/项目文件树.png";
 import request_json from "../../../utils/Network";
 import API from "../../../utils/APIList";
 import logo from "../../../assets/ReqMan.png";
@@ -212,6 +213,12 @@ const Root = () => {
               <Image
                 src={iterationPic}
                 alt="项目迭代周期"
+                width="100%"
+                style={{ borderRadius: "2rem" }}
+              />
+              <Image
+                src={filePic}
+                alt="项目文件树"
                 width="100%"
                 style={{ borderRadius: "2rem" }}
               />
