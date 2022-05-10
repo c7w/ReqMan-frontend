@@ -11,10 +11,9 @@
 
 .showIRTable {
   width: 100%;
-  padding-top: 2rem;
+  margin-top: 2rem;
   margin-right: 1rem;
-  padding-bottom: 2rem;
-  padding-right: 2rem;
+  padding: 3rem;
   border-radius: 1rem;
   background-color: #ffffff;
 }
