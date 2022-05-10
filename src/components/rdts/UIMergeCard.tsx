@@ -15,6 +15,7 @@ import { getRepoStore } from "../../store/slices/RepoSlice";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
+import SRSearchBox from "../Shared/SRSearchBox";
 
 interface UIMergeCardProps {
   data: string;
@@ -184,24 +185,31 @@ const UIMergeCard = (props: UIMergeCardProps) => {
           <span className={"meta-data-label"} style={{ marginRight: "1rem" }}>
             关联功能需求
           </span>
-          <Select
-            showSearch={true}
-            style={{ width: "20rem" }}
-            placeholder="功能需求"
-            optionFilterProp="children"
-            onChange={onSRAssociatedChange}
-            defaultValue={currAssociatedSRId.toString()}
-            filterOption={(input, option: any) =>
-              option.children.indexOf(input) >= 0
-            }
-          >
-            <Select.Option value="-1">　</Select.Option>
-            {JSON.parse(props.SRListStore).data.map((sr: any) => (
-              <Select.Option key={sr.id} value={sr.id.toString()}>
-                {sr.title}
-              </Select.Option>
-            ))}
-          </Select>
+          {/*<Select*/}
+          {/*  showSearch={true}*/}
+          {/*  style={{ width: "20rem" }}*/}
+          {/*  placeholder="功能需求"*/}
+          {/*  optionFilterProp="children"*/}
+          {/*  onChange={onSRAssociatedChange}*/}
+          {/*  defaultValue={currAssociatedSRId.toString()}*/}
+          {/*  filterOption={(input, option: any) =>*/}
+          {/*    option.children.indexOf(input) >= 0*/}
+          {/*  }*/}
+          {/*>*/}
+          {/*  <Select.Option value="-1">　</Select.Option>*/}
+          {/*  {JSON.parse(props.SRListStore).data.map((sr: any) => (*/}
+          {/*    <Select.Option key={sr.id} value={sr.id.toString()}>*/}
+          {/*      {sr.title}*/}
+          {/*    </Select.Option>*/}
+          {/*  ))}*/}
+          {/*</Select>*/}
+          <SRSearchBox
+            value={[81]}
+            onChange={(from: number[], to: number[]) => {
+              console.debug(from, to);
+            }}
+            multiple={false}
+          />
         </div>
       </div>
     </Modal>

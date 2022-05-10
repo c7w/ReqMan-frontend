@@ -3,6 +3,9 @@ import { UIMergeCard } from "./UIMergeCard";
 import { Avatar, Space, Tag, Typography } from "antd";
 import "./MRCard.css";
 import Text from "antd/es/typography/Text";
+import { userId2UserInfo } from "../../utils/Association";
+import { getProjectStore } from "../../store/slices/ProjectSlice";
+import { useSelector } from "react-redux";
 
 interface MRCardProps {
   SRListStore: string;
@@ -13,6 +16,9 @@ interface MRCardProps {
 const MRCard = (props: MRCardProps) => {
   const data = JSON.parse(props.data);
   const rgx_match = data.title.match(new RegExp("\\[(.*?)\\] (.*)")); // 匹配 [SR.001.001] sth
+
+  const projectInfo = useSelector(getProjectStore);
+
   const title = rgx_match[1];
   const description = rgx_match[2];
   const [visible, setVisible] = useState(false);
@@ -37,6 +43,12 @@ const MRCard = (props: MRCardProps) => {
         return "正在审核";
     }
   };
+
+  let username = data.authoredByUserName;
+  if (data.user_authored > 0) {
+    username = userId2UserInfo(data.user_authored, projectInfo)?.name;
+  }
+
   return (
     <>
       <UIMergeCard
@@ -62,7 +74,7 @@ const MRCard = (props: MRCardProps) => {
           </Typography>
         </div>
         <div className="MRCard-small-down">
-          <span>{"@" + data.authoredByUserName}</span>
+          <span>{"@" + username}</span>
           <Space>
             <Tag
               color={getBackgroundColor(data.state)}
