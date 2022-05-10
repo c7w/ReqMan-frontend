@@ -204,7 +204,11 @@ const UIFile = () => {
           );
           setSavedBranches(JSON.stringify(curr_branch));
         } else {
-          ToastMessage("error", "请求失败", "请求地址不存在！");
+          ToastMessage(
+            "error",
+            "请求失败",
+            "项目仓库令牌不可用，请联系项目管理员！"
+          );
           Redirect(dispatcher, `/project/${project_id}/tree/`, 0);
         }
       });

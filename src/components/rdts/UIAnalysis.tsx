@@ -45,6 +45,9 @@ const UIAnalysis = () => {
   const mergeStore = useSelector(getMergeStore);
   const commitStore = useSelector(getCommitStore);
 
+  const [allMergeTime, setAllMergeTime] = useState<any>([]);
+  const [allCommitLines, setAllCommitLines] = useState<any>([]);
+
   // const [MRReviewList, setMRReviewList] = useState({ data: [] });
 
   const [iter_issue_sr_list, set_iter_issue_sr_list] = useState({
@@ -68,6 +71,7 @@ const UIAnalysis = () => {
         limit: 3600 * 24 * 7,
       },
     }).then((res: any) => {
+      console.debug(res.data);
       res.data = res.data.map((activity: any) => {
         return {
           ...activity,
@@ -87,6 +91,26 @@ const UIAnalysis = () => {
         limit: -1,
       },
     }).then((res: any) => {
+      // Reset all merge time
+      const new_all_merge_time = [];
+      for (const user_activity of res.data) {
+        const user_merge_time: number[] = user_activity.mr_times;
+        for (const merge_time of user_merge_time) {
+          new_all_merge_time.push(merge_time);
+        }
+      }
+      setAllMergeTime(new_all_merge_time);
+
+      // Reset commit lines
+      const new_all_commit_lines = [];
+      for (const user_activity of res.data) {
+        const user_commit_lines: number[] = user_activity.commit_lines;
+        for (const commit_line of user_commit_lines) {
+          new_all_commit_lines.push(commit_line);
+        }
+      }
+      setAllCommitLines(new_all_commit_lines);
+
       res.data = res.data.map((activity: any) => {
         return {
           ...activity,
@@ -280,15 +304,18 @@ const UIAnalysis = () => {
           <CommitFigure title={"Commit数量统计表"} text={overall} />
         </Tabs.TabPane>
         {/*TODO: These two figures crashed!!!*/}
-        {/*<Tabs.TabPane tab="项目 Merge Request 时间轴" key="3">*/}
-        {/*  <MRTimeFigure*/}
-        {/*    text={JSON.stringify(MRReviewList)}*/}
-        {/*    title={"MR数量统计表"}*/}
-        {/*  />*/}
-        {/*</Tabs.TabPane>{" "}*/}
-        {/*<Tabs.TabPane tab="代码变化行数分段计数" key="4">*/}
-        {/*  <LinesChanged text={commitStore} title={"代码变化行数分段计数"} />*/}
-        {/*</Tabs.TabPane>*/}
+        <Tabs.TabPane tab="项目 Merge Request 时间轴" key="3">
+          <MRTimeFigure
+            text={JSON.stringify(allMergeTime)}
+            title={"MR数量统计表"}
+          />
+        </Tabs.TabPane>{" "}
+        <Tabs.TabPane tab="代码变化行数分段计数" key="4">
+          <LinesChanged
+            text={JSON.stringify(allCommitLines)}
+            title={"代码变化行数分段计数"}
+          />
+        </Tabs.TabPane>
       </Tabs>
       <Tabs
         defaultActiveKey="1"
