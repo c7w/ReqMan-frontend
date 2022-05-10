@@ -89,8 +89,8 @@ const UIMergeCard = (props: UIMergeCardProps) => {
     currAssociatedSRId = filtered_list[0].SR;
   }
 
-  const onSRAssociatedChange = (val: string) => {
-    const key = Number(val);
+  const onSRAssociatedChange = (from: number[], to: number[]) => {
+    const key = Number(to);
     if (currAssociatedSRId > 0) {
       console.debug(currAssociatedSRId);
       deleteMRSRAssociation(
@@ -185,29 +185,9 @@ const UIMergeCard = (props: UIMergeCardProps) => {
           <span className={"meta-data-label"} style={{ marginRight: "1rem" }}>
             关联功能需求
           </span>
-          {/*<Select*/}
-          {/*  showSearch={true}*/}
-          {/*  style={{ width: "20rem" }}*/}
-          {/*  placeholder="功能需求"*/}
-          {/*  optionFilterProp="children"*/}
-          {/*  onChange={onSRAssociatedChange}*/}
-          {/*  defaultValue={currAssociatedSRId.toString()}*/}
-          {/*  filterOption={(input, option: any) =>*/}
-          {/*    option.children.indexOf(input) >= 0*/}
-          {/*  }*/}
-          {/*>*/}
-          {/*  <Select.Option value="-1">　</Select.Option>*/}
-          {/*  {JSON.parse(props.SRListStore).data.map((sr: any) => (*/}
-          {/*    <Select.Option key={sr.id} value={sr.id.toString()}>*/}
-          {/*      {sr.title}*/}
-          {/*    </Select.Option>*/}
-          {/*  ))}*/}
-          {/*</Select>*/}
           <SRSearchBox
             value={[81]}
-            onChange={(from: number[], to: number[]) => {
-              console.debug(from, to);
-            }}
+            onChange={onSRAssociatedChange}
             multiple={false}
           />
         </div>
