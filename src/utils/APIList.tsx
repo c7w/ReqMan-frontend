@@ -171,6 +171,10 @@ const API = {
     path: "/rms/search_sr/",
     method: "post",
   },
+  GET_RMS_DASHBOARD: {
+    path: "/rms/dashboard/",
+    method: "get",
+  },
 };
 
 export default API;
