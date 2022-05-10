@@ -130,6 +130,12 @@ const UIMergeCard = (props: UIMergeCardProps) => {
   );
   // console.debug(data.description);
 
+  // console.debug(
+  //   JSON.parse(props.MRSRAssociationStore).data.filter(
+  //     (asso: any) => asso.MR === data.id
+  //   )
+  // );
+
   return (
     <Modal
       centered={true}
@@ -191,11 +197,18 @@ const UIMergeCard = (props: UIMergeCardProps) => {
           </span>
 
           {props.onlyShow ? (
-            <MergeRelatedSR currAssociatedSRId={data.id} show_digest={true} />
+            <MergeRelatedSR
+              currAssociatedSRId={
+                JSON.parse(props.MRSRAssociationStore)
+                  .data.filter((asso: any) => asso.MR === data.id)
+                  .map((asso: any) => asso.SR)[0]
+              }
+              show_digest={true}
+            />
           ) : (
             <SRSearchBox
               value={JSON.parse(props.MRSRAssociationStore)
-                .data.filter((asso: any) => asso.MR === mrId)
+                .data.filter((asso: any) => asso.MR === data.id)
                 .map((asso: any) => asso.SR)}
               onChange={onSRAssociatedChange}
               multiple={false}

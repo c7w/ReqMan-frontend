@@ -40,14 +40,16 @@ const MergeRelatedSR = (props: {
   const [desp, setDesp] = useState("-");
 
   const resetRelated = async () => {
-    if (currAssociatedSRId > 0) {
+    // console.debug("related", currAssociatedSRId);
+    if (currAssociatedSRId !== undefined && currAssociatedSRId > 0) {
       const res = await SRId2SRInfo(
         currAssociatedSRId,
         SRListStore,
         project_id
       );
+
       setRelated(res.title);
-      setDesp(res.desp);
+      setDesp(res.description);
     } else {
       setRelated("-");
       setDesp("-");
@@ -58,7 +60,27 @@ const MergeRelatedSR = (props: {
     resetRelated();
   }, [currAssociatedSRId]);
 
-  return <div style={{}}>{show_digest ? `[${related}] ${desp}` : related}</div>;
+  let display_message = "";
+  if (show_digest) {
+    if (related === "-" && desp === "-") {
+      display_message = "未关联功能需求";
+    } else {
+      display_message = `[${related}]  ${desp}`;
+    }
+  } else {
+    display_message = related;
+  }
+
+  return (
+    <div
+      style={{
+        marginLeft: props.show_digest ? "2rem" : "0",
+        marginTop: props.show_digest ? "1rem" : "0rem",
+      }}
+    >
+      {display_message}
+    </div>
+  );
 };
 
 const UIMerge = () => {
