@@ -60,6 +60,7 @@ const UserModel = (props: UserModelProps) => {
   const params = useParams<"id">();
   const project_id = Number(params.id);
 
+  const userStore = useSelector(getUserStore);
   const iterationStore = useSelector(getIterationStore);
   const userIterStore = useSelector(getUserIterationStore);
 
@@ -155,7 +156,14 @@ const UserModel = (props: UserModelProps) => {
             用户身份：
           </p>
           <Select
-            disabled={JSON.parse(props.userInfo).role === "项目管理员"}
+            disabled={
+              JSON.parse(props.userInfo).role === "项目管理员" ||
+              ["sys"].indexOf(
+                JSON.parse(userStore).data.projects.filter(
+                  (project: any) => project.id === Number(project_id)
+                )[0].role
+              ) >= 0
+            }
             defaultValue={JSON.parse(props.userInfo).role}
             style={{ width: "20rem" }}
             onChange={(value) => {
@@ -255,6 +263,16 @@ const UserModel = (props: UserModelProps) => {
               </table>
             )}
           </div>
+        </div>
+        <div>
+          <p
+            style={{
+              color: "red",
+              marginTop: "1rem",
+            }}
+          >
+            警告：开发过程中的角色更改可能会导致需求状态回退，已配置的负责迭代关系被删除，已配置的需求负责关系被删除，请谨慎操作！
+          </p>
         </div>
       </Modal>
     );

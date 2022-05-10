@@ -187,7 +187,7 @@ const UIIssueCard = (props: UIIssueCardProps) => {
       }
     }
     setTimelineList(timeline_list);
-    console.debug(timeline_list);
+    // console.debug(timeline_list);
   };
 
   useEffect(() => {
