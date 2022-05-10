@@ -31,24 +31,25 @@ const Home = (props: LayoutProps) => {
         >
           {props.sidebar ? (
             <Sidebar
-              getSidebarWidth={(width: number) => {
-                console.log(width);
-                setSidebarWidth(width);
-              }}
+              getSidebarWidth={(width: number) => setSidebarWidth(width)}
             />
           ) : (
             <></>
           )}
           <div
             style={{
-              marginRight: (sidebarWidth + 50).toString() + "px",
+              // marginRight: props.sidebar
+              //   ? (sidebarWidth + 50).toString() + "px"
+              //   : sidebarWidth.toString() + "px",
               height: "100vh",
             }}
-          ></div>
+          />
           <div
             className="layout-right"
             style={{
-              // marginLeft: (sidebarWidth + 50).toString() + "px",
+              marginLeft: props.sidebar
+                ? (sidebarWidth + 50).toString() + "px"
+                : sidebarWidth.toString() + "px",
               // marginLeft: "50px",
               marginRight: props.sidebar ? "5vw" : "200px",
               transition: "all, 0.2s",
