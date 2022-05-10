@@ -15,6 +15,7 @@ import { getRepoStore } from "../../store/slices/RepoSlice";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
+import SRSearchBox from "../Shared/SRSearchBox";
 
 interface UIMergeCardProps {
   data: string;
@@ -88,8 +89,8 @@ const UIMergeCard = (props: UIMergeCardProps) => {
     currAssociatedSRId = filtered_list[0].SR;
   }
 
-  const onSRAssociatedChange = (val: string) => {
-    const key = Number(val);
+  const onSRAssociatedChange = (from: number[], to: number[]) => {
+    const key = Number(to);
     if (currAssociatedSRId > 0) {
       console.debug(currAssociatedSRId);
       deleteMRSRAssociation(
@@ -184,24 +185,13 @@ const UIMergeCard = (props: UIMergeCardProps) => {
           <span className={"meta-data-label"} style={{ marginRight: "1rem" }}>
             关联功能需求
           </span>
-          <Select
-            showSearch={true}
-            style={{ width: "20rem" }}
-            placeholder="功能需求"
-            optionFilterProp="children"
+          <SRSearchBox
+            value={JSON.parse(props.MRSRAssociationStore)
+              .data.filter((asso: any) => asso.MR === mrId)
+              .map((asso: any) => asso.SR)}
             onChange={onSRAssociatedChange}
-            defaultValue={currAssociatedSRId.toString()}
-            filterOption={(input, option: any) =>
-              option.children.indexOf(input) >= 0
-            }
-          >
-            <Select.Option value="-1">　</Select.Option>
-            {JSON.parse(props.SRListStore).data.map((sr: any) => (
-              <Select.Option key={sr.id} value={sr.id.toString()}>
-                {sr.title}
-              </Select.Option>
-            ))}
-          </Select>
+            multiple={false}
+          />
         </div>
       </div>
     </Modal>
