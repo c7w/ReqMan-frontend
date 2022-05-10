@@ -155,7 +155,8 @@ const SRCard = (props: SRCardProps) => {
       const assoCommitListData: any[] = await oneSR2AllCommit(
         props.id,
         JSON.stringify(data[0][5]),
-        JSON.stringify(data[0][1])
+        JSON.stringify(data[0][1]),
+        project_id
       );
       assoCommitListData.sort(
         (commit_1: any, commit_2: any) =>
