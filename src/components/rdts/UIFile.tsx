@@ -16,6 +16,7 @@ import request_json from "../../utils/Network";
 import API from "../../utils/APIList";
 import Loading from "../../layout/components/Loading";
 import moment from "moment";
+import UIFileRenderer from "./UIFileRenderer";
 
 const UIFileNotFound = () => {
   const dispatcher = useDispatch();
@@ -311,8 +312,8 @@ const UIFile = () => {
     }
   }
 
-  console.debug(savedCodes);
-  console.debug(currCode);
+  // console.debug(savedCodes);
+  // console.debug(currCode);
 
   let code_to_render = "";
 
@@ -470,7 +471,7 @@ const UIFile = () => {
             <Loading />
           </div>
         ) : (
-          <div style={{ width: "90%" }}>
+          <div style={{ width: "100%" }}>
             {((currCodeType: string, currCode: string) => {
               switch (currCodeType) {
                 case "jpg":
@@ -498,7 +499,10 @@ const UIFile = () => {
                   );
                 default:
                   return (
-
+                    <UIFileRenderer
+                      currCodeType={currCodeType}
+                      currCode={currCode}
+                    />
                   );
               }
             })(currCodeType, currCode)}

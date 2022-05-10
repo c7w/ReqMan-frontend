@@ -2,6 +2,9 @@ import { a11yDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import moment from "moment";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import React from "react";
+import { UIUserCardPreview } from "../ums/UIUserCard";
+import { getProjectStore } from "../../store/slices/ProjectSlice";
+import { useSelector } from "react-redux";
 
 interface UIFileRendererProps {
   currCodeType: string;
@@ -9,8 +12,138 @@ interface UIFileRendererProps {
 }
 
 const UIFileRenderer = (props: UIFileRendererProps) => {
-  const currCode = props.currCode;
+  const currCode = JSON.parse(props.currCode);
 
+  const projectStore = useSelector(getProjectStore);
+
+  const RENDER = [];
+  let start_line_num = 1;
+
+  console.debug(currCode);
+  for (const entry of currCode.relationship) {
+    const commit_list = Object.values(currCode.Commits).filter(
+      (commit: any) => commit.id === entry.local_commit
+    );
+    const commit: any = commit_list[0];
+
+    const sr_list = Object.values(currCode.SR).filter(
+      (sr: any) => sr.id === entry.SR
+    );
+    const sr: any = sr_list[0];
+
+    RENDER.push([
+      <div
+        style={{
+          // width: "100%",
+          // height: "92%",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          // whiteSpace: "nowrap",
+          borderRadius: "0.2rem",
+          padding: "1rem",
+          marginTop: "0.4rem",
+          display: "flex",
+          flexDirection: "row",
+        }}
+      >
+        {commit !== undefined ? (
+          <>
+            <div>
+              <UIUserCardPreview
+                projectStore={projectStore}
+                userId={commit.user_committer}
+                previewSize={48}
+              />
+            </div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                marginLeft: "1rem",
+                wordWrap: "break-word",
+              }}
+            >
+              <div
+                style={{ fontWeight: "600", fontSize: "0.9rem" }}
+                title={"[" + commit.hash_id.slice(0, 6) + "]" + commit.title}
+              >
+                {commit.title}
+              </div>
+              <div>
+                <span style={{ fontSize: "0.9rem", fontWeight: "600" }}>
+                  [提交时间]
+                </span>
+                &nbsp;&nbsp;
+                {moment(commit.createdAt * 1000).format("YYYY-MM-DD HH:mm")}
+              </div>
+              {sr !== undefined ? (
+                <div>
+                  <span style={{ fontSize: "0.9rem", fontWeight: "600" }}>
+                    [关联功能需求]
+                  </span>
+                  &nbsp;&nbsp; {sr.title}
+                </div>
+              ) : null}
+            </div>
+          </>
+        ) : (
+          "No commit"
+        )}
+
+        {/*{JSON.stringify(commit)}*/}
+      </div>,
+
+      <div
+        style={{
+          width: "100%",
+          overflow: "hidden",
+          height: "100%",
+        }}
+      >
+        <SyntaxHighlighter
+          language={props.currCodeType}
+          style={a11yDark}
+          startingLineNumber={start_line_num}
+          showLineNumbers={true}
+          // wrapLongLines={true}
+          wrapLines={true}
+          customStyle={{
+            height: "100%",
+            margin: "0",
+            borderRadius: "0",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "start",
+          }}
+        >
+          {entry.lines.join("\n") ? entry.lines.join("\n") : " "}
+        </SyntaxHighlighter>
+      </div>,
+    ]);
+
+    start_line_num += entry.lines.length;
+  }
+
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      {RENDER.map((entry: any) => {
+        return (
+          <div className={"render-row"}>
+            <div className={"render-row-c1"}>{entry[0]}</div>
+            <div className={"render-row-c2"}>{entry[1]}</div>
+          </div>
+        );
+      })}
+    </div>
+  );
 
   // return (
   //   <SyntaxHighlighter
@@ -126,6 +259,5 @@ const UIFileRenderer = (props: UIFileRendererProps) => {
   //   >
   //     {code_to_render}
   //   </SyntaxHighlighter>
-  );
 };
 export default UIFileRenderer;
