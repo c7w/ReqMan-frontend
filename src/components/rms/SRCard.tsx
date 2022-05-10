@@ -78,6 +78,7 @@ import IssueCard from "../rdts/IssueCard";
 import UICommitList from "../rdts/UICommitList";
 import { getServiceStore } from "../../store/slices/ServiceSlice";
 import { ProjectServiceCard } from "./UIService";
+import { useParams } from "react-router-dom";
 const { Text } = Typography;
 
 const SRCard = (props: SRCardProps) => {
@@ -126,6 +127,10 @@ const SRCard = (props: SRCardProps) => {
   // 关联 service 的附带状态
   const [cached, setCached] = useState("");
   const [modal, setModal] = useState(false);
+
+  // get project ID
+  const params = useParams<"id">();
+  const project_id = Number(params.id);
 
   // 更新打开的 modal 对应的 SR 的所有关系
   const updateAssociation = async () => {
@@ -416,6 +421,10 @@ const SRCard = (props: SRCardProps) => {
   );
 
   // if (userInfo === "" || projectStore === "") return <Loading />;
+  // get user role
+  const user_role = JSON.parse(userInfo).data.projects.filter(
+    (project: any) => project.id === Number(project_id)
+  )[0]?.role;
 
   return (
     <>
@@ -495,6 +504,7 @@ const SRCard = (props: SRCardProps) => {
               defaultValue={state2ChineseState.get(props.currState)}
               style={{ width: 120 }}
               onChange={handleChange}
+              disabled={!(user_role === "supermaster" || user_role === "sys")}
             >
               <Select.Option value="未开始">未开始</Select.Option>
               <Select.Option value="开发中">开发中</Select.Option>
@@ -521,14 +531,18 @@ const SRCard = (props: SRCardProps) => {
                 <Paragraph
                   className="SRModal-content-desc"
                   id="description-inner"
-                  editable={{
-                    onChange: setDescription,
-                    maxLength: 512,
-                    editing: descEditing,
-                    icon: null,
-                    onEnd: () => setDescEditing(false),
-                    onCancel: () => setDescEditing(false),
-                  }}
+                  editable={
+                    user_role === "supermaster" || user_role === "sys"
+                      ? {
+                          onChange: setDescription,
+                          maxLength: 512,
+                          editing: descEditing,
+                          icon: null,
+                          onEnd: () => setDescEditing(false),
+                          onCancel: () => setDescEditing(false),
+                        }
+                      : false
+                  }
                   ellipsis={{
                     rows: 6,
                   }}
