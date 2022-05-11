@@ -115,7 +115,7 @@ const IssueFigure = (props: IssueFigureProps) => {
         yAxisIndex: 1,
         tooltip: {
           valueFormatter: function (value: any) {
-            return value + "%";
+            return (isNaN(value) ? 0.0 : value) + "%";
           },
         },
         data: errors,
