@@ -379,12 +379,6 @@ const UIIRList = (props: UIIRListProps) => {
     JSON.stringify({ code: 0, data: [] })
   );
 
-  const pageOnChange = (page: number, pageSize: number) => {
-    console.log("page: ", page);
-    console.log("page size: ", pageSize);
-    // currentPage.current = page;
-  };
-
   if (!props.onlyShow) {
     return (
       <div className={`IRTable`}>
@@ -413,7 +407,6 @@ const UIIRList = (props: UIIRListProps) => {
           rowKey="id"
           pagination={{
             pageSize: 10,
-            onChange: pageOnChange,
           }}
           tableStyle={{ padding: "1rem 1rem 2rem" }}
           dateFormatter="string"
@@ -608,7 +601,7 @@ const UIIRList = (props: UIIRListProps) => {
           request={reload_IR_request}
           params={{ reload: reload }}
           rowKey="id"
-          pagination={{ pageSize: 10, onChange: pageOnChange }}
+          pagination={{ pageSize: 10 }}
           scroll={{ y: 400 }}
           tableStyle={{ padding: "1rem 1rem 2rem" }}
           dateFormatter="string"
