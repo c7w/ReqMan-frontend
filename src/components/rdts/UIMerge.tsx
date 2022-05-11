@@ -71,8 +71,13 @@ const MergeRelatedSR = (props: {
       display_title = `[${related}]  ${desp}`;
     }
   } else {
-    display_message = related;
-    display_title = `[${related}]  ${desp}`;
+    if (related === "-" && desp === "-") {
+      display_message = "-";
+      display_title = "未关联功能需求";
+    } else {
+      display_message = related;
+      display_title = `[${related}]  ${desp}`;
+    }
   }
 
   return (
