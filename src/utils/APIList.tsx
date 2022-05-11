@@ -175,6 +175,22 @@ const API = {
     path: "/rms/dashboard/",
     method: "get",
   },
+  GET_RMS_ITERATION_DIGEST: {
+    path: "/rms/get_iteration_digest/",
+    method: "get",
+  },
+  GET_RMS_ITERATION_SR: {
+    path: "/rms/get_iteration_sr/",
+    method: "get",
+  },
+  GET_RMS_SERVICE_SR: {
+    path: "/rms/get_service_sr/",
+    method: "get",
+  },
+  GET_RMS_IR_SR: {
+    path: "/rms/get_ir_sr/",
+    method: "get",
+  },
 };
 
 export default API;
