@@ -69,6 +69,8 @@ const ProjectIteration = () => {
   useEffect(() => {
     // Update initial state of subscribed stores
     updateUserInfo(dispatcher);
+    console.debug("!!!!!!!!");
+    console.debug("project_id", project_id);
     updateProjectInfo(dispatcher, project_id);
     getIterationInfo(dispatcher, project_id);
     getIRListInfo(dispatcher, project_id);

@@ -36,6 +36,8 @@ const updateProjectInfo = async (dispatcher: any, project_id: number) => {
   const projectData = await request_json(API.POST_PROJECT, {
     body: { project: project_id },
   });
+  console.debug("??????");
+  console.debug("project_id: ", project_id);
   dispatcher(updateProjectStore(JSON.stringify(projectData)));
   return projectData;
 };

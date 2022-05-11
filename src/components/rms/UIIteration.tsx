@@ -412,7 +412,7 @@ const UIIteration = () => {
           maxIter = i;
         }
       }
-      setCurrIteration(iterInfo[maxIter].id as number);
+      setCurrIteration(iterInfo[maxIter]?.id as number);
     }
   }, [iterationStore]);
 
@@ -424,34 +424,37 @@ const UIIteration = () => {
       Reviewing: [],
       Done: [],
     };
-    // Read all SRs
-    const SRs = await Iteration2SR(
-      currIteration,
-      SRIterStore,
-      SRStore,
-      Number(project_id)
-    );
-    console.debug(SRs);
-    for (let i = 0; i < SRs.length; i++) {
-      const sr = SRs[i];
-      // Switch status
-      switch (sr.state) {
-        case "TODO":
-          currSR.TODO.push(sr);
-          break;
-        case "WIP":
-          currSR.WIP.push(sr);
-          break;
-        case "Reviewing":
-          currSR.Reviewing.push(sr);
-          break;
-        case "Done":
-          currSR.Done.push(sr);
-          break;
+
+    if (currIteration > 0) {
+      // Read all SRs
+      const SRs = await Iteration2SR(
+        currIteration,
+        SRIterStore,
+        SRStore,
+        Number(project_id)
+      );
+      console.debug(SRs);
+      for (let i = 0; i < SRs.length; i++) {
+        const sr = SRs[i];
+        // Switch status
+        switch (sr.state) {
+          case "TODO":
+            currSR.TODO.push(sr);
+            break;
+          case "WIP":
+            currSR.WIP.push(sr);
+            break;
+          case "Reviewing":
+            currSR.Reviewing.push(sr);
+            break;
+          case "Done":
+            currSR.Done.push(sr);
+            break;
+        }
       }
+      setCurrSR(currSR);
+      console.debug("currSR", currSR);
     }
-    setCurrSR(currSR);
-    console.debug(currSR);
   };
 
   useEffect(() => {
@@ -557,7 +560,7 @@ const UIIteration = () => {
     .map((user: any) => userId2UserInfo(user.user, projectStore));
   // console.debug(users_charging);
 
-  console.log(currIteration);
+  console.debug("currIteration", currIteration);
 
   return (
     <div className={"project-iteration-container"}>

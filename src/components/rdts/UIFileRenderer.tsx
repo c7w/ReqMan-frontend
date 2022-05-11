@@ -87,7 +87,7 @@ const UIFileRenderer = (props: UIFileRendererProps) => {
             </div>
           </>
         ) : (
-          "No commit"
+          "该 Commit 未同步到本地，请联系项目管理员检查项目仓库配置！"
         )}
 
         {/*{JSON.stringify(commit)}*/}

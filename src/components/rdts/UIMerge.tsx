@@ -61,14 +61,23 @@ const MergeRelatedSR = (props: {
   }, [currAssociatedSRId]);
 
   let display_message = "";
+  let display_title = "";
   if (show_digest) {
     if (related === "-" && desp === "-") {
       display_message = "未关联功能需求";
+      display_title = "未关联功能需求";
     } else {
       display_message = `[${related}]  ${desp}`;
+      display_title = `[${related}]  ${desp}`;
     }
   } else {
-    display_message = related;
+    if (related === "-" && desp === "-") {
+      display_message = "-";
+      display_title = "未关联功能需求";
+    } else {
+      display_message = related;
+      display_title = `[${related}]  ${desp}`;
+    }
   }
 
   return (
@@ -77,6 +86,7 @@ const MergeRelatedSR = (props: {
         marginLeft: props.show_digest ? "2rem" : "0",
         marginTop: props.show_digest ? "1rem" : "0rem",
       }}
+      title={display_title}
     >
       {display_message}
     </div>
