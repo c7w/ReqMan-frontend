@@ -41,7 +41,7 @@ const UIProjectList = (props: ProjectListProps) => {
     }
     dataProjectList.push({
       id: value.id,
-      title: value.title,
+      title: value.title.trim().length === 0 ? "未命名项目" : value.title,
       description: value.description,
       invitation: value.invitation,
       createdAt: value.createdAt * 1000,

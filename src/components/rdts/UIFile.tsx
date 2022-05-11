@@ -4,7 +4,8 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { a11yDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { useDispatch, useSelector } from "react-redux";
 import { getRepoStore } from "../../store/slices/RepoSlice";
-import { Breadcrumb, Typography } from "antd";
+import { Breadcrumb, Empty, Typography } from "antd";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFile, faFolder, faHome } from "@fortawesome/free-solid-svg-icons";
 import { Redirect, ToastMessage } from "../../utils/Navigation";
@@ -15,6 +16,7 @@ import request_json from "../../utils/Network";
 import API from "../../utils/APIList";
 import Loading from "../../layout/components/Loading";
 import moment from "moment";
+import UIFileRenderer from "./UIFileRenderer";
 
 const UIFileNotFound = () => {
   const dispatcher = useDispatch();
@@ -203,12 +205,15 @@ const UIFile = () => {
           );
           setSavedBranches(JSON.stringify(curr_branch));
         } else {
-          ToastMessage("error", "请求失败", "请求地址不存在！");
+          ToastMessage(
+            "error",
+            "请求失败",
+            "项目仓库令牌不可用，请联系项目管理员！"
+          );
           Redirect(dispatcher, `/project/${project_id}/tree/`, 0);
         }
       });
 
-      // TODO: Return Loading
       return (
         <div className={"personal-setting-container"}>
           <Loading />
@@ -226,7 +231,6 @@ const UIFile = () => {
       });
     }
   } else if (pathname.length >= 3) {
-    // TODO: Tree, repo_id, branch_name, file_path
     if (pathname.length === 3) {
       pathname.push("/");
     }
@@ -253,7 +257,6 @@ const UIFile = () => {
         }
       });
 
-      // TODO: Return Loading
       return (
         <div className={"personal-setting-container"}>
           <Loading />
@@ -313,8 +316,8 @@ const UIFile = () => {
     }
   }
 
-  console.debug(savedCodes);
-  console.debug(currCode);
+  // console.debug(savedCodes);
+  // console.debug(currCode);
 
   let code_to_render = "";
 
@@ -328,6 +331,8 @@ const UIFile = () => {
       }
     );
   }
+
+  console.debug(files.length);
 
   return (
     <div className={"personal-setting-container"}>
@@ -372,100 +377,105 @@ const UIFile = () => {
           );
         })}
       </Breadcrumb>
-      <div
-        style={{
-          width: "90%",
-          borderRadius: "1rem",
-          border: "1px solid #dbdbdb",
-          marginTop: "1rem",
-          marginBottom: "2rem",
-          overflow: "hidden",
-        }}
-      >
-        <table
+      {pathname.length === 1 && files.length === 0 ? (
+        <Empty description="请添加项目仓库" />
+      ) : (
+        <div
           style={{
-            width: "100%",
-            color: "#303030",
-            margin: "0 auto 0",
-            padding: "1rem",
+            width: "90%",
+            borderRadius: "1rem",
+            border: "1px solid #dbdbdb",
+            marginTop: "1rem",
+            marginBottom: "2rem",
+            overflow: "hidden",
           }}
         >
-          <thead>
-            <tr>
-              <td
-                style={{
-                  backgroundColor: "#f0f0f0",
-                  color: "#000",
-                  fontWeight: "700",
-                  lineHeight: "28px",
-                  fontSize: "1.2rem",
-                  padding: "0.5rem",
-                  paddingLeft: "2rem",
-                }}
-              >
-                名称
-              </td>
-            </tr>
-          </thead>
-          <tbody>
-            {files.map((file: any, index: any) => {
-              return (
-                <tr
-                  className={"tree-item"}
-                  key={index}
-                  onClick={() => {
-                    Redirect(
-                      dispatcher,
-                      `/project/${project_id}/` +
-                        file.link.join("/") +
-                        "?isFile=" +
-                        (file.type !== "directory" ? "1" : "0"),
-                      0
-                    );
-                  }}
+          <table
+            style={{
+              width: "100%",
+              color: "#303030",
+              margin: "0 auto 0",
+              padding: "1rem",
+            }}
+          >
+            <thead>
+              <tr>
+                <td
                   style={{
-                    lineHeight: "32px",
-                    cursor: "pointer",
+                    backgroundColor: "#f0f0f0",
+                    color: "#000",
+                    fontWeight: "700",
+                    lineHeight: "28px",
                     fontSize: "1.2rem",
+                    padding: "0.5rem",
+                    paddingLeft: "2rem",
                   }}
                 >
-                  <td
+                  名称
+                </td>
+              </tr>
+            </thead>
+            <tbody>
+              {files.map((file: any, index: any) => {
+                return (
+                  <tr
+                    className={"tree-item"}
+                    key={index}
+                    onClick={() => {
+                      Redirect(
+                        dispatcher,
+                        `/project/${project_id}/` +
+                          file.link.join("/") +
+                          "?isFile=" +
+                          (file.type !== "directory" ? "1" : "0"),
+                        0
+                      );
+                    }}
                     style={{
-                      display: "flex",
-                      alignItems: "center",
+                      lineHeight: "32px",
+                      cursor: "pointer",
+                      fontSize: "1.2rem",
                     }}
                   >
-                    <FontAwesomeIcon
-                      icon={file.type === "directory" ? faFolder : faFile}
+                    <td
                       style={{
-                        color: "#000",
-                        padding: "0.2rem",
-                        marginLeft: "2rem",
-                      }}
-                    />
-                    <Typography.Link
-                      style={{
-                        color: "#000",
-                        padding: "0.2rem",
-                        marginLeft: "2rem",
+                        display: "flex",
+                        alignItems: "center",
                       }}
                     >
-                      {file.name}
-                    </Typography.Link>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
+                      <FontAwesomeIcon
+                        icon={file.type === "directory" ? faFolder : faFile}
+                        style={{
+                          color: "#000",
+                          padding: "0.2rem",
+                          marginLeft: "2rem",
+                        }}
+                      />
+                      <Typography.Link
+                        style={{
+                          color: "#000",
+                          padding: "0.2rem",
+                          marginLeft: "2rem",
+                        }}
+                      >
+                        {file.name}
+                      </Typography.Link>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+
       {isFile ? (
         isLoading ? (
           <div>
             <Loading />
           </div>
         ) : (
-          <div style={{ width: "90%" }}>
+          <div style={{ width: "100%" }}>
             {((currCodeType: string, currCode: string) => {
               switch (currCodeType) {
                 case "jpg":
@@ -493,131 +503,10 @@ const UIFile = () => {
                   );
                 default:
                   return (
-                    <SyntaxHighlighter
-                      language={currCodeType}
-                      style={a11yDark}
-                      showLineNumbers={true}
-                      wrapLongLines={true}
-                      lineProps={(lineNumber) => {
-                        const appended_list =
-                          document.getElementsByClassName("Appended");
-                        for (let i = appended_list.length - 1; i >= 0; --i) {
-                          appended_list[i].remove();
-                        }
-                        const appended2_list =
-                          document.getElementsByClassName("Appended2");
-                        for (let i = appended2_list.length - 1; i >= 0; --i) {
-                          appended2_list[i].remove();
-                        }
-
-                        const unique_ID =
-                          Math.random().toString(8) +
-                          "-" +
-                          lineNumber.toString();
-
-                        const GenerateNewNode = (
-                          unique_ID: string,
-                          NodeText: string,
-                          index = 0
-                        ) => {
-                          if (NodeText !== "") {
-                            const Node2 = document.createElement("span");
-                            Node2.innerText = NodeText;
-                            Node2.className = "Appended";
-                            // Node2.style.setProperty(
-                            //   "right",
-                            //   `${index * 10}rem`
-                            // );
-                            document
-                              .getElementById(unique_ID)
-                              ?.appendChild(Node2);
-                            return 1;
-                          }
-                          return 0;
-                        };
-
-                        setTimeout(() => {
-                          console.debug(unique_ID);
-                          const Node = document.createElement("span");
-                          Node.style.setProperty("flex-grow", "1");
-                          Node.className = `Appended2`;
-                          document.getElementById(unique_ID)?.appendChild(Node);
-
-                          const tmp_idx = [0];
-
-                          const line_lens = JSON.parse(currCode)
-                            .relationship.map((relation: any) => {
-                              return relation.lines.length;
-                            })
-                            .forEach((lines: number) => {
-                              tmp_idx.push(tmp_idx[tmp_idx.length - 1] + lines);
-                            });
-
-                          // Decide lineNumber in which relation
-                          // Find i - 1 which tmp_idx[i-1] < lineNumber <= tmp_idx[i]
-                          let relation_index = 0;
-                          for (let i = 1; i < tmp_idx.length; ++i) {
-                            if (
-                              tmp_idx[i - 1] < lineNumber &&
-                              lineNumber <= tmp_idx[i]
-                            ) {
-                              relation_index = i - 1;
-                              break;
-                            }
-                          }
-
-                          const my_relation =
-                            JSON.parse(currCode).relationship[relation_index];
-                          console.debug(my_relation);
-
-                          let user = "";
-                          let lastUpdate = "";
-                          let hash_id = "";
-                          let sr = "";
-
-                          const filtered: any = Object.entries(
-                            JSON.parse(currCode).Commits
-                          ).filter(([hash, commit]: any) => {
-                            console.debug(commit);
-                            return commit.id === my_relation.local_commit;
-                          });
-
-                          if (filtered.length > 0) {
-                            user = filtered[0][1].commiter_name;
-                            lastUpdate = moment(
-                              filtered[0][1].createdAt * 1000
-                            ).calendar();
-                            hash_id = filtered[0][1].hash_id.slice(0, 7);
-                          }
-
-                          const SR_list = JSON.parse(currCode).SR;
-                          if (my_relation.SR !== null) {
-                            const tmp_SR = SR_list[my_relation.SR];
-                            if (tmp_SR !== undefined) {
-                              sr = tmp_SR.title;
-                            }
-                          }
-
-                          let idx = 0;
-                          idx += GenerateNewNode(unique_ID, sr, idx);
-                          idx += GenerateNewNode(unique_ID, user, idx);
-                          idx += GenerateNewNode(unique_ID, lastUpdate, idx);
-                          idx += GenerateNewNode(unique_ID, hash_id, idx);
-                        }, 400);
-
-                        return {
-                          onClick: () => {
-                            console.debug(lineNumber);
-                          },
-                          style: {
-                            margin: "0.15rem",
-                          },
-                          id: unique_ID,
-                        };
-                      }}
-                    >
-                      {code_to_render}
-                    </SyntaxHighlighter>
+                    <UIFileRenderer
+                      currCodeType={currCodeType}
+                      currCode={currCode}
+                    />
                   );
               }
             })(currCodeType, currCode)}

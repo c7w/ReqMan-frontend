@@ -7,6 +7,7 @@ import iterationPic from "../../../assets/RootPageCarousel/迭代周期.png";
 import calendarPic from "../../../assets/RootPageCarousel/日程表.png";
 import analysisPic from "../../../assets/RootPageCarousel/项目分析.png";
 import servicePic from "../../../assets/RootPageCarousel/项目服务.png";
+import filePic from "../../../assets/RootPageCarousel/项目文件树.png";
 import request_json from "../../../utils/Network";
 import API from "../../../utils/APIList";
 import logo from "../../../assets/ReqMan.png";
@@ -89,13 +90,57 @@ const Root = () => {
   // useEffect Hook: Would be executed when the variables in the dependence list are initialized or changed value.
   // If you define an empty list as variable dependence, this function would just execute for once, just like didMount().
 
-  const contentStyle = {
-    height: "160px",
-    color: "#fff",
-    lineHeight: "160px",
-    textAlign: "center",
-    background: "#364d79",
-  };
+  console.log(
+    "          _____                    _____                   _______         \n" +
+      "         /\\    \\                  /\\    \\                 /::\\    \\        \n" +
+      "        /::\\    \\                /::\\    \\               /::::\\    \\       \n" +
+      "       /::::\\    \\              /::::\\    \\             /::::::\\    \\      \n" +
+      "      /::::::\\    \\            /::::::\\    \\           /::::::::\\    \\     \n" +
+      "     /:::/\\:::\\    \\          /:::/\\:::\\    \\         /:::/~~\\:::\\    \\    \n" +
+      "    /:::/__\\:::\\    \\        /:::/__\\:::\\    \\       /:::/    \\:::\\    \\   \n" +
+      "   /::::\\   \\:::\\    \\      /::::\\   \\:::\\    \\     /:::/    / \\:::\\    \\  \n" +
+      "  /::::::\\   \\:::\\    \\    /::::::\\   \\:::\\    \\   /:::/____/   \\:::\\____\\ \n" +
+      " /:::/\\:::\\   \\:::\\____\\  /:::/\\:::\\   \\:::\\    \\ |:::|    |     |:::|    |\n" +
+      "/:::/  \\:::\\   \\:::|    |/:::/__\\:::\\   \\:::\\____\\|:::|____|     |:::|____|\n" +
+      "\\::/   |::::\\  /:::|____|\\:::\\   \\:::\\   \\::/    / \\:::\\   _\\___/:::/    / \n" +
+      " \\/____|:::::\\/:::/    /  \\:::\\   \\:::\\   \\/____/   \\:::\\ |::| /:::/    /  \n" +
+      "       |:::::::::/    /    \\:::\\   \\:::\\    \\        \\:::\\|::|/:::/    /   \n" +
+      "       |::|\\::::/    /      \\:::\\   \\:::\\____\\        \\::::::::::/    /    \n" +
+      "       |::| \\::/____/        \\:::\\   \\::/    /         \\::::::::/    /     \n" +
+      "       |::|  ~|               \\:::\\   \\/____/           \\::::::/    /      \n" +
+      "       |::|   |                \\:::\\    \\                \\::::/____/       \n" +
+      "       \\::|   |                 \\:::\\____\\                |::|    |        \n" +
+      "        \\:|   |                  \\::/    /                |::|____|        \n" +
+      "         \\|___|                   \\/____/                  ~~              \n" +
+      "                                                                           \n" +
+      "          _____                    _____                    _____          \n" +
+      "         /\\    \\                  /\\    \\                  /\\    \\         \n" +
+      "        /::\\____\\                /::\\    \\                /::\\____\\        \n" +
+      "       /::::|   |               /::::\\    \\              /::::|   |        \n" +
+      "      /:::::|   |              /::::::\\    \\            /:::::|   |        \n" +
+      "     /::::::|   |             /:::/\\:::\\    \\          /::::::|   |        \n" +
+      "    /:::/|::|   |            /:::/__\\:::\\    \\        /:::/|::|   |        \n" +
+      "   /:::/ |::|   |           /::::\\   \\:::\\    \\      /:::/ |::|   |        \n" +
+      "  /:::/  |::|___|______    /::::::\\   \\:::\\    \\    /:::/  |::|   | _____  \n" +
+      " /:::/   |::::::::\\    \\  /:::/\\:::\\   \\:::\\    \\  /:::/   |::|   |/\\    \\ \n" +
+      "/:::/    |:::::::::\\____\\/:::/  \\:::\\   \\:::\\____\\/:: /    |::|   /::\\____\\\n" +
+      "\\::/    / ~~~~~/:::/    /\\::/    \\:::\\  /:::/    /\\::/    /|::|  /:::/    /\n" +
+      " \\/____/      /:::/    /  \\/____/ \\:::\\/:::/    /  \\/____/ |::| /:::/    / \n" +
+      "             /:::/    /            \\::::::/    /           |::|/:::/    /  \n" +
+      "            /:::/    /              \\::::/    /            |::::::/    /   \n" +
+      "           /:::/    /               /:::/    /             |:::::/    /    \n" +
+      "          /:::/    /               /:::/    /              |::::/    /     \n" +
+      "         /:::/    /               /:::/    /               /:::/    /      \n" +
+      "        /:::/    /               /:::/    /               /:::/    /       \n" +
+      "        \\::/    /                \\::/    /                \\::/    /        \n" +
+      "         \\/____/                  \\/____/                  \\/____/         \n" +
+      "                                                                           \n" +
+      "清华大学计算机科学与技术系\n" +
+      "软件工程项目：ReqMan，新一代需求管理与缺陷追踪平台\n" +
+      "指导老师：李  丹 裴  丹\n" +
+      "指导助教：刘一芃 田倍闻\n" +
+      "© 2022 undefined. All rights reserved."
+  );
 
   return (
     <div className="root-screen-2">
@@ -109,14 +154,21 @@ const Root = () => {
           </div>
           <div className="root-menu_links">
             <a
-              href="https://doc-undefined.app.secoder.net/"
               className="root-menu-link"
+              onClick={() =>
+                window.open("https://doc-undefined.app.secoder.net/")
+              }
             >
               开发者文档
             </a>
-            {/*<a href="" className="root-menu-link">*/}
-            {/*  联系我们*/}
-            {/*</a>*/}
+            <a
+              className="root-menu-link"
+              onClick={() =>
+                window.open("https://doc-undefined.app.secoder.net/manual/")
+              }
+            >
+              用户手册
+            </a>
           </div>
         </div>
       </nav>
@@ -212,6 +264,12 @@ const Root = () => {
               <Image
                 src={iterationPic}
                 alt="项目迭代周期"
+                width="100%"
+                style={{ borderRadius: "2rem" }}
+              />
+              <Image
+                src={filePic}
+                alt="项目文件树"
                 width="100%"
                 style={{ borderRadius: "2rem" }}
               />

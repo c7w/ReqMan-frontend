@@ -23,23 +23,37 @@ const Home = (props: LayoutProps) => {
     <div>
       <Layout className="home">
         <Navbar />
-        <Layout className="layout">
+        <Layout
+          className="layout"
+          style={{
+            flexDirection: "row",
+          }}
+        >
           {props.sidebar ? (
             <Sidebar
-              getSidebarWidth={(width: number) => {
-                console.log(width);
-                setSidebarWidth(width);
-              }}
+              getSidebarWidth={(width: number) => setSidebarWidth(width)}
             />
           ) : (
             <></>
           )}
           <div
+            style={{
+              // marginRight: props.sidebar
+              //   ? (sidebarWidth + 50).toString() + "px"
+              //   : sidebarWidth.toString() + "px",
+              height: "100vh",
+            }}
+          />
+          <div
             className="layout-right"
             style={{
-              marginLeft: sidebarWidth.toString() + "px",
+              marginLeft: props.sidebar
+                ? (sidebarWidth + 50).toString() + "px"
+                : sidebarWidth.toString() + "px",
+              // marginLeft: "50px",
               marginRight: props.sidebar ? "5vw" : "200px",
               transition: "all, 0.2s",
+              minWidth: "70vw",
             }}
           >
             <Content className="layout-content">{props.children}</Content>

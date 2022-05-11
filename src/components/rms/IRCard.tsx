@@ -35,12 +35,7 @@ import {
   getIRSRStore,
   getSRListStore,
 } from "../../store/slices/IRSRSlice";
-import {
-  IR2Iteration,
-  oneIR2AllSR,
-  oneSR2AllIR,
-  SRId2SRInfo,
-} from "../../utils/Association";
+import { IR2Iteration, oneIR2AllSR } from "../../utils/Association";
 import {
   getIRIterationStore,
   getIterationStore,
@@ -53,9 +48,14 @@ import QueueAnim from "rc-queue-anim";
 import { updateProjectInfo } from "../../store/functions/UMS";
 import { expandSRList } from "../../utils/SRClassification";
 import { getUserSRStore } from "../../store/slices/UserSRSlice";
+import { useParams } from "react-router-dom";
 
 const IRCard = (props: IRCardProps) => {
   const dispatcher = useDispatch();
+  // get project ID
+  const params = useParams<"id">();
+  const project_id = Number(params.id);
+
   const userInfo = useSelector(getUserStore);
   const projectInfo = useSelector(getProjectStore);
   const IRSRAssoStore = useSelector(getIRSRStore);
@@ -67,12 +67,28 @@ const IRCard = (props: IRCardProps) => {
   const [title, setTitle] = useState<string>(props.title);
   const [progress, setProgress] = useState<number>(props.progress);
   const [description, setDescription] = useState<string>(props.description);
-  const [assoSRCardList, setAssoSRCardList] = useState([]);
+  const [assoSRCardList, setAssoSRCardList] = useState([
+    <SRCard
+      id={-1}
+      key={-1}
+      project={project_id}
+      title={"加载中..."}
+      description={""}
+      priority={1}
+      rank={1}
+      currState={"TODO"}
+      stateColor={"#f5222d"}
+      createdBy={""}
+      createdAt={moment().unix()}
+      disabled={true}
+      iter={[]}
+      chargedBy={-1}
+      service={-1}
+    />,
+  ]);
   const [assoIterList, setAssoIterList] = useState([]);
 
   const [createdByAvatar, setCreatedByAvatar] = useState<string>("");
-
-  // console.log(props);
 
   const handleOK = () => {
     if (
@@ -106,20 +122,19 @@ const IRCard = (props: IRCardProps) => {
 
   useEffect(() => {
     updateProjectInfo(dispatcher, props.project).then((data) => {
-      // console.log(data);
       const userInfo = data.data.users.filter(
         (user: any) => user.id === props.createdBy
       )[0];
       const createdByAvatar =
         userInfo.avatar.length < 5
-          ? `https://www.gravatar.com/avatar/${CryptoJS.MD5(userInfo.email)}`
+          ? `https://s1.ax1x.com/2022/05/08/O3S6sI.jpg`
           : userInfo.avatar;
       setCreatedByAvatar(createdByAvatar);
     });
   }, []);
 
   // 更新打开的 modal 对应的 SR 的所有关系
-  const updateAssociation = () => {
+  const updateAssociation = async () => {
     Promise.all([
       getIRSRInfo(dispatcher, props.project),
       getSRListInfo(dispatcher, props.project),
@@ -127,11 +142,12 @@ const IRCard = (props: IRCardProps) => {
       getIterationInfo(dispatcher, props.project),
       updateProjectInfo(dispatcher, props.project),
       getUserSRInfo(dispatcher, props.project),
-    ]).then((data: any) => {
-      const assoSRListData = oneIR2AllSR(
+    ]).then(async (data: any) => {
+      const assoSRListData = await oneIR2AllSR(
         props.id,
         JSON.stringify(data[0]),
-        JSON.stringify(data[1])
+        JSON.stringify(data[1]),
+        props.project
       );
       // to do: iteration card
       const assoIterData = IR2Iteration(
@@ -194,7 +210,6 @@ const IRCard = (props: IRCardProps) => {
       });
       setAssoIterList(newAssoIterList);
       const newAssoSRCardList: any = [];
-      console.log(assoSRListData);
       // const assoSRIdList = data[5].data
       //   .map((asso: any) => {
       //     if (asso.user === userInfo.user.id) return asso.sr;
@@ -209,7 +224,6 @@ const IRCard = (props: IRCardProps) => {
             if (asso.sr === value.id) return asso.user;
           })
           .filter((asso: any) => asso)[0];
-        console.log(chargedBy);
         newAssoSRCardList.push(
           <SRCard
             id={value.id}
@@ -240,6 +254,11 @@ const IRCard = (props: IRCardProps) => {
     setProgress(props.progress);
     setModalVisible(false);
   };
+
+  // get user role
+  const user_role = JSON.parse(userInfo).data.projects.filter(
+    (project: any) => project.id === Number(project_id)
+  )[0]?.role;
 
   return (
     <>
@@ -323,10 +342,14 @@ const IRCard = (props: IRCardProps) => {
               }}
             >
               <Paragraph
-                editable={{
-                  onChange: setDescription,
-                  autoSize: { maxRows: 5 },
-                }}
+                editable={
+                  user_role === "supermaster" || user_role === "sys"
+                    ? {
+                        onChange: setDescription,
+                        autoSize: { maxRows: 5 },
+                      }
+                    : false
+                }
               >
                 {description}
               </Paragraph>
@@ -355,21 +378,25 @@ const IRCard = (props: IRCardProps) => {
           <div className="IRModal-content-bottom">
             <div className="IRWrap IR-SR-related">
               <div className="IR-title-related">关联功能需求</div>
-              <div className="IR-content-related">{assoSRCardList}</div>
-            </div>
-            <div className="IR-iteration-related IRWrap">
-              <div className="IR-title-related">关联迭代</div>
-              {assoIterList.length === 0 ? (
-                <Empty
-                  image={Empty.PRESENTED_IMAGE_SIMPLE}
-                  style={{
-                    width: "100%",
-                  }}
-                />
+              {assoSRCardList.length > 0 ? (
+                <div className="IR-content-related">{assoSRCardList}</div>
               ) : (
-                <>{assoIterList}</>
+                <Empty description="暂无关联需求" />
               )}
             </div>
+            {/*<div className="IR-iteration-related IRWrap">*/}
+            {/*  <div className="IR-title-related">关联迭代</div>*/}
+            {/*  {assoIterList.length === 0 ? (*/}
+            {/*    <Empty*/}
+            {/*      image={Empty.PRESENTED_IMAGE_SIMPLE}*/}
+            {/*      style={{*/}
+            {/*        width: "100%",*/}
+            {/*      }}*/}
+            {/*    />*/}
+            {/*  ) : (*/}
+            {/*    <>{assoIterList}</>*/}
+            {/*  )}*/}
+            {/*</div>*/}
           </div>
         </div>
       </Modal>

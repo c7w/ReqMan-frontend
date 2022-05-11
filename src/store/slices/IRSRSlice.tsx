@@ -4,7 +4,7 @@ export const IRSRSlice = createSlice({
   name: "ir_sr_slice",
   initialState: {
     IRList: "",
-    SRList: "",
+    SRList: `{"code": 0, "data": []}`,
     IR_SR: "",
   },
   reducers: {

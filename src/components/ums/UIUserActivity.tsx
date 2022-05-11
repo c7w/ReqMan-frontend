@@ -6,6 +6,7 @@ import {
   BulbTwoTone,
   SmileTwoTone,
   BranchesOutlined,
+  EditOutlined,
 } from "@ant-design/icons";
 import { Divider } from "antd";
 import { UIIssueCardPreview } from "../rdts/UIIssueCard";
@@ -28,6 +29,7 @@ interface UIUserActivityProps {
 
 const UIUserActivity = (props: UIUserActivityProps) => {
   const activity = JSON.parse(props.activity);
+  // console.debug(activity);
   const userInfo = JSON.parse(props.userInfo);
   const repoStore = useSelector(getRepoStore);
   const SRListStore = useSelector(getSRListStore);
@@ -150,6 +152,8 @@ const UIUserActivity = (props: UIUserActivityProps) => {
                 );
               case UserActivityType.REVIEW_MR:
                 return <BranchesOutlined style={{ fontSize: "1.5rem" }} />;
+              case UserActivityType.COMMIT:
+                return <EditOutlined style={{ fontSize: "1.5rem" }} />;
               default:
                 return <SmileTwoTone style={{ fontSize: "1.5rem" }} />;
             }
@@ -229,6 +233,7 @@ const UIUserActivity = (props: UIUserActivityProps) => {
                         SRListStore={SRListStore}
                         MRSRAssociationStore={MRSRAssoStore}
                         data={JSON.stringify(activity.info)}
+                        onlyShow={true}
                       />
                     </>
                   );
@@ -250,7 +255,23 @@ const UIUserActivity = (props: UIUserActivityProps) => {
                         SRListStore={SRListStore}
                         MRSRAssociationStore={MRSRAssoStore}
                         data={JSON.stringify(activity.info)}
+                        onlyShow={true}
                       />
+                    </>
+                  );
+                case UserActivityType.COMMIT:
+                  description =
+                    "在仓库 " +
+                    repoId2RepoInfo(activity.info.repo, repoStore).title +
+                    " 中" +
+                    "进行提交 (" +
+                    activity.info.hash_id.slice(0, 7) +
+                    ") :   ";
+                  return (
+                    <>
+                      {description}
+                      <br />
+                      {activity.info.title}
                     </>
                   );
                 default:

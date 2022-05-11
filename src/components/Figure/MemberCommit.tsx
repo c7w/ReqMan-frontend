@@ -10,20 +10,23 @@ interface MemberCommitProps {
 }
 
 const MemberCommit = (props: MemberCommitProps) => {
-  const data = JSON.parse(props.text).data;
+  const data = JSON.parse(props.text);
   const projectStore = useSelector(getProjectStore);
 
   const all_data: any = [];
   const allUserInfo = JSON.parse(projectStore).data.users;
+
   const all_name_id: number[] = [];
   const all_names: any = [];
   allUserInfo.forEach((value: any) => {
     all_name_id.push(value.id);
     all_names.push(value.name);
   });
+
   for (let i = 0; i < all_name_id.length; i++) {
     all_data.push(0);
   }
+
   const max_len_per_row = 10;
   const new_all_names: string[] = [];
   all_names.forEach((value: string) => {
@@ -38,15 +41,17 @@ const MemberCommit = (props: MemberCommitProps) => {
     }
   });
 
-  data.forEach((item: any) => {
-    const id = item.user_committer;
-    for (let i = 0; i < all_name_id.length; i++) {
-      if (all_name_id[i] === id) {
-        all_data[i] += 1;
-        break;
-      }
-    }
+  data.forEach((item: any, index: number) => {
+    all_data[index] = item.commit_count;
   });
+
+  for (let i = new_all_names.length - 1; i >= 0; i--) {
+    if (all_data[i] === 0) {
+      new_all_names.splice(i, 1);
+      all_data.splice(i, 1);
+    }
+  }
+
   const option = {
     title: {
       text: props.title,

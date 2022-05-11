@@ -3,10 +3,14 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getProjectStore } from "../../store/slices/ProjectSlice";
 import { getRepoStore } from "../../store/slices/RepoSlice";
-import { getCommitStore, getIssueStore } from "../../store/slices/IssueSlice";
+import {
+  getCommitSRAssociationStore,
+  getCommitStore,
+  getIssueStore,
+} from "../../store/slices/IssueSlice";
 import ProTable, { ProColumns } from "@ant-design/pro-table";
 import { CommitProps, IssueProps } from "../../store/ConfigureStore";
-import { userId2UserInfo } from "../../utils/Association";
+import { SRId2SRInfo, userId2UserInfo } from "../../utils/Association";
 import { useParams } from "react-router-dom";
 import moment from "moment";
 import { addRDTSTimer } from "../../utils/Timer";
@@ -14,6 +18,36 @@ import { getRDTSInfo } from "../../store/functions/RDTS";
 import { Typography } from "antd";
 import { ReloadOutlined, SyncOutlined } from "@ant-design/icons";
 import { UIUserCardPreview } from "../ums/UIUserCard";
+import request_json from "../../utils/Network";
+import API from "../../utils/APIList";
+import { getSRListStore } from "../../store/slices/IRSRSlice";
+
+const CommitRelatedSR = (props: { currAssociatedSRId: number }) => {
+  const currAssociatedSRId = props.currAssociatedSRId;
+
+  const SRListStore = useSelector(getSRListStore);
+
+  const params = useParams<"id">();
+  const project_id = Number(params.id);
+
+  const [related, setRelated] = useState("-");
+
+  const resetRelated = async () => {
+    if (currAssociatedSRId > 0) {
+      setRelated(
+        (await SRId2SRInfo(currAssociatedSRId, SRListStore, project_id)).title
+      );
+    } else {
+      setRelated("-");
+    }
+  };
+
+  useEffect(() => {
+    resetRelated();
+  }, [currAssociatedSRId]);
+
+  return <div style={{}}>{related}</div>;
+};
 
 const UICommit = () => {
   const dispatcher = useDispatch();
@@ -21,6 +55,8 @@ const UICommit = () => {
   const projectStore = useSelector(getProjectStore);
   const repoStore = useSelector(getRepoStore);
   const commitStore = useSelector(getCommitStore);
+
+  const commitSRStore = useSelector(getCommitSRAssociationStore);
 
   // Get project_id
   const params = useParams();
@@ -31,13 +67,13 @@ const UICommit = () => {
 
   useEffect(() => {
     // Add RDTS Timer
-    addRDTSTimer(() => {
-      setIsUpdating(true);
-      getRDTSInfo(dispatcher, project_id).then(() => {
-        setIsUpdating(false);
-        setLastUpdate(moment());
-      });
-    });
+    // addRDTSTimer(() => {
+    //   setIsUpdating(true);
+    //   getRDTSInfo(dispatcher, project_id).then(() => {
+    //     setIsUpdating(false);
+    //     setLastUpdate(moment());
+    //   });
+    // });
   }, []);
 
   const getBackgroundColor = (changed_lines: number) => {
@@ -118,6 +154,23 @@ const UICommit = () => {
         return <div style={{}}>{user}</div>;
       },
     },
+    {
+      title: "关联功能需求",
+      width: "15%",
+      ellipsis: true,
+      dataIndex: "SR",
+      align: "center",
+      render: (_, record) => {
+        let currAssociatedSRId = -1;
+        const filtered_list = JSON.parse(commitSRStore).data.filter(
+          (asso: any) => asso.commit === record.id
+        );
+        if (filtered_list.length > 0) {
+          currAssociatedSRId = filtered_list[0].SR;
+        }
+        return <CommitRelatedSR currAssociatedSRId={currAssociatedSRId} />;
+      },
+    },
   ];
 
   const data_source = JSON.parse(commitStore).data;
@@ -129,9 +182,9 @@ const UICommit = () => {
         toolBarRender={() => {
           return [
             <div style={{ minWidth: "15rem" }}>
-              <Typography.Text style={{ width: "10rem", marginRight: "1rem" }}>
-                上次更新：{lastUpdate.fromNow()}
-              </Typography.Text>
+              {/*<Typography.Text style={{ width: "10rem", marginRight: "1rem" }}>*/}
+              {/*  上次更新：{lastUpdate.fromNow()}*/}
+              {/*</Typography.Text>*/}
               <Typography.Link
                 style={{ marginRight: "10px" }}
                 onClick={() => {
@@ -139,11 +192,13 @@ const UICommit = () => {
                     setIsUpdating(true);
                     getRDTSInfo(dispatcher, project_id)
                       .then((data: any) => {
-                        setIsUpdating(false);
                         setLastUpdate(moment());
                       })
-                      .catch((err: any) => {
-                        setIsUpdating(false);
+                      .finally(() => {
+                        setTimeout(() => {
+                          setIsUpdating(false);
+                        }, 500);
+                        // setIsUpdating(false);
                       });
                   }
                 }}
@@ -167,8 +222,25 @@ const UICommit = () => {
         //     success: true,
         //   });
         // }}
+        params={{ lastUpdate: lastUpdate }}
+        request={async ({ pageSize, current }, sort, filter) => {
+          const retrieved_data = await request_json(API.GET_COMMITS_PAGED, {
+            getParams: {
+              from: ((current as number) - 1) * (pageSize as number),
+              size: pageSize,
+              project: project_id,
+            },
+          });
+          console.debug(retrieved_data);
+
+          return {
+            data: retrieved_data.data.payload,
+            success: true,
+            total: retrieved_data.data.total_size,
+          };
+        }}
         defaultSize={"small"}
-        dataSource={data_source}
+        // dataSource={data_source}
         rowKey="id"
         pagination={{ position: ["bottomRight"] }}
         tableStyle={{ padding: "1rem 1rem 2rem" }}

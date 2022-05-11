@@ -20,6 +20,68 @@ import { getRDTSInfo } from "../../store/functions/RDTS";
 import { useParams } from "react-router-dom";
 import { ReloadOutlined, SyncOutlined } from "@ant-design/icons";
 import { UIUserCardPreview } from "../ums/UIUserCard";
+import request_json from "../../utils/Network";
+import API from "../../utils/APIList";
+
+const MergeRelatedSR = (props: {
+  currAssociatedSRId: number;
+  show_digest?: boolean;
+}) => {
+  const currAssociatedSRId = props.currAssociatedSRId;
+  const show_digest = props.show_digest || false;
+
+  // get project id
+  const params = useParams<"id">();
+  const project_id = Number(params.id);
+
+  const SRListStore = useSelector(getSRListStore);
+
+  const [related, setRelated] = useState("-");
+  const [desp, setDesp] = useState("-");
+
+  const resetRelated = async () => {
+    // console.debug("related", currAssociatedSRId);
+    if (currAssociatedSRId !== undefined && currAssociatedSRId > 0) {
+      const res = await SRId2SRInfo(
+        currAssociatedSRId,
+        SRListStore,
+        project_id
+      );
+
+      setRelated(res.title);
+      setDesp(res.description);
+    } else {
+      setRelated("-");
+      setDesp("-");
+    }
+  };
+
+  useEffect(() => {
+    resetRelated();
+  }, [currAssociatedSRId]);
+
+  let display_message = "";
+  if (show_digest) {
+    if (related === "-" && desp === "-") {
+      display_message = "未关联功能需求";
+    } else {
+      display_message = `[${related}]  ${desp}`;
+    }
+  } else {
+    display_message = related;
+  }
+
+  return (
+    <div
+      style={{
+        marginLeft: props.show_digest ? "2rem" : "0",
+        marginTop: props.show_digest ? "1rem" : "0rem",
+      }}
+    >
+      {display_message}
+    </div>
+  );
+};
 
 const UIMerge = () => {
   const dispatcher = useDispatch();
@@ -40,13 +102,13 @@ const UIMerge = () => {
 
   useEffect(() => {
     // Add RDTS Timer
-    addRDTSTimer(() => {
-      setIsUpdating(true);
-      getRDTSInfo(dispatcher, project_id).then(() => {
-        setIsUpdating(false);
-        setLastUpdate(moment());
-      });
-    });
+    // addRDTSTimer(() => {
+    //   setIsUpdating(true);
+    //   getRDTSInfo(dispatcher, project_id).then(() => {
+    //     setIsUpdating(false);
+    //     setLastUpdate(moment());
+    //   });
+    // });
   }, []);
 
   const getBackgroundColor = (state: "closed" | "merged" | "opened") => {
@@ -132,6 +194,35 @@ const UIMerge = () => {
       },
     },
     {
+      title: "合并请求合入者",
+      width: "15%",
+      ellipsis: true,
+      dataIndex: "mergedBy",
+      align: "center",
+      render: (_, record) => {
+        const user = record.reviewedByUserName || "-";
+        if (record.user_reviewed > 0) {
+          const find_result = userId2UserInfo(
+            record.user_reviewed,
+            projectStore
+          );
+          if (find_result !== "not_found") {
+            return (
+              <div style={{}}>
+                <UIUserCardPreview
+                  projectStore={projectStore}
+                  userId={find_result.id}
+                  previewSize={30}
+                />
+                {/*<span>{"@" + find_result.name}</span>*/}
+              </div>
+            );
+          }
+        }
+        return <div style={{}}>{user}</div>;
+      },
+    },
+    {
       title: "关联功能需求",
       width: "15%",
       ellipsis: true,
@@ -146,12 +237,7 @@ const UIMerge = () => {
         if (filtered_list.length > 0) {
           currAssociatedSRId = filtered_list[0].SR;
         }
-        const related =
-          currAssociatedSRId <= 0
-            ? "-"
-            : SRId2SRInfo(currAssociatedSRId, SRListStore).title;
-
-        return <div style={{}}>{related}</div>;
+        return <MergeRelatedSR currAssociatedSRId={currAssociatedSRId} />;
       },
     },
   ];
@@ -165,9 +251,9 @@ const UIMerge = () => {
         toolBarRender={() => {
           return [
             <div style={{ minWidth: "15rem" }}>
-              <Typography.Text style={{ width: "10rem", marginRight: "1rem" }}>
-                上次更新：{lastUpdate.fromNow()}
-              </Typography.Text>
+              {/*<Typography.Text style={{ width: "10rem", marginRight: "1rem" }}>*/}
+              {/*  上次更新：{lastUpdate.fromNow()}*/}
+              {/*</Typography.Text>*/}
               <Typography.Link
                 style={{ marginRight: "10px" }}
                 onClick={() => {
@@ -204,8 +290,25 @@ const UIMerge = () => {
         //   });
         // }}
         defaultSize={"small"}
-        dataSource={data_source}
+        // dataSource={data_source}
         rowKey="id"
+        params={{ lastUpdate: lastUpdate }}
+        request={async ({ pageSize, current }, sort, filter) => {
+          const retrieved_data = await request_json(API.GET_MERGES_PAGED, {
+            getParams: {
+              from: ((current as number) - 1) * (pageSize as number),
+              size: pageSize,
+              project: project_id,
+            },
+          });
+          console.debug(retrieved_data);
+
+          return {
+            data: retrieved_data.data.payload,
+            success: true,
+            total: retrieved_data.data.total_size,
+          };
+        }}
         pagination={{ position: ["bottomRight"] }}
         tableStyle={{ padding: "1rem 1rem 2rem" }}
         dateFormatter="string"
@@ -216,3 +319,4 @@ const UIMerge = () => {
 };
 
 export default UIMerge;
+export { MergeRelatedSR };

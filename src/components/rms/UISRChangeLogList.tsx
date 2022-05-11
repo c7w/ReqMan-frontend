@@ -20,7 +20,6 @@ const UISRChangeLogList = (props: SRChangeLogListProps) => {
   const [SRChangeLogListData, setSRChangeLogListData] = useState([]);
 
   const getDescription = (currentSRChangeLog: any, formerSRState: SRState) => {
-    // console.log(currentSRChangeLog);
     let resState: any, resDescription: any;
     if (currentSRChangeLog.formerState !== formerSRState.currState) {
       resState = (
@@ -46,6 +45,30 @@ const UISRChangeLogList = (props: SRChangeLogListProps) => {
         </>
       );
     }
+    // if (currentSRChangeLog.description.indexOf("rollback") !== -1) {
+    //   resState = (
+    //     <>
+    //       <span>因角色更改导致需求状态从&nbsp;</span>
+    //       <Space>
+    //         <Tag
+    //           color={state2Color.get(currentSRChangeLog.formerState)}
+    //           style={{ borderRadius: "10px" }}
+    //         >
+    //           {state2ChineseState.get(currentSRChangeLog.formerState)}
+    //         </Tag>
+    //       </Space>
+    //       <span>修改为&nbsp;</span>
+    //       <Space>
+    //         <Tag
+    //           color={state2Color.get(formerSRState.currState)}
+    //           style={{ borderRadius: "10px" }}
+    //         >
+    //           {state2ChineseState.get(formerSRState.currState)}
+    //         </Tag>
+    //       </Space>
+    //     </>
+    //   );
+    // }
     if (currentSRChangeLog.formerDescription !== formerSRState.description) {
       resDescription = (
         <>
@@ -75,7 +98,11 @@ const UISRChangeLogList = (props: SRChangeLogListProps) => {
   useEffect(() => {
     if (props.SRChangeLogListInfo !== "" && props.projectStore !== "") {
       const newSRChangeLogList: any = [];
-      const SRChangeLogList = JSON.parse(props.SRChangeLogListInfo).data;
+      const SRChangeLogList_bak = JSON.parse(props.SRChangeLogListInfo).data;
+      const SRChangeLogList = SRChangeLogList_bak?.filter(
+        (item: any) => item.description.indexOf("rollback") === -1
+      );
+
       if (SRChangeLogList && SRChangeLogList !== []) {
         const formerSRState: SRState = {
           description: props.description,
@@ -87,34 +114,82 @@ const UISRChangeLogList = (props: SRChangeLogListProps) => {
             props.projectStore
           );
           const description = getDescription(SRChangeLogList[i], formerSRState);
+
           formerSRState.description = SRChangeLogList[i].formerDescription;
           formerSRState.currState = SRChangeLogList[i].formerState;
+
           if (description === 0) continue;
-          newSRChangeLogList.push(
-            <Timeline.Item
-              key={SRChangeLogList[i].id}
-              label={
-                <>
-                  <span style={{ fontWeight: "bold" }}>
-                    {"@" +
-                      (userInfo === "not found" ? "anonymous" : userInfo.name) +
-                      " "}
-                  </span>
-                  &nbsp;&nbsp;
-                  <span>
-                    {moment(SRChangeLogList[i].changedAt * 1000).format(
-                      "YYYY-MM-DD HH:mm:ss"
-                    )}
-                  </span>
-                </>
-              }
-              style={{ minHeight: "5vh" }}
-            >
-              <span>{description}</span>
-            </Timeline.Item>
-          );
+          newSRChangeLogList.push({
+            element: (
+              <Timeline.Item
+                key={SRChangeLogList[i].id}
+                label={
+                  <>
+                    <span style={{ fontWeight: "bold" }}>
+                      {"@" +
+                        (userInfo === "not found"
+                          ? "anonymous"
+                          : userInfo.name) +
+                        " "}
+                    </span>
+                    &nbsp;&nbsp;
+                    <span>
+                      {moment(SRChangeLogList[i].changedAt * 1000).format(
+                        "YYYY-MM-DD HH:mm:ss"
+                      )}
+                    </span>
+                  </>
+                }
+                style={{ minHeight: "5vh" }}
+              >
+                <span>{description}</span>
+              </Timeline.Item>
+            ),
+            time: SRChangeLogList[i].changedAt * 1000,
+          });
         }
       }
+
+      const SRChangeLogList_rollback = SRChangeLogList_bak?.filter(
+        (item: any) => item.description.indexOf("rollback") !== -1
+      );
+      if (SRChangeLogList_rollback && SRChangeLogList_rollback !== []) {
+        for (let i = SRChangeLogList_rollback.length - 1; i >= 0; i--) {
+          const userInfo = userId2UserInfo(
+            SRChangeLogList_rollback[i].changedBy,
+            props.projectStore
+          );
+          newSRChangeLogList.push({
+            element: (
+              <Timeline.Item
+                key={SRChangeLogList_rollback[i].id}
+                label={
+                  <>
+                    <span style={{ fontWeight: "bold" }}>
+                      {"@" +
+                        (userInfo === "not found"
+                          ? "anonymous"
+                          : userInfo.name) +
+                        " "}
+                    </span>
+                    &nbsp;&nbsp;
+                    <span>
+                      {moment(
+                        SRChangeLogList_rollback[i].changedAt * 1000
+                      ).format("YYYY-MM-DD HH:mm:ss")}
+                    </span>
+                  </>
+                }
+                style={{ minHeight: "5vh" }}
+              >
+                <span>因角色更改导致需求状态回退</span>
+              </Timeline.Item>
+            ),
+            time: SRChangeLogList_rollback[i].changedAt * 1000,
+          });
+        }
+      }
+
       setSRChangeLogListData(newSRChangeLogList);
     }
   }, [props.SRChangeLogListInfo, props.projectStore]);
@@ -133,7 +208,11 @@ const UISRChangeLogList = (props: SRChangeLogListProps) => {
       {SRChangeLogListData.length === 0 ? (
         <Empty />
       ) : (
-        <Timeline mode="left">{SRChangeLogListData}</Timeline>
+        <Timeline mode="left">
+          {SRChangeLogListData.sort((a: any, b: any) => b.time - a.time).map(
+            (item: any) => item.element
+          )}
+        </Timeline>
       )}
     </div>
   );

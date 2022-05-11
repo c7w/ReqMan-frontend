@@ -43,29 +43,47 @@ export const ServiceReadonlyModal = (props: {
   const serviceSRStore = useSelector(getSRServiceStore);
   const SRListStore = useSelector(getSRListStore);
 
-  const getPercentage = (service_id: number) => {
+  // get project id
+  const params = useParams();
+  const project_id = Number(params.id);
+
+  const [percentage, setPercentage] = useState(0);
+  const [successPercentage, setSuccessPercentage] = useState(0);
+
+  const getPercentage = async (service_id: number) => {
     let now = 0;
     let all = 0;
-    Service2SR(service_id, serviceSRStore, SRListStore).forEach((sr: any) => {
+    (
+      await Service2SR(service_id, serviceSRStore, SRListStore, project_id)
+    ).forEach((sr: any) => {
       all += sr.priority;
       if (sr.state === "Reviewing" || sr.state === "Done") {
         now += sr.priority;
       }
     });
-    return all === 0 ? 0 : Number(((now / all) * 100).toFixed(1));
+    setPercentage(all === 0 ? 0 : Number(((now / all) * 100).toFixed(1)));
   };
 
-  const getSuccessPercentage = (service_id: number) => {
+  const getSuccessPercentage = async (service_id: number) => {
     let now = 0;
     let all = 0;
-    Service2SR(service_id, serviceSRStore, SRListStore).forEach((sr: any) => {
+    (
+      await Service2SR(service_id, serviceSRStore, SRListStore, project_id)
+    ).forEach((sr: any) => {
       all += sr.priority;
       if (sr.state === "Done") {
         now += sr.priority;
       }
     });
-    return all === 0 ? 0 : Number(((now / all) * 100).toFixed(1));
+    setSuccessPercentage(
+      all === 0 ? 0 : Number(((now / all) * 100).toFixed(1))
+    );
   };
+
+  useEffect(() => {
+    getPercentage(data.id);
+    getSuccessPercentage(data.id);
+  }, []);
 
   return (
     <div className={"service-modal"}>
@@ -92,9 +110,9 @@ export const ServiceReadonlyModal = (props: {
       <div style={{ margin: "0.5rem 0" }}>
         <span className={"service-label"}>开发进度</span>&nbsp;&nbsp;
         <Progress
-          percent={getPercentage(data.id)}
-          success={{ percent: getSuccessPercentage(data.id) }}
-          style={{ width: "40%" }}
+          percent={percentage}
+          success={{ percent: successPercentage }}
+          style={{ width: "70%" }}
         />
       </div>
       <div className={"service-row"}>
@@ -153,8 +171,22 @@ const UIServiceReadonly = () => {
   }, [serviceStore]);
   return (
     <div className={"personal-setting-container"}>
-      <Typography.Title level={2}>项目服务</Typography.Title>
-      <hr style={{ width: "90%", margin: "1rem auto" }} />
+      <div
+        style={{
+          fontSize: "2rem",
+          marginLeft: "1rem",
+          userSelect: "none",
+          alignSelf: "flex-start",
+          display: "flex",
+          flexDirection: "row",
+          width: "100%",
+        }}
+      >
+        <p style={{ marginBottom: "0px" }}>项目服务查看</p>
+        <div style={{ flexGrow: "1" }}></div>
+      </div>
+
+      <hr style={{ width: "98%", margin: "1rem auto" }} />
       <div className={"ServiceShowcase"}>
         <div className={"ServiceShowcaseLeft"}>{leftService}</div>
         <div className={"ServiceShowcaseRight"}>{rightService}</div>

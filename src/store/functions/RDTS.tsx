@@ -4,6 +4,7 @@ import request_json from "../../utils/Network";
 import API from "../../utils/APIList";
 import { updateRepoStore } from "../slices/RepoSlice";
 import {
+  getMRIssueAssociationStore,
   updateCommitSRAssociationStore,
   updateCommitStore,
   updateIssueSRAssociationStore,
@@ -33,15 +34,33 @@ const getAllRDTSInfo = async (dispatcher: any, userStore: string) => {
 const getRDTSInfo = async (dispatcher: any, project_id: number) => {
   return getRepoInfo(dispatcher, project_id).then((repo_data: any) => {
     const promise_list = [];
+    dispatcher(updateCommitStore(JSON.stringify({ code: 0, data: [] })));
+    dispatcher(updateIssueStore(JSON.stringify({ code: 0, data: [] })));
+    // dispatcher(updateMergeStore(JSON.stringify({ code: 0, data: [] })));
     promise_list.push(
-      getIssueInfo(dispatcher, project_id, JSON.stringify(repo_data))
+      new Promise((resolve) => {
+        resolve({ code: 0, data: [] });
+      })
+      // getIssueInfo(dispatcher, project_id, JSON.stringify(repo_data))
     );
     promise_list.push(
-      getCommitInfo(dispatcher, project_id, JSON.stringify(repo_data))
+      new Promise((resolve) => {
+        resolve({ code: 0, data: [] });
+      })
+      // getIssueInfo(dispatcher, project_id, JSON.stringify(repo_data))
     );
     promise_list.push(
-      getMergeInfo(dispatcher, project_id, JSON.stringify(repo_data))
+      new Promise((resolve) => {
+        resolve({ code: 0, data: [] });
+      })
     );
+    getMergeInfo(dispatcher, project_id, JSON.stringify(repo_data)); // Just request, no waiting time!
+    // promise_list.push(
+    //   getCommitInfo(dispatcher, project_id, JSON.stringify(repo_data))
+    // );
+    // promise_list.push(
+    //   getMergeInfo(dispatcher, project_id, JSON.stringify(repo_data))
+    // );
     promise_list.push(
       getMRSRAssociation(dispatcher, project_id, JSON.stringify(repo_data))
     );
@@ -51,6 +70,7 @@ const getRDTSInfo = async (dispatcher: any, project_id: number) => {
     promise_list.push(
       getCommitSRAssociation(dispatcher, project_id, JSON.stringify(repo_data))
     );
+    promise_list.push();
     return Promise.all(promise_list);
   });
 };
@@ -104,7 +124,6 @@ const deleteRepoInfo = async (
   project_id: number,
   repo_id: number
 ): Promise<void> => {
-  // console.log(SRService);
   const myBody = {
     project: project_id,
     type: "repo",

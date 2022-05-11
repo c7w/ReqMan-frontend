@@ -35,33 +35,50 @@ interface ProjectServiceCardProps {
 export const ProjectServiceCard = (props: ProjectServiceCardProps) => {
   const data = JSON.parse(props.data);
 
-  // TODO: Buggy selected association!!!!!!
   const serviceSRStore = useSelector(getSRServiceStore);
   const SRListStore = useSelector(getSRListStore);
 
-  const getPercentage = (service_id: number) => {
+  // get project id
+  const params = useParams<"id">();
+  const project_id = Number(params.id);
+
+  const [percentage, setPercentage] = useState(0);
+  const [successPercentage, setSuccessPercentage] = useState(0);
+
+  const getPercentage = async (service_id: number) => {
     let now = 0;
     let all = 0;
-    Service2SR(service_id, serviceSRStore, SRListStore).forEach((sr: any) => {
+    (
+      await Service2SR(service_id, serviceSRStore, SRListStore, project_id)
+    ).forEach((sr: any) => {
       all += sr.priority;
       if (sr.state === "Reviewing" || sr.state === "Done") {
         now += sr.priority;
       }
     });
-    return all === 0 ? 0 : Number(((now / all) * 100).toFixed(1));
+    setPercentage(all === 0 ? 0 : Number(((now / all) * 100).toFixed(1)));
   };
 
-  const getSuccessPercentage = (service_id: number) => {
+  const getSuccessPercentage = async (service_id: number) => {
     let now = 0;
     let all = 0;
-    Service2SR(service_id, serviceSRStore, SRListStore).forEach((sr: any) => {
+    (
+      await Service2SR(service_id, serviceSRStore, SRListStore, project_id)
+    ).forEach((sr: any) => {
       all += sr.priority;
       if (sr.state === "Done") {
         now += sr.priority;
       }
     });
-    return all === 0 ? 0 : Number(((now / all) * 100).toFixed(1));
+    setSuccessPercentage(
+      all === 0 ? 0 : Number(((now / all) * 100).toFixed(1))
+    );
   };
+
+  useEffect(() => {
+    getPercentage(data.id);
+    getSuccessPercentage(data.id);
+  }, []);
 
   return (
     <div className={"service-card"} onClick={() => props.modal(props.data)}>
@@ -88,8 +105,8 @@ export const ProjectServiceCard = (props: ProjectServiceCardProps) => {
       <div className={"service-row"}>
         <span className={"service-label"}>开发进度</span>&nbsp;&nbsp;
         <Progress
-          percent={getPercentage(data.id)}
-          success={{ percent: getSuccessPercentage(data.id) }}
+          percent={percentage}
+          success={{ percent: successPercentage }}
           style={{ width: "70%" }}
         />
       </div>
@@ -99,41 +116,6 @@ export const ProjectServiceCard = (props: ProjectServiceCardProps) => {
 
 const ServiceModal = (props: { data: string; close: () => void }) => {
   const data = JSON.parse(props.data);
-
-  const SRIterationAssociationStore = useSelector(getSRIterationStore);
-  const SRListStore = useSelector(getSRListStore);
-
-  const getPercentage = (iteration_id: number) => {
-    let now = 0;
-    let all = 0;
-    Iteration2SR(
-      iteration_id,
-      SRIterationAssociationStore,
-      SRListStore
-    ).forEach((sr: any) => {
-      all += sr.priority;
-      if (sr.state === "Reviewing" || sr.state === "Done") {
-        now += sr.priority;
-      }
-    });
-    return all === 0 ? 0 : Number(((now / all) * 100).toFixed(1));
-  };
-
-  const getSuccessPercentage = (iteration_id: number) => {
-    let now = 0;
-    let all = 0;
-    Iteration2SR(
-      iteration_id,
-      SRIterationAssociationStore,
-      SRListStore
-    ).forEach((sr: any) => {
-      all += sr.priority;
-      if (sr.state === "Done") {
-        now += sr.priority;
-      }
-    });
-    return all === 0 ? 0 : Number(((now / all) * 100).toFixed(1));
-  };
 
   const [title, setTitle] = useState(data.title);
   const [desp, setDesp] = useState(data.description);
@@ -165,14 +147,6 @@ const ServiceModal = (props: { data: string; close: () => void }) => {
       <div style={{ margin: "0.5rem 0" }}>
         <span className={"service-label"}>创建时间</span>&nbsp;&nbsp;
         <span>{moment(data.createdAt * 1000).format("lll")}</span>
-      </div>
-      <div style={{ margin: "0.5rem 0" }}>
-        <span className={"service-label"}>开发进度</span>&nbsp;&nbsp;
-        <Progress
-          percent={getPercentage(data.id)}
-          success={{ percent: getSuccessPercentage(data.id) }}
-          style={{ width: "40%" }}
-        />
       </div>
       <div className={"service-row"}>
         <span className={"service-label"}>服务简介</span>&nbsp;&nbsp;
@@ -331,8 +305,26 @@ const UIService = () => {
 
   return (
     <div className={"personal-setting-container"}>
-      <div className={"ServiceHeader"}>
-        <Button type={"primary"} onClick={() => setCreateService(true)}>
+      <div
+        style={{
+          fontSize: "2rem",
+          marginLeft: "1rem",
+          userSelect: "none",
+          alignSelf: "flex-start",
+          display: "flex",
+          flexDirection: "row",
+          width: "100%",
+        }}
+      >
+        <p style={{ marginBottom: "0px" }}>项目服务管理</p>
+        <div style={{ flexGrow: "1" }}></div>
+        <Button
+          type={"primary"}
+          onClick={() => setCreateService(true)}
+          style={{
+            alignSelf: "end",
+          }}
+        >
           创建新服务
         </Button>
         <Modal
@@ -371,7 +363,9 @@ const UIService = () => {
           </div>
         </Modal>
       </div>
-      <hr style={{ width: "90%", margin: "1rem auto" }} />
+
+      <hr style={{ width: "98%", margin: "1rem auto" }} />
+
       <div className={"ServiceShowcase"}>
         <div className={"ServiceShowcaseLeft"}>{leftService}</div>
         <div className={"ServiceShowcaseRight"}>{rightService}</div>

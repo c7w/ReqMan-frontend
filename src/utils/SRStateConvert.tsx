@@ -8,6 +8,6 @@ state2Color.set("Done", "orange");
 state2ChineseState.set("TODO", "未开始");
 state2ChineseState.set("WIP", "开发中");
 state2ChineseState.set("Reviewing", "测试中");
-state2ChineseState.set("Done", "已完成");
+state2ChineseState.set("Done", "已交付");
 
 export { state2Color, state2ChineseState };

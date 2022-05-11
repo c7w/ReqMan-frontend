@@ -15,6 +15,9 @@ import { getRepoStore } from "../../store/slices/RepoSlice";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
+import { MergeRelatedSR } from "./UIMerge";
+
+import SRSearchBox from "../Shared/SRSearchBox";
 
 interface UIMergeCardProps {
   data: string;
@@ -22,12 +25,14 @@ interface UIMergeCardProps {
   MRSRAssociationStore: string;
   visible: boolean;
   close: () => void;
+  onlyShow?: boolean;
 }
 
 interface UIMergeCardPreviewProps {
   SRListStore: string;
   MRSRAssociationStore: string;
   data: string;
+  onlyShow?: boolean;
 }
 
 const UIMergeCard = (props: UIMergeCardProps) => {
@@ -88,8 +93,9 @@ const UIMergeCard = (props: UIMergeCardProps) => {
     currAssociatedSRId = filtered_list[0].SR;
   }
 
-  const onSRAssociatedChange = (val: string) => {
-    const key = Number(val);
+  const onSRAssociatedChange = (from: number[], to: number[]) => {
+    console.debug("from", from, "to", to);
+    const key = Number(to);
     if (currAssociatedSRId > 0) {
       console.debug(currAssociatedSRId);
       deleteMRSRAssociation(
@@ -123,7 +129,13 @@ const UIMergeCard = (props: UIMergeCardProps) => {
     /!\[image\]\((.*?)\)/g,
     `<img src='${image_front_url}/$1' style="width: auto; height: auto; max-width: 90%"></img>`
   );
-  console.debug(data.description);
+  // console.debug(data.description);
+
+  // console.debug(
+  //   JSON.parse(props.MRSRAssociationStore).data.filter(
+  //     (asso: any) => asso.MR === data.id
+  //   )
+  // );
 
   return (
     <Modal
@@ -184,24 +196,25 @@ const UIMergeCard = (props: UIMergeCardProps) => {
           <span className={"meta-data-label"} style={{ marginRight: "1rem" }}>
             关联功能需求
           </span>
-          <Select
-            showSearch={true}
-            style={{ width: "20rem" }}
-            placeholder="功能需求"
-            optionFilterProp="children"
-            onChange={onSRAssociatedChange}
-            defaultValue={currAssociatedSRId.toString()}
-            filterOption={(input, option: any) =>
-              option.children.indexOf(input.toLowerCase()) >= 0
-            }
-          >
-            <Select.Option value="-1">　</Select.Option>
-            {JSON.parse(props.SRListStore).data.map((sr: any) => (
-              <Select.Option key={sr.id} value={sr.id.toString()}>
-                {sr.title}
-              </Select.Option>
-            ))}
-          </Select>
+
+          {props.onlyShow ? (
+            <MergeRelatedSR
+              currAssociatedSRId={
+                JSON.parse(props.MRSRAssociationStore)
+                  .data.filter((asso: any) => asso.MR === data.id)
+                  .map((asso: any) => asso.SR)[0]
+              }
+              show_digest={true}
+            />
+          ) : (
+            <SRSearchBox
+              value={JSON.parse(props.MRSRAssociationStore)
+                .data.filter((asso: any) => asso.MR === data.id)
+                .map((asso: any) => asso.SR)}
+              onChange={onSRAssociatedChange}
+              multiple={false}
+            />
+          )}
         </div>
       </div>
     </Modal>
@@ -219,6 +232,7 @@ const UIMergeCardPreview = (props: UIMergeCardPreviewProps) => {
         close={() => setVisible(false)}
         MRSRAssociationStore={props.MRSRAssociationStore}
         SRListStore={props.SRListStore}
+        onlyShow={props.onlyShow}
       />
       <a onClick={() => setVisible(true)}>{data.title}</a>
     </>

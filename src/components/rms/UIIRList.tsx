@@ -1,22 +1,30 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import type { ProColumns } from "@ant-design/pro-table";
 import ProTable from "@ant-design/pro-table";
-import { Input, Button, Modal, Progress, Popconfirm } from "antd";
+import { Input, Button, Modal, Progress, Popconfirm, Typography } from "antd";
 import { IRCardProps, IRSRAssociation } from "../../store/ConfigureStore";
 import "./UIIRList.css";
 import SRList from "./UISRList";
 import { useDispatch, useSelector } from "react-redux";
 import {
   createIRInfo,
+  createIRSR,
   deleteIRInfo,
+  deleteIRSR,
   updateIRInfo,
 } from "../../store/functions/RMS";
 import { ToastMessage } from "../../utils/Navigation";
 import ReactMarkdown from "react-markdown";
-import { SRId2SRInfo, userId2UserInfo } from "../../utils/Association";
+import {
+  oneIR2AllSR,
+  SRId2SRInfo,
+  userId2UserInfo,
+} from "../../utils/Association";
 import { getProjectStore } from "../../store/slices/ProjectSlice";
 import { UIUserCardPreview } from "../ums/UIUserCard";
 import IRCard from "./IRCard";
+import SRSearchBox from "../Shared/SRSearchBox";
+import { difference } from "underscore";
 const { TextArea } = Input;
 
 interface UIIRListProps {
@@ -29,45 +37,27 @@ interface UIIRListProps {
 }
 
 const UIIRList = (props: UIIRListProps) => {
+  console.debug("UIIRList ");
   const IRListData = JSON.parse(props.IRListStr).data;
   const IRSRAssociationData = JSON.parse(props.IRSRAssociation).data;
   const dispatcher = useDispatch();
   const project = props.project_id;
-  const dataIRList: IRCardProps[] = [];
+  const [dataIRList, setDataIRList] = useState<any[]>([]);
   const projectInfo = useSelector(getProjectStore);
+  const [reload, setReload] = useState(0);
+  // const currentPage = useRef(1); // 当前页面，默认为第一页
 
-  IRListData.forEach((value: IRCardProps) => {
-    const user = userId2UserInfo(Number(value.createdBy), projectInfo);
-    // calculate the IR Progress
-    const curSRKey: number[] = [];
-    IRSRAssociationData.forEach((value0: IRSRAssociation) => {
-      if (value0.IR === value.id) {
-        curSRKey.push(value0.SR);
-      }
-    });
-    let totalWeight = 0;
-    let curWeight = 0;
-    curSRKey.forEach((value1: number) => {
-      const SRInfo = SRId2SRInfo(value1, props.SRListStr);
-      totalWeight += SRInfo.priority;
-      if (SRInfo.state === "Done") {
-        curWeight += SRInfo.priority;
-      }
-    });
-    const curProgress = 0 | ((curWeight * 100) / totalWeight);
-    dataIRList.push({
-      id: value.id,
-      project: value.project,
-      title: value.title,
-      description: value.description,
-      rank: value.rank,
-      createdBy: user.id,
-      createdAt: value.createdAt * 1000,
-      disabled: value.disabled,
-      progress: curProgress,
-      iter: [],
-    });
+  const [explorerParams, setExplorerParams] = useState({
+    current: 1,
+    pageSize: 10,
   });
+
+  useEffect(() => {
+    if (reload !== 0) {
+      setReload(reload + 1);
+    }
+  }, [props.IRListStr]);
+
   const [isEditModalVisible, setIsEditModalVisible] = useState<boolean>(false);
   const [isCreateModalVisible, setIsCreateModalVisible] =
     useState<boolean>(false);
@@ -91,12 +81,14 @@ const UIIRList = (props: UIIRListProps) => {
     // setTimeout(() => window.location.reload(), 1000);
     ToastMessage("success", "关联成功", "您的需求关联成功");
     setIsSRModalVisible(false);
+    setReload(reload + 1);
   };
 
   const handleSRCancel = () => {
     setId(-1);
     // setTimeout(() => window.location.reload(), 0);
     setIsSRModalVisible(false);
+    setReload(reload + 1);
   };
 
   const showEditModal = (record: IRCardProps) => {
@@ -130,6 +122,7 @@ const UIIRList = (props: UIIRListProps) => {
         setDesc("");
         setRank(1);
         setIsEditModalVisible(false);
+        setReload(reload + 1);
       } else {
         ToastMessage("error", "修改失败", "您的原始需求修改失败");
       }
@@ -173,6 +166,7 @@ const UIIRList = (props: UIIRListProps) => {
         setDesc("");
         setRank(1);
         setIsCreateModalVisible(false);
+        setReload(reload + 1);
       } else {
         ToastMessage("error", "创建失败", "您的原始需求创建失败");
       }
@@ -216,6 +210,7 @@ const UIIRList = (props: UIIRListProps) => {
 
   const handleCardOk = () => {
     setIsCardModalVisible(false);
+    setReload(reload + 1);
   };
 
   const columns: ProColumns<IRCardProps>[] = [
@@ -236,7 +231,7 @@ const UIIRList = (props: UIIRListProps) => {
           }}
           onClick={() => showCardModal(record)}
         >
-          {record.title}
+          <Typography.Link>{record.title}</Typography.Link>
         </div>
       ),
     },
@@ -263,7 +258,6 @@ const UIIRList = (props: UIIRListProps) => {
       ellipsis: true,
       align: "center",
       render: (_, record) => {
-        // console.log(record);
         return (
           <div style={{}}>
             <UIUserCardPreview
@@ -324,6 +318,66 @@ const UIIRList = (props: UIIRListProps) => {
     onlyShowColumn.push(columns[i]);
   }
 
+  const reload_IR_request = async (
+    { pageSize, current }: any,
+    sort: any,
+    filter: any
+  ) => {
+    // First, slice the IRListData
+    // console.debug(12312312312312);
+    // console.debug(JSON.parse(props.IRListStr).data);
+    // console.debug(props.IRListStr);
+    const _IRListData = JSON.parse(props.IRListStr).data.slice(
+      (current - 1) * pageSize,
+      current * pageSize
+    );
+    console.debug(_IRListData);
+
+    // Then, post-process the IRListData
+    const IRListData_processed = await Promise.all(
+      _IRListData.map(async (item: any) => {
+        item.createdAt *= 1000;
+
+        // Calc item.progress
+
+        const curSRKey: number[] = [];
+        IRSRAssociationData.forEach((value0: IRSRAssociation) => {
+          if (value0.IR === item.id) {
+            curSRKey.push(value0.SR);
+          }
+        });
+        let totalWeight = 0;
+        let curWeight = 0;
+
+        const curSRs = await Promise.all(
+          curSRKey.map((value1: number) => {
+            return SRId2SRInfo(value1, props.SRListStr, project);
+          })
+        );
+
+        for (const SRInfo of curSRs) {
+          // TODO: change to async
+          totalWeight += SRInfo.priority;
+          if (SRInfo.state === "Done") {
+            curWeight += SRInfo.priority;
+          }
+        }
+        item.progress = 0 | ((curWeight * 100) / totalWeight);
+        return item;
+      })
+    );
+    console.debug(IRListData_processed);
+    return {
+      data: IRListData_processed,
+      total: JSON.parse(props.IRListStr).data.length,
+      success: true,
+    };
+  };
+
+  const [selectedSR, setSelectedSR] = useState<any>(
+    JSON.stringify({ code: 0, data: [] })
+  );
+
   if (!props.onlyShow) {
     return (
       <div className={`IRTable`}>
@@ -345,9 +399,13 @@ const UIIRList = (props: UIIRListProps) => {
             density: true,
           }}
           defaultSize={"small"}
-          dataSource={dataIRList}
+          // dataSource={dataIRList}
+          request={reload_IR_request}
+          params={{ reload: reload }}
           rowKey="id"
-          pagination={{ pageSize: 10 }}
+          pagination={{
+            pageSize: 10,
+          }}
           tableStyle={{ padding: "1rem 1rem 2rem" }}
           dateFormatter="string"
           search={false}
@@ -357,19 +415,45 @@ const UIIRList = (props: UIIRListProps) => {
           centered={true}
           visible={isSRModalVisible}
           onCancel={handleSRCancel}
-          footer={[
-            <Button key="confirm" onClick={handleSROk}>
-              确认
-            </Button>,
-          ]}
+          footer={null}
           width={"70%"}
           destroyOnClose={true}
         >
+          <SRSearchBox
+            value={JSON.parse(props.IRSRAssociation)
+              .data.filter((value: any) => {
+                return value.IR === id;
+              })
+              .map((value: any) => {
+                return value.SR;
+              })}
+            onChange={(from: number[], to: number[]) => {
+              difference(from, to).forEach((value: number) => {
+                deleteIRSR(dispatcher, project, {
+                  IR: id,
+                  SR: value,
+                  id: -1,
+                });
+              });
+              difference(to, from).forEach((value: number) => {
+                createIRSR(dispatcher, project, {
+                  IR: id,
+                  SR: value,
+                  id: -1,
+                });
+              });
+            }}
+            getSelectedSR={(value: any[]) => {
+              console.debug("update to UIIRList", value);
+              setSelectedSR(JSON.stringify({ code: 0, data: value }));
+            }}
+            multiple={true}
+          />
           <SRList
-            showChoose={true}
-            onlyShow={false}
+            showChoose={false}
+            onlyShow={true}
             project_id={props.project_id}
-            SRListStr={props.SRListStr}
+            SRListStr={selectedSR}
             userInfo={props.userInfo}
             IRSRAssociation={props.IRSRAssociation}
             IR_id={id}
@@ -510,8 +594,10 @@ const UIIRList = (props: UIIRListProps) => {
           }}
           cardBordered={true}
           columns={onlyShowColumn}
-          expandable={{ expandedRowRender }}
-          dataSource={dataIRList}
+          // expandable={{ expandedRowRender }}
+          // dataSource={dataIRList}
+          request={reload_IR_request}
+          params={{ reload: reload }}
           rowKey="id"
           pagination={{ pageSize: 10 }}
           scroll={{ y: 400 }}

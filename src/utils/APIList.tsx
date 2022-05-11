@@ -135,6 +135,46 @@ const API = {
     path: "/rdts/forward_tree/",
     method: "get",
   },
+  GET_MERGES_PAGED: {
+    path: "/rdts/project_merges/",
+    method: "get",
+  },
+  GET_BUGS_PAGED: {
+    path: "/rdts/project_bugs/",
+    method: "get",
+  },
+  GET_COMMITS_PAGED: {
+    path: "/rdts/project_commits/",
+    method: "get",
+  },
+  GET_PROJECT_SINGLE_MERGE: {
+    path: "/rdts/project_single_merge/",
+    method: "get",
+  },
+  GET_PROJECT_SINGLE_BUG: {
+    path: "/rdts/project_single_bug/",
+    method: "get",
+  },
+  GET_PROJECT_SINGLE_COMMIT: {
+    path: "/rdts/project_single_commit/",
+    method: "get",
+  },
+  GET_PROJECT_SINGLE_SR: {
+    path: "/rms/project_single_sr/",
+    method: "get",
+  },
+  GET_SR_PAGED: {
+    path: "/rms/project_sr/",
+    method: "get",
+  },
+  GET_RMS_LIST_SR: {
+    path: "/rms/search_sr/",
+    method: "post",
+  },
+  GET_RMS_DASHBOARD: {
+    path: "/rms/dashboard/",
+    method: "get",
+  },
 };
 
 export default API;

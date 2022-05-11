@@ -11,6 +11,7 @@ import {
   Select,
   Space,
   Tag,
+  Typography,
 } from "antd";
 import "./UISRList.css";
 import { useDispatch, useSelector } from "react-redux";
@@ -31,6 +32,7 @@ import {
   deleteSRIteration,
   deleteSRService,
   deleteUserSRInfo,
+  getSRListInfo,
   updateSRInfo,
 } from "../../store/functions/RMS";
 import { ToastMessage } from "../../utils/Navigation";
@@ -39,6 +41,7 @@ import {
   SR2ChargedUser,
   SR2Iteration,
   SR2Service,
+  SRId2SRInfo,
   userId2UserInfo,
 } from "../../utils/Association";
 import {
@@ -55,6 +58,10 @@ import { getUserSRStore } from "../../store/slices/UserSRSlice";
 import { UIUserCardPreview } from "../ums/UIUserCard";
 import IRCard from "./IRCard";
 import SRCard from "./SRCard";
+import { getUserStore } from "../../store/slices/UserSlice";
+import request_json from "../../utils/Network";
+import API from "../../utils/APIList";
+import Loading from "../../layout/components/Loading";
 const { TextArea } = Input;
 const { Option } = Select;
 
@@ -69,6 +76,7 @@ interface UISRListProps {
 }
 
 const UISRList = (props: UISRListProps) => {
+  const userStore = useSelector(getUserStore);
   const SRListData = JSON.parse(props.SRListStr).data;
   const IRSRAssociationData = JSON.parse(props.IRSRAssociation).data;
 
@@ -84,6 +92,8 @@ const UISRList = (props: UISRListProps) => {
 
   const userSRStore = useSelector(getUserSRStore);
 
+  const [reload, setReload] = useState(0);
+
   const curSRKey: number[] = [];
   if (props.IR_id !== -1) {
     IRSRAssociationData.forEach((value: IRSRAssociation) => {
@@ -92,6 +102,8 @@ const UISRList = (props: UISRListProps) => {
       }
     });
   }
+
+  console.debug(SRListData);
 
   // 总任务列表
   const dataSRList: SRCardProps[] = [];
@@ -224,7 +236,66 @@ const UISRList = (props: UISRListProps) => {
     setIsEditModalVisible(true);
   };
 
+  // Assert that userInfo and projectInfo are not undefined
+
+  // Get user role
+  const filtered_project = JSON.parse(userStore).data.projects.filter(
+    (value: any) => value.id === Number(props.project_id)
+  );
+  if (filtered_project.length === 0) {
+    console.debug("????");
+    return (
+      <div>
+        <Loading />
+      </div>
+    );
+  }
+  const project_role = filtered_project[0].role;
+
   const handleEditOk = () => {
+    // Here process Dev
+    if (project_role === "dev") {
+      let state = "";
+      if (currState === "未开始") {
+        state = "TODO";
+      }
+      if (currState === "开发中") {
+        state = "WIP";
+      }
+      if (currState === "测试中") {
+        state = "Reviewing";
+      }
+      if (currState === "已交付") {
+        state = "Done";
+      }
+
+      request_json(API.POST_RMS, {
+        body: {
+          project: props.project_id,
+          type: "SRState",
+          operation: "update",
+          data: {
+            id: id,
+            updateData: {
+              state: state,
+            },
+          },
+        },
+      }).then((res: any) => {
+        if (res.code === 0) {
+          ToastMessage("success", "修改成功", "您的功能需求状态修改成功");
+          // getSRListInfo(dispatcher, props.project_id);
+          setReload(reload + 1);
+        } else {
+          ToastMessage("error", "修改失败", "您的功能需求状态修改失败");
+        }
+      });
+      setIsEditModalVisible(false);
+      setIfok(true);
+      return;
+    }
+
+    // Here process QA and sys and supermaster
     let state = "";
     if (currState === "未开始") {
       state = "TODO";
@@ -343,6 +414,9 @@ const UISRList = (props: UISRListProps) => {
       }
     });
     setIfok(true);
+    setTimeout(() => {
+      setReload(reload + 1);
+    }, 500);
   };
 
   const handleEditCancel = () => {
@@ -380,6 +454,7 @@ const UISRList = (props: UISRListProps) => {
     createSRInfo(dispatcher, project, newSR).then((data: any) => {
       if (data.code === 0) {
         ToastMessage("success", "创建成功", "您的功能需求创建成功");
+        setReload(reload + 1);
         // setTimeout(() => window.location.reload(), 1000);
         setId(-1);
         setTitle("");
@@ -415,6 +490,7 @@ const UISRList = (props: UISRListProps) => {
     deleteSRInfo(dispatcher, project, record).then((data: any) => {
       if (data.code === 0) {
         ToastMessage("success", "删除成功", "您的功能需求删除成功");
+        setReload(reload + 1);
         // setTimeout(() => window.location.reload(), 1000);
         setId(-1);
         setTitle("");
@@ -519,9 +595,11 @@ const UISRList = (props: UISRListProps) => {
 
   const handleCardCancel = () => {
     setIsCardModalVisible(false);
+    setReload(reload + 1);
   };
 
   const handleCardOk = () => {
+    setReload(reload + 1);
     setIsCardModalVisible(false);
   };
 
@@ -545,7 +623,7 @@ const UISRList = (props: UISRListProps) => {
         }}
         onClick={() => showCardModal(record)}
       >
-        {record.title}
+        <Typography.Link>{record.title}</Typography.Link>
       </div>
     ),
   };
@@ -683,15 +761,21 @@ const UISRList = (props: UISRListProps) => {
     align: "center",
     render: (text, record, _, action) => [
       // 编辑内含修改删除等，须继续与后端接口适配
-      <a onClick={() => showEditModal(record)}>编辑</a>,
-      <Popconfirm
-        title="你确定要删除该功能需求吗？"
-        onConfirm={() => confirmDelete(record)}
-        okText="是"
-        cancelText="否"
-      >
-        <a href="#">删除</a>
-      </Popconfirm>,
+      project_role !== "dev" ||
+      JSON.parse(userStore).data.user.id === record.chargedBy ? (
+        <a onClick={() => showEditModal(record)}>编辑</a>
+      ) : null,
+
+      project_role === "dev" ? null : (
+        <Popconfirm
+          title="你确定要删除该功能需求吗？"
+          onConfirm={() => confirmDelete(record)}
+          okText="是"
+          cancelText="否"
+        >
+          <a href="#">删除</a>
+        </Popconfirm>
+      ),
     ],
   };
 
@@ -752,11 +836,11 @@ const UISRList = (props: UISRListProps) => {
         };
         if (selected) {
           createIRSR(dispatcher, props.project_id, IRSR).then((data: any) => {
-            console.log(data);
+            // console.log(data);
           });
         } else if (!selected) {
           deleteIRSR(dispatcher, props.project_id, IRSR).then((data: any) => {
-            console.log(data);
+            // console.log(data);
           });
         }
       });
@@ -769,10 +853,74 @@ const UISRList = (props: UISRListProps) => {
           SR: value.id,
         };
         deleteIRSR(dispatcher, props.project_id, IRSR).then((data: any) => {
-          console.log(data);
+          // console.log(data);
         });
       });
     },
+  };
+
+  console.debug(reload);
+
+  const reload_paged_sr = async (
+    { pageSize, current }: any,
+    sort: any,
+    filter: any
+  ) => {
+    const retrieved_data = await request_json(API.GET_SR_PAGED, {
+      getParams: {
+        from: ((current as number) - 1) * (pageSize as number),
+        size: pageSize,
+        project: props.project_id,
+      },
+    });
+    // console.debug(retrieved_data);
+
+    const post_processed_data = retrieved_data.data.payload.map(
+      (value: any) => {
+        value.iter = SR2Iteration(value.id, iterSRAssoStore, iterationStore);
+
+        value.chargedBy = SR2ChargedUser(
+          value.id,
+          userSRStore,
+          projectInfo
+        )[0]?.id;
+
+        value.service = SR2Service(
+          value.id,
+          SRServiceStore,
+          serviceStore
+        )[0]?.id;
+
+        switch (value.state) {
+          case "TODO":
+            value.currState = "未开始";
+            value.stateColor = "red";
+            break;
+          case "WIP":
+            value.currState = "开发中";
+            value.stateColor = "blue";
+            break;
+          case "Reviewing":
+            value.currState = "测试中";
+            value.stateColor = "lime";
+            break;
+          case "Done":
+            value.currState = "已交付";
+            value.stateColor = "green";
+            break;
+        }
+
+        value.createdAt = value.createdAt * 1000;
+
+        return value;
+      }
+    );
+
+    return {
+      data: post_processed_data,
+      success: true,
+      total: retrieved_data.data.total_size,
+    };
   };
 
   if (!props.showChoose && !props.onlyShow) {
@@ -782,14 +930,18 @@ const UISRList = (props: UISRListProps) => {
           headerTitle="功能需求列表"
           toolBarRender={() => {
             return [
-              <Button key="create" onClick={showCreateModal} type="primary">
-                新建功能需求
-              </Button>,
+              project_role === "dev" ? null : (
+                <Button key="create" onClick={showCreateModal} type="primary">
+                  新建功能需求
+                </Button>
+              ),
             ];
           }}
           rowKey="id"
           columns={columns}
-          dataSource={dataSRList}
+          // dataSource={dataSRList}
+          params={{ reload: reload }}
+          request={reload_paged_sr}
           pagination={{ pageSize: 10 }}
           options={{
             fullScreen: false,
@@ -882,7 +1034,7 @@ const UISRList = (props: UISRListProps) => {
           >
             功能需求权重
             <span style={{ color: "grey", fontSize: "0.6rem" }}>
-              （用于计算需求完成进度）
+              （用于加权计算原始需求完成进度）
             </span>
           </p>
           <InputNumber
@@ -914,6 +1066,7 @@ const UISRList = (props: UISRListProps) => {
           </p>
           <Input
             value={title}
+            disabled={project_role === "dev"}
             onChange={(e) => {
               if (e.target.value === "") {
                 setIfok(true);
@@ -934,6 +1087,7 @@ const UISRList = (props: UISRListProps) => {
             功能需求描述
           </p>
           <TextArea
+            disabled={project_role === "dev"}
             rows={4}
             allowClear
             value={desc}
@@ -970,6 +1124,7 @@ const UISRList = (props: UISRListProps) => {
             迭代选择
           </p>
           <Select
+            disabled={project_role === "dev"}
             mode="multiple"
             style={{ width: "100%" }}
             defaultValue={iter}
@@ -987,6 +1142,7 @@ const UISRList = (props: UISRListProps) => {
             服务选择
           </p>
           <Select
+            disabled={project_role === "dev"}
             defaultValue={service}
             style={{ width: 120 }}
             onChange={handleServiceChange}
@@ -1003,6 +1159,7 @@ const UISRList = (props: UISRListProps) => {
             指定负责人
           </p>
           <Select
+            disabled={project_role === "dev"}
             defaultValue={chargedBy}
             style={{ width: 120 }}
             onChange={handleChargedByChange}
@@ -1019,6 +1176,7 @@ const UISRList = (props: UISRListProps) => {
             项目优先级
           </p>
           <InputNumber
+            disabled={project_role === "dev"}
             value={priority}
             onChange={(e: number) => {
               setPriority(e);
@@ -1040,21 +1198,31 @@ const UISRList = (props: UISRListProps) => {
             width={"40%"}
             destroyOnClose={true}
           >
-            <SRCard
-              id={SRCardRecord.id}
-              project={SRCardRecord.project}
-              title={SRCardRecord.title}
-              description={SRCardRecord.description}
-              priority={SRCardRecord.priority}
-              rank={SRCardRecord.rank}
-              currState={SRCardRecord.currState}
-              stateColor={SRCardRecord.stateColor}
-              createdBy={SRCardRecord.createdBy}
-              createdAt={Number(SRCardRecord.createdAt) / 1000}
-              iter={SRCardRecord.iter}
-              chargedBy={SRCardRecord.chargedBy}
-              service={SRCardRecord.service}
-            />
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                width: "100%",
+              }}
+            >
+              <SRCard
+                id={SRCardRecord.id}
+                project={SRCardRecord.project}
+                title={SRCardRecord.title}
+                description={SRCardRecord.description}
+                priority={SRCardRecord.priority}
+                rank={SRCardRecord.rank}
+                currState={SRCardRecord.currState}
+                stateColor={SRCardRecord.stateColor}
+                createdBy={SRCardRecord.createdBy}
+                createdAt={Number(SRCardRecord.createdAt) / 1000}
+                iter={SRCardRecord.iter}
+                chargedBy={SRCardRecord.chargedBy}
+                service={SRCardRecord.service}
+              />
+            </div>
           </Modal>
         )}
       </div>
@@ -1069,15 +1237,17 @@ const UISRList = (props: UISRListProps) => {
             defaultSelectedRowKeys: curSRKey,
             ...rowSelection,
           }}
-          tableAlertOptionRender={({ selectedRowKeys, selectedRows }) => (
-            <Space size={24}>
-              <span>{`关联功能需求: ${selectedRows.reduce(
-                (pre, item: SRCardProps) => pre + item.title + ", ",
-                ""
-              )} `}</span>
-            </Space>
-          )}
-          dataSource={dataSRList}
+          // tableAlertOptionRender={({ selectedRowKeys, selectedRows }) => (
+          //   <Space size={24}>
+          //     <span>{`关联功能需求: ${selectedRows.reduce(
+          //       (pre, item: SRCardProps) => pre + item.title + ", ",
+          //       ""
+          //     )} `}</span>
+          //   </Space>
+          // )}
+          // dataSource={dataSRList}
+          params={{ reload: reload }}
+          request={reload_paged_sr}
           pagination={{ pageSize: 5 }}
           // scroll={{ y: 300 }}
           search={false}
@@ -1100,21 +1270,31 @@ const UISRList = (props: UISRListProps) => {
             width={"40%"}
             destroyOnClose={true}
           >
-            <SRCard
-              id={SRCardRecord.id}
-              project={SRCardRecord.project}
-              title={SRCardRecord.title}
-              description={SRCardRecord.description}
-              priority={SRCardRecord.priority}
-              rank={SRCardRecord.rank}
-              currState={SRCardRecord.currState}
-              stateColor={SRCardRecord.stateColor}
-              createdBy={SRCardRecord.createdBy}
-              createdAt={Number(SRCardRecord.createdAt) / 1000}
-              iter={SRCardRecord.iter}
-              chargedBy={SRCardRecord.chargedBy}
-              service={SRCardRecord.service}
-            />
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                width: "100%",
+              }}
+            >
+              <SRCard
+                id={SRCardRecord.id}
+                project={SRCardRecord.project}
+                title={SRCardRecord.title}
+                description={SRCardRecord.description}
+                priority={SRCardRecord.priority}
+                rank={SRCardRecord.rank}
+                currState={SRCardRecord.currState}
+                stateColor={SRCardRecord.stateColor}
+                createdBy={SRCardRecord.createdBy}
+                createdAt={Number(SRCardRecord.createdAt) / 1000}
+                iter={SRCardRecord.iter}
+                chargedBy={SRCardRecord.chargedBy}
+                service={SRCardRecord.service}
+              />
+            </div>
           </Modal>
         )}
       </div>
@@ -1128,7 +1308,9 @@ const UISRList = (props: UISRListProps) => {
           rowKey="id"
           columns={showColumn}
           dataSource={showSRList}
-          pagination={{ pageSize: 10 }}
+          // params={{ reload: reload }}
+          // request={reload_paged_sr}
+          pagination={{ pageSize: 5 }}
           options={{
             fullScreen: false,
             reload: false,
@@ -1153,21 +1335,32 @@ const UISRList = (props: UISRListProps) => {
             width={"40%"}
             destroyOnClose={true}
           >
-            <SRCard
-              id={SRCardRecord.id}
-              project={SRCardRecord.project}
-              title={SRCardRecord.title}
-              description={SRCardRecord.description}
-              priority={SRCardRecord.priority}
-              rank={SRCardRecord.rank}
-              currState={SRCardRecord.currState}
-              stateColor={SRCardRecord.stateColor}
-              createdBy={SRCardRecord.createdBy}
-              createdAt={Number(SRCardRecord.createdAt) / 1000}
-              iter={SRCardRecord.iter}
-              chargedBy={SRCardRecord.chargedBy}
-              service={SRCardRecord.service}
-            />
+            {" "}
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                width: "100%",
+              }}
+            >
+              <SRCard
+                id={SRCardRecord.id}
+                project={SRCardRecord.project}
+                title={SRCardRecord.title}
+                description={SRCardRecord.description}
+                priority={SRCardRecord.priority}
+                rank={SRCardRecord.rank}
+                currState={SRCardRecord.currState}
+                stateColor={SRCardRecord.stateColor}
+                createdBy={SRCardRecord.createdBy}
+                createdAt={Number(SRCardRecord.createdAt) / 1000}
+                iter={SRCardRecord.iter}
+                chargedBy={SRCardRecord.chargedBy}
+                service={SRCardRecord.service}
+              />
+            </div>
           </Modal>
         )}
       </div>
