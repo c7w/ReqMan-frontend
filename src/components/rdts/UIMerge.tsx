@@ -102,13 +102,13 @@ const UIMerge = () => {
 
   useEffect(() => {
     // Add RDTS Timer
-    addRDTSTimer(() => {
-      setIsUpdating(true);
-      getRDTSInfo(dispatcher, project_id).then(() => {
-        setIsUpdating(false);
-        setLastUpdate(moment());
-      });
-    });
+    // addRDTSTimer(() => {
+    //   setIsUpdating(true);
+    //   getRDTSInfo(dispatcher, project_id).then(() => {
+    //     setIsUpdating(false);
+    //     setLastUpdate(moment());
+    //   });
+    // });
   }, []);
 
   const getBackgroundColor = (state: "closed" | "merged" | "opened") => {
@@ -251,9 +251,9 @@ const UIMerge = () => {
         toolBarRender={() => {
           return [
             <div style={{ minWidth: "15rem" }}>
-              <Typography.Text style={{ width: "10rem", marginRight: "1rem" }}>
-                上次更新：{lastUpdate.fromNow()}
-              </Typography.Text>
+              {/*<Typography.Text style={{ width: "10rem", marginRight: "1rem" }}>*/}
+              {/*  上次更新：{lastUpdate.fromNow()}*/}
+              {/*</Typography.Text>*/}
               <Typography.Link
                 style={{ marginRight: "10px" }}
                 onClick={() => {
@@ -292,6 +292,7 @@ const UIMerge = () => {
         defaultSize={"small"}
         // dataSource={data_source}
         rowKey="id"
+        params={{ lastUpdate: lastUpdate }}
         request={async ({ pageSize, current }, sort, filter) => {
           const retrieved_data = await request_json(API.GET_MERGES_PAGED, {
             getParams: {
