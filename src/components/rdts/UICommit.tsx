@@ -67,13 +67,13 @@ const UICommit = () => {
 
   useEffect(() => {
     // Add RDTS Timer
-    addRDTSTimer(() => {
-      setIsUpdating(true);
-      getRDTSInfo(dispatcher, project_id).then(() => {
-        setIsUpdating(false);
-        setLastUpdate(moment());
-      });
-    });
+    // addRDTSTimer(() => {
+    //   setIsUpdating(true);
+    //   getRDTSInfo(dispatcher, project_id).then(() => {
+    //     setIsUpdating(false);
+    //     setLastUpdate(moment());
+    //   });
+    // });
   }, []);
 
   const getBackgroundColor = (changed_lines: number) => {
@@ -182,9 +182,9 @@ const UICommit = () => {
         toolBarRender={() => {
           return [
             <div style={{ minWidth: "15rem" }}>
-              <Typography.Text style={{ width: "10rem", marginRight: "1rem" }}>
-                上次更新：{lastUpdate.fromNow()}
-              </Typography.Text>
+              {/*<Typography.Text style={{ width: "10rem", marginRight: "1rem" }}>*/}
+              {/*  上次更新：{lastUpdate.fromNow()}*/}
+              {/*</Typography.Text>*/}
               <Typography.Link
                 style={{ marginRight: "10px" }}
                 onClick={() => {
@@ -192,11 +192,13 @@ const UICommit = () => {
                     setIsUpdating(true);
                     getRDTSInfo(dispatcher, project_id)
                       .then((data: any) => {
-                        setIsUpdating(false);
                         setLastUpdate(moment());
                       })
-                      .catch((err: any) => {
-                        setIsUpdating(false);
+                      .finally(() => {
+                        setTimeout(() => {
+                          setIsUpdating(false);
+                        }, 500);
+                        // setIsUpdating(false);
                       });
                   }
                 }}
@@ -220,6 +222,7 @@ const UICommit = () => {
         //     success: true,
         //   });
         // }}
+        params={{ lastUpdate: lastUpdate }}
         request={async ({ pageSize, current }, sort, filter) => {
           const retrieved_data = await request_json(API.GET_COMMITS_PAGED, {
             getParams: {
