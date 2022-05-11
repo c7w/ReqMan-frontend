@@ -397,18 +397,22 @@ const UIIteration = () => {
       }
 
       const iterInfo = JSON.parse(iterationStore).data;
+      // 无项目迭代
+      if (iterInfo.length === 0) {
+        setCurrIteration(0);
+        return;
+      }
       // Find the iteration with max sid
       let maxSid = -2,
         maxIter = -1;
-
+      console.log(iterInfo);
       for (let i = 0; i < iterInfo.length; i++) {
         if (iterInfo[i].sid > maxSid) {
           maxSid = iterInfo[i].sid;
           maxIter = i;
         }
       }
-
-      setCurrIteration(JSON.parse(iterationStore).data[maxIter].id as number);
+      setCurrIteration(iterInfo[maxIter].id as number);
     }
   }, [iterationStore]);
 
@@ -553,6 +557,8 @@ const UIIteration = () => {
     .map((user: any) => userId2UserInfo(user.user, projectStore));
   // console.debug(users_charging);
 
+  console.log(currIteration);
+
   return (
     <div className={"project-iteration-container"}>
       <div
@@ -568,21 +574,24 @@ const UIIteration = () => {
       >
         <p style={{ marginBottom: "0px" }}>项目迭代管理</p>
         <div style={{ flexGrow: "1" }} />
-        <Select
-          value={currIteration}
-          onChange={(value: number) => {
-            setCurrIteration(value);
-          }}
-          style={{ alignSelf: "end", marginRight: "2rem", width: "8rem" }}
-        >
-          {JSON.parse(iterationStore)
-            .data.sort((a: any, b: any) => b.sid - a.sid)
-            .map((iter: any) => (
-              <Select.Option value={iter.id} key={iter.id}>
-                {iter.title}
-              </Select.Option>
-            ))}
-        </Select>
+        {JSON.parse(iterationStore).data.length === 0 ? null : (
+          <Select
+            value={currIteration}
+            onChange={(value: number) => {
+              setCurrIteration(value);
+            }}
+            style={{ alignSelf: "end", marginRight: "2rem", width: "8rem" }}
+          >
+            {JSON.parse(iterationStore)
+              .data.sort((a: any, b: any) => b.sid - a.sid)
+              .map((iter: any) => (
+                <Select.Option value={iter.id} key={iter.id}>
+                  {iter.title}
+                </Select.Option>
+              ))}
+          </Select>
+        )}
+
         {["supermaster", "sys"].indexOf(
           JSON.parse(userStore).data.projects.filter(
             (project: any) => project.id === Number(project_id)
@@ -678,158 +687,130 @@ const UIIteration = () => {
           >
             <Tabs defaultActiveKey="4" centered>
               <Tabs.TabPane tab="未开始" key="1">
-                <div
-                  style={{
-                    display: "flex",
-                    margin: "1rem auto",
-                    flexDirection: "row",
-                    flexWrap: "wrap",
-                    justifyContent: "space-evenly",
-                    width: "95%",
-                  }}
-                >
+                <div>
                   {currSR.TODO.length <= 0 ? (
                     <Empty description={"暂无未开始的需求"} />
                   ) : (
-                    currSR.TODO.map((sr: any) => (
-                      <SRCard
-                        id={sr.id}
-                        project={sr.project}
-                        title={sr.title}
-                        description={sr.description}
-                        priority={sr.priority}
-                        currState={sr.state}
-                        createdAt={sr.createdAt}
-                        createdBy={sr.createdBy}
-                        iter={[curr_iter]}
-                        chargedBy={
-                          SR2ChargedUser(sr.id, userSRStore, projectStore)[0]
-                            ?.id
-                        }
-                        service={SR2Service(
-                          sr.id,
-                          SRServiceStore,
-                          serviceStore
-                        )}
-                      />
-                    ))
+                    <div className="SRBox">
+                      {currSR.TODO.map((sr: any) => (
+                        <SRCard
+                          id={sr.id}
+                          project={sr.project}
+                          title={sr.title}
+                          description={sr.description}
+                          priority={sr.priority}
+                          currState={sr.state}
+                          createdAt={sr.createdAt}
+                          createdBy={sr.createdBy}
+                          iter={[curr_iter]}
+                          chargedBy={
+                            SR2ChargedUser(sr.id, userSRStore, projectStore)[0]
+                              ?.id
+                          }
+                          service={SR2Service(
+                            sr.id,
+                            SRServiceStore,
+                            serviceStore
+                          )}
+                        />
+                      ))}
+                    </div>
                   )}
                 </div>
               </Tabs.TabPane>
               <Tabs.TabPane tab="开发中" key="2">
-                <div
-                  style={{
-                    display: "flex",
-                    margin: "1rem auto",
-                    flexDirection: "row",
-                    flexWrap: "wrap",
-                    justifyContent: "space-evenly",
-                    width: "95%",
-                  }}
-                >
+                <div>
                   {currSR.WIP.length <= 0 ? (
                     <Empty description={"暂无开发中的需求"} />
                   ) : (
-                    currSR.WIP.map((sr: any) => (
-                      <SRCard
-                        id={sr.id}
-                        project={sr.project}
-                        title={sr.title}
-                        description={sr.description}
-                        priority={sr.priority}
-                        currState={sr.state}
-                        createdAt={sr.createdAt}
-                        createdBy={sr.createdBy}
-                        iter={[curr_iter]}
-                        chargedBy={
-                          SR2ChargedUser(sr.id, userSRStore, projectStore)[0]
-                            ?.id
-                        }
-                        service={SR2Service(
-                          sr.id,
-                          SRServiceStore,
-                          serviceStore
-                        )}
-                      />
-                    ))
+                    <div className="SRBox">
+                      {currSR.WIP.map((sr: any) => (
+                        <SRCard
+                          id={sr.id}
+                          project={sr.project}
+                          title={sr.title}
+                          description={sr.description}
+                          priority={sr.priority}
+                          currState={sr.state}
+                          createdAt={sr.createdAt}
+                          createdBy={sr.createdBy}
+                          iter={[curr_iter]}
+                          chargedBy={
+                            SR2ChargedUser(sr.id, userSRStore, projectStore)[0]
+                              ?.id
+                          }
+                          service={SR2Service(
+                            sr.id,
+                            SRServiceStore,
+                            serviceStore
+                          )}
+                        />
+                      ))}
+                    </div>
                   )}
                 </div>
               </Tabs.TabPane>
               <Tabs.TabPane tab="测试中" key="3">
-                <div
-                  style={{
-                    display: "flex",
-                    margin: "1rem auto",
-                    flexDirection: "row",
-                    flexWrap: "wrap",
-                    justifyContent: "space-evenly",
-                    width: "95%",
-                  }}
-                >
+                <div>
                   {currSR.Reviewing.length <= 0 ? (
                     <Empty description={"暂无测试中的需求"} />
                   ) : (
-                    currSR.Reviewing.map((sr: any) => (
-                      <SRCard
-                        id={sr.id}
-                        project={sr.project}
-                        title={sr.title}
-                        description={sr.description}
-                        priority={sr.priority}
-                        currState={sr.state}
-                        createdAt={sr.createdAt}
-                        createdBy={sr.createdBy}
-                        iter={[curr_iter]}
-                        chargedBy={
-                          SR2ChargedUser(sr.id, userSRStore, projectStore)[0]
-                            ?.id
-                        }
-                        service={SR2Service(
-                          sr.id,
-                          SRServiceStore,
-                          serviceStore
-                        )}
-                      />
-                    ))
+                    <div className="SRBox">
+                      {currSR.Reviewing.map((sr: any) => (
+                        <SRCard
+                          id={sr.id}
+                          project={sr.project}
+                          title={sr.title}
+                          description={sr.description}
+                          priority={sr.priority}
+                          currState={sr.state}
+                          createdAt={sr.createdAt}
+                          createdBy={sr.createdBy}
+                          iter={[curr_iter]}
+                          chargedBy={
+                            SR2ChargedUser(sr.id, userSRStore, projectStore)[0]
+                              ?.id
+                          }
+                          service={SR2Service(
+                            sr.id,
+                            SRServiceStore,
+                            serviceStore
+                          )}
+                        />
+                      ))}
+                    </div>
                   )}
                 </div>
               </Tabs.TabPane>
               <Tabs.TabPane tab="已交付" key="4">
-                <div
-                  style={{
-                    display: "flex",
-                    margin: "1rem auto",
-                    flexDirection: "row",
-                    flexWrap: "wrap",
-                    justifyContent: "space-evenly",
-                    width: "95%",
-                  }}
-                >
+                <div>
                   {currSR.Done.length <= 0 ? (
                     <Empty description={"暂无已交付的需求"} />
                   ) : (
-                    currSR.Done.map((sr: any) => (
-                      <SRCard
-                        id={sr.id}
-                        project={sr.project}
-                        title={sr.title}
-                        description={sr.description}
-                        priority={sr.priority}
-                        currState={sr.state}
-                        createdAt={sr.createdAt}
-                        createdBy={sr.createdBy}
-                        iter={[curr_iter]}
-                        chargedBy={
-                          SR2ChargedUser(sr.id, userSRStore, projectStore)[0]
-                            ?.id
-                        }
-                        service={SR2Service(
-                          sr.id,
-                          SRServiceStore,
-                          serviceStore
-                        )}
-                      />
-                    ))
+                    <div className="SRBox">
+                      {currSR.Done.map((sr: any) => (
+                        <SRCard
+                          id={sr.id}
+                          project={sr.project}
+                          title={sr.title}
+                          description={sr.description}
+                          priority={sr.priority}
+                          currState={sr.state}
+                          createdAt={sr.createdAt}
+                          createdBy={sr.createdBy}
+                          iter={[curr_iter]}
+                          chargedBy={
+                            SR2ChargedUser(sr.id, userSRStore, projectStore)[0]
+                              ?.id
+                          }
+                          service={SR2Service(
+                            sr.id,
+                            SRServiceStore,
+                            serviceStore
+                          )}
+                        />
+                      ))}
+                    </div>
                   )}
                 </div>
               </Tabs.TabPane>

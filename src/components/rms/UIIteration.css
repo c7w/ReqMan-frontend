@@ -132,3 +132,14 @@
 .iteration-table-unit-done {
   background-color: #99ff00;
 }
+
+.SRBox {
+  display: grid;
+  grid-template-columns: repeat(2, 50%);
+  justify-items: center;
+  align-items: center;
+  grid-column-gap: 1rem;
+  box-sizing: content-box;
+  width: 75%;
+  margin: 1rem auto;
+}
