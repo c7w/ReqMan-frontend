@@ -1198,21 +1198,31 @@ const UISRList = (props: UISRListProps) => {
             width={"40%"}
             destroyOnClose={true}
           >
-            <SRCard
-              id={SRCardRecord.id}
-              project={SRCardRecord.project}
-              title={SRCardRecord.title}
-              description={SRCardRecord.description}
-              priority={SRCardRecord.priority}
-              rank={SRCardRecord.rank}
-              currState={SRCardRecord.currState}
-              stateColor={SRCardRecord.stateColor}
-              createdBy={SRCardRecord.createdBy}
-              createdAt={Number(SRCardRecord.createdAt) / 1000}
-              iter={SRCardRecord.iter}
-              chargedBy={SRCardRecord.chargedBy}
-              service={SRCardRecord.service}
-            />
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                width: "100%",
+              }}
+            >
+              <SRCard
+                id={SRCardRecord.id}
+                project={SRCardRecord.project}
+                title={SRCardRecord.title}
+                description={SRCardRecord.description}
+                priority={SRCardRecord.priority}
+                rank={SRCardRecord.rank}
+                currState={SRCardRecord.currState}
+                stateColor={SRCardRecord.stateColor}
+                createdBy={SRCardRecord.createdBy}
+                createdAt={Number(SRCardRecord.createdAt) / 1000}
+                iter={SRCardRecord.iter}
+                chargedBy={SRCardRecord.chargedBy}
+                service={SRCardRecord.service}
+              />
+            </div>
           </Modal>
         )}
       </div>
@@ -1260,21 +1270,31 @@ const UISRList = (props: UISRListProps) => {
             width={"40%"}
             destroyOnClose={true}
           >
-            <SRCard
-              id={SRCardRecord.id}
-              project={SRCardRecord.project}
-              title={SRCardRecord.title}
-              description={SRCardRecord.description}
-              priority={SRCardRecord.priority}
-              rank={SRCardRecord.rank}
-              currState={SRCardRecord.currState}
-              stateColor={SRCardRecord.stateColor}
-              createdBy={SRCardRecord.createdBy}
-              createdAt={Number(SRCardRecord.createdAt) / 1000}
-              iter={SRCardRecord.iter}
-              chargedBy={SRCardRecord.chargedBy}
-              service={SRCardRecord.service}
-            />
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                width: "100%",
+              }}
+            >
+              <SRCard
+                id={SRCardRecord.id}
+                project={SRCardRecord.project}
+                title={SRCardRecord.title}
+                description={SRCardRecord.description}
+                priority={SRCardRecord.priority}
+                rank={SRCardRecord.rank}
+                currState={SRCardRecord.currState}
+                stateColor={SRCardRecord.stateColor}
+                createdBy={SRCardRecord.createdBy}
+                createdAt={Number(SRCardRecord.createdAt) / 1000}
+                iter={SRCardRecord.iter}
+                chargedBy={SRCardRecord.chargedBy}
+                service={SRCardRecord.service}
+              />
+            </div>
           </Modal>
         )}
       </div>
@@ -1315,21 +1335,32 @@ const UISRList = (props: UISRListProps) => {
             width={"40%"}
             destroyOnClose={true}
           >
-            <SRCard
-              id={SRCardRecord.id}
-              project={SRCardRecord.project}
-              title={SRCardRecord.title}
-              description={SRCardRecord.description}
-              priority={SRCardRecord.priority}
-              rank={SRCardRecord.rank}
-              currState={SRCardRecord.currState}
-              stateColor={SRCardRecord.stateColor}
-              createdBy={SRCardRecord.createdBy}
-              createdAt={Number(SRCardRecord.createdAt) / 1000}
-              iter={SRCardRecord.iter}
-              chargedBy={SRCardRecord.chargedBy}
-              service={SRCardRecord.service}
-            />
+            {" "}
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                width: "100%",
+              }}
+            >
+              <SRCard
+                id={SRCardRecord.id}
+                project={SRCardRecord.project}
+                title={SRCardRecord.title}
+                description={SRCardRecord.description}
+                priority={SRCardRecord.priority}
+                rank={SRCardRecord.rank}
+                currState={SRCardRecord.currState}
+                stateColor={SRCardRecord.stateColor}
+                createdBy={SRCardRecord.createdBy}
+                createdAt={Number(SRCardRecord.createdAt) / 1000}
+                iter={SRCardRecord.iter}
+                chargedBy={SRCardRecord.chargedBy}
+                service={SRCardRecord.service}
+              />
+            </div>
           </Modal>
         )}
       </div>

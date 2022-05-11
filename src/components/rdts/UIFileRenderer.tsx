@@ -134,14 +134,25 @@ const UIFileRenderer = (props: UIFileRendererProps) => {
         justifyContent: "center",
       }}
     >
-      {RENDER.map((entry: any) => {
-        return (
-          <div className={"render-row"}>
-            <div className={"render-row-c1"}>{entry[0]}</div>
-            <div className={"render-row-c2"}>{entry[1]}</div>
-          </div>
-        );
-      })}
+      {RENDER.length === 0 ? (
+        <div
+          style={{
+            width: "100%",
+            textAlign: "center",
+          }}
+        >
+          (空文件)
+        </div>
+      ) : (
+        RENDER.map((entry: any) => {
+          return (
+            <div className={"render-row"}>
+              <div className={"render-row-c1"}>{entry[0]}</div>
+              <div className={"render-row-c2"}>{entry[1]}</div>
+            </div>
+          );
+        })
+      )}
     </div>
   );
 
