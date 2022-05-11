@@ -340,23 +340,12 @@ const UIIRList = (props: UIIRListProps) => {
 
         // Calc item.progress
 
-        const curSRKey: number[] = [];
-        IRSRAssociationData.forEach((value0: IRSRAssociation) => {
-          if (value0.IR === item.id) {
-            curSRKey.push(value0.SR);
-          }
-        });
         let totalWeight = 0;
         let curWeight = 0;
 
-        const curSRs = await Promise.all(
-          curSRKey.map((value1: number) => {
-            return SRId2SRInfo(value1, props.SRListStr, project);
-          })
-        );
+        const curSRs = await oneIR2AllSR(item.id, "", "", project);
 
         for (const SRInfo of curSRs) {
-          // TODO: change to async
           totalWeight += SRInfo.priority;
           if (SRInfo.state === "Done") {
             curWeight += SRInfo.priority;
