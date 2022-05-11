@@ -381,7 +381,6 @@ const UIIRList = (props: UIIRListProps) => {
   if (!props.onlyShow) {
     return (
       <div className={`IRTable`}>
-        <Button onClick={() => setReload(reload + 1)}>click me</Button>
         <ProTable<IRCardProps>
           headerTitle="原始需求列表"
           toolBarRender={() => {
