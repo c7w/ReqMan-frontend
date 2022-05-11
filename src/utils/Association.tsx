@@ -166,13 +166,6 @@ const oneIR2AllSR = async (
   project_id: number
 ) => {
   // console.log("===================== Get SR By IR ======================= ");
-  const IRSRData = JSON.parse(IRSRAssociation).data;
-  const matchedSRId = IRSRData.map((obj: any) => {
-    if (obj.IR === IRId) {
-      return obj.SR;
-    }
-    return undefined;
-  }).filter((obj: any) => obj);
 
   const res = await request_json(API.GET_RMS_IR_SR, {
     getParams: {
@@ -329,13 +322,6 @@ const Iteration2SR = async (
   project_id: number
 ) => {
   // console.log("================ Get SR By Iteration ===============");
-  const SRItData = JSON.parse(SRIterationAsso).data;
-  // console.log(SRItData);
-  const matchedSRId = SRItData.map((obj: any) => {
-    if (obj.iteration === iterationId) {
-      return obj.SR;
-    }
-  }).filter((obj: any) => obj);
 
   const res = await request_json(API.GET_RMS_ITERATION_SR, {
     getParams: {

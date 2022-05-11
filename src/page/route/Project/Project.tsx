@@ -31,7 +31,11 @@ const Project = () => {
   }, []);
 
   // 1. User State Judge
-  if (userInfo === "") {
+  if (
+    userInfo === "" ||
+    projectInfo === "" ||
+    JSON.parse(projectInfo).code !== 0
+  ) {
     // Re-Query...
   } else if (JSON.parse(userInfo).code !== 0) {
     // Redirect to `Root`

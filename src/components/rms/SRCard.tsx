@@ -134,10 +134,10 @@ const SRCard = (props: SRCardProps) => {
   // 更新打开的 modal 对应的 SR 的所有关系
   const updateAssociation = async () => {
     Promise.all([
-      getRDTSInfo(dispatcher, props.project),
-      getSRListInfo(dispatcher, props.project),
-      updateProjectInfo(dispatcher, props.project),
-      getSRChangeLogInfo(dispatcher, props.project, props.id),
+      getRDTSInfo(dispatcher, project_id),
+      getSRListInfo(dispatcher, project_id),
+      updateProjectInfo(dispatcher, project_id),
+      getSRChangeLogInfo(dispatcher, project_id, props.id),
     ]).then(async (data) => {
       /*
         data[0][0]: issue
@@ -166,7 +166,7 @@ const SRCard = (props: SRCardProps) => {
         props.id,
         JSON.stringify(data[0][4]),
         JSON.stringify(data[0][0]),
-        props.project
+        project_id
       );
       const newAssoIssueList: any = [];
       assoIssueListData.forEach((value: any) => {
@@ -181,7 +181,7 @@ const SRCard = (props: SRCardProps) => {
         props.id,
         JSON.stringify(data[0][3]),
         JSON.stringify(data[0][2]),
-        props.project
+        project_id
       );
       const newAssoMRCardList: any = [];
       assoMRListData.forEach((value: MergeRequestProps) => {
@@ -198,8 +198,8 @@ const SRCard = (props: SRCardProps) => {
     });
 
     Promise.all([
-      getSRIterationInfo(dispatcher, props.project),
-      getIterationInfo(dispatcher, props.project),
+      getSRIterationInfo(dispatcher, project_id),
+      getIterationInfo(dispatcher, project_id),
     ]).then((data: any) => {
       const assoIterData = SR2Iteration(
         props.id,
@@ -261,8 +261,8 @@ const SRCard = (props: SRCardProps) => {
     });
 
     Promise.all([
-      getSRServiceInfo(dispatcher, props.project),
-      updateServiceInfo(dispatcher, props.project),
+      getSRServiceInfo(dispatcher, project_id),
+      updateServiceInfo(dispatcher, project_id),
     ]).then((data: any) => {
       const assoServiceData = SR2Service(
         props.id,
@@ -287,8 +287,8 @@ const SRCard = (props: SRCardProps) => {
 
     // update IR SR Association
     Promise.all([
-      getIRSRInfo(dispatcher, props.project), // 该项目所有 IR SR
-      getIRListInfo(dispatcher, props.project), // 该项目所有 IR
+      getIRSRInfo(dispatcher, project_id), // 该项目所有 IR SR
+      getIRListInfo(dispatcher, project_id), // 该项目所有 IR
     ]).then((data) => {
       // data 为即时得到的 store 信息，不等异步了
       const assoIRListData = oneSR2AllIR(
@@ -318,7 +318,7 @@ const SRCard = (props: SRCardProps) => {
   };
 
   useEffect(() => {
-    updateProjectInfo(dispatcher, props.project).then((data) => {
+    updateProjectInfo(dispatcher, project_id).then((data) => {
       let userInfo = data.data.users.filter(
         (user: any) => user.id === props.createdBy
       )[0];
@@ -349,9 +349,9 @@ const SRCard = (props: SRCardProps) => {
       setModalVisible(false);
       return;
     }
-    updateSRInfo(dispatcher, props.project, {
+    updateSRInfo(dispatcher, project_id, {
       id: id,
-      project: props.project,
+      project: project_id,
       title: title,
       description: description,
       priority: priority,
@@ -382,9 +382,9 @@ const SRCard = (props: SRCardProps) => {
     setDescEditing(false);
   };
   const onClick = (e: any) => {
-    updateSRInfo(dispatcher, props.project, {
+    updateSRInfo(dispatcher, project_id, {
       id: props.id,
-      project: props.project,
+      project: project_id,
       title: props.title,
       description: props.description,
       priority: props.priority,
