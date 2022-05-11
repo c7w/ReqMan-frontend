@@ -6,8 +6,6 @@ import API from "./APIList";
 const userId2UserInfo = (userId: number, projectInfo: string) => {
   // console.log("===================== userId to name ======================= ");
   const userData = JSON.parse(projectInfo).data.users;
-  // console.log(JSON.parse(projectInfo));
-  // console.log(userId);
   const user = userData.filter((obj: any) => obj.id === userId);
   return user.length > 0 ? user[0] : "not found";
 };
@@ -142,8 +140,7 @@ const servId2ServInfo = (serviceId: number, serviceInfo: string) => {
 
 // 传入 project 的 Id，返回其详细信息，同时需传入该项目的 projectInfo (getProjectStore 而来) 字符串（未解析）
 const projId2ProjInfo = (projectId: number, projectInfo: string) => {
-  console.log("============ Get projectInfo By projectId ============== ");
-  console.log(projectInfo);
+  // console.log("============ Get projectInfo By projectId ============== ");
   return JSON.parse(projectInfo).data.project;
 };
 
@@ -170,7 +167,6 @@ const oneIR2AllSR = async (
 ) => {
   // console.log("===================== Get SR By IR ======================= ");
   const IRSRData = JSON.parse(IRSRAssociation).data;
-  // console.log(IRSRData);
   const matchedSRId = IRSRData.map((obj: any) => {
     if (obj.IR === IRId) {
       return obj.SR;
@@ -197,7 +193,6 @@ const oneIR2AllSR = async (
 const oneSR2AllIR = (SRId: number, IRSRAssociation: string, IRList: string) => {
   // // console.log("===================== Get IR By SR ======================= ");
   const IRSRData = JSON.parse(IRSRAssociation).data;
-  // // console.log(IRSRData);
   const matchedIRId = IRSRData.map((obj: any) => {
     if (obj.SR === SRId) {
       return obj.IR;
@@ -219,9 +214,8 @@ const MR2SR = async (
   SRList: string,
   project_id: number
 ) => {
-  console.log("================ Get SR By MR ===============");
+  // console.log("================ Get SR By MR ===============");
   const MRSRData = JSON.parse(MRSRAsso).data;
-  console.log(MRSRData);
   const matchedSR = MRSRData.filter((obj: any) => obj.MR === MRId);
 
   if (matchedSR.length > 0)
@@ -243,7 +237,6 @@ const oneSR2AllMR = async (
 ) => {
   // console.log("================ Get MR By SR ===============");
   const SRMRData = JSON.parse(SRMRAsso).data;
-  // console.log(SRMRData);
   const matchedMRId = SRMRData.map((obj: any) => {
     if (obj.SR === SRId) {
       return obj.MR;

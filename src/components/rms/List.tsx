@@ -16,7 +16,6 @@ const List = (props: ListProps) => {
     const tmp_SRList = Array.from(JSON.parse(props.stateSRList));
     const newSRCardList: any = [];
     if (tmp_SRList && tmp_SRList !== []) {
-      // console.log(tmp_SRList);
       tmp_SRList.forEach((value: any) => {
         newSRCardList.push(
           <SRCard

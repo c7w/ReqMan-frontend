@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import type { ProColumns } from "@ant-design/pro-table";
 import ProTable from "@ant-design/pro-table";
 import { Input, Button, Modal, Progress, Popconfirm, Typography } from "antd";
@@ -45,6 +45,7 @@ const UIIRList = (props: UIIRListProps) => {
   const [dataIRList, setDataIRList] = useState<any[]>([]);
   const projectInfo = useSelector(getProjectStore);
   const [reload, setReload] = useState(0);
+  // const currentPage = useRef(1); // 当前页面，默认为第一页
 
   const [explorerParams, setExplorerParams] = useState({
     current: 1,
@@ -257,7 +258,6 @@ const UIIRList = (props: UIIRListProps) => {
       ellipsis: true,
       align: "center",
       render: (_, record) => {
-        // console.log(record);
         return (
           <div style={{}}>
             <UIUserCardPreview
@@ -327,8 +327,6 @@ const UIIRList = (props: UIIRListProps) => {
     // console.debug(12312312312312);
     // console.debug(JSON.parse(props.IRListStr).data);
     // console.debug(props.IRListStr);
-
-    console.debug("current", current);
     const _IRListData = JSON.parse(props.IRListStr).data.slice(
       (current - 1) * pageSize,
       current * pageSize
@@ -383,6 +381,7 @@ const UIIRList = (props: UIIRListProps) => {
   if (!props.onlyShow) {
     return (
       <div className={`IRTable`}>
+        <Button onClick={() => setReload(reload + 1)}>click me</Button>
         <ProTable<IRCardProps>
           headerTitle="原始需求列表"
           toolBarRender={() => {
@@ -405,7 +404,9 @@ const UIIRList = (props: UIIRListProps) => {
           request={reload_IR_request}
           params={{ reload: reload }}
           rowKey="id"
-          pagination={{ pageSize: 10 }}
+          pagination={{
+            pageSize: 10,
+          }}
           tableStyle={{ padding: "1rem 1rem 2rem" }}
           dateFormatter="string"
           search={false}

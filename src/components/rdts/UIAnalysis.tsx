@@ -149,7 +149,6 @@ const UIAnalysis = () => {
         SRListStore,
         project_id
       );
-      // console.log(assoSRList);
       iter_issue_sr_list.iterations.push(iteration.title);
       iter_issue_sr_list.all_sr_count.push(assoSRList.length);
       let counter = 0;
@@ -165,7 +164,6 @@ const UIAnalysis = () => {
       iter_issue_sr_list.issues.push(counter);
     }
     set_iter_issue_sr_list(iter_issue_sr_list);
-    // console.log(iter_issue_sr_list);
   };
 
   useEffect(() => {
@@ -225,8 +223,6 @@ const UIAnalysis = () => {
   // 查询有没有 issue 跟它对应，有就计数器 + 1
 
   // put in all the MRs get from an repo
-
-  // console.log(JSON.parse(commitStore));
 
   return (
     <div className={"merge-card"}>

@@ -24,7 +24,6 @@ const Dashboard = () => {
   if (userInfo === "") {
     updateUserInfo(dispatcher);
   } else if (JSON.parse(userInfo).code !== 0) {
-    console.log(userInfo);
     ToastMessage("error", "未登录", "跳转回登录界面");
     Redirect(dispatcher, "/login");
   } else {

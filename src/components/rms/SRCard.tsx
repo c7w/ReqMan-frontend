@@ -82,7 +82,6 @@ import { useParams } from "react-router-dom";
 const { Text } = Typography;
 
 const SRCard = (props: SRCardProps) => {
-  // console.log(props);
   const dispatcher = useDispatch();
   const userInfo = useSelector(getUserStore);
   const projectStore = useSelector(getProjectStore);
@@ -297,7 +296,6 @@ const SRCard = (props: SRCardProps) => {
         JSON.stringify(data[0]),
         JSON.stringify(data[1])
       );
-      // console.log(assoIRListData);
       const newAssoIRCardList: any = [];
       assoIRListData.forEach((value: IRCardProps) => {
         newAssoIRCardList.push(
@@ -321,7 +319,6 @@ const SRCard = (props: SRCardProps) => {
 
   useEffect(() => {
     updateProjectInfo(dispatcher, props.project).then((data) => {
-      // console.log(data);
       let userInfo = data.data.users.filter(
         (user: any) => user.id === props.createdBy
       )[0];

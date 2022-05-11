@@ -23,11 +23,7 @@ interface UIUserCardProps {
 }
 
 const UIUserCard = (props: UIUserCardProps) => {
-  // const userInfo = JSON.parse(props.projectStore).data.users.filter(
-  //   (user: any) => user.id === props.userId
-  // )[0];
   const projectInfo = JSON.parse(props.projectStore).data;
-  // console.log(projectInfo);
   const userInfo = projectInfo.users.filter(
     (user: any) => user.id === props.userId
   )[0];
@@ -35,7 +31,6 @@ const UIUserCard = (props: UIUserCardProps) => {
   const issueStore = useSelector(getIssueStore);
   const mergeStore = useSelector(getMergeStore);
 
-  // console.log(userInfo);
   const [commitInfo, setCommitInfo] = useState("");
   const [myActivities, setActivities] = useState("");
   const [reload, setReload] = useState(0);
@@ -153,7 +148,6 @@ const UIUserCard = (props: UIUserCardProps) => {
           const date_past = date.getTime();
 
           const commitData = getAllDay(date_past, date_now);
-          // console.log(data);
           const commitTimes = data.data[0].commit_times;
           commitTimes.forEach((commitTime: any) => {
             commitData[moment(commitTime * 1000).format("YYYY-MM-DD")]++;
@@ -327,8 +321,6 @@ interface UIUserCardPreviewProps {
 const UIUserCardPreview = (props: UIUserCardPreviewProps) => {
   const [visible, setVisible] = useState(false);
   const projectInfo = JSON.parse(props.projectStore).data;
-  // console.log(projectInfo);
-  // console.log(props.userId);
   const userInfo = projectInfo.users.filter(
     (user: any) => user.id === props.userId
   )[0];
@@ -338,7 +330,6 @@ const UIUserCardPreview = (props: UIUserCardPreviewProps) => {
     return <></>;
   }
 
-  // console.log(userInfo);
   return (
     <>
       <UIUserCard

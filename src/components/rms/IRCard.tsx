@@ -122,7 +122,6 @@ const IRCard = (props: IRCardProps) => {
 
   useEffect(() => {
     updateProjectInfo(dispatcher, props.project).then((data) => {
-      // console.log(data);
       const userInfo = data.data.users.filter(
         (user: any) => user.id === props.createdBy
       )[0];
@@ -211,7 +210,6 @@ const IRCard = (props: IRCardProps) => {
       });
       setAssoIterList(newAssoIterList);
       const newAssoSRCardList: any = [];
-      // console.log(assoSRListData);
       // const assoSRIdList = data[5].data
       //   .map((asso: any) => {
       //     if (asso.user === userInfo.user.id) return asso.sr;
@@ -226,7 +224,6 @@ const IRCard = (props: IRCardProps) => {
             if (asso.sr === value.id) return asso.user;
           })
           .filter((asso: any) => asso)[0];
-        console.log(chargedBy);
         newAssoSRCardList.push(
           <SRCard
             id={value.id}
