@@ -47,7 +47,6 @@ const Project = () => {
       // 3. Continue, lookup projectInfo in cache.
       // If cached projectInfo not exists or cached ID not equal to project_id, then re-request, render Loading.
       // Else render page.
-      // console.log(JSON.parse(userInfo));
       if (projectInfo === "") {
         // Re-request
       } else {

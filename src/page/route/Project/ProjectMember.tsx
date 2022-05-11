@@ -108,9 +108,6 @@ const ProjectMember = () => {
       // console.debug("notfound");
       Redirect(dispatcher, "/error", 0);
     }
-
-    // const user_data = JSON.parse(userInfo);
-    // console.log(userInfo);
   }
   return (
     <Home sidebar={true}>

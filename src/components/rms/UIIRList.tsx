@@ -258,7 +258,6 @@ const UIIRList = (props: UIIRListProps) => {
       ellipsis: true,
       align: "center",
       render: (_, record) => {
-        // console.log(record);
         return (
           <div style={{}}>
             <UIUserCardPreview

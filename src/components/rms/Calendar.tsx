@@ -34,7 +34,6 @@ interface CalendarProps {
 
 const Calendar = (props: CalendarProps) => {
   const userData = JSON.parse(props.userInfo).data;
-  // console.log(userData);
   const dispatcher = useDispatch();
   const counter = useSelector(getCounterStore);
   const todoSRList = useSelector(getTodoSRListStore); // string
@@ -67,7 +66,6 @@ const Calendar = (props: CalendarProps) => {
         getSRServiceInfo(dispatcher, project_id),
         updateServiceInfo(dispatcher, project_id),
       ]).then((data: any) => {
-        // console.log(data);
         // data[0]: SRList
         // data[1]: user-sr association
         // data[2]: sr-iteration
@@ -84,7 +82,6 @@ const Calendar = (props: CalendarProps) => {
         const assoSRList = assoSRIdList.map((sr_id: string) =>
           SRId2SRInfo(Number(sr_id), JSON.stringify(data[0]), project_id)
         );
-        // console.log(assoSRList);
         const todo_arr = todoSR(
           JSON.stringify(assoSRList),
           JSON.stringify(data[2]),
@@ -124,9 +121,6 @@ const Calendar = (props: CalendarProps) => {
         dispatcher(updateTodoSRList(JSON.stringify(todoSRListData)));
         dispatcher(updateWipSRList(JSON.stringify(wipSRListData)));
         dispatcher(updateReviewSRList(JSON.stringify(reviewSRListData)));
-        // console.log(todoSRListData);
-        // console.log(wipSRListData);
-        // console.log(reviewSRListData);
       });
     }
   }, [counter]);

@@ -124,7 +124,6 @@ const deleteRepoInfo = async (
   project_id: number,
   repo_id: number
 ): Promise<void> => {
-  // console.log(SRService);
   const myBody = {
     project: project_id,
     type: "repo",

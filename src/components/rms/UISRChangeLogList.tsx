@@ -20,7 +20,6 @@ const UISRChangeLogList = (props: SRChangeLogListProps) => {
   const [SRChangeLogListData, setSRChangeLogListData] = useState([]);
 
   const getDescription = (currentSRChangeLog: any, formerSRState: SRState) => {
-    // console.log(currentSRChangeLog);
     let resState: any, resDescription: any;
     if (currentSRChangeLog.formerState !== formerSRState.currState) {
       resState = (
