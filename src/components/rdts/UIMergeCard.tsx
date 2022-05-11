@@ -94,6 +94,7 @@ const UIMergeCard = (props: UIMergeCardProps) => {
   }
 
   const onSRAssociatedChange = (from: number[], to: number[]) => {
+    console.debug("from", from, "to", to);
     const key = Number(to);
     if (currAssociatedSRId > 0) {
       console.debug(currAssociatedSRId);
