@@ -47,8 +47,8 @@ const SRSearchBox = (props: SRSearchBoxProps) => {
   };
 
   const reload_default_sr_list = async () => {
-    console.debug("Reloading default SR List!");
-    console.debug(props.value);
+    // console.debug("Reloading default SR List!");
+    // console.debug(props.value);
     const res = await Promise.all(
       props.value.map((sr_id: number) => {
         return SRId2SRInfo(sr_id, "", project_id);
@@ -75,13 +75,13 @@ const SRSearchBox = (props: SRSearchBoxProps) => {
         limit: 5,
       },
     });
-    console.debug("这里可以做防抖优化，但我懒得做了");
+    // console.debug("这里可以做防抖优化，但我懒得做了");
 
     if (last_res !== undefined) {
       setPromptSR(JSON.stringify(MergeList(last_res, res.data)));
-      console.debug("last_res", last_res);
-      console.debug("res", res.data);
-      console.debug("merged", MergeList(last_res, res.data));
+      // console.debug("last_res", last_res);
+      // console.debug("res", res.data);
+      // console.debug("merged", MergeList(last_res, res.data));
 
       return MergeList(last_res, res.data);
     } else {
@@ -91,16 +91,19 @@ const SRSearchBox = (props: SRSearchBoxProps) => {
   };
 
   const onChange = async (value: number[]) => {
-    // console.debug(value);
+    // // console.debug(value);
 
-    const res = getSelectedSR(value);
+    if (props.multiple) {
+      const res = getSelectedSR(value);
 
-    props.onChange(currSelected, value);
-    if (props.getSelectedSR) {
-      console.debug("cachedSR", cachedSR);
-      props.getSelectedSR(res);
+      props.onChange(currSelected, value);
+      if (props.getSelectedSR) {
+        // console.debug("cachedSR", cachedSR);
+        props.getSelectedSR(res);
+      }
+    } else {
+      props.onChange(currSelected, value);
     }
-
     setCurrSelected(value);
   };
 
@@ -113,7 +116,7 @@ const SRSearchBox = (props: SRSearchBoxProps) => {
     });
   }, []);
 
-  // console.debug(promptSR);
+  // // console.debug(promptSR);
   const options = JSON.parse(promptSR).map((_sr: any) => {
     let sr = cachedSR.find((_cached_sr: any) => _cached_sr.id === _sr.id);
     if (sr === undefined) {
