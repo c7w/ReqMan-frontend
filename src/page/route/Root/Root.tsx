@@ -110,14 +110,21 @@ const Root = () => {
           </div>
           <div className="root-menu_links">
             <a
-              href="https://doc-undefined.app.secoder.net/"
               className="root-menu-link"
+              onClick={() =>
+                window.open("https://doc-undefined.app.secoder.net/")
+              }
             >
               开发者文档
             </a>
-            {/*<a href="" className="root-menu-link">*/}
-            {/*  联系我们*/}
-            {/*</a>*/}
+            <a
+              className="root-menu-link"
+              onClick={() =>
+                window.open("https://doc-undefined.app.secoder.net/manual/")
+              }
+            >
+              用户手册
+            </a>
           </div>
         </div>
       </nav>

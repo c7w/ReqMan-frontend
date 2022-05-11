@@ -57,6 +57,14 @@ const Navbar = () => {
           >
             开发者文档
           </div>
+          <div
+            className="header-item"
+            onClick={() =>
+              window.open("https://doc-undefined.app.secoder.net/manual/")
+            }
+          >
+            用户手册
+          </div>
         </div>
         <div className="header-right">
           <span
