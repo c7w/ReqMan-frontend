@@ -1,7 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
 import type { ProColumns } from "@ant-design/pro-table";
 import ProTable from "@ant-design/pro-table";
-import { Input, Button, Modal, Progress, Popconfirm, Typography } from "antd";
+import {
+  Input,
+  Button,
+  Modal,
+  Progress,
+  Popconfirm,
+  Typography,
+  Pagination,
+} from "antd";
 import { IRCardProps, IRSRAssociation } from "../../store/ConfigureStore";
 import "./UIIRList.css";
 import SRList from "./UISRList";
@@ -25,6 +33,7 @@ import { UIUserCardPreview } from "../ums/UIUserCard";
 import IRCard from "./IRCard";
 import SRSearchBox from "../Shared/SRSearchBox";
 import { difference } from "underscore";
+import Loading from "../../layout/components/Loading";
 const { TextArea } = Input;
 
 interface UIIRListProps {
@@ -52,6 +61,8 @@ const UIIRList = (props: UIIRListProps) => {
     pageSize: 10,
   });
 
+  const cntIR = JSON.parse(props.IRListStr).data.length;
+
   useEffect(() => {
     if (reload !== 0) {
       setReload(reload + 1);
@@ -70,6 +81,9 @@ const UIIRList = (props: UIIRListProps) => {
   const [rank, setRank] = useState<number>(1);
   const [ifok, setIfok] = useState<boolean>(true);
   const [IRCardRecord, setIRCardRecord] = useState<IRCardProps>(IRListData[0]);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   const showSRModal = (record: IRCardProps) => {
     setId(record.id);
@@ -318,18 +332,16 @@ const UIIRList = (props: UIIRListProps) => {
     onlyShowColumn.push(columns[i]);
   }
 
-  const reload_IR_request = async (
-    { pageSize, current }: any,
-    sort: any,
-    filter: any
-  ) => {
+  const reload_IR_request = async (page: number, pageSize: number) => {
+    setCurrentPage(page);
+    setPageSize(pageSize);
     // First, slice the IRListData
     // console.debug(12312312312312);
     // console.debug(JSON.parse(props.IRListStr).data);
     // console.debug(props.IRListStr);
     const _IRListData = JSON.parse(props.IRListStr).data.slice(
-      (current - 1) * pageSize,
-      current * pageSize
+      (page - 1) * pageSize,
+      page * pageSize
     );
     console.debug(_IRListData);
 
@@ -337,12 +349,9 @@ const UIIRList = (props: UIIRListProps) => {
     const IRListData_processed = await Promise.all(
       _IRListData.map(async (item: any) => {
         item.createdAt *= 1000;
-
         // Calc item.progress
-
         let totalWeight = 0;
         let curWeight = 0;
-
         const curSRs = await oneIR2AllSR(item.id, "", "", project);
 
         for (const SRInfo of curSRs) {
@@ -355,13 +364,17 @@ const UIIRList = (props: UIIRListProps) => {
         return item;
       })
     );
-    console.debug(IRListData_processed);
-    return {
-      data: IRListData_processed,
-      total: JSON.parse(props.IRListStr).data.length,
-      success: true,
-    };
+    setDataIRList(IRListData_processed);
+    // return {
+    //   data: IRListData_processed,
+    //   total: JSON.parse(props.IRListStr).data.length,
+    //   success: true,
+    // };
   };
+
+  useEffect(() => {
+    reload_IR_request(currentPage, pageSize);
+  }, [reload]);
 
   const [selectedSR, setSelectedSR] = useState<any>(
     JSON.stringify({ code: 0, data: [] })
@@ -371,6 +384,7 @@ const UIIRList = (props: UIIRListProps) => {
     return (
       <div className={`IRTable`}>
         <ProTable<IRCardProps>
+          style={{ minHeight: "70vh" }}
           headerTitle="原始需求列表"
           toolBarRender={() => {
             return [
@@ -388,17 +402,43 @@ const UIIRList = (props: UIIRListProps) => {
             density: true,
           }}
           defaultSize={"small"}
-          // dataSource={dataIRList}
-          request={reload_IR_request}
-          params={{ reload: reload }}
+          dataSource={dataIRList}
+          // request={reload_IR_request}
+          // params={{ reload: reload }}
           rowKey="id"
-          pagination={{
-            pageSize: 10,
-          }}
+          // pagination={{
+          //   pageSize: 10,
+          // }}
           tableStyle={{ padding: "1rem 1rem 2rem" }}
           dateFormatter="string"
           search={false}
+          pagination={false}
         />
+        <div
+          className="bottom-pagination"
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <span style={{ fontWeight: "bold", marginRight: "1rem" }}>
+            {"第 " +
+              (pageSize * (currentPage - 1) + 1).toString() +
+              "-" +
+              Math.min(pageSize * currentPage, cntIR) +
+              " 条"}
+          </span>
+          <Pagination
+            total={cntIR}
+            onChange={reload_IR_request}
+            defaultPageSize={pageSize}
+            showSizeChanger
+            showQuickJumper
+          />
+        </div>
+
         <Modal
           title="功能需求关联列表"
           centered={true}
@@ -585,10 +625,10 @@ const UIIRList = (props: UIIRListProps) => {
           columns={onlyShowColumn}
           // expandable={{ expandedRowRender }}
           // dataSource={dataIRList}
-          request={reload_IR_request}
-          params={{ reload: reload }}
+          // request={reload_IR_request}
+          // params={{ reload: reload }}
           rowKey="id"
-          pagination={{ pageSize: 10 }}
+          // pagination={{ pageSize: 10 }}
           scroll={{ y: 400 }}
           tableStyle={{ padding: "1rem 1rem 2rem" }}
           dateFormatter="string"
