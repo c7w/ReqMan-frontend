@@ -62,7 +62,6 @@ const UIIRList = (props: UIIRListProps) => {
   });
 
   const cntIR = JSON.parse(props.IRListStr).data.length;
-  console.log(cntIR);
 
   useEffect(() => {
     if (reload !== 0) {
@@ -366,8 +365,6 @@ const UIIRList = (props: UIIRListProps) => {
         return item;
       })
     );
-    console.log("set!");
-    console.log(IRListData_processed);
     setDataIRList(IRListData_processed);
     setIsLoading(false);
     // return {
@@ -379,7 +376,6 @@ const UIIRList = (props: UIIRListProps) => {
 
   useEffect(() => {
     reload_IR_request(currentPage, pageSize);
-    console.log(" reloading ");
   }, [reload]);
 
   const [selectedSR, setSelectedSR] = useState<any>(

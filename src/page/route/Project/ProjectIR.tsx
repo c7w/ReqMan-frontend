@@ -28,7 +28,7 @@ import {
 import { useParams } from "react-router-dom";
 import { getProjectStore } from "../../../store/slices/ProjectSlice";
 import Loading from "../../../layout/components/Loading";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   getIterationStore,
   getSRIterationStore,
@@ -56,6 +56,8 @@ const ProjectIR = () => {
   const SRServiceStore = useSelector(getSRServiceStore);
   const UserSRStore = useSelector(getUserSRStore);
 
+  const [loadingIRDone, setLoadingIRDone] = useState(false);
+
   const dispatcher = useDispatch();
   const params = useParams<"id">();
   const project_id = Number(params.id);
@@ -63,7 +65,9 @@ const ProjectIR = () => {
   useEffect(() => {
     updateUserInfo(dispatcher);
     updateProjectInfo(dispatcher, project_id);
-    getIRListInfo(dispatcher, project_id);
+    getIRListInfo(dispatcher, project_id).then((data: any) =>
+      setLoadingIRDone(true)
+    );
     getSRListInfo(dispatcher, project_id);
     getIRSRInfo(dispatcher, project_id);
     updateServiceInfo(dispatcher, project_id);
@@ -84,7 +88,8 @@ const ProjectIR = () => {
     SRIterationStore === "" ||
     serviceStore === "" ||
     SRServiceStore === "" ||
-    UserSRStore === ""
+    UserSRStore === "" ||
+    !loadingIRDone
   ) {
     // Just let useEffect to re-query!
   } else if (JSON.parse(userInfo).code !== 0) {
