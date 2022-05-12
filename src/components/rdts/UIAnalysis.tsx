@@ -141,28 +141,29 @@ const UIAnalysis = () => {
         title: value.title,
       };
     });
-    for (const iteration of iterationList) {
-      // 该 iteration 对应的所有 SR 信息
-      const assoSRList = await Iteration2SR(
-        iteration.id,
-        SRIterationStore,
-        SRListStore,
-        project_id
-      );
-      iter_issue_sr_list.iterations.push(iteration.title);
-      iter_issue_sr_list.all_sr_count.push(assoSRList.length);
-      let counter = 0;
-      for (const sr of assoSRList) {
-        const issue = await SR2Issue(
-          sr.id,
-          issueSRStore,
-          issueStore,
-          project_id
-        );
-        if (issue.length > 0 && issue[0] !== "not found") counter++;
-      }
-      iter_issue_sr_list.issues.push(counter);
+
+    const digest_data = await Promise.all(
+      iterationList.map((iteration: any) => {
+        return request_json(API.GET_RMS_ITERATION_DIGEST, {
+          getParams: {
+            project: project_id,
+            iteration: iteration.id,
+          },
+        });
+      })
+    );
+
+    iter_issue_sr_list.iterations = iterationList.map(
+      (iteration: any) => iteration.title
+    );
+
+    for (const digest of digest_data) {
+      const sr_cnt = digest.data.SR_count;
+      const bug_cnt = digest.data.bug_count;
+      iter_issue_sr_list.all_sr_count.push(sr_cnt);
+      iter_issue_sr_list.issues.push(bug_cnt);
     }
+
     set_iter_issue_sr_list(iter_issue_sr_list);
   };
 
