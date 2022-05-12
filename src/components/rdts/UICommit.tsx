@@ -151,7 +151,17 @@ const UICommit = () => {
             );
           }
         }
-        return <div style={{}}>{user}</div>;
+        return (
+          <div
+            style={{
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {user}
+          </div>
+        );
       },
     },
     {
