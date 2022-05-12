@@ -125,11 +125,13 @@ const IRCard = (props: IRCardProps) => {
       const userInfo = data.data.users.filter(
         (user: any) => user.id === props.createdBy
       )[0];
-      const createdByAvatar =
-        userInfo.avatar.length < 5
-          ? `https://s1.ax1x.com/2022/05/08/O3S6sI.jpg`
-          : userInfo.avatar;
-      setCreatedByAvatar(createdByAvatar);
+      if (userInfo !== undefined) {
+        const createdByAvatar =
+          userInfo.avatar.length < 5
+            ? `https://s1.ax1x.com/2022/05/08/O3S6sI.jpg`
+            : userInfo.avatar;
+        setCreatedByAvatar(createdByAvatar);
+      }
     });
   }, []);
 

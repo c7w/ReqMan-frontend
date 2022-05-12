@@ -366,6 +366,8 @@ const UIIRList = (props: UIIRListProps) => {
         return item;
       })
     );
+    console.log("set!");
+    console.log(IRListData_processed);
     setDataIRList(IRListData_processed);
     setIsLoading(false);
     // return {
@@ -377,6 +379,7 @@ const UIIRList = (props: UIIRListProps) => {
 
   useEffect(() => {
     reload_IR_request(currentPage, pageSize);
+    console.log(" reloading ");
   }, [reload]);
 
   const [selectedSR, setSelectedSR] = useState<any>(

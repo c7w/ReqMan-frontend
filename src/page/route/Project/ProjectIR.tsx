@@ -78,7 +78,6 @@ const ProjectIR = () => {
   if (
     userInfo === "" ||
     projectInfo === "" ||
-    IRListInfo === "" ||
     SRListInfo === "" ||
     IRSRAssociation === "" ||
     iterationStore === "" ||
