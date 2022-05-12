@@ -503,7 +503,11 @@ const UISRList = (props: UISRListProps) => {
     deleteSRInfo(dispatcher, project, record).then((data: any) => {
       if (data.code === 0) {
         ToastMessage("success", "删除成功", "您的功能需求删除成功");
-        setReload(reload + 1);
+        console.log(currentPage);
+        console.log(cntSR);
+        if ((currentPage - 1) * pageSize === cntSR - 1) {
+          setCurrentPage(currentPage > 1 ? currentPage - 1 : 1);
+        }
         // setTimeout(() => window.location.reload(), 1000);
         setId(-1);
         setTitle("");
@@ -511,6 +515,7 @@ const UISRList = (props: UISRListProps) => {
         setPriority(1);
         setCurrState("TODO");
         setIsCreateModalVisible(false);
+        setReload(reload + 1);
       } else {
         ToastMessage("error", "删除失败", "您的功能需求删除失败");
       }
@@ -977,13 +982,15 @@ const UISRList = (props: UISRListProps) => {
           }}
         >
           <span style={{ fontWeight: "bold", marginRight: "1rem" }}>
-            {cntSR > 0
+            {cntSR > 0 &&
+            pageSize * (currentPage - 1) + 1 <=
+              Math.min(pageSize * currentPage, cntSR)
               ? "第 " +
                 (pageSize * (currentPage - 1) + 1).toString() +
                 "-" +
                 Math.min(pageSize * currentPage, cntSR) +
                 " 条"
-              : "暂无原始需求"}
+              : "暂无功能需求"}
           </span>
           <Pagination
             total={cntSR}
@@ -1308,7 +1315,9 @@ const UISRList = (props: UISRListProps) => {
           }}
         >
           <span style={{ fontWeight: "bold", marginRight: "1rem" }}>
-            {cntSR > 0
+            {cntSR > 0 &&
+            pageSize * (currentPage - 1) + 1 <=
+              Math.min(pageSize * currentPage, cntSR)
               ? "第 " +
                 (pageSize * (currentPage - 1) + 1).toString() +
                 "-" +
