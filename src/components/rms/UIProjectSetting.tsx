@@ -39,17 +39,39 @@ const CreateRepoModal = (props: CreateRepoModalProps) => {
 
   const [remoteId, setRemoteId] = useState("");
   const [accessToken, setAccessToken] = useState("");
+  const [base_url, setBaseUrl] = useState("https://gitlab.secoder.net");
   const [title, setTitle] = useState("");
 
   const submit = () => {
-    createRepoInfo(dispatcher, project_id, remoteId, accessToken, title).then(
-      (res: any) => {
-        if (res.code === 0) {
-          ToastMessage("success", "添加成功", "远程仓库添加成功");
-          props.close();
-        }
+    // Judge if base_url is valid
+    if (base_url.length === 0) {
+      ToastMessage("error", "添加失败", "请输入正确的远程仓库地址");
+      return;
+    }
+
+    // Regex 1: starts with http/https
+    // Regex 2: starts with http/https and ends with /
+    const regex1 = /^(http|https):\/\//;
+    const regex2 = /^(http|https):\/\/[^\/]+\//;
+
+    if (!regex1.test(base_url) || regex2.test(base_url)) {
+      ToastMessage("error", "添加失败", "请输入正确的远程仓库地址");
+      return;
+    }
+
+    createRepoInfo(
+      dispatcher,
+      project_id,
+      remoteId,
+      accessToken,
+      title,
+      base_url
+    ).then((res: any) => {
+      if (res.code === 0) {
+        ToastMessage("success", "添加成功", "远程仓库添加成功");
+        props.close();
       }
-    );
+    });
   };
 
   return (
@@ -83,7 +105,10 @@ const CreateRepoModal = (props: CreateRepoModalProps) => {
           <Select.Option value={"gitlab"}>GitLab</Select.Option>
         </Select>
         <p style={{ marginTop: "1rem", marginBottom: "0.2rem" }}>仓库地址：</p>
-        <Input value={"https://gitlab.secoder.net"} disabled={true} />{" "}
+        <Input
+          defaultValue={"https://gitlab.secoder.net"}
+          onChange={(evt) => setBaseUrl(evt.target.value)}
+        />{" "}
         <p style={{ marginTop: "1rem", marginBottom: "0.2rem" }}>仓库 ID：</p>
         <Input
           value={remoteId}
@@ -99,6 +124,17 @@ const CreateRepoModal = (props: CreateRepoModalProps) => {
             setAccessToken(evt.target.value);
           }}
         />
+        <p style={{ marginTop: "1rem", marginBottom: "0.2rem" }}>
+          仓库地址示例：
+          <span
+            style={{
+              color: "red",
+            }}
+          >
+            https://gitlab.secoder.net
+          </span>
+          ，结尾不加 /
+        </p>
       </div>
     </Modal>
   );
