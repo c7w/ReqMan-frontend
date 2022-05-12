@@ -133,7 +133,7 @@ const UICommit = () => {
       dataIndex: "createdBy",
       align: "center",
       render: (_, record) => {
-        const user = record.commiter_email;
+        const user = record.commiter_email || "-";
         if (record.user_committer > 0) {
           const find_result = userId2UserInfo(
             record.user_committer,

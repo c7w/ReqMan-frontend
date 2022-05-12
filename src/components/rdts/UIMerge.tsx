@@ -181,7 +181,7 @@ const UIMerge = () => {
       dataIndex: "createdBy",
       align: "center",
       render: (_, record) => {
-        const user = record.authoredByUserName;
+        const user = record.authoredByUserName || "-";
         if (record.user_authored > 0) {
           const find_result = userId2UserInfo(
             record.user_authored,
