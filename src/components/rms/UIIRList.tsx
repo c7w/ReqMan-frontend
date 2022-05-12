@@ -54,7 +54,7 @@ const UIIRList = (props: UIIRListProps) => {
   const [dataIRList, setDataIRList] = useState<any[]>([]);
   const projectInfo = useSelector(getProjectStore);
   const [reload, setReload] = useState(0);
-  // const currentPage = useRef(1); // 当前页面，默认为第一页
+  const [isLoading, setIsLoading] = useState(false);
 
   const [explorerParams, setExplorerParams] = useState({
     current: 1,
@@ -62,6 +62,7 @@ const UIIRList = (props: UIIRListProps) => {
   });
 
   const cntIR = JSON.parse(props.IRListStr).data.length;
+  console.log(cntIR);
 
   useEffect(() => {
     if (reload !== 0) {
@@ -333,6 +334,7 @@ const UIIRList = (props: UIIRListProps) => {
   }
 
   const reload_IR_request = async (page: number, pageSize: number) => {
+    setIsLoading(true);
     setCurrentPage(page);
     setPageSize(pageSize);
     // First, slice the IRListData
@@ -343,7 +345,7 @@ const UIIRList = (props: UIIRListProps) => {
       (page - 1) * pageSize,
       page * pageSize
     );
-    console.debug(_IRListData);
+    // console.debug(_IRListData);
 
     // Then, post-process the IRListData
     const IRListData_processed = await Promise.all(
@@ -365,6 +367,7 @@ const UIIRList = (props: UIIRListProps) => {
       })
     );
     setDataIRList(IRListData_processed);
+    setIsLoading(false);
     // return {
     //   data: IRListData_processed,
     //   total: JSON.parse(props.IRListStr).data.length,
@@ -409,6 +412,7 @@ const UIIRList = (props: UIIRListProps) => {
           // pagination={{
           //   pageSize: 10,
           // }}
+          loading={isLoading}
           tableStyle={{ padding: "1rem 1rem 2rem" }}
           dateFormatter="string"
           search={false}
@@ -424,11 +428,13 @@ const UIIRList = (props: UIIRListProps) => {
           }}
         >
           <span style={{ fontWeight: "bold", marginRight: "1rem" }}>
-            {"第 " +
-              (pageSize * (currentPage - 1) + 1).toString() +
-              "-" +
-              Math.min(pageSize * currentPage, cntIR) +
-              " 条"}
+            {cntIR > 0
+              ? "第 " +
+                (pageSize * (currentPage - 1) + 1).toString() +
+                "-" +
+                Math.min(pageSize * currentPage, cntIR) +
+                " 条"
+              : "暂无原始需求"}
           </span>
           <Pagination
             total={cntIR}
@@ -612,6 +618,7 @@ const UIIRList = (props: UIIRListProps) => {
       <div className={`showIRTable`}>
         <ProTable<IRCardProps>
           headerTitle="需求展示列表"
+          style={{ minHeight: "70vh" }}
           toolBarRender={() => {
             return [];
           }}
@@ -624,16 +631,43 @@ const UIIRList = (props: UIIRListProps) => {
           cardBordered={true}
           columns={onlyShowColumn}
           // expandable={{ expandedRowRender }}
-          // dataSource={dataIRList}
+          dataSource={dataIRList}
           // request={reload_IR_request}
           // params={{ reload: reload }}
           rowKey="id"
-          // pagination={{ pageSize: 10 }}
+          pagination={false}
+          loading={isLoading}
           scroll={{ y: 400 }}
           tableStyle={{ padding: "1rem 1rem 2rem" }}
           dateFormatter="string"
           search={false}
         />
+        <div
+          className="bottom-pagination"
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <span style={{ fontWeight: "bold", marginRight: "1rem" }}>
+            {cntIR > 0
+              ? "第 " +
+                (pageSize * (currentPage - 1) + 1).toString() +
+                "-" +
+                Math.min(pageSize * currentPage, cntIR) +
+                " 条"
+              : "暂无原始需求"}
+          </span>
+          <Pagination
+            total={cntIR}
+            onChange={reload_IR_request}
+            defaultPageSize={pageSize}
+            showSizeChanger
+            showQuickJumper
+          />
+        </div>
         {IRCardRecord === undefined ? null : (
           <Modal
             title="IRCard展示"
