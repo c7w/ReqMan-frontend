@@ -202,11 +202,15 @@ const UIIRList = (props: UIIRListProps) => {
       if (data.code === 0) {
         ToastMessage("success", "删除成功", "您的原始需求删除成功");
         // setTimeout(() => window.location.reload(), 1000);
+        if ((currentPage - 1) * pageSize === cntIR - 1) {
+          setCurrentPage(currentPage > 1 ? currentPage - 1 : 1);
+        }
         setId(-1);
         setTitle("");
         setDesc("");
         setRank(1);
         setIsCreateModalVisible(false);
+        setReload(reload + 1);
       } else {
         ToastMessage("error", "删除失败", "您的原始需求删除失败");
       }
@@ -333,6 +337,8 @@ const UIIRList = (props: UIIRListProps) => {
   }
 
   const reload_IR_request = async (page: number, pageSize: number) => {
+    console.log("page: ", page);
+    console.log(props.IRListStr);
     setIsLoading(true);
     setCurrentPage(page);
     setPageSize(pageSize);
@@ -427,7 +433,9 @@ const UIIRList = (props: UIIRListProps) => {
           }}
         >
           <span style={{ fontWeight: "bold", marginRight: "1rem" }}>
-            {cntIR > 0
+            {cntIR > 0 &&
+            pageSize * (currentPage - 1) + 1 <=
+              Math.min(pageSize * currentPage, cntIR)
               ? "第 " +
                 (pageSize * (currentPage - 1) + 1).toString() +
                 "-" +
@@ -651,7 +659,9 @@ const UIIRList = (props: UIIRListProps) => {
           }}
         >
           <span style={{ fontWeight: "bold", marginRight: "1rem" }}>
-            {cntIR > 0
+            {cntIR > 0 &&
+            pageSize * (currentPage - 1) + 1 <=
+              Math.min(pageSize * currentPage, cntIR)
               ? "第 " +
                 (pageSize * (currentPage - 1) + 1).toString() +
                 "-" +
