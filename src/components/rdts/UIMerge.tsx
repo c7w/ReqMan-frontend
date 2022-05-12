@@ -181,7 +181,7 @@ const UIMerge = () => {
       dataIndex: "createdBy",
       align: "center",
       render: (_, record) => {
-        const user = record.authoredByUserName;
+        const user = record.authoredByUserName || "-";
         if (record.user_authored > 0) {
           const find_result = userId2UserInfo(
             record.user_authored,
@@ -200,7 +200,17 @@ const UIMerge = () => {
             );
           }
         }
-        return <div style={{}}>{user}</div>;
+        return (
+          <div
+            style={{
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {user}
+          </div>
+        );
       },
     },
     {

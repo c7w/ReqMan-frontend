@@ -473,7 +473,7 @@ const UIProjectSetting = () => {
                                 ToastMessage(
                                   "success",
                                   "复制成功",
-                                  "项目邀请码复制成功"
+                                  "Secret Token 复制成功"
                                 );
                               });
                           }}
