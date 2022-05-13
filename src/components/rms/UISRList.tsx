@@ -949,6 +949,13 @@ const UISRList = (props: UISRListProps) => {
     // };
   };
 
+  const setCardModalInvisible = () => {
+    setTimeout(() => {
+      setReload(reload + 1);
+    }, 100);
+    setIsCardModalVisible(false);
+  };
+
   if (!props.showChoose && !props.onlyShow) {
     return (
       <div className={"SRTable"}>
@@ -1278,6 +1285,7 @@ const UISRList = (props: UISRListProps) => {
                 iter={SRCardRecord.iter}
                 chargedBy={SRCardRecord.chargedBy}
                 service={SRCardRecord.service}
+                setModalClose={setCardModalInvisible}
               />
             </div>
           </Modal>
@@ -1380,6 +1388,7 @@ const UISRList = (props: UISRListProps) => {
                 iter={SRCardRecord.iter}
                 chargedBy={SRCardRecord.chargedBy}
                 service={SRCardRecord.service}
+                setModalClose={setCardModalInvisible}
               />
             </div>
           </Modal>
@@ -1448,6 +1457,7 @@ const UISRList = (props: UISRListProps) => {
                 iter={SRCardRecord.iter}
                 chargedBy={SRCardRecord.chargedBy}
                 service={SRCardRecord.service}
+                setModalClose={setCardModalInvisible}
               />
             </div>
           </Modal>

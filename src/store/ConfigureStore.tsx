@@ -30,6 +30,7 @@ interface SRCardProps {
   readonly iter: Iteration[];
   readonly chargedBy: number;
   readonly service: Service | number;
+  readonly setModalClose?: () => void; // 关闭 modal 的回调
 }
 
 interface SRChangelog {
