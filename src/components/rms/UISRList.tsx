@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import type { ProColumns } from "@ant-design/pro-table";
 import ReactMarkdown from "react-markdown";
 import ProTable from "@ant-design/pro-table";
@@ -7,6 +7,7 @@ import {
   Input,
   InputNumber,
   Modal,
+  Pagination,
   Popconfirm,
   Select,
   Space,
@@ -93,6 +94,20 @@ const UISRList = (props: UISRListProps) => {
   const userSRStore = useSelector(getUserSRStore);
 
   const [reload, setReload] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+
+  const [cntSR, setCntSR] = useState(0);
+  // useEffect(() => {
+  //   if (reload !== 0) {
+  //     setReload(reload + 1);
+  //   }
+  // }, [props.SRListStr]);
+
+  useEffect(() => {
+    reload_paged_sr(currentPage, pageSize);
+  }, [reload]);
 
   const curSRKey: number[] = [];
   if (props.IR_id !== -1) {
@@ -102,8 +117,6 @@ const UISRList = (props: UISRListProps) => {
       }
     });
   }
-
-  console.debug(SRListData);
 
   // 总任务列表
   const dataSRList: SRCardProps[] = [];
@@ -490,7 +503,11 @@ const UISRList = (props: UISRListProps) => {
     deleteSRInfo(dispatcher, project, record).then((data: any) => {
       if (data.code === 0) {
         ToastMessage("success", "删除成功", "您的功能需求删除成功");
-        setReload(reload + 1);
+        console.log(currentPage);
+        console.log(cntSR);
+        if ((currentPage - 1) * pageSize === cntSR - 1) {
+          setCurrentPage(currentPage > 1 ? currentPage - 1 : 1);
+        }
         // setTimeout(() => window.location.reload(), 1000);
         setId(-1);
         setTitle("");
@@ -498,6 +515,7 @@ const UISRList = (props: UISRListProps) => {
         setPriority(1);
         setCurrState("TODO");
         setIsCreateModalVisible(false);
+        setReload(reload + 1);
       } else {
         ToastMessage("error", "删除失败", "您的功能需求删除失败");
       }
@@ -653,9 +671,6 @@ const UISRList = (props: UISRListProps) => {
   };
   const columnState: ProColumns<SRCardProps> = {
     title: "状态",
-    filters: true,
-    onFilter: true,
-    filterSearch: true,
     search: false,
     width: "10%",
     dataIndex: "currState",
@@ -861,19 +876,19 @@ const UISRList = (props: UISRListProps) => {
 
   console.debug(reload);
 
-  const reload_paged_sr = async (
-    { pageSize, current }: any,
-    sort: any,
-    filter: any
-  ) => {
+  const reload_paged_sr = async (page: number, pageSize: number) => {
+    setIsLoading(true);
+    setCurrentPage(page);
+    setPageSize(pageSize);
     const retrieved_data = await request_json(API.GET_SR_PAGED, {
       getParams: {
-        from: ((current as number) - 1) * (pageSize as number),
+        from: ((page as number) - 1) * (pageSize as number),
         size: pageSize,
         project: props.project_id,
       },
     });
-    // console.debug(retrieved_data);
+    // console.log(retrieved_data.data.total_size);
+    setCntSR(retrieved_data.data.total_size);
 
     const post_processed_data = retrieved_data.data.payload.map(
       (value: any) => {
@@ -915,18 +930,20 @@ const UISRList = (props: UISRListProps) => {
         return value;
       }
     );
-
-    return {
-      data: post_processed_data,
-      success: true,
-      total: retrieved_data.data.total_size,
-    };
+    settableListDataSource(post_processed_data);
+    setIsLoading(false);
+    // return {
+    //   data: post_processed_data,
+    //   success: true,
+    //   total: retrieved_data.data.total_size,
+    // };
   };
 
   if (!props.showChoose && !props.onlyShow) {
     return (
       <div className={"SRTable"}>
         <ProTable<SRCardProps>
+          style={{ minHeight: "70vh" }}
           headerTitle="功能需求列表"
           toolBarRender={() => {
             return [
@@ -939,10 +956,11 @@ const UISRList = (props: UISRListProps) => {
           }}
           rowKey="id"
           columns={columns}
-          // dataSource={dataSRList}
-          params={{ reload: reload }}
-          request={reload_paged_sr}
-          pagination={{ pageSize: 10 }}
+          dataSource={tableListDataSource}
+          // params={{ reload: reload }}
+          // request={reload_paged_sr}
+          pagination={false}
+          loading={isLoading}
           options={{
             fullScreen: false,
             reload: false,
@@ -952,7 +970,36 @@ const UISRList = (props: UISRListProps) => {
           // scroll={{ y: 400 }}
           search={false}
           dateFormatter="string"
+          tableStyle={{ padding: "1rem 1rem 2rem" }}
         />
+        <div
+          className="bottom-pagination"
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <span style={{ fontWeight: "bold", marginRight: "1rem" }}>
+            {cntSR > 0 &&
+            pageSize * (currentPage - 1) + 1 <=
+              Math.min(pageSize * currentPage, cntSR)
+              ? "第 " +
+                (pageSize * (currentPage - 1) + 1).toString() +
+                "-" +
+                Math.min(pageSize * currentPage, cntSR) +
+                " 条"
+              : "暂无功能需求"}
+          </span>
+          <Pagination
+            total={cntSR}
+            onChange={reload_paged_sr}
+            defaultPageSize={pageSize}
+            showSizeChanger
+            showQuickJumper
+          />
+        </div>
         <Modal
           title="新增功能需求"
           centered={true}
@@ -1231,6 +1278,7 @@ const UISRList = (props: UISRListProps) => {
     return (
       <div className={"ChooseSRTable"}>
         <ProTable<SRCardProps>
+          style={{ minHeight: "70vh" }}
           columns={chooseColumn}
           rowSelection={{
             // hideSelectAll: false,
@@ -1245,17 +1293,46 @@ const UISRList = (props: UISRListProps) => {
           //     )} `}</span>
           //   </Space>
           // )}
-          // dataSource={dataSRList}
-          params={{ reload: reload }}
-          request={reload_paged_sr}
-          pagination={{ pageSize: 5 }}
+          dataSource={tableListDataSource}
+          loading={isLoading}
+          // params={{ reload: reload }}
+          // request={reload_paged_sr}
+          pagination={false}
           // scroll={{ y: 300 }}
           search={false}
           rowKey="id"
           dateFormatter="string"
           toolBarRender={false}
+          tableStyle={{ padding: "1rem 1rem 2rem" }}
         />
-
+        <div
+          className="bottom-pagination"
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <span style={{ fontWeight: "bold", marginRight: "1rem" }}>
+            {cntSR > 0 &&
+            pageSize * (currentPage - 1) + 1 <=
+              Math.min(pageSize * currentPage, cntSR)
+              ? "第 " +
+                (pageSize * (currentPage - 1) + 1).toString() +
+                "-" +
+                Math.min(pageSize * currentPage, cntSR) +
+                " 条"
+              : "暂无原始需求"}
+          </span>
+          <Pagination
+            total={cntSR}
+            onChange={reload_paged_sr}
+            defaultPageSize={pageSize}
+            showSizeChanger
+            showQuickJumper
+          />
+        </div>
         {SRCardRecord === undefined ? null : (
           <Modal
             title="SRCard展示"
@@ -1303,6 +1380,7 @@ const UISRList = (props: UISRListProps) => {
     return (
       <div className={"showSRTable"}>
         <ProTable<SRCardProps>
+          style={{ minHeight: "70vh" }}
           headerTitle="功能需求列表"
           toolBarRender={false}
           rowKey="id"
@@ -1320,6 +1398,7 @@ const UISRList = (props: UISRListProps) => {
           // scroll={{ y: 400 }}
           search={false}
           dateFormatter="string"
+          tableStyle={{ padding: "1rem 1rem 2rem" }}
         />
         {SRCardRecord === undefined ? null : (
           <Modal

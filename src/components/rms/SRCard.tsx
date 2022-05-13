@@ -322,11 +322,14 @@ const SRCard = (props: SRCardProps) => {
       let userInfo = data.data.users.filter(
         (user: any) => user.id === props.createdBy
       )[0];
-      const createdByAvatar =
-        userInfo.avatar.length < 5
-          ? `https://s1.ax1x.com/2022/05/08/O3S6sI.jpg`
-          : userInfo.avatar;
-      setCreatedByAvatar(createdByAvatar);
+      // console.log(userInfo);
+      if (userInfo !== undefined) {
+        const createdByAvatar =
+          userInfo.avatar.length < 5
+            ? `https://s1.ax1x.com/2022/05/08/O3S6sI.jpg`
+            : userInfo.avatar;
+        setCreatedByAvatar(createdByAvatar);
+      }
       userInfo = data.data.users.filter(
         (user: any) => user.id === props.chargedBy
       )[0];

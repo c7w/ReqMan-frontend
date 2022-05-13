@@ -96,7 +96,8 @@ const createRepoInfo = async (
   project_id: number,
   remote_id: string,
   access_token: string,
-  title: string
+  title: string,
+  base_url: string
 ): Promise<void> => {
   const myBody = {
     project: project_id,
@@ -105,7 +106,7 @@ const createRepoInfo = async (
     access_token: access_token,
     enable_crawling: true,
     info: {
-      base_url: "https://gitlab.secoder.net",
+      base_url: base_url,
     },
     title: title,
     description: "New Repo!",
