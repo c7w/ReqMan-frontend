@@ -45,7 +45,7 @@ const Calendar = (props: CalendarProps) => {
   const project_id = Number(params.id);
 
   const reload_calendar = async () => {
-    console.debug(userData);
+    // console.debug(userData);
 
     const res = (
       await request_json(API.GET_RMS_DASHBOARD, {
@@ -55,7 +55,7 @@ const Calendar = (props: CalendarProps) => {
         },
       })
     ).data;
-    console.debug(res);
+    // console.debug(res);
 
     const todoSRListData: any[] = res.todo.map((item: any) => {
       item.currState = "TODO";

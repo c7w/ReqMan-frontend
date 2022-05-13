@@ -405,7 +405,7 @@ const UIIteration = () => {
       // Find the iteration with max sid
       let maxSid = -2,
         maxIter = -1;
-      console.log(iterInfo);
+      // console.log(iterInfo);
       for (let i = 0; i < iterInfo.length; i++) {
         if (iterInfo[i].sid > maxSid) {
           maxSid = iterInfo[i].sid;
@@ -433,7 +433,7 @@ const UIIteration = () => {
         SRStore,
         Number(project_id)
       );
-      console.debug(SRs);
+      // console.debug(SRs);
       for (let i = 0; i < SRs.length; i++) {
         const sr = SRs[i];
         // Switch status
@@ -453,7 +453,7 @@ const UIIteration = () => {
         }
       }
       setCurrSR(currSR);
-      console.debug("currSR", currSR);
+      // console.debug("currSR", currSR);
     }
   };
 
@@ -560,7 +560,7 @@ const UIIteration = () => {
     .map((user: any) => userId2UserInfo(user.user, projectStore));
   // console.debug(users_charging);
 
-  console.debug("currIteration", currIteration);
+  //console.debug("currIteration", currIteration);
 
   return (
     <div className={"project-iteration-container"}>
