@@ -256,7 +256,7 @@ const UISRList = (props: UISRListProps) => {
     (value: any) => value.id === Number(props.project_id)
   );
   if (filtered_project.length === 0) {
-    console.debug("????");
+    // console.debug("????");
     return (
       <div>
         <Loading />
@@ -542,8 +542,8 @@ const UISRList = (props: UISRListProps) => {
 
   // Handle service change
   function handleServiceChange(value: number) {
-    console.debug(service);
-    console.debug(value);
+    // console.debug(service);
+    // console.debug(value);
     setService(value);
   }
 
@@ -874,7 +874,7 @@ const UISRList = (props: UISRListProps) => {
     },
   };
 
-  console.debug(reload);
+  // console.debug(reload);
 
   const reload_paged_sr = async (page: number, pageSize: number) => {
     setIsLoading(true);

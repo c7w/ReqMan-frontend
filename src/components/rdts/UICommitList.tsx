@@ -20,7 +20,7 @@ const UICommitList = (props: UICommitListProps) => {
       const commitList = JSON.parse(props.commitListData);
       if (commitList && commitList !== []) {
         for (let i = commitList.length - 1; i >= 0; i--) {
-          console.debug(commitList[i]);
+          // console.debug(commitList[i]);
 
           // if user_committer exists, change commiter_name
           if (commitList[i].user_committer > 0) {

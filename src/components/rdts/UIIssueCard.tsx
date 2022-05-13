@@ -129,7 +129,7 @@ const UIIssueCard = (props: UIIssueCardProps) => {
         ),
       });
     }
-    console.debug(MRIssueAssociation);
+    // console.debug(MRIssueAssociation);
 
     const curr_mr_issue_asso = await request_json(API.GET_RDTS, {
       getParams: { repo: data.repo, type: "issue-mr", issueId: data.id },

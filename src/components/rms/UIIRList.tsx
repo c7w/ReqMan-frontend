@@ -46,7 +46,7 @@ interface UIIRListProps {
 }
 
 const UIIRList = (props: UIIRListProps) => {
-  console.debug("UIIRList ");
+  // console.debug("UIIRList ");
   const IRListData = JSON.parse(props.IRListStr).data;
   const IRSRAssociationData = JSON.parse(props.IRSRAssociation).data;
   const dispatcher = useDispatch();
@@ -486,7 +486,7 @@ const UIIRList = (props: UIIRListProps) => {
               });
             }}
             getSelectedSR={(value: any[]) => {
-              console.debug("update to UIIRList", value);
+              // console.debug("update to UIIRList", value);
               setSelectedSR(JSON.stringify({ code: 0, data: value }));
             }}
             multiple={true}

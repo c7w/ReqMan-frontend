@@ -102,27 +102,29 @@ const UISRChangeLogList = (props: SRChangeLogListProps) => {
       const SRChangeLogList = SRChangeLogList_bak?.filter(
         (item: any) => item.description.indexOf("rollback") === -1
       );
+      // console.debug(SRChangeLogList);
+      SRChangeLogList.push({
+        formerDescription: props.description,
+        formerState: props.currState,
+      });
 
       if (SRChangeLogList && SRChangeLogList !== []) {
-        const formerSRState: SRState = {
-          description: props.description,
-          currState: props.currState,
-        };
-        for (let i = SRChangeLogList.length - 1; i >= 0; i--) {
+        for (let i = 1; i < SRChangeLogList.length; i++) {
           const userInfo = userId2UserInfo(
             SRChangeLogList[i].changedBy,
             props.projectStore
           );
-          const description = getDescription(SRChangeLogList[i], formerSRState);
 
-          formerSRState.description = SRChangeLogList[i].formerDescription;
-          formerSRState.currState = SRChangeLogList[i].formerState;
+          const description = getDescription(
+            SRChangeLogList[i],
+            SRChangeLogList[i - 1].formerState
+          );
 
           if (description === 0) continue;
           newSRChangeLogList.push({
             element: (
               <Timeline.Item
-                key={SRChangeLogList[i].id}
+                key={SRChangeLogList[i - 1].id}
                 label={
                   <>
                     <span style={{ fontWeight: "bold" }}>
@@ -134,7 +136,7 @@ const UISRChangeLogList = (props: SRChangeLogListProps) => {
                     </span>
                     &nbsp;&nbsp;
                     <span>
-                      {moment(SRChangeLogList[i].changedAt * 1000).format(
+                      {moment(SRChangeLogList[i - 1].changedAt * 1000).format(
                         "YYYY-MM-DD HH:mm:ss"
                       )}
                     </span>
