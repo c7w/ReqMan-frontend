@@ -372,6 +372,9 @@ const SRCard = (props: SRCardProps) => {
     });
     // 关闭模态框
     setModalVisible(false);
+    if (props.setModalClose) {
+      props.setModalClose();
+    }
   };
   const handleCancel = () => {
     setId(props.id);
