@@ -279,7 +279,7 @@ const UIIssue = () => {
               project: project_id,
             },
           });
-          console.debug(retrieved_data);
+          // console.debug(retrieved_data);
 
           return {
             data: retrieved_data.data.payload,

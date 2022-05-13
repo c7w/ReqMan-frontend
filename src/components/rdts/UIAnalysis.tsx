@@ -72,7 +72,7 @@ const UIAnalysis = () => {
         limit: 3600 * 24 * 7,
       },
     }).then((res: any) => {
-      console.debug(res.data);
+      // console.debug(res.data);
       res.data = res.data.map((activity: any) => {
         return {
           ...activity,

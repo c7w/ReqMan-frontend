@@ -19,66 +19,43 @@ interface SRState {
 const UISRChangeLogList = (props: SRChangeLogListProps) => {
   const [SRChangeLogListData, setSRChangeLogListData] = useState([]);
 
-  const getDescription = (currentSRChangeLog: any, formerSRState: SRState) => {
+  const getDescription = (formerState: any, currState: SRState) => {
     let resState: any, resDescription: any;
-    if (currentSRChangeLog.formerState !== formerSRState.currState) {
+    if (formerState.formerState !== currState.currState) {
       resState = (
         <>
           <span>状态从&nbsp;</span>
           <Space>
             <Tag
-              color={state2Color.get(currentSRChangeLog.formerState)}
+              color={state2Color.get(formerState.formerState)}
               style={{ borderRadius: "10px" }}
             >
-              {state2ChineseState.get(currentSRChangeLog.formerState)}
+              {state2ChineseState.get(formerState.formerState)}
             </Tag>
           </Space>
           <span>修改为&nbsp;</span>
           <Space>
             <Tag
-              color={state2Color.get(formerSRState.currState)}
+              color={state2Color.get(currState.currState)}
               style={{ borderRadius: "10px" }}
             >
-              {state2ChineseState.get(formerSRState.currState)}
+              {state2ChineseState.get(currState.currState)}
             </Tag>
           </Space>
         </>
       );
     }
-    // if (currentSRChangeLog.description.indexOf("rollback") !== -1) {
-    //   resState = (
-    //     <>
-    //       <span>因角色更改导致需求状态从&nbsp;</span>
-    //       <Space>
-    //         <Tag
-    //           color={state2Color.get(currentSRChangeLog.formerState)}
-    //           style={{ borderRadius: "10px" }}
-    //         >
-    //           {state2ChineseState.get(currentSRChangeLog.formerState)}
-    //         </Tag>
-    //       </Space>
-    //       <span>修改为&nbsp;</span>
-    //       <Space>
-    //         <Tag
-    //           color={state2Color.get(formerSRState.currState)}
-    //           style={{ borderRadius: "10px" }}
-    //         >
-    //           {state2ChineseState.get(formerSRState.currState)}
-    //         </Tag>
-    //       </Space>
-    //     </>
-    //   );
-    // }
-    if (currentSRChangeLog.formerDescription !== formerSRState.description) {
+
+    if (formerState.formerDescription !== currState.description) {
       resDescription = (
         <>
           <span>将描述&nbsp;</span>
           <span style={{ background: "orange" }}>
-            {currentSRChangeLog.formerDescription}
+            {formerState.formerDescription}
           </span>
           <span>&nbsp;修改为&nbsp;</span>
           <span style={{ background: "lightblue" }}>
-            {formerSRState.description}
+            {currState.description}
           </span>
         </>
       );
@@ -98,43 +75,69 @@ const UISRChangeLogList = (props: SRChangeLogListProps) => {
   useEffect(() => {
     if (props.SRChangeLogListInfo !== "" && props.projectStore !== "") {
       const newSRChangeLogList: any = [];
-      const SRChangeLogList_bak = JSON.parse(props.SRChangeLogListInfo).data;
-      const SRChangeLogList = SRChangeLogList_bak?.filter(
-        (item: any) => item.description.indexOf("rollback") === -1
-      );
+      const SRChangeLogList = JSON.parse(props.SRChangeLogListInfo).data;
+      // console.debug(SRChangeLogList);
+
+      SRChangeLogList.map((item: any, index: number) => {
+        if (index === 0) {
+          return item;
+        }
+        if (item.description === "") {
+          item.formerDescription = SRChangeLogList[index - 1].formerDescription;
+        } else if (item.description?.indexOf("rollback") !== -1) {
+          item.formerDescription = SRChangeLogList[index - 1].formerDescription;
+        }
+        return item;
+      });
+
+      SRChangeLogList.push({
+        formerDescription: props.description,
+        formerState: props.currState,
+      });
+
+      console.debug("before", SRChangeLogList);
 
       if (SRChangeLogList && SRChangeLogList !== []) {
-        const formerSRState: SRState = {
-          description: props.description,
-          currState: props.currState,
-        };
-        for (let i = SRChangeLogList.length - 1; i >= 0; i--) {
+        for (let i = 1; i < SRChangeLogList.length; i++) {
           const userInfo = userId2UserInfo(
-            SRChangeLogList[i].changedBy,
+            SRChangeLogList[i - 1].changedBy,
             props.projectStore
           );
-          const description = getDescription(SRChangeLogList[i], formerSRState);
 
-          formerSRState.description = SRChangeLogList[i].formerDescription;
-          formerSRState.currState = SRChangeLogList[i].formerState;
+          let user_name = "";
+
+          if (userInfo === "not found") {
+            user_name = "Anonymous";
+          } else {
+            user_name = userInfo.name;
+          }
+
+          if (SRChangeLogList[i - 1].description === "") {
+            user_name = "自动状态更新";
+          } else if (
+            SRChangeLogList[i - 1].description?.indexOf("rollback") !== -1
+          ) {
+            user_name = "需求状态回滚";
+          }
+
+          const description = getDescription(SRChangeLogList[i - 1], {
+            description: SRChangeLogList[i].formerDescription,
+            currState: SRChangeLogList[i].formerState,
+          });
 
           if (description === 0) continue;
           newSRChangeLogList.push({
             element: (
               <Timeline.Item
-                key={SRChangeLogList[i].id}
+                key={SRChangeLogList[i - 1].id}
                 label={
                   <>
                     <span style={{ fontWeight: "bold" }}>
-                      {"@" +
-                        (userInfo === "not found"
-                          ? "anonymous"
-                          : userInfo.name) +
-                        " "}
+                      {"@" + user_name + " "}
                     </span>
                     &nbsp;&nbsp;
                     <span>
-                      {moment(SRChangeLogList[i].changedAt * 1000).format(
+                      {moment(SRChangeLogList[i - 1].changedAt * 1000).format(
                         "YYYY-MM-DD HH:mm:ss"
                       )}
                     </span>
@@ -145,52 +148,13 @@ const UISRChangeLogList = (props: SRChangeLogListProps) => {
                 <span>{description}</span>
               </Timeline.Item>
             ),
-            time: SRChangeLogList[i].changedAt * 1000,
-          });
-        }
-      }
-
-      const SRChangeLogList_rollback = SRChangeLogList_bak?.filter(
-        (item: any) => item.description.indexOf("rollback") !== -1
-      );
-      if (SRChangeLogList_rollback && SRChangeLogList_rollback !== []) {
-        for (let i = SRChangeLogList_rollback.length - 1; i >= 0; i--) {
-          const userInfo = userId2UserInfo(
-            SRChangeLogList_rollback[i].changedBy,
-            props.projectStore
-          );
-          newSRChangeLogList.push({
-            element: (
-              <Timeline.Item
-                key={SRChangeLogList_rollback[i].id}
-                label={
-                  <>
-                    <span style={{ fontWeight: "bold" }}>
-                      {"@" +
-                        (userInfo === "not found"
-                          ? "anonymous"
-                          : userInfo.name) +
-                        " "}
-                    </span>
-                    &nbsp;&nbsp;
-                    <span>
-                      {moment(
-                        SRChangeLogList_rollback[i].changedAt * 1000
-                      ).format("YYYY-MM-DD HH:mm:ss")}
-                    </span>
-                  </>
-                }
-                style={{ minHeight: "5vh" }}
-              >
-                <span>因角色更改导致需求状态回退</span>
-              </Timeline.Item>
-            ),
-            time: SRChangeLogList_rollback[i].changedAt * 1000,
+            time: SRChangeLogList[i - 1].changedAt * 1000,
           });
         }
       }
 
       setSRChangeLogListData(newSRChangeLogList);
+      console.debug("after", SRChangeLogList);
     }
   }, [props.SRChangeLogListInfo, props.projectStore]);
 

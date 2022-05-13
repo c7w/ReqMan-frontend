@@ -86,7 +86,7 @@ const UIFile = () => {
 
   const isFile = query.get("isFile") === "1" ? true : false;
 
-  console.debug(params);
+  // console.debug(params);
 
   const [savedBranches, setSavedBranches] = React.useState("{}");
   const [savedFiles, setSavedFiles] = React.useState("{}");
@@ -112,7 +112,7 @@ const UIFile = () => {
         setCurrCode("");
         setIsLoading(true);
         // Query for file content
-        console.debug(pathname.slice(3).join("/"));
+        // console.debug(pathname.slice(3).join("/"));
         request_json(API.GET_FORWARD_CODE_SR, {
           getParams: {
             project: project_id,
@@ -332,7 +332,7 @@ const UIFile = () => {
     );
   }
 
-  console.debug(files.length);
+  // console.debug(files.length);
 
   return (
     <div className={"personal-setting-container"}>

@@ -19,7 +19,7 @@ const UIFileRenderer = (props: UIFileRendererProps) => {
   const RENDER = [];
   let start_line_num = 1;
 
-  console.debug(currCode);
+  // console.debug(currCode);
   for (const entry of currCode.relationship) {
     const commit_list = Object.values(currCode.Commits).filter(
       (commit: any) => commit.id === entry.local_commit

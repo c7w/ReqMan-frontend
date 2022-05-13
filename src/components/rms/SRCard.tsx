@@ -150,7 +150,7 @@ const SRCard = (props: SRCardProps) => {
         data[2]: ProjectInfo
         data[3]: SRChangeLogInfo
       */
-      console.debug(data);
+      // console.debug(data);
       const assoCommitListData: any[] = await oneSR2AllCommit(
         props.id,
         JSON.stringify(data[0][5]),
