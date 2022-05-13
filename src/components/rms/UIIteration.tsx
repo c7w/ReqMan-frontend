@@ -405,7 +405,7 @@ const UIIteration = () => {
       // Find the iteration with max sid
       let maxSid = -2,
         maxIter = -1;
-      console.log(iterInfo);
+      // console.log(iterInfo);
       for (let i = 0; i < iterInfo.length; i++) {
         if (iterInfo[i].sid > maxSid) {
           maxSid = iterInfo[i].sid;

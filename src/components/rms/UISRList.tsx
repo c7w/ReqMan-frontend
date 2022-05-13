@@ -503,8 +503,8 @@ const UISRList = (props: UISRListProps) => {
     deleteSRInfo(dispatcher, project, record).then((data: any) => {
       if (data.code === 0) {
         ToastMessage("success", "删除成功", "您的功能需求删除成功");
-        console.log(currentPage);
-        console.log(cntSR);
+        // console.log(currentPage);
+        // console.log(cntSR);
         if ((currentPage - 1) * pageSize === cntSR - 1) {
           setCurrentPage(currentPage > 1 ? currentPage - 1 : 1);
         }

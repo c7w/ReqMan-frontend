@@ -337,8 +337,8 @@ const UIIRList = (props: UIIRListProps) => {
   }
 
   const reload_IR_request = async (page: number, pageSize: number) => {
-    console.log("page: ", page);
-    console.log(props.IRListStr);
+    // console.log("page: ", page);
+    // console.log(props.IRListStr);
     setIsLoading(true);
     setCurrentPage(page);
     setPageSize(pageSize);
