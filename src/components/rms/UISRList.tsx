@@ -298,7 +298,9 @@ const UISRList = (props: UISRListProps) => {
         if (res.code === 0) {
           ToastMessage("success", "修改成功", "您的功能需求状态修改成功");
           // getSRListInfo(dispatcher, props.project_id);
-          setReload(reload + 1);
+          setTimeout(() => {
+            setReload(reload + 1);
+          }, 100);
         } else {
           ToastMessage("error", "修改失败", "您的功能需求状态修改失败");
         }
@@ -467,7 +469,9 @@ const UISRList = (props: UISRListProps) => {
     createSRInfo(dispatcher, project, newSR).then((data: any) => {
       if (data.code === 0) {
         ToastMessage("success", "创建成功", "您的功能需求创建成功");
-        setReload(reload + 1);
+        setTimeout(() => {
+          setReload(reload + 1);
+        }, 100);
         // setTimeout(() => window.location.reload(), 1000);
         setId(-1);
         setTitle("");
@@ -515,7 +519,9 @@ const UISRList = (props: UISRListProps) => {
         setPriority(1);
         setCurrState("TODO");
         setIsCreateModalVisible(false);
-        setReload(reload + 1);
+        setTimeout(() => {
+          setReload(reload + 1);
+        }, 100);
       } else {
         ToastMessage("error", "删除失败", "您的功能需求删除失败");
       }
@@ -613,11 +619,15 @@ const UISRList = (props: UISRListProps) => {
 
   const handleCardCancel = () => {
     setIsCardModalVisible(false);
-    setReload(reload + 1);
+    setTimeout(() => {
+      setReload(reload + 1);
+    }, 100);
   };
 
   const handleCardOk = () => {
-    setReload(reload + 1);
+    setTimeout(() => {
+      setReload(reload + 1);
+    }, 100);
     setIsCardModalVisible(false);
   };
 
