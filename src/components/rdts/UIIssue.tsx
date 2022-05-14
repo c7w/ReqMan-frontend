@@ -146,7 +146,7 @@ const UIIssue = () => {
             record.user_authored,
             projectStore
           );
-          if (find_result !== "not_found") {
+          if (find_result !== "not found") {
             return (
               <div style={{}}>
                 <UIUserCardPreview
@@ -184,7 +184,7 @@ const UIIssue = () => {
             record.user_assignee,
             projectStore
           );
-          if (find_result !== "not_found") {
+          if (find_result !== "not found") {
             return (
               <div style={{}}>
                 <UIUserCardPreview

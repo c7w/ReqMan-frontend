@@ -139,7 +139,8 @@ const UICommit = () => {
             record.user_committer,
             projectStore
           );
-          if (find_result !== "not_found") {
+          // console.debug(find_result);
+          if (find_result !== "not found") {
             return (
               <div style={{}}>
                 <UIUserCardPreview
@@ -151,6 +152,7 @@ const UICommit = () => {
             );
           }
         }
+        // console.debug("Returning user email...");
         return (
           <div
             style={{
