@@ -95,6 +95,10 @@ const Sidebar = (props: SidebarProps) => {
     );
   }
 
+  if (JSON.parse(projectStore).code !== 0) {
+    Redirect(dispatch, `/error/`, 0);
+  }
+
   return (
     <Sider
       id="sidebar"
@@ -121,7 +125,7 @@ const Sidebar = (props: SidebarProps) => {
         {["supermaster"].indexOf(
           JSON.parse(userStore).data.projects.filter(
             (project: any) => project.id === Number(project_id)
-          )[0].role
+          )[0]?.role
         ) >= 0 ? null : (
           <Menu.Item
             key="requirements"
@@ -137,7 +141,7 @@ const Sidebar = (props: SidebarProps) => {
         {["supermaster"].indexOf(
           JSON.parse(userStore).data.projects.filter(
             (project: any) => project.id === Number(project_id)
-          )[0].role
+          )[0]?.role
         ) >= 0 ? null : (
           <Menu.Item
             key="services"
@@ -153,7 +157,7 @@ const Sidebar = (props: SidebarProps) => {
         {["supermaster", "qa"].indexOf(
           JSON.parse(userStore).data.projects.filter(
             (project: any) => project.id === Number(project_id)
-          )[0].role
+          )[0]?.role
         ) < 0 ? null : (
           <Menu.Item
             key="merges"
@@ -169,7 +173,7 @@ const Sidebar = (props: SidebarProps) => {
         {["supermaster", "qa"].indexOf(
           JSON.parse(userStore).data.projects.filter(
             (project: any) => project.id === Number(project_id)
-          )[0].role
+          )[0]?.role
         ) < 0 ? null : (
           <Menu.Item
             key="issues"
@@ -185,7 +189,7 @@ const Sidebar = (props: SidebarProps) => {
         {["supermaster", "qa"].indexOf(
           JSON.parse(userStore).data.projects.filter(
             (project: any) => project.id === Number(project_id)
-          )[0].role
+          )[0]?.role
         ) < 0 ? null : (
           <Menu.Item
             key="commits"
@@ -201,7 +205,7 @@ const Sidebar = (props: SidebarProps) => {
         {["supermaster", "qa", "sys", "dev"].indexOf(
           JSON.parse(userStore).data.projects.filter(
             (project: any) => project.id === Number(project_id)
-          )[0].role
+          )[0]?.role
         ) < 0 ? null : (
           <Menu.Item
             key="codes"
@@ -217,7 +221,7 @@ const Sidebar = (props: SidebarProps) => {
         {["supermaster", "qa"].indexOf(
           JSON.parse(userStore).data.projects.filter(
             (project: any) => project.id === Number(project_id)
-          )[0].role
+          )[0]?.role
         ) < 0 ? null : (
           <Menu.Item
             key="analysis"
@@ -243,7 +247,7 @@ const Sidebar = (props: SidebarProps) => {
         {["supermaster", "sys", "dev", "qa"].indexOf(
           JSON.parse(userStore).data.projects.filter(
             (project: any) => project.id === Number(project_id)
-          )[0].role
+          )[0]?.role
         ) < 0 ? null : (
           <Menu.Item
             key="member"
@@ -259,7 +263,7 @@ const Sidebar = (props: SidebarProps) => {
         {["supermaster", "sys"].indexOf(
           JSON.parse(userStore).data.projects.filter(
             (project: any) => project.id === Number(project_id)
-          )[0].role
+          )[0]?.role
         ) < 0 ? null : (
           <Menu.Item
             key="IRManager"
@@ -275,7 +279,7 @@ const Sidebar = (props: SidebarProps) => {
         {["supermaster", "sys", "dev", "qa"].indexOf(
           JSON.parse(userStore).data.projects.filter(
             (project: any) => project.id === Number(project_id)
-          )[0].role
+          )[0]?.role
         ) < 0 ? null : (
           <Menu.Item
             key="SRManager"
@@ -291,7 +295,7 @@ const Sidebar = (props: SidebarProps) => {
         {["supermaster", "sys"].indexOf(
           JSON.parse(userStore).data.projects.filter(
             (project: any) => project.id === Number(project_id)
-          )[0].role
+          )[0]?.role
         ) < 0 ? null : (
           <Menu.Item
             key="ServiceManager"
@@ -307,7 +311,7 @@ const Sidebar = (props: SidebarProps) => {
         {["supermaster"].indexOf(
           JSON.parse(userStore).data.projects.filter(
             (project: any) => project.id === Number(project_id)
-          )[0].role
+          )[0]?.role
         ) < 0 ? null : (
           <Menu.Item
             key="settings"

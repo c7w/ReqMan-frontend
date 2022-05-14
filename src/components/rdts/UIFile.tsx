@@ -125,8 +125,18 @@ const UIFile = () => {
             const curr_codes = JSON.parse(savedCodes);
             curr_codes[file_path] = res.data;
             setSavedCodes(JSON.stringify(curr_codes));
-          } else {
+          } else if (res.code === 3) {
             ToastMessage("error", "请求失败", "请求地址不存在！");
+            Redirect(dispatcher, `/project/${project_id}/tree/`, 0);
+          } else if (res.code === 4) {
+            ToastMessage("error", "请求超时", "文件过大，暂不支持打开！");
+            Redirect(dispatcher, `/project/${project_id}/tree/`, 0);
+          } else {
+            ToastMessage(
+              "error",
+              "请求失败",
+              "信息拉取失败，请联系项目管理员！"
+            );
             Redirect(dispatcher, `/project/${project_id}/tree/`, 0);
           }
         });

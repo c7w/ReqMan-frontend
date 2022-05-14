@@ -43,85 +43,94 @@ const SiteRouter = () => {
     window.location.href = "/";
   }
 
-  return (
-    <Provider store={store}>
-      <Router history={history}>
-        <Routes>
-          <Route path="/" element={<Root />}></Route>
-          <Route path="dashboard" element={<ProjectList />} />
-          <Route path="login" element={<Login />} />
-          <Route path="register" element={<Register />} />
-          <Route path="resetpass/:hash" element={<ResetPasswordWithHash />} />
-          <Route path="resetpass" element={<ResetPassword />} />
-          <Route path="settings" element={<PersonalSetting />} />
-          <Route path="project/:id/tree/*" element={<ProjectFile />} />
-          <Route path="project/:id/IRManager" element={<ProjectIR />} />
-          <Route path="project/:id/SRManager" element={<ProjectSR />} />
-          <Route
-            path="project/:id/ServiceManager"
-            element={<ProjectService />}
-          />
-          <Route
-            path="project/:id/services"
-            element={<ProjectServiceReadonly />}
-          />
-          <Route
-            path="project/:id/requirements"
-            element={<ProjectRequirementsReadonly />}
-          />
-          <Route path="project/:id/member" element={<ProjectMember />} />
-          <Route
-            path="project/:id/merges"
-            element={
-              <ProjectRDTS>
-                <UIMerge />
-              </ProjectRDTS>
-            }
-          />
-          <Route
-            path="project/:id/issues"
-            element={
-              <ProjectRDTS>
-                <UIIssue />
-              </ProjectRDTS>
-            }
-          />
-          <Route
-            path="project/:id/commits"
-            element={
-              <ProjectRDTS>
-                <UICommit />
-              </ProjectRDTS>
-            }
-          />{" "}
-          <Route
-            path="project/:id/analysis"
-            element={
-              <ProjectRDTS>
-                <UIAnalysis />
-              </ProjectRDTS>
-            }
-          />
-          <Route path="project/:id/iteration" element={<ProjectIteration />} />
-          <Route path="project/:id/settings" element={<ProjectSetting />} />
-          <Route path="project/:id" element={<Project />} />
-          <Route path="projects" element={<ProjectList />} />
-          {/* Dev Paths */}
-          <Route path="SR_List" element={<ProjectSR />} />
-          <Route path="dev/test" element={<Test />} />
-          <Route
-            path={"dev/loading"}
-            element={
-              <Home sidebar={true}>
-                <Loading />
-              </Home>
-            }
-          />
-          <Route path={"*"} element={<Fallback />} />
-        </Routes>
-      </Router>
-    </Provider>
-  );
+  try {
+    const ret_val = (
+      <Provider store={store}>
+        <Router history={history}>
+          <Routes>
+            <Route path="/" element={<Root />}></Route>
+            <Route path="dashboard" element={<ProjectList />} />
+            <Route path="login" element={<Login />} />
+            <Route path="register" element={<Register />} />
+            <Route path="resetpass/:hash" element={<ResetPasswordWithHash />} />
+            <Route path="resetpass" element={<ResetPassword />} />
+            <Route path="settings" element={<PersonalSetting />} />
+            <Route path="project/:id/tree/*" element={<ProjectFile />} />
+            <Route path="project/:id/IRManager" element={<ProjectIR />} />
+            <Route path="project/:id/SRManager" element={<ProjectSR />} />
+            <Route
+              path="project/:id/ServiceManager"
+              element={<ProjectService />}
+            />
+            <Route
+              path="project/:id/services"
+              element={<ProjectServiceReadonly />}
+            />
+            <Route
+              path="project/:id/requirements"
+              element={<ProjectRequirementsReadonly />}
+            />
+            <Route path="project/:id/member" element={<ProjectMember />} />
+            <Route
+              path="project/:id/merges"
+              element={
+                <ProjectRDTS>
+                  <UIMerge />
+                </ProjectRDTS>
+              }
+            />
+            <Route
+              path="project/:id/issues"
+              element={
+                <ProjectRDTS>
+                  <UIIssue />
+                </ProjectRDTS>
+              }
+            />
+            <Route
+              path="project/:id/commits"
+              element={
+                <ProjectRDTS>
+                  <UICommit />
+                </ProjectRDTS>
+              }
+            />{" "}
+            <Route
+              path="project/:id/analysis"
+              element={
+                <ProjectRDTS>
+                  <UIAnalysis />
+                </ProjectRDTS>
+              }
+            />
+            <Route
+              path="project/:id/iteration"
+              element={<ProjectIteration />}
+            />
+            <Route path="project/:id/settings" element={<ProjectSetting />} />
+            <Route path="project/:id" element={<Project />} />
+            <Route path="projects" element={<ProjectList />} />
+            {/* Dev Paths */}
+            <Route path="SR_List" element={<ProjectSR />} />
+            <Route path="dev/test" element={<Test />} />
+            <Route
+              path={"dev/loading"}
+              element={
+                <Home sidebar={true}>
+                  <Loading />
+                </Home>
+              }
+            />
+            <Route path={"*"} element={<Fallback />} />
+          </Routes>
+        </Router>
+      </Provider>
+    );
+    return ret_val;
+  } catch (exception) {
+    console.error(exception);
+    return <Fallback />;
+  }
 };
 
 export default SiteRouter;
