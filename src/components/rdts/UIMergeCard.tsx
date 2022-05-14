@@ -71,7 +71,7 @@ const UIMergeCard = (props: UIMergeCardProps) => {
   let authoredBy = data.authoredByUserName;
   if (data.user_authored > 0) {
     const find_result = userId2UserInfo(data.user_authored, projectStore);
-    if (find_result !== "not_found") {
+    if (find_result !== "not found") {
       authoredBy = find_result.name;
     }
   }
@@ -79,7 +79,7 @@ const UIMergeCard = (props: UIMergeCardProps) => {
   let reviewedBy = data.reviewedByUserName;
   if (data.user_reviewed > 0) {
     const find_result = userId2UserInfo(data.user_reviewed, projectStore);
-    if (find_result !== "not_found") {
+    if (find_result !== "not found") {
       reviewedBy = find_result.name;
     }
   }
