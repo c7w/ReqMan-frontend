@@ -44,7 +44,7 @@ const SiteRouter = () => {
   }
 
   try {
-    return (
+    const ret_val = (
       <Provider store={store}>
         <Router history={history}>
           <Routes>
@@ -126,7 +126,9 @@ const SiteRouter = () => {
         </Router>
       </Provider>
     );
+    return ret_val;
   } catch (exception) {
+    console.error(exception);
     return <Fallback />;
   }
 };
