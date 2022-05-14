@@ -85,7 +85,7 @@ const UIIssueCard = (props: UIIssueCardProps) => {
   let authoredBy = data.authoredByUserName;
   if (data.user_authored > 0) {
     const find_result = userId2UserInfo(data.user_authored, projectStore);
-    if (find_result !== "not_found") {
+    if (find_result !== "no _found") {
       authoredBy = find_result.name;
     }
   }
@@ -93,7 +93,7 @@ const UIIssueCard = (props: UIIssueCardProps) => {
   let reviewedBy = data.assigneeUserName;
   if (data.user_assignee > 0) {
     const find_result = userId2UserInfo(data.user_assignee, projectStore);
-    if (find_result !== "not_found") {
+    if (find_result !== "not found") {
       reviewedBy = find_result.name;
     }
   }
@@ -101,7 +101,7 @@ const UIIssueCard = (props: UIIssueCardProps) => {
   let closedBy = data.closedByUserName;
   if (data.user_closed > 0) {
     const find_result = userId2UserInfo(data.user_closed, projectStore);
-    if (find_result !== "not_found") {
+    if (find_result !== "not found") {
       closedBy = find_result.name;
     }
   }
@@ -157,7 +157,7 @@ const UIIssueCard = (props: UIIssueCardProps) => {
             filtered[0].user_authored,
             projectStore
           );
-          if (find_result !== "not_found") {
+          if (find_result !== "not found") {
             MRBy = find_result.name;
           }
         }
