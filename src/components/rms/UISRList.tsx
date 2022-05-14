@@ -888,7 +888,7 @@ const UISRList = (props: UISRListProps) => {
 
   const reload_paged_sr = async (page: number, pageSize: number) => {
     setIsLoading(true);
-    setCurrentPage(page);
+    setCurrentPage(page <= 0 ? 1 : page);
     setPageSize(pageSize);
     const retrieved_data = await request_json(API.GET_SR_PAGED, {
       getParams: {
@@ -897,7 +897,6 @@ const UISRList = (props: UISRListProps) => {
         project: props.project_id,
       },
     });
-    // console.log(retrieved_data.data.total_size);
     setCntSR(retrieved_data.data.total_size);
 
     const post_processed_data = retrieved_data.data.payload.map(
